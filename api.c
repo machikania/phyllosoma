@@ -10,11 +10,6 @@
 #include "pico/stdlib.h"
 #include "api.h"
 
-int main() {
-    stdio_init_all();
-    while (true) {
-        printstr("Hello, KM-BASIC!\n");
-        sleep_ms(1000);
-    }
-    return 0;
+void printstr(unsigned char *s){
+	printf(s);
 }
