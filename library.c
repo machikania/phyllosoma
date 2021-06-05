@@ -6,11 +6,14 @@
    https://github.com/kmorimatsu
 */
 
-#include <stdio.h>
-#include "pico/stdlib.h"
-#include "./api.h"
+#include "./compiler.h"
 
-void printstr(unsigned char *s){
-	printf(s);
-	sleep_ms(1);
+int kmbasic_library(int r0, int r1, int r2, int r3){
+	switch(r3){
+		case LIB_PRINT_STR:
+			printstr((unsigned char*)r0);
+			return r0;
+		default:
+			return r0;
+	}
 }

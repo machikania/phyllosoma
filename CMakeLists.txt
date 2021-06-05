@@ -2,6 +2,10 @@ if (TARGET tinyusb_device)
 	add_executable(kmbasic
 			kmbasic.c
 			api.c
+			library.c
+			compiler.c
+			statements.c
+			string.c
 		)
 
 	# Pull in our pico_stdlib which aggregates commonly used features
