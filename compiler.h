@@ -20,7 +20,10 @@
 /*
 	Variables
 */
-extern unsigned short g_object[1024];
+extern unsigned short kmbasic_object[1024];
+extern int kmbasic_data[32];
+extern int kmbasic_variables[256];
+
 extern unsigned char* ccode;
 extern unsigned short* object;
 

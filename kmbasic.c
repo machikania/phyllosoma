@@ -15,7 +15,7 @@ void dump(){
 	int i;
 	printf("\n");
 	for(i=0;i<64;i++){
-		printf("%x%x%x%x ",(g_object[i]>>12)&0xf,(g_object[i]>>8)&0xf,(g_object[i]>>4)&0xf,g_object[i]&0xf);
+		printf("%x%x%x%x ",(kmbasic_object[i]>>12)&0xf,(kmbasic_object[i]>>8)&0xf,(kmbasic_object[i]>>4)&0xf,kmbasic_object[i]&0xf);
 	}
 	printf("\n");
 	sleep_ms(1);
@@ -32,7 +32,6 @@ int main() {
 	compile_line("PRINT \"Hello KM-BASIC! \"");
 	compile_line("END");
 	dump();
-	//printf("\nError code: %d\n",e);
 	
 	while (true) {
 		run_code();

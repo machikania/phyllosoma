@@ -9,23 +9,15 @@
 #include <string.h>
 #include "./compiler.h"
 
-unsigned short g_object[1024];
-int kmbasic_data[32];
-int kmbasic_variables[256];
-
-unsigned char* ccode;
-unsigned short* object;
-
 void init_compiler(void){
-	g_object[0]=0xb500;//      	push	{lr}
-	g_object[1]=0x4668;//      	mov	r0, sp
-	g_object[2]=0x6038;//      	str	r0, [r7, #0]
-
-//	g_object[0]=0x4770;//      	bx	lr
-//	g_object[1]=0x46c0;//      	nop
-
-
-	object=&g_object[3];
+	// Prepare execution
+	// 1) Push return address reserved in lr register
+	// 2) Store stack pointer for returning to C code
+	// See also end_statement() code
+	kmbasic_object[0]=0xb500;//      	push	{lr}
+	kmbasic_object[1]=0x4668;//      	mov	r0, sp
+	kmbasic_object[2]=0x6038;//      	str	r0, [r7, #0]
+	object=&kmbasic_object[3];
 }
 
 void test(void){
@@ -50,8 +42,8 @@ void run_code(void){
 	// R8 is pointer to library function
 	asm("ldr r0,=kmbasic_library");
 	asm("mov r8,r0");
-	// Call g_object
-	asm("ldr r1,=g_object+1");
+	// Call kmbasic_object
+	asm("ldr r1,=kmbasic_object+1");
 	asm("blx r1");
 	// Pop r0-r12
 	asm("pop {r0,r1,r2,r3,r4}");
@@ -77,7 +69,7 @@ int instruction_is(unsigned char* instruction){
 	// Count number
 	while(instruction[n]) n++;
 	// Compare strings
-	if (strncasecmp(ccode,instruction,n)) return 0;
+	if (strncmp(ccode,instruction,n)) return 0;
 	// If this is function, everything is alright.
 	if (instruction[n-1]=='(') {
 		ccode+=n;
@@ -87,7 +79,6 @@ int instruction_is(unsigned char* instruction){
 	// Next code must not be character for statement
 	switch(ccode[n]){
 		case 0x20:
-		case 0x09:
 		case 0x00:
 		case ':':
 			ccode+=n;
@@ -106,32 +97,64 @@ int compile_statement(){
 	return ERROR_SYNTAX;
 }
 
+/*
+	Change all lower case charaters to upper ones
+	Change tabs to spaces
+	Change all enter characters to null
+	Use kmbasic_variables[256] area for the buffer as this area isn't used when compilling
+*/
+unsigned char* code2upper(unsigned char* code){
+	int i;
+	unsigned char c;
+	unsigned char* result=(unsigned char*)&kmbasic_variables[0];
+	char instring=0;
+	for(i=0;i<1024;i++){
+		c=code[i];
+		if (instring) {
+			if ('"'==c) instring=0;
+		} else {
+			if ('a'<=c && c<='z') {
+				c=c-0x20;
+			} else if ('"'==c) {
+				instring=1;
+			} else if (0x09==c) {
+				c=0x20;
+			} else if (0x0d==c || 0x0a==c) {
+				result[i]=0;
+				break;
+			} else if (1023==i) {
+				c=0x00;
+			}
+		}
+		result[i]=c;
+	}
+	return result;
+}
+
 // This function returns number of bytes being compiled.
 // If an error occured. this returns negative value as error code.
 int compile_line(unsigned char* code){
 	int e;
-	ccode=code;
+	unsigned char* before;
+	before=ccode=code2upper(code);
 	while(1){
 		e=compile_statement();
 		if (e) return e; // An error occured
 		// Skip blank
 		skip_blank();
-		// Check enter or null
-		if (ccode[0]==0x0d) {
-			ccode++;
-			if (ccode[0]==0x0a) ccode++;
-			break;
-		} else if (ccode[0]=0x0a) {
-			ccode++;
-			break;
-		} else if (ccode[0]==0x00) {
-			break;
-		}
+		// Check null as the end of line
+		if (ccode[0]==0x00) break;
 		// Check ':'
 		if (ccode[0]!=':') return ERROR_SYNTAX;
 		// Continue this  line
 		ccode++;
 	}
 	// Error didn't happen
-	return ccode-code;
+	e=ccode-before;
+	// End of string is null
+	if (0x00==code[e]) return e;
+	// End of string is lf
+	if (0x0a==code[e]) return e+1;
+	// End of string is cr or crlf
+	return 0x0a==code[e+1] ? e+2:e+1;
 }

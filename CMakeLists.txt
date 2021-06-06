@@ -6,6 +6,7 @@ if (TARGET tinyusb_device)
 			compiler.c
 			statements.c
 			string.c
+			globalvars.c
 		)
 
 	# Pull in our pico_stdlib which aggregates commonly used features
