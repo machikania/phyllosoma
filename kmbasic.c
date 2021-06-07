@@ -30,9 +30,7 @@ int main() {
 	printstr("\nKM-BASIC for ARM\n");
 	init_compiler();
 	//compile_line("PRINT \"Hello KM-BASIC! \"");
-	compile_line("PRINT 123");
-	compile_line("PRINT 0xa5"); // 165
-	compile_line("PRINT $5A");  // 90
+	compile_line("PRINT 123,0xa5,$5A,-123,+234");
 	compile_line("END");
 	dump();
 	//printf("e:%d\n",e);

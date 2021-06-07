@@ -13,31 +13,33 @@
 int lib_print(int r0, int r1, int r2, int r3){
 	// Mode; 0x00: ingeger, 0x01: string, 0x02: float
 	// Mode; 0x00: CR, 0x10: ';', 0x20: ','
+	int i;
 	unsigned char buff[16]; // TODO: Consider buffer size
 	switch(r1&0x0f){
 		case 0x01: // string
+			for(i=0;((unsigned char*)r0)[i];i++);
 			printstr((unsigned char*)r0);
 			if (0x00 == (r1&0xf0)) printchar('\n');
 			break;
 		case 0x02: // float
-			if (0x00 == (r1&0xf0)) sprintf(buff,"%g\n",(float)r0);
-			else sprintf(buff,"%g",(float)r0);
+			if (0x00 == (r1&0xf0)) i=sprintf(buff,"%g\n",(float)r0);
+			else i=sprintf(buff,"%g",(float)r0);
 			printstr(buff);
 			break;
 		default:   // integer
-			if (0x00 == (r1&0xf0)) sprintf(buff,"%d\n",(int)r0);
-			else sprintf(buff,"%d",(int)r0);
+			if (0x00 == (r1&0xf0)) i=sprintf(buff,"%d\n",(int)r0);
+			else i=sprintf(buff,"%d",(int)r0);
 			printstr(buff);
 			break;
 	}
-	if (0x20==r1&0xf0) {
+	if (0x20==(r1&0xf0)) {
 		// ","
-		// TODO: Not yet implimented
+		printstr(&("                "[i&0xf]));
 	}
 	return r0;
 }
 int lib_let_str(int r0, int r1, int r2, int r3){
-	return r0;
+	return 0-r0;
 }
 
 static const void* lib_list[]={

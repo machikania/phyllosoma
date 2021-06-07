@@ -115,7 +115,7 @@ int print_statement(void) {
 		if (';'==source[0]) {
 			mode|=0x10;
 			source++;
-		} else if (';'==source[0]) {
+		} else if (','==source[0]) {
 			mode|=0x20;
 			source++;
 		}
