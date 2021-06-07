@@ -10,24 +10,24 @@
 
 int get_byte(){
 	unsigned char c;
-	if ('0'<=ccode[0] && ccode[0]<='9') c=ccode[0]-'0';
-	else if ('A'<=ccode[0] && ccode[0]<='F') c=ccode[0]-'A'+10;
-	else if ('a'<=ccode[0] && ccode[0]<='f') c=ccode[0]-'a'+10;
+	if ('0'<=source[0] && source[0]<='9') c=source[0]-'0';
+	else if ('A'<=source[0] && source[0]<='F') c=source[0]-'A'+10;
+	else if ('a'<=source[0] && source[0]<='f') c=source[0]-'a'+10;
 	else return ERROR_SYNTAX;
-	ccode++;
+	source++;
 	c<<=4;
-	if ('0'<=ccode[0] && ccode[0]<='9') c|=ccode[0]-'0';
-	else if ('A'<=ccode[0] && ccode[0]<='F') c|=ccode[0]-'A'+10;
-	else if ('a'<=ccode[0] && ccode[0]<='f') c|=ccode[0]-'a'+10;
+	if ('0'<=source[0] && source[0]<='9') c|=source[0]-'0';
+	else if ('A'<=source[0] && source[0]<='F') c|=source[0]-'A'+10;
+	else if ('a'<=source[0] && source[0]<='f') c|=source[0]-'a'+10;
 	else return ERROR_SYNTAX;
-	ccode++;
+	source++;
 	return (int)c;
 }
 
 int string_char(){
 	unsigned char c;
-	c=ccode[0];
-	ccode++;
+	c=source[0];
+	source++;
 	switch(c){
 		case '"':
 			return 0;
@@ -39,8 +39,8 @@ int string_char(){
 			return (int)c;
 	}
 	// \ is found
-	c=ccode[0];
-	ccode++;
+	c=source[0];
+	source++;
 	switch(c){
 		case 'n':
 			return '\n';
@@ -56,10 +56,11 @@ int string_char(){
 int get_string(void){
 	int e;
 	unsigned char c;
+	skip_blank();
 	int i=0;
 	// Detect '"'
-	if (ccode[0]!='"') return ERROR_SYNTAX;
-	ccode++;
+	if (source[0]!='"') return ERROR_SYNTAX;
+	source++;
 	// Get string pointer in R0
 	object[i++]=0x4678;//      	mov	r0, pc
 	object[i++]=0x3002;//      	adds	r0, #2

@@ -6,10 +6,9 @@
    https://github.com/kmorimatsu
 */
 
-#include <stdio.h>
-#include "pico/stdlib.h"
+#include "./compiler.h"
 
-// Prototypings follow
-void printstr(unsigned char *s);
-void printchar(unsigned char c);
-
+int get_var_number(void){
+	if (source[0]<'A' || 'Z'<source[0]) return ERROR_SYNTAX;
+	return (source++)[0]-'A';
+}

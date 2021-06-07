@@ -5,8 +5,11 @@ if (TARGET tinyusb_device)
 			library.c
 			compiler.c
 			statements.c
+			integer.c
+			float.c
 			string.c
 			globalvars.c
+			varname.c
 		)
 
 	# Pull in our pico_stdlib which aggregates commonly used features

@@ -14,3 +14,8 @@ void printstr(unsigned char *s){
 	printf(s);
 	sleep_ms(1);
 }
+
+void printchar(unsigned char c){
+	printf("%c",c);
+	sleep_ms(1);
+}

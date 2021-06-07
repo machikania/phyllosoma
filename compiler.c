@@ -20,10 +20,6 @@ void init_compiler(void){
 	object=&kmbasic_object[3];
 }
 
-void test(void){
-
-}
-
 void run_code(void){
 	// Push r0-r12
 	asm("push {lr}");
@@ -57,9 +53,24 @@ void run_code(void){
 }
 
 int call_lib_code(int lib_number){
+	if (255<lib_number) return ERROR_UNKNOWN;
+	check_object(2);
 	(object++)[0]=0x2300 | lib_number;// movs	r3, #1
 	(object++)[0]=0x47c0;             // blx	r8
 	return 0;
+}
+
+int set_value_in_register(unsigned char r,int val){
+	if (7<r) return ERROR_UNKNOWN;
+	if (0<=val && val<=255) {
+		val+=(r<<8);
+		check_object(1);
+		(object++)[0]=0x2000 | val | (r<<8);      // movs	r1, #xx
+		return 0;
+	} else {
+		// TODO: here
+		return ERROR_UNKNOWN;
+	}
 }
 
 int instruction_is(unsigned char* instruction){
@@ -69,19 +80,19 @@ int instruction_is(unsigned char* instruction){
 	// Count number
 	while(instruction[n]) n++;
 	// Compare strings
-	if (strncmp(ccode,instruction,n)) return 0;
+	if (strncmp(source,instruction,n)) return 0;
 	// If this is function, everything is alright.
 	if (instruction[n-1]=='(') {
-		ccode+=n;
+		source+=n;
 		skip_blank();
 		return 1;
 	}
 	// Next code must not be character for statement
-	switch(ccode[n]){
+	switch(source[n]){
 		case 0x20:
 		case 0x00:
 		case ':':
-			ccode+=n;
+			source+=n;
 			skip_blank();
 			return 1;
 		default:
@@ -92,9 +103,20 @@ int instruction_is(unsigned char* instruction){
 
 int compile_statement(){
 	int e;
+	unsigned short* bobj=object;
+	unsigned char* bsrc=source;
+	// Check LET statement, first
+	if (instruction_is("LET")) return let_statement();
+	// "LET" may be omitted.
+	e=let_statement();
+	if (!e) return 0;
+	object=bobj;
+	source=bsrc;
+	// It's not LET statement. Let's continue for possibilities of the other statements.
 	if (instruction_is("PRINT")) return print_statement();
 	if (instruction_is("END")) return end_statement();
-	return ERROR_SYNTAX;
+	// Finally, try let statement again as syntax error may be in LET statement.
+	return let_statement();
 }
 
 /*
@@ -136,21 +158,21 @@ unsigned char* code2upper(unsigned char* code){
 int compile_line(unsigned char* code){
 	int e;
 	unsigned char* before;
-	before=ccode=code2upper(code);
+	before=source=code2upper(code);
 	while(1){
 		e=compile_statement();
 		if (e) return e; // An error occured
 		// Skip blank
 		skip_blank();
 		// Check null as the end of line
-		if (ccode[0]==0x00) break;
+		if (source[0]==0x00) break;
 		// Check ':'
-		if (ccode[0]!=':') return ERROR_SYNTAX;
+		if (source[0]!=':') return ERROR_SYNTAX;
 		// Continue this  line
-		ccode++;
+		source++;
 	}
 	// Error didn't happen
-	e=ccode-before;
+	e=source-before;
 	// End of string is null
 	if (0x00==code[e]) return e;
 	// End of string is lf

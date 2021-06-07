@@ -29,13 +29,18 @@ int main() {
 	// Start
 	printstr("\nKM-BASIC for ARM\n");
 	init_compiler();
-	compile_line("PRINT \"Hello KM-BASIC! \"");
+	//compile_line("PRINT \"Hello KM-BASIC! \"");
+	compile_line("PRINT 123");
+	compile_line("PRINT 0xa5"); // 165
+	compile_line("PRINT $5A");  // 90
 	compile_line("END");
 	dump();
+	//printf("e:%d\n",e);
+	run_code();
 	
 	while (true) {
-		run_code();
 		sleep_ms(1000);
+		printchar('.');
 	}
 	return 0;
 }

@@ -9,11 +9,10 @@
 #include "./compiler.h"
 
 /*
-	Dedicate followings to easy writing of compiler codes
+	Dedicate followings for easy writing of compiler codes
 */
-unsigned char* ccode;
+unsigned char* source;
 unsigned short* object;
-
 
 /*
 	KM-BASIC related global areas

@@ -6,10 +6,9 @@
    https://github.com/kmorimatsu
 */
 
-#include <stdio.h>
-#include "pico/stdlib.h"
+#include "./compiler.h"
 
-// Prototypings follow
-void printstr(unsigned char *s);
-void printchar(unsigned char c);
-
+int get_float(void){
+	skip_blank();
+	return ERROR_UNKNOWN;
+}
