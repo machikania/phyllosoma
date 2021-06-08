@@ -2,7 +2,6 @@
    This program is provided under the LGPL license ver 2.1
    KM-BASIC for ARM, written by Katsumi.
    http://hp.vector.co.jp/authors/VA016157/
-   kmorimatsu@users.sourceforge.jp
    https://github.com/kmorimatsu
 */
 
@@ -10,7 +9,7 @@
 #include "./compiler.h"
 
 
-int lib_print(int r0, int r1, int r2, int r3){
+int lib_print(int r0, int r1, int r2){
 	// Mode; 0x00: ingeger, 0x01: string, 0x02: float
 	// Mode; 0x00: CR, 0x10: ';', 0x20: ','
 	int i;
@@ -38,16 +37,57 @@ int lib_print(int r0, int r1, int r2, int r3){
 	}
 	return r0;
 }
-int lib_let_str(int r0, int r1, int r2, int r3){
-	return 0-r0;
+int lib_let_str(int r0, int r1, int r2){
+	return r0;
+}
+
+int lib_calc(int r0, int r1, int r2){
+	switch(r2){
+		case OP_DIV: return r1/r0;
+		case OP_REM: return r1%r0;
+		default: // error
+			return r0;
+	}
+}
+
+float _lib_calc_float(float r0, float r1, int r2){
+	switch(r2){
+		case OP_EQ:  return r1==r0 ? 1:0;
+		case OP_NEQ: return r1!=r0 ? 1:0;
+		case OP_LT:  return r1<r0 ? 1:0;
+		case OP_LTE: return r1<=r0 ? 1:0;
+		case OP_MT:  return r1>r0 ? 1:0;
+		case OP_MTE: return r1>=r0 ? 1:0;
+		case OP_ADD: return r1+r0;
+		case OP_SUB: return r1-r0;
+		case OP_MUL: return r1*r0;
+		case OP_DIV: return r1/r0;
+		case OP_OR:  return (r1||r0) ? 1:0;
+		case OP_AND: return (r1&&r0) ? 1:0;
+		default: // error
+			return r0;
+	}
+}
+
+int lib_calc_float(int r0, int r1, int r2){
+	return (int)_lib_calc_float((float)r0,(float)r1,r2);
+}
+
+int test(int r0, int r1, int r2){
+	asm("str r0,[sp,#4]");
+	asm("ldr r1,[sp,#4]");
+	return r0;
 }
 
 static const void* lib_list[]={
 	lib_print,      // #define LIB_PRINT 0
 	lib_let_str,    // #define LIB_LET_STR 1
+	lib_calc,       // #define LIB_CALC 2
+	lib_calc_float, // #define LIB_CALC_FLOAT 3
+	test,
 };
 
 int kmbasic_library(int r0, int r1, int r2, int r3){
-	int (*f)(int r0, int r1, int r2, int r3) = lib_list[r3];
-	return f(r0,r1,r2,r3);
+	int (*f)(int r0, int r1, int r2) = lib_list[r3];
+	return f(r0,r1,r2);
 }

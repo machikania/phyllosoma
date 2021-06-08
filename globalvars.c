@@ -2,7 +2,6 @@
    This program is provided under the LGPL license ver 2.1
    KM-BASIC for ARM, written by Katsumi.
    http://hp.vector.co.jp/authors/VA016157/
-   kmorimatsu@users.sourceforge.jp
    https://github.com/kmorimatsu
 */
 
@@ -21,3 +20,10 @@ unsigned short* object;
 unsigned short kmbasic_object[1024];
 int kmbasic_data[32];
 int kmbasic_variables[256];
+
+// Depth of stack used for calculation
+int g_sdepth;
+int g_maxsdepth;
+
+// Flag to allow shifting the code due to non requirement of stack
+char g_allow_shift_obj;

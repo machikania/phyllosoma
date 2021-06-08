@@ -2,7 +2,6 @@
    This program is provided under the LGPL license ver 2.1
    KM-BASIC for ARM, written by Katsumi.
    http://hp.vector.co.jp/authors/VA016157/
-   kmorimatsu@users.sourceforge.jp
    https://github.com/kmorimatsu
 */
 
@@ -18,7 +17,29 @@
 */
 #define LIB_PRINT 0
 #define LIB_LET_STR 1
+#define LIB_CALC 2
+#define LIB_CALC_FLOAT 3
 
+/*
+	Operators
+*/
+#define OP_VOID 0
+#define OP_OR 1
+#define OP_AND 2
+#define OP_XOR 3
+#define OP_EQ 4
+#define OP_NEQ 5
+#define OP_LT 6
+#define OP_LTE 7
+#define OP_MT 8
+#define OP_MTE 9
+#define OP_SHL 10
+#define OP_SHR 11
+#define OP_ADD 12
+#define OP_SUB 13
+#define OP_MUL 14
+#define OP_DIV 15
+#define OP_REM 16
 
 /*
 	Variables
@@ -29,6 +50,11 @@ extern int kmbasic_variables[256];
 
 extern unsigned char* source;
 extern unsigned short* object;
+
+extern int g_sdepth;
+extern int g_maxsdepth;
+
+extern char g_allow_shift_obj;
 
 /*
 	Prototypes
@@ -55,7 +81,12 @@ int get_string(void);
 int get_integer(void);
 int get_float(void);
 
+int get_operator(void);
+int calculation(int op);
+int float_calculation(int op);
+
 int kmbasic_library(int r0, int r1, int r2, int r3);
+
 
 /*
 	Macros
@@ -71,3 +102,7 @@ int kmbasic_library(int r0, int r1, int r2, int r3);
 	do {\
 		if (&kmbasic_object[(sizeof kmbasic_object)/(sizeof kmbasic_object[0])]<=object+size) return ERROR_OBJ_TOO_LARGE;\
 	} while(0)
+
+// Operator priority
+extern const unsigned char g_priority[];
+#define priority(x) (int)g_priority[(int)(x)]

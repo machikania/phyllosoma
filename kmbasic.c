@@ -2,7 +2,6 @@
    This program is provided under the LGPL license ver 2.1
    KM-BASIC for ARM, written by Katsumi.
    http://hp.vector.co.jp/authors/VA016157/
-   kmorimatsu@users.sourceforge.jp
    https://github.com/kmorimatsu
 */
 
@@ -30,7 +29,7 @@ int main() {
 	printstr("\nKM-BASIC for ARM\n");
 	init_compiler();
 	//compile_line("PRINT \"Hello KM-BASIC! \"");
-	compile_line("PRINT 123,0xa5,$5A,-123,+234");
+	compile_line("PRINT 123+234,123-234,123*234,123/23");
 	compile_line("END");
 	dump();
 	//printf("e:%d\n",e);

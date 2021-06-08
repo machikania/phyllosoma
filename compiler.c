@@ -2,7 +2,6 @@
    This program is provided under the LGPL license ver 2.1
    KM-BASIC for ARM, written by Katsumi.
    http://hp.vector.co.jp/authors/VA016157/
-   kmorimatsu@users.sourceforge.jp
    https://github.com/kmorimatsu
 */
 
@@ -103,8 +102,11 @@ int instruction_is(unsigned char* instruction){
 
 int compile_statement(){
 	int e;
+	// Initialize
 	unsigned short* bobj=object;
 	unsigned char* bsrc=source;
+	g_sdepth=0;
+	g_allow_shift_obj=1;
 	// Check LET statement, first
 	if (instruction_is("LET")) return let_statement();
 	// "LET" may be omitted.
