@@ -11,6 +11,7 @@ if (TARGET tinyusb_device)
 			globalvars.c
 			varname.c
 			operators.c
+			value.c
 		)
 
 	# Pull in our pico_stdlib which aggregates commonly used features

@@ -42,6 +42,14 @@
 #define OP_REM 16
 
 /*
+	Misc
+*/
+
+#define VAR_MODE_INTEGER 0
+#define VAR_MODE_STRING  1
+#define VAR_MODE_FLOAT   2
+
+/*
 	Variables
 */
 extern unsigned short kmbasic_object[1024];
@@ -78,12 +86,15 @@ int return_statement(void);
 int end_statement(void);
 
 int get_string(void);
+int get_simple_integer(void);
 int get_integer(void);
+int get_simple_float(void);
 int get_float(void);
 
-int get_operator(void);
-int calculation(int op);
-int float_calculation(int op);
+int get_value(int vmode);
+
+int get_operator(int vmode);
+int calculation(int op,int vmode);
 
 int kmbasic_library(int r0, int r1, int r2, int r3);
 

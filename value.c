@@ -10,91 +10,41 @@
 /*
 	Local prototyping
 */
-int get_integer_sub(int pr);
+int get_value_sub(int pr,int vmode);
 
-int get_simple_integer(void){
-	int i;
+int get_simple_value(int vmode){
+	int e;
 	skip_blank();
 	if ('('==source[0]) {
 		source++;
-		i=get_integer_sub(priority(OP_VOID));
-		if (i) return i;
+		e=get_value_sub(priority(OP_VOID),vmode);
+		if (e) return e;
 		skip_blank();
 		if (')'!=source[0]) return ERROR_SYNTAX;
 		source++;
 		return 0;
-	} else if ('+'==source[0]) {
-		source++;
-	} else if ('-'==source[0]){
-		source++;
-		i=get_simple_integer();
-		if (i) return i;
-		check_object(1);
-		(object++)[0]=0x4240; // negs	r0, r0
-		return 0;
 	}
-	if ('$'==source[0] || '0'==source[0] && 'X'==source[1]) {
-		// Hex value
-		source+=('$'==source[0]) ? 1:2;
-		i=0;
-		while(1){
-			if ('0'<=source[0] && source[0]<='9') {
-				i=(i<<4)|(source[0]-'0');
-				source++;
-			} else if ('A'<=source[0] && source[0]<='F') {
-				i=(i<<4)|(source[0]-'A'+10);
-				source++;
-			} else {
-				break;
-			}
-		}
-		return set_value_in_register(0,i);
-	} else if ('0'<=source[0] && source[0]<'9') {
-		// Decimal value
-		i=0;
-		while(1){
-			if ('0'<=source[0] && source[0]<='9') {
-				i=i*10+(source[0]-'0');
-				source++;
-			} else {
-				break;
-			}
-		}
-		return set_value_in_register(0,i);
-	} else if ('0'<=source[0] && source[0]<'9' || '_'==source[0]) {
-		// Variable or function
-		// TODO: here
-		return ERROR_UNKNOWN;
+	switch(vmode){
+		case VAR_MODE_INTEGER:
+			return get_simple_integer();
+		case VAR_MODE_FLOAT:
+			return get_simple_float();
+		default:
+			return ERROR_UNKNOWN;
 	}
 }
 
-/*
-// r0=1-r0
-100003bc:	2301      	movs	r3, #1
-100003be:	1a18      	subs	r0, r3, r0
-
-// NOT
-100003bc:	4243      	negs	r3, r0
-100003be:	4158      	adcs	r0, r3
-
-
-100003c0:	b081      	sub	sp, #4
-100003c2:	b082      	sub	sp, #8
-100003c4:	b001      	add	sp, #4
-100003c6:	b002      	add	sp, #8
-*/
-
-int get_integer_sub(int pr){
+int get_value_sub(int pr, int vmode){
 	unsigned char* prevpos;
 	int e,op;
 	skip_blank();
 	// Get a value in r0
-	e=get_simple_integer();
+	e=get_simple_value(vmode);
 	if (e) return e;
 	while(1){
 		// Get the operator in op. If not valid operator, simply return without error.
 		prevpos=source;
-		op=get_operator();
+		op=get_operator(vmode);
 		if (op<0) return 0;
 		// Compair current and previous operators.
 		// If the previous operator has higher priolity, return.
@@ -108,19 +58,19 @@ int get_integer_sub(int pr){
 		g_sdepth++;
 		if (g_maxsdepth<g_sdepth) g_maxsdepth=g_sdepth;
 		// Get next value.
-		e=get_integer_sub(priority(op));
+		e=get_value_sub(priority(op),vmode);
 		if (e) return e;
 		// Get value from stack to $v1.
 		g_sdepth--;
 		check_object(1);
 		(object++)[0]=0x9900 | g_sdepth; // ldr	r1, [sp, #xx]
 		// Calculation. Result will be in $v0.
-		e=calculation(op);
+		e=calculation(op,vmode);
 		if (e) return e;
 	}
 }
 
-int get_integer(void){
+int get_value(int vmode){
 	// This is only the public function.
 	// Note that this can be called recursively.
 	// Value may contain function with a parameter of another value.
@@ -134,7 +84,7 @@ int get_integer(void){
 		check_object(1);
 		(object++)[0]=0x46c0; // nop			; (mov r8, r8)
 	}
-	e=get_integer_sub(priority(OP_VOID));
+	e=get_value_sub(priority(OP_VOID),vmode);
 	if (e) return e;
 	if (0==g_sdepth) {
 		if (g_maxsdepth) {

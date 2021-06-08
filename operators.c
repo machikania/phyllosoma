@@ -32,7 +32,7 @@ const unsigned char g_priority[]={
 	8,8,8 // OP_MUL:
 };
 
-int get_operator(void){
+int get_integer_operator(void){
 	skip_blank();
 	switch((source++)[0]){
 		case '%': return OP_REM;
@@ -91,7 +91,7 @@ int get_operator(void){
 
 int get_float_operator(void){
 	int e;
-	e=get_operator();
+	e=get_integer_operator();
 	if (e<0) return e;
 	switch(e){
 		// Following operators cannot be used for float values.
@@ -110,7 +110,7 @@ int get_float_operator(void){
 	}
 }
 
-int calculation(int op){
+int integer_calculation(int op){
 	switch(op){
 		case OP_OR:
 			check_object(1);
@@ -225,6 +225,28 @@ int float_calculation(int op){
 		case OP_SHR:
 		case OP_SHL:
 		case OP_VOID:
+		default:
+			return ERROR_UNKNOWN;
+	}
+}
+
+int get_operator(int vmode){
+	switch(vmode){
+		case VAR_MODE_INTEGER:
+			return get_integer_operator();
+		case VAR_MODE_FLOAT:
+			return get_float_operator();
+		default:
+			return ERROR_UNKNOWN;
+	}
+}
+
+int calculation(int op, int vmode){
+	switch(vmode){
+		case VAR_MODE_INTEGER:
+			return integer_calculation(op);
+		case VAR_MODE_FLOAT:
+			return float_calculation(op);
 		default:
 			return ERROR_UNKNOWN;
 	}

@@ -7,6 +7,10 @@
 
 #include "./compiler.h"
 
+int get_simple_float(void){
+	skip_blank();
+	return ERROR_UNKNOWN;
+}
 int get_float(void){
 	skip_blank();
 	return ERROR_UNKNOWN;
