@@ -26,10 +26,9 @@ int main() {
 	// Wait for two seconds
 	sleep_ms(2000);
 	// Start
-	printstr("\nKM-BASIC for ARM\n");
+	printstr("KM-BASIC for ARM\n");
 	init_compiler();
-	//compile_line("PRINT \"Hello KM-BASIC! \"");
-	compile_line("PRINT 123+234,123-234,123*234,123/23");
+	compile_line("PRINT 123+23*34,(123+23)*34,123*23+34,123*(23+34)");
 	compile_line("END");
 	dump();
 	//printf("e:%d\n",e);

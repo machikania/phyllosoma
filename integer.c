@@ -7,10 +7,23 @@
 
 #include "./compiler.h"
 
+/*
+	Local prototyping
+*/
+int get_integer_sub(int pr);
+
 int get_simple_integer(void){
 	int i;
 	skip_blank();
-	if ('+'==source[0]) {
+	if ('('==source[0]) {
+		source++;
+		i=get_integer_sub(priority(OP_VOID));
+		if (i) return i;
+		skip_blank();
+		if (')'!=source[0]) return ERROR_SYNTAX;
+		source++;
+		return 0;
+	} else if ('+'==source[0]) {
 		source++;
 	} else if ('-'==source[0]){
 		source++;
@@ -53,7 +66,6 @@ int get_simple_integer(void){
 		// TODO: here
 		return ERROR_UNKNOWN;
 	}
-	return 0;
 }
 
 /*
