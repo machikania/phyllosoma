@@ -15,10 +15,11 @@
 /*
 	Libraries
 */
-#define LIB_PRINT 0
-#define LIB_LET_STR 1
-#define LIB_CALC 2
-#define LIB_CALC_FLOAT 3
+#define LIB_DEBUG 0
+#define LIB_PRINT 1
+#define LIB_LET_STR 2
+#define LIB_CALC 3
+#define LIB_CALC_FLOAT 4
 
 /*
 	Operators
@@ -64,6 +65,8 @@ extern int g_maxsdepth;
 
 extern char g_allow_shift_obj;
 
+extern int g_scratch[4];
+
 /*
 	Prototypes
 */
@@ -84,6 +87,7 @@ int let_statement(void);
 int print_statement(void);
 int return_statement(void);
 int end_statement(void);
+int debug_statement(void);
 
 int get_string(void);
 int get_simple_integer(void);

@@ -73,18 +73,28 @@ int lib_calc_float(int r0, int r1, int r2){
 	return (int)_lib_calc_float((float)r0,(float)r1,r2);
 }
 
-int test(int r0, int r1, int r2){
-	asm("str r0,[sp,#4]");
-	asm("ldr r1,[sp,#4]");
-	return r0;
+int debug(int r0, int r1, int r2){
+	asm("mov r0,#123");
+	asm("nop");
+	asm("nop");
+	asm("nop");
+	asm("ldr	r0, [pc, #0]");
+	asm("b skip");
+	asm("nop");
+	asm("nop");
+	asm("skip:");
+	asm("str r0,[r3,#0]");
+	asm("nop");
+	asm("nop");
+	return lib_print(g_scratch[0],0,r2);
 }
 
 static const void* lib_list[]={
-	lib_print,      // #define LIB_PRINT 0
-	lib_let_str,    // #define LIB_LET_STR 1
-	lib_calc,       // #define LIB_CALC 2
-	lib_calc_float, // #define LIB_CALC_FLOAT 3
-	test,
+	debug,          // #define LIB_DEBUG 0
+	lib_print,      // #define LIB_PRINT 1
+	lib_let_str,    // #define LIB_LET_STR 2
+	lib_calc,       // #define LIB_CALC 3
+	lib_calc_float, // #define LIB_CALC_FLOAT 4
 };
 
 int kmbasic_library(int r0, int r1, int r2, int r3){

@@ -129,6 +129,10 @@ int print_statement(void) {
 	return 0;
 }
 
+int debug_statement(void){
+	return call_lib_code(LIB_DEBUG);
+}
+
 int return_statement(void){
 	check_object(1);
 	(object++)[0]=0xbd00;//      	pop	{pc}

@@ -16,7 +16,7 @@ void dump(){
 	for(i=0;i<64;i++){
 		printf("%x%x%x%x ",(kmbasic_object[i]>>12)&0xf,(kmbasic_object[i]>>8)&0xf,(kmbasic_object[i]>>4)&0xf,kmbasic_object[i]&0xf);
 	}
-	printf("\n");
+	printf("\n\n");
 	sleep_ms(1);
 }
 
@@ -28,7 +28,7 @@ int main() {
 	// Start
 	printstr("KM-BASIC for ARM\n");
 	init_compiler();
-	compile_line("PRINT 123+23*34,(123+23)*34,123*23+34,123*(23+34)");
+	compile_line("PRINT 456+23*34,(456+23)*34");
 	compile_line("END");
 	dump();
 	//printf("e:%d\n",e);

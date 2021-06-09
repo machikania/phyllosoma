@@ -66,9 +66,25 @@ int set_value_in_register(unsigned char r,int val){
 		check_object(1);
 		(object++)[0]=0x2000 | val | (r<<8);      // movs	r1, #xx
 		return 0;
+	} else if ((int)object&0x03) {
+		// Lower 2 bit of object is 0b10
+		check_object(5);
+		(object++)[0]=0x4801;     // ldr    r0, [pc, #4]
+		(object++)[0]=0xe002;     // b.n    <skip>
+		(object++)[0]=0x46c0;     // nop            ; (mov r8, r8)
+		(object++)[0]=val&0xffff; // lower 16 bits
+		(object++)[0]=val>>16;    // upper 16 bits
+		                          // <skip>:	
+		return 0;
 	} else {
-		// TODO: here
-		return ERROR_UNKNOWN;
+		// Lower 2 bit of object is 0b00
+		check_object(4);
+		(object++)[0]=0x4800;     // ldr    r0, [pc, #0]
+		(object++)[0]=0xe001;     // b.n    <skip>
+		(object++)[0]=val&0xffff; // lower 16 bits
+		(object++)[0]=val>>16;    // upper 16 bits
+		                          // <skip>:	
+		return 0;
 	}
 }
 
@@ -117,6 +133,7 @@ int compile_statement(){
 	// It's not LET statement. Let's continue for possibilities of the other statements.
 	if (instruction_is("PRINT")) return print_statement();
 	if (instruction_is("END")) return end_statement();
+	if (instruction_is("DEBUG")) return debug_statement();
 	// Finally, try let statement again as syntax error may be in LET statement.
 	return let_statement();
 }
