@@ -121,8 +121,6 @@ int compile_statement(){
 	// Initialize
 	unsigned short* bobj=object;
 	unsigned char* bsrc=source;
-	g_sdepth=0;
-	g_allow_shift_obj=1;
 	// Check LET statement, first
 	if (instruction_is("LET")) return let_statement();
 	// "LET" may be omitted.

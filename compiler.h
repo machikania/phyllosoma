@@ -63,8 +63,6 @@ extern unsigned short* object;
 extern int g_sdepth;
 extern int g_maxsdepth;
 
-extern char g_allow_shift_obj;
-
 extern int g_scratch[4];
 
 /*

@@ -28,7 +28,7 @@ int main() {
 	// Start
 	printstr("KM-BASIC for ARM\n");
 	init_compiler();
-	compile_line("PRINT 456+23*34,(456+23)*34");
+	compile_line("PRINT 12+23*34,(12+23)*34,12*23+34,12*(23+34)");
 	compile_line("END");
 	dump();
 	//printf("e:%d\n",e);

@@ -25,8 +25,5 @@ int kmbasic_variables[256];
 int g_sdepth;
 int g_maxsdepth;
 
-// Flag to allow shifting the code due to non requirement of stack
-char g_allow_shift_obj;
-
 // Scratch variable
 int g_scratch[4];
