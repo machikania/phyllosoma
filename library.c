@@ -5,15 +5,16 @@
    https://github.com/kmorimatsu
 */
 
+#include <stdio.h>
 #include "./api.h"
 #include "./compiler.h"
-
 
 int lib_print(int r0, int r1, int r2){
 	// Mode; 0x00: ingeger, 0x01: string, 0x02: float
 	// Mode; 0x00: CR, 0x10: ';', 0x20: ','
 	int i;
-	unsigned char buff[16]; // TODO: Consider buffer size
+	float f;
+	unsigned char buff[32];
 	switch(r1&0x0f){
 		case 0x01: // string
 			for(i=0;((unsigned char*)r0)[i];i++);
@@ -21,13 +22,16 @@ int lib_print(int r0, int r1, int r2){
 			if (0x00 == (r1&0xf0)) printchar('\n');
 			break;
 		case 0x02: // float
-			if (0x00 == (r1&0xf0)) i=sprintf(buff,"%g\n",(float)r0);
-			else i=sprintf(buff,"%g",(float)r0);
+			g_scratch_int[0]=r0;
+			f=g_scratch_float[0];
+			if (0x00 == (r1&0xf0)) i=snprintf(buff,sizeof buff,"%g\n",f);
+			else i=snprintf(buff,sizeof buff,"%g",f);
 			printstr(buff);
-			break;
+//			break;
+// TODO: debug above
 		default:   // integer
-			if (0x00 == (r1&0xf0)) i=sprintf(buff,"%d\n",(int)r0);
-			else i=sprintf(buff,"%d",(int)r0);
+			if (0x00 == (r1&0xf0)) i=snprintf(buff,sizeof buff,"%d\n",(int)r0);
+			else i=snprintf(buff,sizeof buff,"%d",(int)r0);
 			printstr(buff);
 			break;
 	}
@@ -37,6 +41,7 @@ int lib_print(int r0, int r1, int r2){
 	}
 	return r0;
 }
+
 int lib_let_str(int r0, int r1, int r2){
 	return r0;
 }
@@ -74,19 +79,9 @@ int lib_calc_float(int r0, int r1, int r2){
 }
 
 int debug(int r0, int r1, int r2){
-	asm("mov r0,#123");
-	asm("nop");
-	asm("nop");
-	asm("nop");
-	asm("ldr	r0, [pc, #0]");
-	asm("b skip");
-	asm("nop");
-	asm("nop");
-	asm("skip:");
-	asm("str r0,[r3,#0]");
-	asm("nop");
-	asm("nop");
-	return lib_print(g_scratch[0],0,r2);
+	float f=12.34;
+	printf("%g\n",f);
+	return r0;
 }
 
 static const void* lib_list[]={

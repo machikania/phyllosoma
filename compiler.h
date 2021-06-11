@@ -63,7 +63,10 @@ extern unsigned short* object;
 extern int g_sdepth;
 extern int g_maxsdepth;
 
-extern int g_scratch[4];
+extern int g_scratch[];
+extern int* g_scratch_int;
+extern float* g_scratch_float;
+extern char* g_scratch_char;
 
 /*
 	Prototypes

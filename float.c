@@ -5,13 +5,40 @@
    https://github.com/kmorimatsu
 */
 
+#include <stdio.h>
+#include <stdlib.h>
 #include "./compiler.h"
 
 int get_simple_float(void){
+	int i;
+	unsigned char* err;
+	float f;
 	skip_blank();
-	return ERROR_UNKNOWN;
+	if ('+'==source[0]) {
+		source++;
+	} else if ('-'==source[0]){
+		source++;
+		i=get_simple_integer();
+		if (i) return i;
+		check_object(2);
+		(object++)[0]=0x2100;          // movs	r1, #0
+		(object++)[0]=0x2200 | OP_SUB; // movs	r2, #OP_SUB
+		return call_lib_code(LIB_CALC_FLOAT);
+	}
+	if ('0'<=source[0] && source[0]<'9' || '.'==source[0]) {
+		// Float literal
+		f=strtof((const char*)&source[0],(char**)&err);
+		i=err-source;
+		if (0==i) return ERROR_SYNTAX;
+		source+=i;
+		g_scratch_float[0]=f;
+		return set_value_in_register(0,g_scratch_int[0]);
+	} else if ('A'<=source[0] && source[0]<'Z' || '_'==source[0]) {
+		// Variable or function
+		// TODO: here
+		return ERROR_UNKNOWN;
+	}
 }
 int get_float(void){
-	skip_blank();
-	return ERROR_UNKNOWN;
+	return get_value(VAR_MODE_FLOAT);
 }
