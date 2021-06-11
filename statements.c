@@ -7,27 +7,6 @@
 
 #include "./compiler.h"
 
-int var_num_to_r1(int vn){
-	if (vn<256) {
-		check_object(1);
-		(object++)[0]=0x2100 | vn;      // movs	r1, #xx
-	} else return ERROR_UNKNOWN;
-}
-int r0_to_variable(int vn){
-	int e;
-	if (vn<32) {
-		check_object(1);
-		(object++)[0]=0x6028 | (vn<<6); // str	r0, [r5, #xx]
-		return 0;
-	} else if (vn<256) {
-		e=var_num_to_r1(vn);
-		if (e) return e;
-		check_object(1);
-		(object++)[0]=0x5068;           // str	r0, [r5, r1]
-		return 0;
-	} else return ERROR_UNKNOWN;
-}
-
 int let_integer(int vn){
 	int e;
 	switch((source++)[0]){

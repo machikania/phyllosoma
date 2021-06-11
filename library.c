@@ -75,12 +75,15 @@ float _lib_calc_float(float r0, float r1, int r2){
 }
 
 int lib_calc_float(int r0, int r1, int r2){
-	return (int)_lib_calc_float((float)r0,(float)r1,r2);
+	g_scratch_int[0]=r0;
+	g_scratch_int[1]=r1;
+	g_scratch_float[2]=_lib_calc_float(g_scratch_float[0],g_scratch_float[1],r2);
+	return g_scratch_int[2];
 }
 
 int debug(int r0, int r1, int r2){
-	float f=12.34;
-	printf("%g\n",f);
+	asm("ldr r0,[r5,#0]");
+	asm("ldr r0, [r5, r1]");
 	return r0;
 }
 

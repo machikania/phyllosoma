@@ -73,6 +73,9 @@ extern char* g_scratch_char;
 */
 
 int get_var_number(void);
+int var_num_to_r1(int vn);
+int r0_to_variable(int vn);
+int variable_to_r0(int vn);
 
 void printstr(unsigned char *s);
 

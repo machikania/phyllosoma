@@ -8,7 +8,7 @@
 #include "./compiler.h"
 
 int get_simple_integer(void){
-	int i;
+	int i,vn;
 	skip_blank();
 	if ('+'==source[0]) {
 		source++;
@@ -48,9 +48,16 @@ int get_simple_integer(void){
 			}
 		}
 		return set_value_in_register(0,i);
-	} else if ('0'<=source[0] && source[0]<'9' || '_'==source[0]) {
+	} else if ('A'<=source[0] && source[0]<'Z' || '_'==source[0]) {
 		// Variable or function
-		// TODO: here
+		vn=get_var_number();
+		if (0<=vn) {
+			// This is a variable
+			return variable_to_r0(vn);
+		} else {
+			// This is a function
+			// TODO: here
+		}
 		return ERROR_UNKNOWN;
 	}
 }

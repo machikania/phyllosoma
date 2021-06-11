@@ -28,15 +28,20 @@ int main() {
 	// Start
 	printstr("KM-BASIC for ARM\n");
 	init_compiler();
-	compile_line("DEBUG");
+	compile_line("A=123");
+	compile_line("B=A*3");
+	compile_line("C=A+B*4");
+	compile_line("A=A+1");
+	compile_line("PRINT A,B,C");
 	compile_line("END");
 	dump();
+	//printf("Error: %d",e);
 	run_code();
 	
 	while (true) {
 		sleep_ms(1000);
-		run_code();
-		//printchar('.');
+		//run_code();
+		printchar('.');
 	}
 	return 0;
 }
