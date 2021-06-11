@@ -9,7 +9,7 @@ if (TARGET tinyusb_device)
 			float.c
 			string.c
 			globalvars.c
-			varname.c
+			variable.c
 			operators.c
 			value.c
 		)
