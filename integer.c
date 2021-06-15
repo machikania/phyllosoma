@@ -53,12 +53,16 @@ int get_simple_integer(void){
 		vn=get_var_number();
 		if (0<=vn) {
 			// This is a variable
+			// TODO: support array
 			return variable_to_r0(vn);
 		} else {
-			// This is a function
-			// TODO: here
+			// This must be a function
+			i=integer_functions();
+			if (i) return i;
+			if (')'==(source++)[0]) return 0;
+			source--;
+			return ERROR_SYNTAX;
 		}
-		return ERROR_UNKNOWN;
 	}
 }
 

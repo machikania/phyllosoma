@@ -26,7 +26,7 @@ int g_sdepth;
 int g_maxsdepth;
 
 // Scratch variable
-int g_scratch[8];
-int* g_scratch_int=(int*)&g_scratch[0];
-float* g_scratch_float=(float*)&g_scratch[0];
-char* g_scratch_char=(char*)&g_scratch[0];
+volatile int g_scratch[8];
+volatile int* g_scratch_int=(volatile int*)&g_scratch[0];
+volatile float* g_scratch_float=(volatile float*)&g_scratch[0];
+volatile char* g_scratch_char=(volatile char*)&g_scratch[0];

@@ -8,7 +8,9 @@
 #include "./compiler.h"
 
 int get_var_number(void){
+	// Only support A-Z now
 	if (source[0]<'A' || 'Z'<source[0]) return ERROR_SYNTAX;
+	if ('A'<=source[1] && source[1]<='Z' || '_'==source[1]) return ERROR_SYNTAX;
 	return (source++)[0]-'A';
 }
 

@@ -77,16 +77,24 @@ int print_statement(void) {
 	// Mode; 0x00: CR, 0x10: ';', 0x20: ','
 	int e;
 	unsigned char mode;
+	unsigned char* sb;
+	unsigned short* ob;
 	while(1){
+		sb=source;
+		ob=object;
 		mode=0x01;
 		e=get_string();
-		if (e) {
-			mode=0x02;
-			e=get_float();
-		}
-		if (e) {
+		if (e || ','!=source[0] && ';'!=source[0] && ':'!=source[0] && 0x00!=source[0]) {
+			source=sb;
+			object=ob;
 			mode=0x00;
 			e=get_integer();
+		}
+		if (e || ','!=source[0] && ';'!=source[0] && ':'!=source[0] && 0x00!=source[0]) {
+			source=sb;
+			object=ob;
+			mode=0x02;
+			e=get_float();
 		}
 		if (e) return e;
 		skip_blank();
@@ -119,13 +127,5 @@ int return_statement(void){
 }
 
 int end_statement(void){
-	// Return to C code
-	// 1) Restore stack pointer
-	// 2) Pop program counter
-	// See also init_compiler() code
-	check_object(3);
-	(object++)[0]=0x6838;//      	ldr	r0, [r7, #0]
-	(object++)[0]=0x4685;//      	mov	sp, r0
-	(object++)[0]=0xbd00;//      	pop	{pc}
-	return 0;
+	return call_lib_code(LIB_END);
 }

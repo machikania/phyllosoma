@@ -5,6 +5,7 @@ if (TARGET tinyusb_device)
 			library.c
 			compiler.c
 			statements.c
+			functions.c
 			integer.c
 			float.c
 			string.c

@@ -10,13 +10,11 @@
 
 void init_compiler(void){
 	// Prepare execution
-	// 1) Push return address reserved in lr register
-	// 2) Store stack pointer for returning to C code
+	// 1) Store return address reserved in lr register
 	// See also end_statement() code
-	kmbasic_object[0]=0xb500;//      	push	{lr}
-	kmbasic_object[1]=0x4668;//      	mov	r0, sp
-	kmbasic_object[2]=0x6038;//      	str	r0, [r7, #0]
-	object=&kmbasic_object[3];
+	kmbasic_object[0]=0x4670;//      	mov	r0, lr
+	kmbasic_object[1]=0x6078;//      	str	r0, [r7, #4]
+	object=&kmbasic_object[0];
 }
 
 void run_code(void){
@@ -37,9 +35,18 @@ void run_code(void){
 	// R8 is pointer to library function
 	asm("ldr r0,=kmbasic_library");
 	asm("mov r8,r0");
-	// Call kmbasic_object
+	// Store SP
+	asm("mov r0,sp");
+	asm("str r0,[r7,#0]");
+	// Reserve 1016 bytes stack area for some library functions (fprint etc)
+	asm("sub sp,#508");
+	asm("sub sp,#508");
+	// Store return address and call kmbasic_object
 	asm("ldr r1,=kmbasic_object+1");
-	asm("blx r1");
+	asm("mov r0,pc");
+	asm("add r0,#5");
+	asm("str r0,[r7,#4]");
+	asm("bx r1");
 	// Pop r0-r12
 	asm("pop {r0,r1,r2,r3,r4}");
 	asm("mov r8,r0");
@@ -52,7 +59,7 @@ void run_code(void){
 }
 
 int call_lib_code(int lib_number){
-	if (255<lib_number) return ERROR_UNKNOWN;
+	if (lib_number<0 || 255<lib_number) return ERROR_UNKNOWN;
 	check_object(2);
 	(object++)[0]=0x2300 | lib_number;// movs	r3, #1
 	(object++)[0]=0x47c0;             // blx	r8

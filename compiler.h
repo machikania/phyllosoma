@@ -20,6 +20,7 @@
 #define LIB_LET_STR 2
 #define LIB_CALC 3
 #define LIB_CALC_FLOAT 4
+#define LIB_END 5
 
 /*
 	Operators
@@ -63,10 +64,10 @@ extern unsigned short* object;
 extern int g_sdepth;
 extern int g_maxsdepth;
 
-extern int g_scratch[];
-extern int* g_scratch_int;
-extern float* g_scratch_float;
-extern char* g_scratch_char;
+extern volatile int g_scratch[];
+extern volatile int* g_scratch_int;
+extern volatile float* g_scratch_float;
+extern volatile char* g_scratch_char;
 
 /*
 	Prototypes
@@ -84,6 +85,7 @@ void run_code(void);
 int call_lib_code(int lib_number);
 int set_value_in_register(unsigned char r,int val);
 int compile_line(unsigned char* code);
+int instruction_is(unsigned char* instruction);
 
 int kmbasic_library(int r0, int r1, int r2, int r3);
 
@@ -106,6 +108,7 @@ int calculation(int op,int vmode);
 
 int kmbasic_library(int r0, int r1, int r2, int r3);
 
+int integer_functions(void);
 
 /*
 	Macros

@@ -9,7 +9,22 @@
 #include "./api.h"
 #include "./compiler.h"
 
-int lib_print(int r0, int r1, int r2){
+/*
+	Local macros
+*/
+
+// Use 1016 bytes stack area dedicated for library
+// This routine is required to prevent mulfunctions of some library call
+#define use_lib_stack(funcname) \
+	asm("push {r4,lr}");\
+	asm("mov r4,sp");\
+	asm("ldr r3,[r7,#0]");\
+	asm("mov sp,r3");\
+	asm("bl "funcname);\
+	asm("mov sp,r4");\
+	asm("pop {r4,pc}")
+
+int lib_print_main(int r0, int r1, int r2){
 	// Mode; 0x00: ingeger, 0x01: string, 0x02: float
 	// Mode; 0x00: CR, 0x10: ';', 0x20: ','
 	int i;
@@ -27,8 +42,7 @@ int lib_print(int r0, int r1, int r2){
 			if (0x00 == (r1&0xf0)) i=snprintf(buff,sizeof buff,"%g\n",f);
 			else i=snprintf(buff,sizeof buff,"%g",f);
 			printstr(buff);
-//			break;
-// TODO: debug above
+			break;
 		default:   // integer
 			if (0x00 == (r1&0xf0)) i=snprintf(buff,sizeof buff,"%d\n",(int)r0);
 			else i=snprintf(buff,sizeof buff,"%d",(int)r0);
@@ -40,6 +54,10 @@ int lib_print(int r0, int r1, int r2){
 		printstr(&("                "[i&0xf]));
 	}
 	return r0;
+}
+
+void lib_print(){
+	use_lib_stack("lib_print_main");
 }
 
 int lib_let_str(int r0, int r1, int r2){
@@ -55,7 +73,7 @@ int lib_calc(int r0, int r1, int r2){
 	}
 }
 
-float _lib_calc_float(float r0, float r1, int r2){
+float lib_calc_float_main(float r0, float r1, int r2){
 	switch(r2){
 		case OP_EQ:  return r1==r0 ? 1:0;
 		case OP_NEQ: return r1!=r0 ? 1:0;
@@ -77,13 +95,21 @@ float _lib_calc_float(float r0, float r1, int r2){
 int lib_calc_float(int r0, int r1, int r2){
 	g_scratch_int[0]=r0;
 	g_scratch_int[1]=r1;
-	g_scratch_float[2]=_lib_calc_float(g_scratch_float[0],g_scratch_float[1],r2);
+	g_scratch_float[2]=lib_calc_float_main(g_scratch_float[0],g_scratch_float[1],r2);
 	return g_scratch_int[2];
 }
 
+int lib_end(int r0, int r1, int r2){
+	asm("ldr r0, [r7, #0]");
+	asm("mov sp, r0");
+	asm("ldr r0, [r7, #4]");
+	asm("bx r0");
+	return r0;
+}
+
 int debug(int r0, int r1, int r2){
-	asm("ldr r0,[r5,#0]");
-	asm("ldr r0, [r5, r1]");
+	float f=12.34;
+	printf("%g\n",f);
 	return r0;
 }
 
@@ -93,6 +119,8 @@ static const void* lib_list[]={
 	lib_let_str,    // #define LIB_LET_STR 2
 	lib_calc,       // #define LIB_CALC 3
 	lib_calc_float, // #define LIB_CALC_FLOAT 4
+	lib_end,        // #define LIB_END 5
+
 };
 
 int kmbasic_library(int r0, int r1, int r2, int r3){
