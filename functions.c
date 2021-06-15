@@ -15,3 +15,9 @@ int integer_functions(void){
 	if (instruction_is("DEBUG(")) return debug_function();
 	return ERROR_SYNTAX;
 }
+
+int float_functions(void){
+	if (instruction_is("DEBUG#(")) return debug_function();
+	return ERROR_SYNTAX;
+}
+

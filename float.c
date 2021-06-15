@@ -10,7 +10,7 @@
 #include "./compiler.h"
 
 int get_simple_float(void){
-	int i;
+	int i,vn;
 	unsigned char* err;
 	float f;
 	skip_blank();
@@ -35,8 +35,21 @@ int get_simple_float(void){
 		return set_value_in_register(0,g_scratch_int[0]);
 	} else if ('A'<=source[0] && source[0]<'Z' || '_'==source[0]) {
 		// Variable or function
-		// TODO: here
-		return ERROR_UNKNOWN;
+		vn=get_var_number();
+		if (0<=vn) {
+			// This is a variable
+			if ('#'!=source[0]) return ERROR_SYNTAX;
+			source++;
+			// TODO: support array
+			return variable_to_r0(vn);
+		} else {
+			// This must be a function
+			i=float_functions();
+			if (i) return i;
+			if (')'==(source++)[0]) return 0;
+			source--;
+			return ERROR_SYNTAX;
+		}
 	}
 }
 int get_float(void){

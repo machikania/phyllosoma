@@ -109,6 +109,7 @@ int calculation(int op,int vmode);
 int kmbasic_library(int r0, int r1, int r2, int r3);
 
 int integer_functions(void);
+int float_functions(void);
 
 /*
 	Macros

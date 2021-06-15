@@ -28,7 +28,11 @@ int main() {
 	// Start
 	printstr("KM-BASIC for ARM\n");
 	init_compiler();
-	compile_line("PRINT 12.340+23.450*34.560");
+	compile_line("A#=12.340");
+	compile_line("B#=23.450");
+	compile_line("C#=34.560");
+	compile_line("D#=A#+B#*C#");
+	compile_line("PRINT A#,B#,C#,D#");
 	compile_line("END");
 	dump();
 	//printf("Error: %d",e);
