@@ -7,10 +7,43 @@
 
 #include "./compiler.h"
 
+/*
+	CMPDATA_VARNAME structure
+		type:      CMPDATA_VARNAME
+		len:       n+1
+		data16:    var number
+		record[1]: hash
+		record[2]: string
+		record[3]: string (continued)
+		...
+		record[n]: end of string
+*/
+
+static int g_next_varnum;
+
+void variable_init(void){
+	g_next_varnum=26;
+}
+
+short get_new_varnum(void){
+	if (g_next_varnum<256-TEMPVAR_NUMBER) return g_next_varnum++;
+	return 0;
+}
+
 int get_var_number(void){
+	int num;
+	int* data;
 	// Only support A-Z now
 	if (source[0]<'A' || 'Z'<source[0]) return ERROR_SYNTAX;
-	if ('A'<=source[1] && source[1]<='Z' || '_'==source[1]) return ERROR_SYNTAX;
+	if ('A'<=source[1] && source[1]<='Z' || '_'==source[1] || '0'<=source[1] && source[1]<='9') {
+		// Long name
+		for(num=2;'A'<=source[num] && source[num]<='Z' || '_'==source[num] || '0'<=source[num] && source[num]<='9';num++);
+		data=cmpdata_nsearch_string_first(CMPDATA_VARNAME,source,num);
+		if (!data) return ERROR_SYNTAX;
+		source+=num;
+		return data[0]&0x0000ffff;
+	}
+	// A-Z (short name)
 	return (source++)[0]-'A';
 }
 

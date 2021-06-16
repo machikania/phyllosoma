@@ -28,11 +28,11 @@ int main() {
 	// Start
 	printstr("KM-BASIC for ARM\n");
 	init_compiler();
-	compile_line("A#=12.340");
-	compile_line("B#=23.450");
-	compile_line("C#=34.560");
-	compile_line("D#=A#+B#*C#");
-	compile_line("PRINT A#,B#,C#,D#");
+	compile_line("USEVAR LONGNAME");
+	compile_line("LONGNAME=123");
+	compile_line("PRINT LONGNAME,");
+	compile_line("LONGNAME=LONGNAME+456");
+	compile_line("PRINT LONGNAME");
 	compile_line("END");
 	dump();
 	//printf("Error: %d",e);

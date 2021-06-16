@@ -17,9 +17,11 @@ unsigned short* object;
 	KM-BASIC related global areas
 */
 
-unsigned short kmbasic_object[1024];
+unsigned short kmbasic_object[512*192]; // 192K bytes RAM area
 int kmbasic_data[32];
 int kmbasic_variables[256];
+
+unsigned short* g_objmax;
 
 // Depth of stack used for calculation
 int g_sdepth;

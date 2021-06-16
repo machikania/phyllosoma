@@ -7,6 +7,36 @@
 
 #include "./compiler.h"
 
+int usevar_statement(void){
+	int e,num;
+	short data16;
+	int* data;
+	unsigned char* str;
+	while(1) {
+		skip_blank();
+		// Check the var name
+		if (source[0]<'A' || 'Z'<source[0]) return ERROR_SYNTAX;
+		for(num=1;'A'<=source[num] && source[num]<='Z' || '_'==source[num] || '0'<=source[num] && source[num]<='9';num++);
+		if (1==num) return ERROR_SYNTAX;
+		// It must not be registered yet
+		if (cmpdata_nsearch_string_first(CMPDATA_VARNAME,source,num)) return ERROR_VARNAME_USED;
+		// Get a new var number
+		data16=get_new_varnum();
+		if (!data16) return ERROR_TOO_MANY_VARS;
+		// Insert a new cmpdata
+		e=cmpdata_insert_string(CMPDATA_VARNAME,data16,source,num);
+		if (e) return e;
+		// Done. Check next
+		source+=num;
+		if ('$'==source[0] || '#'==source[0]) source++;
+		skip_blank();
+		if (source[0]!=',') break;
+		source++;
+	}
+	return 0;
+	// TODO: around here.
+}
+
 int let_integer(int vn){
 	int e;
 	switch((source++)[0]){

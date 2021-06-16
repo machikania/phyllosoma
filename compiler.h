@@ -6,11 +6,19 @@
 */
 
 /*
+	Settings
+*/
+
+#define TEMPVAR_NUMBER 10
+
+/*
 	Error codes
 */
 #define ERROR_SYNTAX -1
 #define ERROR_UNKNOWN -2
 #define ERROR_OBJ_TOO_LARGE -3
+#define ERROR_VARNAME_USED -4
+#define ERROR_TOO_MANY_VARS -5
 
 /*
 	Libraries
@@ -44,6 +52,23 @@
 #define OP_REM 16
 
 /*
+	CMPDATA
+*/
+#define CMPDATA_TEMP 0
+#define CMPDATA_VARNAME 1
+#define CMPDATA_LINENUM 2
+#define CMPDATA_LABEL 3
+#define CMPDATA_LABELNAME 4
+#define CMPDATA_GOTO_NUM_BL 5
+#define CMPDATA_GOTO_LABEL_BL 6
+#define CMPDATA_CONTINUE 7
+#define CMPDATA_BREAK 8
+#define CMPDATA_CONTINUE_BL 9
+#define CMPDATA_BREAK_BL 10
+#define CMPDATA_IF_BL 11
+#define CMPDATA_ENDIF_BL 12
+
+/*
 	Misc
 */
 
@@ -54,12 +79,13 @@
 /*
 	Variables
 */
-extern unsigned short kmbasic_object[1024];
+extern unsigned short kmbasic_object[512*192];
 extern int kmbasic_data[32];
 extern int kmbasic_variables[256];
 
 extern unsigned char* source;
 extern unsigned short* object;
+extern unsigned short* g_objmax;
 
 extern int g_sdepth;
 extern int g_maxsdepth;
@@ -73,6 +99,8 @@ extern volatile char* g_scratch_char;
 	Prototypes
 */
 
+void variable_init(void);
+short get_new_varnum(void);
 int get_var_number(void);
 int var_num_to_r1(int vn);
 int r0_to_variable(int vn);
@@ -89,6 +117,7 @@ int instruction_is(unsigned char* instruction);
 
 int kmbasic_library(int r0, int r1, int r2, int r3);
 
+int usevar_statement(void);
 int let_statement(void);
 int print_statement(void);
 int return_statement(void);
@@ -111,19 +140,34 @@ int kmbasic_library(int r0, int r1, int r2, int r3);
 int integer_functions(void);
 int float_functions(void);
 
+void cmpdata_init(void);
+unsigned short cmpdata_get_id(void);
+void cmpdata_reset(void);
+int cmpdata_insert(unsigned char type, short data16, int* data, unsigned char num);
+int cmpdata_insert_string(unsigned char type, short data16, unsigned char* str, int num);
+int* cmpdata_find(unsigned char type);
+int* cmpdata_findfirst(unsigned char type);
+void cmpdata_delete(int* record);
+int* cmpdata_nsearch_string(unsigned int type,unsigned char* str,int num);
+int* cmpdata_search_string(unsigned int type,unsigned char* str);
+int* cmpdata_nsearch_string_first(unsigned int type,unsigned char* str,int num);
+int* cmpdata_search_string_first(unsigned int type,unsigned char* str);
+int cmpdata_nhash(unsigned char* str, int num);
+int cmpdata_hash(unsigned char* str);
+
 /*
 	Macros
 */
-// Skip blank and tab
+// Skip blank
 #define skip_blank() \
 	do {\
-		while(source[0]==0x20 || source[0]==0x09) source++;\
+		while(0x20==source[0]) source++;\
 	} while(0)
 
 // Check object area remaining
 #define check_object(size) \
 	do {\
-		if (&kmbasic_object[(sizeof kmbasic_object)/(sizeof kmbasic_object[0])]<=object+size) return ERROR_OBJ_TOO_LARGE;\
+		if (g_objmax<=object+size) return ERROR_OBJ_TOO_LARGE;\
 	} while(0)
 
 // Operator priority

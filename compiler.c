@@ -9,12 +9,13 @@
 #include "./compiler.h"
 
 void init_compiler(void){
-	// Prepare execution
-	// 1) Store return address reserved in lr register
-	// See also end_statement() code
-	kmbasic_object[0]=0x4670;//      	mov	r0, lr
-	kmbasic_object[1]=0x6078;//      	str	r0, [r7, #4]
+	// Initialize variables
 	object=&kmbasic_object[0];
+	g_objmax=&kmbasic_object[(sizeof kmbasic_object)/2];
+	// Initialize CMPDATA
+	cmpdata_init();
+	// Initialize variable
+	variable_init();
 }
 
 void run_code(void){
@@ -139,6 +140,7 @@ int compile_statement(){
 	if (instruction_is("PRINT")) return print_statement();
 	if (instruction_is("END")) return end_statement();
 	if (instruction_is("DEBUG")) return debug_statement();
+	if (instruction_is("USEVAR")) return usevar_statement();
 	// Finally, try let statement again as syntax error may be in LET statement.
 	return let_statement();
 }
