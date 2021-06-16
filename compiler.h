@@ -89,8 +89,9 @@ extern unsigned short* g_objmax;
 
 extern int g_sdepth;
 extern int g_maxsdepth;
+extern short g_ifdepth;
 
-extern volatile int g_scratch[];
+extern volatile char g_scratch[32];
 extern volatile int* g_scratch_int;
 extern volatile float* g_scratch_float;
 extern volatile char* g_scratch_char;
@@ -110,13 +111,19 @@ void printstr(unsigned char *s);
 
 void init_compiler(void);
 void run_code(void);
+void update_bl(short* bl,short* destination);
 int call_lib_code(int lib_number);
 int set_value_in_register(unsigned char r,int val);
+int compile_statement(void);
 int compile_line(unsigned char* code);
 int instruction_is(unsigned char* instruction);
 
 int kmbasic_library(int r0, int r1, int r2, int r3);
 
+int if_statement(void);
+int elseif_statement(void);
+int else_statement(void);
+int endif_statement(void);
 int usevar_statement(void);
 int let_statement(void);
 int print_statement(void);

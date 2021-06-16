@@ -28,11 +28,8 @@ int main() {
 	// Start
 	printstr("KM-BASIC for ARM\n");
 	init_compiler();
-	compile_line("USEVAR LONGNAME");
-	compile_line("LONGNAME=123");
-	compile_line("PRINT LONGNAME,");
-	compile_line("LONGNAME=LONGNAME+456");
-	compile_line("PRINT LONGNAME");
+	compile_line("IF 2<3 THEN PRINT \"2<3\"");
+	compile_line("IF 3<2 THEN PRINT \"3>2\"");
 	compile_line("END");
 	dump();
 	//printf("Error: %d",e);

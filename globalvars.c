@@ -27,8 +27,10 @@ unsigned short* g_objmax;
 int g_sdepth;
 int g_maxsdepth;
 
+// Depth of if/endif
+short g_ifdepth;
+
 // Scratch variable
-volatile int g_scratch[8];
+volatile char g_scratch[32];
 volatile int* g_scratch_int=(volatile int*)&g_scratch[0];
 volatile float* g_scratch_float=(volatile float*)&g_scratch[0];
-volatile char* g_scratch_char=(volatile char*)&g_scratch[0];

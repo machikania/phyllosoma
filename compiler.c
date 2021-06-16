@@ -16,6 +16,8 @@ void init_compiler(void){
 	cmpdata_init();
 	// Initialize variable
 	variable_init();
+	// Initialize followings every file
+	g_ifdepth=0;
 }
 
 void run_code(void){
@@ -57,6 +59,14 @@ void run_code(void){
 	asm("mov r12,r4");
 	asm("pop {r0,r1,r2,r3,r4,r5,r6,r7}");
 	asm("pop {pc}");
+}
+
+void update_bl(short* bl,short* destination){
+	int i=(int)destination - ((int)bl + 4);
+	i>>=1;
+	bl[1]=0xf800 | (i&0x7ff);
+	i>>=11;
+	bl[0]=0xf000 | (i&0x7ff);
 }
 
 int call_lib_code(int lib_number){
@@ -124,7 +134,7 @@ int instruction_is(unsigned char* instruction){
 	}
 }
 
-int compile_statement(){
+int compile_statement(void){
 	int e;
 	// Initialize
 	unsigned short* bobj=object;
@@ -141,6 +151,10 @@ int compile_statement(){
 	if (instruction_is("END")) return end_statement();
 	if (instruction_is("DEBUG")) return debug_statement();
 	if (instruction_is("USEVAR")) return usevar_statement();
+	if (instruction_is("IF")) return if_statement();
+	if (instruction_is("ELSE")) return else_statement();
+	if (instruction_is("ELSEIF")) return elseif_statement();
+	if (instruction_is("ENDIF")) return endif_statement();
 	// Finally, try let statement again as syntax error may be in LET statement.
 	return let_statement();
 }
@@ -185,6 +199,7 @@ int compile_line(unsigned char* code){
 	int e;
 	unsigned char* before;
 	before=source=code2upper(code);
+	// Compile the statement(s)
 	while(1){
 		e=compile_statement();
 		if (e) return e; // An error occured

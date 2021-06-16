@@ -7,6 +7,109 @@
 
 #include "./compiler.h"
 
+int if_statement(void){
+	// 1. Insert CMPDATA_IF_BL
+	int e;
+	char* before=source;
+	// Get int or float
+	e=get_integer();
+	if (0!=e || (!instruction_is("THEN"))) {
+		source=before;
+		e=get_float();
+		if (e) return e;
+		if (!instruction_is("THEN")) return ERROR_SYNTAX;
+	}
+	// r0 is set. Let's branch here
+	check_object(4);
+	(object++)[0]=0x2800;// cmp	r0, #0
+	(object++)[0]=0xd101;// bne.n	skip
+	(object++)[0]=0xf000;// bl
+	(object++)[0]=0xf800;// bl (continued)
+	                     // skip:
+	// Inseret a CMPDATA
+	g_scratch_int[0]=(int)&object[-2];
+	cmpdata_insert(CMPDATA_IF_BL,++g_ifdepth,(int*)&g_scratch_int[0],1);
+	// Check if statemet(s) remain(s)
+	skip_blank();
+	if (0==source[0]) {
+		// No more statement. This is a multiline IF-ENDIF block
+		return 0;
+	} else {
+		// This is a single line IF-THEN statement
+		// TODO: support label/line number
+		while(1){
+			e=compile_statement();
+			if (e) return e; // An error occured
+			// Skip blank
+			skip_blank();
+			// Check null as the end of line
+			if (source[0]==0x00) break;
+			// Check ELSE
+			if (instruction_is("ELSE")) {
+				e=else_statement();
+				if (e) return e;
+				continue;
+			}
+			// Check ':'
+			if (source[0]!=':') return ERROR_SYNTAX;
+			// Continue this  line
+			source++;
+		}
+		// ENDIF is omitted in this case
+		return endif_statement();
+	}
+}
+
+int else_statement(void){
+	// 1. Insert CMPDATA_ENDIF_BL
+	// 2. Resolve a CMPDATA_IF_BL
+	return 0;
+}
+
+int elseif_statement(void){
+	// 1. Insert CMPDATA_ENDIF_BL
+	// 2. Resolve a CMPDATA_IF_BL
+	// 3. Insert CMPDATA_ENDIF_BL
+	return 0;
+}
+
+int endif_statement(void){
+	// 1. Resolve a CMPDATA_IF_BL
+	// 2. Resolve all CMPDATA_ENDIF_BL(s)
+	// 3. Check if not remaining
+	int* data;
+	short* bl;
+	// Find a CMPDATA_IF_BL
+	cmpdata_reset();
+	while(data=cmpdata_find(CMPDATA_IF_BL)){
+		if ((data[0]&0xffff)==g_ifdepth) break;
+	}
+	if (!data) return ERROR_SYNTAX;
+	// Found a CMPDATA_IF_BL
+	bl=(short*)data[1];
+	// Update it
+	update_bl(bl,object);
+	// Delete the cmpdata record
+	cmpdata_delete(data);
+	// Find CMPDATA_ENDIF_BL(s)
+	while(1){
+		cmpdata_reset();
+		while(data=cmpdata_find(CMPDATA_ENDIF_BL)){
+			if ((data[0]&0xffff)==g_ifdepth) break;
+		}
+		if (!data) break;
+		// Found a CMPDATA_ENDIF_BL
+		bl=(short*)data[1];
+		// Update it
+		update_bl(bl,object);
+		// Delete the cmpdata record
+		cmpdata_delete(data);
+	}
+	// All done. Lower the depth
+	g_ifdepth--;
+	return 0;
+}
+
 int usevar_statement(void){
 	int e,num;
 	short data16;

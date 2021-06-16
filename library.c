@@ -29,7 +29,7 @@ int lib_print_main(int r0, int r1, int r2){
 	// Mode; 0x00: CR, 0x10: ';', 0x20: ','
 	int i;
 	float f;
-	unsigned char buff[32];
+	char* buff=(char*)&g_scratch[0];
 	switch(r1&0x0f){
 		case 0x01: // string
 			for(i=0;((unsigned char*)r0)[i];i++);
@@ -39,13 +39,13 @@ int lib_print_main(int r0, int r1, int r2){
 		case 0x02: // float
 			g_scratch_int[0]=r0;
 			f=g_scratch_float[0];
-			if (0x00 == (r1&0xf0)) i=snprintf(buff,sizeof buff,"%g\n",f);
-			else i=snprintf(buff,sizeof buff,"%g",f);
+			if (0x00 == (r1&0xf0)) i=snprintf(buff,sizeof g_scratch,"%g\n",f);
+			else i=snprintf(buff,sizeof g_scratch,"%g",f);
 			printstr(buff);
 			break;
 		default:   // integer
-			if (0x00 == (r1&0xf0)) i=snprintf(buff,sizeof buff,"%d\n",(int)r0);
-			else i=snprintf(buff,sizeof buff,"%d",(int)r0);
+			if (0x00 == (r1&0xf0)) i=snprintf(buff,sizeof g_scratch,"%d\n",(int)r0);
+			else i=snprintf(buff,sizeof g_scratch,"%d",(int)r0);
 			printstr(buff);
 			break;
 	}
@@ -108,8 +108,7 @@ int lib_end(int r0, int r1, int r2){
 }
 
 int debug(int r0, int r1, int r2){
-	float f=12.34;
-	printf("%g\n",f);
+	if (r0==0) asm("nop;nop");
 	return r0;
 }
 
