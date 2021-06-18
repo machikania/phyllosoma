@@ -22,10 +22,12 @@ static const char* g_error_text[]={
 void show_error(int e, int pos){
 	e=-e;
 	printstr("\n");
+#ifdef DEBUG_MODE
 	if (g_error_file) printstr(g_error_file);
 	printstr(" at ");
 	if (g_error_line) printint(g_error_line);
 	printstr(": ");
+#endif
 	if (e<((sizeof g_error_text)/4)) {
 		printstr((char*)g_error_text[e]);
 	} else {

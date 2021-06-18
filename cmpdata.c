@@ -153,7 +153,7 @@ void cmpdata_delete(int* record){
 	     data[delnum]=data[0];
 	}
 	g_cmpdata+=delnum;
-	g_objmax=(unsigned short*)g_cmpdata[0];
+	g_objmax=(unsigned short*)&g_cmpdata[0];
 	// Reset
 	cmpdata_reset();
 }

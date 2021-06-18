@@ -52,6 +52,8 @@ int main() {
 	init_compiler();
 	compile_line("IF 2>3 THEN");
 	compile_line("  PRINT \"2>3\"");
+	compile_line("ELSEIF 4<3 THEN");
+	compile_line("  PRINT \"4<3\"");
 	compile_line("ELSE");
 	compile_line("  PRINT \"2<3\"");
 	compile_line("ENDIF");

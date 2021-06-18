@@ -56,16 +56,6 @@ int else_statement(void){
 	e=insert_endif_bl();
 	if (e) return e;
 	return resolve_if_bl();
-	
-// DEBUG around here.
-// Why ERROR_OBJ_TOO_LARGE after ELSE statement?
-}
-
-int elseif_statement(void){
-	// 1. Insert CMPDATA_ENDIF_BL
-	// 2. Resolve a CMPDATA_IF_BL
-	// 3. Insert CMPDATA_ENDIF_BL
-	return 0;
 }
 
 int endif_statement(void){;
@@ -153,6 +143,20 @@ int if_statement(void){
 		// ENDIF is omitted in this case
 		return endif_statement();
 	}
+}
+
+int elseif_statement(void){
+	// 1. Insert CMPDATA_ENDIF_BL
+	// 2. Resolve a CMPDATA_IF_BL
+	// 3. Insert CMPDATA_ENDIF_BL (as new IF statement)
+	int e;
+	e=insert_endif_bl();
+	if (e) return e;
+	e=resolve_if_bl();
+	if (e) return e;
+	// Handle as a new IF statement without changing the depth
+	g_ifdepth--;
+	return if_statement();
 }
 
 int usevar_statement(void){

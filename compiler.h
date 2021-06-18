@@ -6,16 +6,21 @@
 */
 
 /*
-	Settings
+	Configration
 */
 
+#define DEBUG_MODE
 #define TEMPVAR_NUMBER 10
 
 /*
 	Error codes
 */
-int throw_error(int e,int line, char* file);
-#define _throw_error(e) throw_error(e,__LINE__,__FILE__)
+#ifdef DEBUG_MODE
+	int throw_error(int e,int line, char* file);
+	#define _throw_error(e) throw_error(e,__LINE__,__FILE__)
+#else
+	#define _throw_error(e) (e)
+#endif
 #define ERROR_SYNTAX _throw_error(-1)
 #define ERROR_UNKNOWN _throw_error(-2)
 #define ERROR_OBJ_TOO_LARGE _throw_error(-3)
@@ -174,7 +179,7 @@ void dump(void);
 // Check object area remaining
 #define check_object(size) \
 	do {\
-		if (g_objmax<=object+size) return ERROR_OBJ_TOO_LARGE;\
+		if (g_objmax<=&object[size]) return ERROR_OBJ_TOO_LARGE;\
 	} while(0)
 
 // Operator priority
