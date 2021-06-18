@@ -6,6 +6,7 @@
 */
 
 #include <string.h>
+#include "./api.h"
 #include "./compiler.h"
 
 void init_compiler(void){
@@ -18,6 +19,7 @@ void init_compiler(void){
 	variable_init();
 	// Initialize followings every file
 	g_ifdepth=0;
+	g_linenum=0;
 }
 
 void run_code(void){
@@ -134,31 +136,6 @@ int instruction_is(unsigned char* instruction){
 	}
 }
 
-int compile_statement(void){
-	int e;
-	// Initialize
-	unsigned short* bobj=object;
-	unsigned char* bsrc=source;
-	// Check LET statement, first
-	if (instruction_is("LET")) return let_statement();
-	// "LET" may be omitted.
-	e=let_statement();
-	if (!e) return 0;
-	object=bobj;
-	source=bsrc;
-	// It's not LET statement. Let's continue for possibilities of the other statements.
-	if (instruction_is("PRINT")) return print_statement();
-	if (instruction_is("END")) return end_statement();
-	if (instruction_is("DEBUG")) return debug_statement();
-	if (instruction_is("USEVAR")) return usevar_statement();
-	if (instruction_is("IF")) return if_statement();
-	if (instruction_is("ELSE")) return else_statement();
-	if (instruction_is("ELSEIF")) return elseif_statement();
-	if (instruction_is("ENDIF")) return endif_statement();
-	// Finally, try let statement again as syntax error may be in LET statement.
-	return let_statement();
-}
-
 /*
 	Change all lower case charaters to upper ones
 	Change tabs to spaces
@@ -198,19 +175,29 @@ unsigned char* code2upper(unsigned char* code){
 int compile_line(unsigned char* code){
 	int e;
 	unsigned char* before;
+	// Initialize
+	g_linenum++;
 	before=source=code2upper(code);
 	// Compile the statement(s)
 	while(1){
 		e=compile_statement();
-		if (e) return e; // An error occured
+		if (e) break; // An error occured
 		// Skip blank
 		skip_blank();
 		// Check null as the end of line
 		if (source[0]==0x00) break;
 		// Check ':'
-		if (source[0]!=':') return ERROR_SYNTAX;
+		if (source[0]!=':') {
+			e=ERROR_SYNTAX;
+			break;
+		}
 		// Continue this  line
 		source++;
+	}
+	if (e) {
+		// Error happened
+		show_error(e,source-before);
+		return e;
 	}
 	// Error didn't happen
 	e=source-before;

@@ -10,14 +10,36 @@
 #include "./api.h"
 #include "./compiler.h"
 
-void dump(){
+void dump(void){
 	int i;
+	printf("\nkmbasic_object:");
+	printhex32((int)&kmbasic_object[0]);
 	printf("\n");
-	for(i=0;i<64;i++){
-		printf("%x%x%x%x ",(kmbasic_object[i]>>12)&0xf,(kmbasic_object[i]>>8)&0xf,(kmbasic_object[i]>>4)&0xf,kmbasic_object[i]&0xf);
+	for(i=0;i<128;i++){
+		printf("%x%x%x%x ",
+			(kmbasic_object[i]>>12)&0xf,
+			(kmbasic_object[i]>>8)&0xf,
+			(kmbasic_object[i]>>4)&0xf,
+			kmbasic_object[i]&0xf);
+		if (0x0000==kmbasic_object[i] && 0x0000==kmbasic_object[i+1] && 0x0000==kmbasic_object[i+2]) break;
 	}
 	printf("\n\n");
 	sleep_ms(1);
+}
+
+void dump_cmpdata(void){
+	int* data;
+	unsigned int i,num;
+	printstr("\nCMPDATA dump\n");
+	cmpdata_reset();
+	while(data=cmpdata_find(CMPDATA_ALL)){
+		num=(data[0]>>16)&0xff;
+		for(i=0;i<num;i++){
+			printhex32(data[i]);
+			printstr(" ");
+		}
+		printstr("\n");
+	}
 }
 
 int main() {
@@ -28,16 +50,19 @@ int main() {
 	// Start
 	printstr("KM-BASIC for ARM\n");
 	init_compiler();
-	compile_line("IF 2<3 THEN PRINT \"2<3\"");
-	compile_line("IF 3<2 THEN PRINT \"3>2\"");
+	compile_line("IF 2>3 THEN");
+	compile_line("  PRINT \"2>3\"");
+	compile_line("ELSE");
+	compile_line("  PRINT \"2<3\"");
+	compile_line("ENDIF");
 	compile_line("END");
 	dump();
-	//printf("Error: %d",e);
+	
 	run_code();
-	while (true) {
+	for(e=0;true;e++){
 		sleep_ms(1000);
 		//run_code();
-		printchar('.');
+		printchar("-/|\\"[e&0x03]); printchar(0x08);
 	}
 	return 0;
 }

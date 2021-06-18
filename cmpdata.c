@@ -17,8 +17,8 @@
 		 +----+----+--------+
 		where,
 			type:   data type number (unsigned char)
-			len:    length of additional data area in number of words (unsigned char)
-			        If additional area isn't used, set 0
+			len:    length of data area in number of words (unsigned char)
+			        If additional area isn't used, set 1
 			data16: general 16 bit data (short)
 */
 
@@ -120,9 +120,11 @@ int* cmpdata_find(unsigned char type){
 		// Remember return value
 		ret=g_cmpdata_point;
 		// Move the point to next
-		g_cmpdata_point+=((ret[0]&0x00ff0000)>>16)+1;
+		g_cmpdata_point+=(ret[0]&0x00ff0000)>>16;
 		// Check if type is the same. If the same, return.
 		if ((ret[0]>>24)==type) return ret;
+		// If type is CMPDATA_ALL return
+		if (CMPDATA_ALL==type) return ret;
 	}
 	return 0;
 }

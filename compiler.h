@@ -14,11 +14,13 @@
 /*
 	Error codes
 */
-#define ERROR_SYNTAX -1
-#define ERROR_UNKNOWN -2
-#define ERROR_OBJ_TOO_LARGE -3
-#define ERROR_VARNAME_USED -4
-#define ERROR_TOO_MANY_VARS -5
+int throw_error(int e,int line, char* file);
+#define _throw_error(e) throw_error(e,__LINE__,__FILE__)
+#define ERROR_SYNTAX _throw_error(-1)
+#define ERROR_UNKNOWN _throw_error(-2)
+#define ERROR_OBJ_TOO_LARGE _throw_error(-3)
+#define ERROR_VARNAME_USED _throw_error(-4)
+#define ERROR_TOO_MANY_VARS _throw_error(-5)
 
 /*
 	Libraries
@@ -67,6 +69,7 @@
 #define CMPDATA_BREAK_BL 10
 #define CMPDATA_IF_BL 11
 #define CMPDATA_ENDIF_BL 12
+#define CMPDATA_ALL 255
 
 /*
 	Misc
@@ -87,6 +90,7 @@ extern unsigned char* source;
 extern unsigned short* object;
 extern unsigned short* g_objmax;
 
+extern int g_linenum;
 extern int g_sdepth;
 extern int g_maxsdepth;
 extern short g_ifdepth;
@@ -114,22 +118,12 @@ void run_code(void);
 void update_bl(short* bl,short* destination);
 int call_lib_code(int lib_number);
 int set_value_in_register(unsigned char r,int val);
-int compile_statement(void);
 int compile_line(unsigned char* code);
 int instruction_is(unsigned char* instruction);
 
 int kmbasic_library(int r0, int r1, int r2, int r3);
 
-int if_statement(void);
-int elseif_statement(void);
-int else_statement(void);
-int endif_statement(void);
-int usevar_statement(void);
-int let_statement(void);
-int print_statement(void);
-int return_statement(void);
-int end_statement(void);
-int debug_statement(void);
+int compile_statement(void);
 
 int get_string(void);
 int get_simple_integer(void);
@@ -161,6 +155,12 @@ int* cmpdata_nsearch_string_first(unsigned int type,unsigned char* str,int num);
 int* cmpdata_search_string_first(unsigned int type,unsigned char* str);
 int cmpdata_nhash(unsigned char* str, int num);
 int cmpdata_hash(unsigned char* str);
+
+void show_error(int e, int pos);
+
+// For debugging
+void dump_cmpdata(void);
+void dump(void);
 
 /*
 	Macros

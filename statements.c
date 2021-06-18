@@ -7,10 +7,107 @@
 
 #include "./compiler.h"
 
+/*
+	IF/ELSEIF/ELSE/ENDIF statements
+*/
+
+int insert_if_bl(void){
+	g_scratch_int[0]=(int)&object[0];
+	// BL instruction
+	check_object(2);
+	(object++)[0]=0xf000;// bl
+	(object++)[0]=0xf800;// bl (continued)
+	// Insert a CMPDATA_IF_BL
+	return cmpdata_insert(CMPDATA_IF_BL,g_ifdepth,(int*)&g_scratch_int[0],1);
+}
+
+int insert_endif_bl(void){
+	g_scratch_int[0]=(int)&object[0];
+	// BL instruction
+	check_object(2);
+	(object++)[0]=0xf000;// bl
+	(object++)[0]=0xf800;// bl (continued)
+	// Insert a CMPDATA_ENDIF_BL
+	return cmpdata_insert(CMPDATA_ENDIF_BL,g_ifdepth,(int*)&g_scratch_int[0],1);
+}
+
+int resolve_if_bl(void){
+	int* data;
+	short* bl;
+	// Find a CMPDATA_IF_BL
+	cmpdata_reset();
+	while(data=cmpdata_find(CMPDATA_IF_BL)){
+		if ((data[0]&0xffff)==g_ifdepth) break;
+	}
+	if (!data) return ERROR_SYNTAX;
+	// Found a CMPDATA_IF_BL
+	bl=(short*)data[1];
+	// Update it
+	update_bl(bl,object);
+	// Delete the cmpdata record
+	cmpdata_delete(data);
+	return 0;
+}
+
+int else_statement(void){
+	// 1. Insert CMPDATA_ENDIF_BL
+	// 2. Resolve a CMPDATA_IF_BL
+	int e;
+	e=insert_endif_bl();
+	if (e) return e;
+	return resolve_if_bl();
+	
+// DEBUG around here.
+// Why ERROR_OBJ_TOO_LARGE after ELSE statement?
+}
+
+int elseif_statement(void){
+	// 1. Insert CMPDATA_ENDIF_BL
+	// 2. Resolve a CMPDATA_IF_BL
+	// 3. Insert CMPDATA_ENDIF_BL
+	return 0;
+}
+
+int endif_statement(void){;
+	// 1. Resolve a CMPDATA_IF_BL
+	// 2. Resolve all CMPDATA_ENDIF_BL(s)
+	// 3. Check if not remaining
+	int* data;
+	short* bl;
+	int e;
+	// Resolve a CMPDATA_IF_BL
+	// It may not exist as ELSE might take it
+	resolve_if_bl();
+	// Resolve all CMPDATA_ENDIF_BL(s)
+	while(1){
+		cmpdata_reset();
+		while(data=cmpdata_find(CMPDATA_ENDIF_BL)){
+			if ((data[0]&0xffff)==g_ifdepth) break;
+		}
+		if (!data) break;
+		// Found a CMPDATA_ENDIF_BL
+		bl=(short*)data[1];
+		// Update it
+		update_bl(bl,object);
+		// Delete the cmpdata record
+		cmpdata_delete(data);
+	}
+	// Confirm not remaining
+	cmpdata_reset();
+	while(data=cmpdata_find(CMPDATA_IF_BL)){
+		if ((data[0]&0xffff)==g_ifdepth) return ERROR_UNKNOWN;
+	}
+	// All done. Lower the depth
+	g_ifdepth--;
+	return 0;
+}
+
 int if_statement(void){
 	// 1. Insert CMPDATA_IF_BL
 	int e;
 	char* before=source;
+	// Increment the depth first
+	g_ifdepth++;
 	// Get int or float
 	e=get_integer();
 	if (0!=e || (!instruction_is("THEN"))) {
@@ -20,15 +117,13 @@ int if_statement(void){
 		if (!instruction_is("THEN")) return ERROR_SYNTAX;
 	}
 	// r0 is set. Let's branch here
-	check_object(4);
+	check_object(2);
 	(object++)[0]=0x2800;// cmp	r0, #0
 	(object++)[0]=0xd101;// bne.n	skip
-	(object++)[0]=0xf000;// bl
-	(object++)[0]=0xf800;// bl (continued)
+	// Inseret BL instruction and CMPDATA_IF_BL
+	e=insert_if_bl();
 	                     // skip:
-	// Inseret a CMPDATA
-	g_scratch_int[0]=(int)&object[-2];
-	cmpdata_insert(CMPDATA_IF_BL,++g_ifdepth,(int*)&g_scratch_int[0],1);
+	if (e) return e;
 	// Check if statemet(s) remain(s)
 	skip_blank();
 	if (0==source[0]) {
@@ -60,56 +155,6 @@ int if_statement(void){
 	}
 }
 
-int else_statement(void){
-	// 1. Insert CMPDATA_ENDIF_BL
-	// 2. Resolve a CMPDATA_IF_BL
-	return 0;
-}
-
-int elseif_statement(void){
-	// 1. Insert CMPDATA_ENDIF_BL
-	// 2. Resolve a CMPDATA_IF_BL
-	// 3. Insert CMPDATA_ENDIF_BL
-	return 0;
-}
-
-int endif_statement(void){
-	// 1. Resolve a CMPDATA_IF_BL
-	// 2. Resolve all CMPDATA_ENDIF_BL(s)
-	// 3. Check if not remaining
-	int* data;
-	short* bl;
-	// Find a CMPDATA_IF_BL
-	cmpdata_reset();
-	while(data=cmpdata_find(CMPDATA_IF_BL)){
-		if ((data[0]&0xffff)==g_ifdepth) break;
-	}
-	if (!data) return ERROR_SYNTAX;
-	// Found a CMPDATA_IF_BL
-	bl=(short*)data[1];
-	// Update it
-	update_bl(bl,object);
-	// Delete the cmpdata record
-	cmpdata_delete(data);
-	// Find CMPDATA_ENDIF_BL(s)
-	while(1){
-		cmpdata_reset();
-		while(data=cmpdata_find(CMPDATA_ENDIF_BL)){
-			if ((data[0]&0xffff)==g_ifdepth) break;
-		}
-		if (!data) break;
-		// Found a CMPDATA_ENDIF_BL
-		bl=(short*)data[1];
-		// Update it
-		update_bl(bl,object);
-		// Delete the cmpdata record
-		cmpdata_delete(data);
-	}
-	// All done. Lower the depth
-	g_ifdepth--;
-	return 0;
-}
-
 int usevar_statement(void){
 	int e,num;
 	short data16;
@@ -137,7 +182,6 @@ int usevar_statement(void){
 		source++;
 	}
 	return 0;
-	// TODO: around here.
 }
 
 int let_integer(int vn){
@@ -262,3 +306,29 @@ int return_statement(void){
 int end_statement(void){
 	return call_lib_code(LIB_END);
 }
+
+int compile_statement(void){
+	int e;
+	// Initialize
+	unsigned short* bobj=object;
+	unsigned char* bsrc=source;
+	// Check LET statement, first
+	if (instruction_is("LET")) return let_statement();
+	// "LET" may be omitted.
+	e=let_statement();
+	if (!e) return 0;
+	object=bobj;
+	source=bsrc;
+	// It's not LET statement. Let's continue for possibilities of the other statements.
+	if (instruction_is("PRINT")) return print_statement();
+	if (instruction_is("END")) return end_statement();
+	if (instruction_is("DEBUG")) return debug_statement();
+	if (instruction_is("USEVAR")) return usevar_statement();
+	if (instruction_is("IF")) return if_statement();
+	if (instruction_is("ELSE")) return else_statement();
+	if (instruction_is("ELSEIF")) return elseif_statement();
+	if (instruction_is("ENDIF")) return endif_statement();
+	// Finally, try let statement again as syntax error may be in LET statement.
+	return let_statement();
+}
+

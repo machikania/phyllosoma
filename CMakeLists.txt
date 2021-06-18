@@ -14,6 +14,7 @@ if (TARGET tinyusb_device)
 			operators.c
 			value.c
 			cmpdata.c
+			error.c
 		)
 
 	# Pull in our pico_stdlib which aggregates commonly used features

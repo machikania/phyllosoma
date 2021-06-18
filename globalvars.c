@@ -23,6 +23,9 @@ int kmbasic_variables[256];
 
 unsigned short* g_objmax;
 
+// Line number
+int g_linenum;
+
 // Depth of stack used for calculation
 int g_sdepth;
 int g_maxsdepth;
