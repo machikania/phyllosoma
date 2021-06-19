@@ -50,13 +50,12 @@ int main() {
 	// Start
 	printstr("KM-BASIC for ARM\n");
 	init_compiler();
-	compile_line("IF 2>3 THEN");
-	compile_line("  PRINT \"2>3\"");
-	compile_line("ELSEIF 4<3 THEN");
-	compile_line("  PRINT \"4<3\"");
-	compile_line("ELSE");
-	compile_line("  PRINT \"2<3\"");
-	compile_line("ENDIF");
+	compile_line("I=1");
+	compile_line("DO");
+	compile_line("  PRINT I,");
+	compile_line("  I=I+1");
+	compile_line("  IF 10<I THEN BREAK");
+	compile_line("LOOP");
 	compile_line("END");
 	dump();
 	

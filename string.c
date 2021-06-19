@@ -83,6 +83,8 @@ int get_string(void){
 	}
 	// Update branch instruction
 	object[2]|=i-2-2;
+	// Check if object area remains
+	check_object(i);
 	// Move object position
 	object+=i;
 	// Return without error

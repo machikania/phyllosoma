@@ -30,8 +30,9 @@ int g_linenum;
 int g_sdepth;
 int g_maxsdepth;
 
-// Depth of if/endif
+// Depth of if/endif and for/do/while
 short g_ifdepth;
+short g_fordepth;
 
 // Scratch variable
 volatile char g_scratch[32];

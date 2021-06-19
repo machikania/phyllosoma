@@ -8,6 +8,90 @@
 #include "./compiler.h"
 
 /*
+	DO/LOOP/WHILE/WEND/BREAK/CONTINUE statements
+*/
+
+int break_statement(void){
+	g_scratch_int[0]=(int)&object[0];
+	// BL instruction
+	check_object(2);
+	(object++)[0]=0xf000;// bl
+	(object++)[0]=0xf800;// bl (continued)
+	// Insert a CMPDATA_BREAK_BL
+	return cmpdata_insert(CMPDATA_BREAK_BL,g_fordepth,(int*)&g_scratch_int[0],1);
+}
+
+int continue_statement(void){
+	int* data;
+	// Find the CMPDATA_CONTINUE
+	cmpdata_reset();
+	while(data=cmpdata_find(CMPDATA_CONTINUE)){
+		if ((data[0]&0xffff)==g_fordepth) break;
+	}
+	if (!data) return ERROR_SYNTAX;
+	// Temporarily store "data" for deleting (see contine_end_loop())
+	g_scratch_int[0]=(int)data;
+	// Jump to the found address
+	check_object(2);
+	update_bl(object,(short*)data[1]);
+	object+=2;
+	return 0;
+}
+
+int do_statement(void){
+	g_scratch_int[0]=(int)&object[0];
+	if (instruction_is("WHILE")) return ERROR_UNKNOWN;
+	else if (instruction_is("UNTIL")) return ERROR_UNKNOWN;
+	// Insert a CMPDATA_CONTINUE
+	return cmpdata_insert(CMPDATA_CONTINUE,++g_fordepth,(int*)&g_scratch_int[0],1);
+}
+
+int contine_end_loop(void){
+	int e;
+	int* data;
+	unsigned short* bl;
+	// Continue
+	e=continue_statement();
+	// Delete the CMPDATA_CONTINUE (see continue_statement())
+	cmpdata_delete((int*)g_scratch_int[0]);
+	if (e) return e;
+	// Resolve all CMPDATA_BREAK_BL(s)
+	while(1){
+		cmpdata_reset();
+		while(data=cmpdata_find(CMPDATA_BREAK_BL)){
+			if ((data[0]&0xffff)==g_fordepth) break;
+		}
+		if (!data) break;
+		// Found a CMPDATA_BREAK_BL
+		bl=(short*)data[1];
+		// Update it
+		update_bl(bl,object);
+		// Delete the cmpdata record
+		cmpdata_delete(data);
+	}
+	// All done
+	g_fordepth--;
+	return 0;
+}
+
+int loop_statement(void){
+	int e;
+	if (instruction_is("WHILE")) return ERROR_UNKNOWN;
+	else if (instruction_is("UNTIL")) return ERROR_UNKNOWN;
+	// Continue and end the loop
+	return contine_end_loop();
+}
+
+int while_statement(void){
+	return 0;
+}
+
+int wend_statement(void){
+	if (instruction_is("WHILE")) return ERROR_SYNTAX;
+	return loop_statement();
+}
+
+/*
 	IF/ELSEIF/ELSE/ENDIF statements
 */
 
@@ -332,6 +416,12 @@ int compile_statement(void){
 	if (instruction_is("ELSE")) return else_statement();
 	if (instruction_is("ELSEIF")) return elseif_statement();
 	if (instruction_is("ENDIF")) return endif_statement();
+	if (instruction_is("DO")) return do_statement();
+	if (instruction_is("LOOP")) return loop_statement();
+	if (instruction_is("WHILE")) return while_statement();
+	if (instruction_is("WEND")) return wend_statement();
+	if (instruction_is("BREAK")) return break_statement();
+	if (instruction_is("CONTINUE")) return continue_statement();
 	// Finally, try let statement again as syntax error may be in LET statement.
 	return let_statement();
 }

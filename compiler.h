@@ -99,6 +99,7 @@ extern int g_linenum;
 extern int g_sdepth;
 extern int g_maxsdepth;
 extern short g_ifdepth;
+extern short g_fordepth;
 
 extern volatile char g_scratch[32];
 extern volatile int* g_scratch_int;

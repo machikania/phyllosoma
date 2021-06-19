@@ -19,6 +19,7 @@ void init_compiler(void){
 	variable_init();
 	// Initialize followings every file
 	g_ifdepth=0;
+	g_fordepth=0;
 	g_linenum=0;
 }
 
