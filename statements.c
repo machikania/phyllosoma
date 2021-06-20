@@ -205,7 +205,39 @@ int for_statement(void){
 	(object++)[0]=0xb401;// push	{r0}
 	// Check "STEP"
 	if (instruction_is("STEP")) {
-		return ERROR_UNKNOWN;
+		// Get integer
+		e=get_integer();
+		if (e) return e;
+		// Move r0 to r2
+		check_object(1);
+		(object++)[0]=0x0002;// movs	r2, r0
+		// Get r0 from variable
+		e=variable_to_r0(vn);
+		if (e) return e;
+		// Add r2 to r0
+		check_object(1);
+		(object++)[0]=0x1880;// adds	r0, r0, r2
+		// Store r0 to variable
+		e=r0_to_variable(vn);
+		if (e) return e;
+		// BL jump here
+		update_bl(bl,object);
+		// Pop r1 as "TO" value
+		check_object(6);
+		(object++)[0]=0xbc02;// pop	{r1}
+		// if r2<0 exchange r0 and r1
+		(object++)[0]=0x2a00;// cmp	r2, #0
+		(object++)[0]=0xda02;// bge.n	skip1
+		(object++)[0]=0x0002;// movs	r2, r0
+		(object++)[0]=0x0008;// movs	r0, r1
+		(object++)[0]=0x0011;// movs	r1, r2
+		                     // skip1:
+		// Compare r0 and r1, and break if needed
+		check_object(2);
+		(object++)[0]=0x4281;// cmp	r1, r0
+		(object++)[0]=0xda01;// bge.n	skip2
+		return break_statement();
+		                     // skip2:
 		return 0;
 	} else {
 		// STEP 1

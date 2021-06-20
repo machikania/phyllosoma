@@ -50,7 +50,10 @@ int main() {
 	// Start
 	printstr("KM-BASIC for ARM\n");
 	init_compiler();
-	compile_line("FOR I=1 TO 10");
+	compile_line("FOR I=10 TO 1 STEP -1");
+	compile_line("  PRINT I,");
+	compile_line("NEXT");
+	compile_line("FOR I=1 TO 10 STEP 2");
 	compile_line("  PRINT I,");
 	compile_line("NEXT");
 	compile_line("END");

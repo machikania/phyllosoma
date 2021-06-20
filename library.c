@@ -108,7 +108,28 @@ int lib_end(int r0, int r1, int r2){
 }
 
 int debug(int r0, int r1, int r2){
-	if (r0<r1) asm("nop;nop");
+	// Move r0 to r2
+	asm("movs r2,r0");
+//100034de:	0002      	movs	r2, r0
+	// Get r0 from variable
+	// Add r2 to r0
+	asm("add r0,r0,r2");
+//1000050a:	1880      	adds	r0, r0, r2
+	// Store r0 to variable
+	// BL jump here
+	// Pop r1 as "TO" value
+	// if r2<0 exchange r0 and r1
+	if (r2<0) {
+//1000050c:	2a00      	cmp	r2, #0
+//1000050e:	da02      	bge.n	10000516 <debug+0xe>
+		asm("movs r2,r0");
+//100034de:	0002      	movs	r2, r0
+		asm("movs r0,r1");
+//100038bc:	0008      	movs	r0, r1
+		asm("movs r1,r2");
+//100045f4:	0011      	movs	r1, r2
+	}
+	// Compare r0 and r1, and break if needed
 	return r0;
 }
 
