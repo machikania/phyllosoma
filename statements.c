@@ -11,6 +11,22 @@
 	DO/LOOP/WHILE/WEND/BREAK/CONTINUE statements
 */
 
+int get_bool(void){
+	char* sbefore=source;
+	unsigned short* obefore=object;
+	int e;
+	// Get int or float
+	e=get_integer();
+	if (0!=e || 0x00!=source[0] && ':'!=source[0]) {
+		source=sbefore;
+		object=obefore;
+		e=get_float();
+		if (e) return e;
+		if (0x00!=source[0] && ':'!=source[0]) return ERROR_SYNTAX;
+	}
+	return 0;
+}
+
 int break_statement(void){
 	g_scratch_int[0]=(int)&object[0];
 	// BL instruction
@@ -39,11 +55,31 @@ int continue_statement(void){
 }
 
 int do_statement(void){
-	g_scratch_int[0]=(int)&object[0];
-	if (instruction_is("WHILE")) return ERROR_UNKNOWN;
-	else if (instruction_is("UNTIL")) return ERROR_UNKNOWN;
+	int e;
+	g_fordepth++;
+	unsigned short* obefore=object;
+	if (instruction_is("WHILE")) {
+		e=get_bool();
+		if (e) return e;
+		check_object(2);
+		(object++)[0]=0x2800;// cmp	r0, #0
+		(object++)[0]=0xd101;// bne.n	skip
+		e=break_statement();
+		                     // skip:
+		if (e) return e;
+	} else if (instruction_is("UNTIL")) {
+		e=get_bool();
+		if (e) return e;
+		check_object(2);
+		(object++)[0]=0x2800;// cmp	r0, #0
+		(object++)[0]=0xd001;// beq.n	skip
+		e=break_statement();
+		                     // skip:
+		if (e) return e;
+	}
 	// Insert a CMPDATA_CONTINUE
-	return cmpdata_insert(CMPDATA_CONTINUE,++g_fordepth,(int*)&g_scratch_int[0],1);
+	g_scratch_int[0]=(int)&obefore[0];
+	return cmpdata_insert(CMPDATA_CONTINUE,g_fordepth,(int*)&g_scratch_int[0],1);
 }
 
 int contine_end_loop(void){
@@ -76,19 +112,44 @@ int contine_end_loop(void){
 
 int loop_statement(void){
 	int e;
-	if (instruction_is("WHILE")) return ERROR_UNKNOWN;
-	else if (instruction_is("UNTIL")) return ERROR_UNKNOWN;
+	if (instruction_is("WHILE")) {
+		e=get_bool();
+		if (e) return e;
+		check_object(2);
+		(object++)[0]=0x2800;// cmp	r0, #0
+		(object++)[0]=0xd001;// beq.n	skip
+	} else if (instruction_is("UNTIL")) {
+		e=get_bool();
+		if (e) return e;
+		check_object(2);
+		(object++)[0]=0x2800;// cmp	r0, #0
+		(object++)[0]=0xd101;// bne.n	skip
+	}
 	// Continue and end the loop
 	return contine_end_loop();
+		                     // skip:
 }
 
 int while_statement(void){
-	return 0;
+	int e;
+	g_fordepth++;
+	unsigned short* obefore=object;
+	e=get_bool();
+	if (e) return e;
+	check_object(2);
+	(object++)[0]=0x2800;// cmp	r0, #0
+	(object++)[0]=0xd101;// bne.n	skip
+	e=break_statement();
+	                     // skip:
+	if (e) return e;
+	// Insert a CMPDATA_CONTINUE
+	g_scratch_int[0]=(int)&obefore[0];
+	return cmpdata_insert(CMPDATA_CONTINUE,g_fordepth,(int*)&g_scratch_int[0],1);
 }
 
 int wend_statement(void){
-	if (instruction_is("WHILE")) return ERROR_SYNTAX;
-	return loop_statement();
+	// Continue and end the loop
+	return contine_end_loop();
 }
 
 /*
@@ -179,13 +240,15 @@ int endif_statement(void){;
 int if_statement(void){
 	// 1. Insert CMPDATA_IF_BL
 	int e;
-	char* before=source;
+	char* sbefore=source;
+	unsigned short* obefore=object;
 	// Increment the depth first
 	g_ifdepth++;
 	// Get int or float
 	e=get_integer();
 	if (0!=e || (!instruction_is("THEN"))) {
-		source=before;
+		source=sbefore;
+		object=obefore;
 		e=get_float();
 		if (e) return e;
 		if (!instruction_is("THEN")) return ERROR_SYNTAX;
