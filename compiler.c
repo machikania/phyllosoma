@@ -81,6 +81,7 @@ int call_lib_code(int lib_number){
 }
 
 int set_value_in_register(unsigned char r,int val){
+	// TODO: revise here for r1,r2,r3 etc (not r0)
 	if (7<r) return ERROR_UNKNOWN;
 	if (0<=val && val<=255) {
 		val+=(r<<8);

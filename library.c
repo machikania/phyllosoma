@@ -108,7 +108,7 @@ int lib_end(int r0, int r1, int r2){
 }
 
 int debug(int r0, int r1, int r2){
-	if (r0!=0) asm("nop;nop");
+	if (r0<r1) asm("nop;nop");
 	return r0;
 }
 

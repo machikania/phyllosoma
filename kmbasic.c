@@ -50,11 +50,9 @@ int main() {
 	// Start
 	printstr("KM-BASIC for ARM\n");
 	init_compiler();
-	compile_line("I=1");
-	compile_line("WHILE I<11");
+	compile_line("FOR I=1 TO 10");
 	compile_line("  PRINT I,");
-	compile_line("  I=I+1");
-	compile_line("WEND");
+	compile_line("NEXT");
 	compile_line("END");
 	dump();
 	

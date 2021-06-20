@@ -8,24 +8,8 @@
 #include "./compiler.h"
 
 /*
-	DO/LOOP/WHILE/WEND/BREAK/CONTINUE statements
+	BREAK/CONTINUE statements
 */
-
-int get_bool(void){
-	char* sbefore=source;
-	unsigned short* obefore=object;
-	int e;
-	// Get int or float
-	e=get_integer();
-	if (0!=e || 0x00!=source[0] && ':'!=source[0]) {
-		source=sbefore;
-		object=obefore;
-		e=get_float();
-		if (e) return e;
-		if (0x00!=source[0] && ':'!=source[0]) return ERROR_SYNTAX;
-	}
-	return 0;
-}
 
 int break_statement(void){
 	g_scratch_int[0]=(int)&object[0];
@@ -51,6 +35,26 @@ int continue_statement(void){
 	check_object(2);
 	update_bl(object,(short*)data[1]);
 	object+=2;
+	return 0;
+}
+
+/*
+	DO/LOOP/WHILE/WEND statements
+*/
+
+int get_bool(void){
+	char* sbefore=source;
+	unsigned short* obefore=object;
+	int e;
+	// Get int or float
+	e=get_integer();
+	if (0!=e || 0x00!=source[0] && ':'!=source[0]) {
+		source=sbefore;
+		object=obefore;
+		e=get_float();
+		if (e) return e;
+		if (0x00!=source[0] && ':'!=source[0]) return ERROR_SYNTAX;
+	}
 	return 0;
 }
 
@@ -148,6 +152,87 @@ int while_statement(void){
 }
 
 int wend_statement(void){
+	// Continue and end the loop
+	return contine_end_loop();
+}
+
+/*
+	FOR/NEXT statements
+*/
+
+int for_statement(void){
+	int e,vn;
+	unsigned short* bl;
+	char* sbefore;
+	g_fordepth++;
+	// Get var number first
+	vn=get_var_number();
+	if (vn<0) return vn;
+	// Check '='
+	skip_blank();
+	if ('='!=source[0]) return ERROR_SYNTAX;
+	source++;
+	// Get integer
+	e=get_integer();
+	if (e) return e;
+	// Store value to variable
+	e=r0_to_variable(vn);
+	if (e) return e;
+	// Check "TO"
+	if (!instruction_is("TO")) return ERROR_SYNTAX;
+	// Get integer
+	sbefore=source;
+	e=get_integer();
+	if (e) return e;
+	check_object(1);
+	(object++)[0]=0xb401;// push	{r0}
+	// Ger r0 from var
+	e=variable_to_r0(vn);
+	if (e) return e;
+	// Insert a BL instruction here to skip codes
+	bl=object;
+	object+=2;
+	// Insert a CMPDATA_CONTINUE
+	g_scratch_int[0]=(int)&object[0];
+	e=cmpdata_insert(CMPDATA_CONTINUE,g_fordepth,(int*)&g_scratch_int[0],1);
+	if (e) return e;
+	// Get "TO" value again
+	source=sbefore;
+	e=get_integer();
+	if (e) return e;
+	// Push r0 as "TO" value
+	check_object(1);
+	(object++)[0]=0xb401;// push	{r0}
+	// Check "STEP"
+	if (instruction_is("STEP")) {
+		return ERROR_UNKNOWN;
+		return 0;
+	} else {
+		// STEP 1
+		// Get r0 from variable
+		e=variable_to_r0(vn);
+		if (e) return e;
+		// Inc r0
+		check_object(1);
+		(object++)[0]=0x3001;// adds	r0, #1
+		// Store r0 to var
+		e=r0_to_variable(vn);
+		if (e) return e;
+		// BL jump to here
+		update_bl(bl,object);
+		// Pop r1 as "TO" value
+		check_object(1);
+		(object++)[0]=0xbc02;// pop	{r1}
+		// Compare r0 and r1, and break if needed
+		check_object(2);
+		(object++)[0]=0x4281;// cmp	r1, r0
+		(object++)[0]=0xda01;// bge.n	skip
+		return break_statement();
+		                     // skip:
+	}
+}
+
+int next_statement(void){
 	// Continue and end the loop
 	return contine_end_loop();
 }
@@ -485,6 +570,8 @@ int compile_statement(void){
 	if (instruction_is("WEND")) return wend_statement();
 	if (instruction_is("BREAK")) return break_statement();
 	if (instruction_is("CONTINUE")) return continue_statement();
+	if (instruction_is("FOR")) return for_statement();
+	if (instruction_is("NEXT")) return next_statement();
 	// Finally, try let statement again as syntax error may be in LET statement.
 	return let_statement();
 }
