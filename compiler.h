@@ -26,6 +26,7 @@
 #define ERROR_OBJ_TOO_LARGE _throw_error(-3)
 #define ERROR_VARNAME_USED _throw_error(-4)
 #define ERROR_TOO_MANY_VARS _throw_error(-5)
+#define ERROR_RESERVED_WORD _throw_error(-6)
 
 /*
 	Libraries
@@ -69,11 +70,9 @@
 #define CMPDATA_GOTO_NUM_BL 5
 #define CMPDATA_GOTO_LABEL_BL 6
 #define CMPDATA_CONTINUE 7
-#define CMPDATA_BREAK 8
-#define CMPDATA_CONTINUE_BL 9
-#define CMPDATA_BREAK_BL 10
-#define CMPDATA_IF_BL 11
-#define CMPDATA_ENDIF_BL 12
+#define CMPDATA_BREAK_BL 8
+#define CMPDATA_IF_BL 9
+#define CMPDATA_ENDIF_BL 10
 #define CMPDATA_ALL 255
 
 /*
@@ -121,6 +120,7 @@ void printstr(unsigned char *s);
 
 void init_compiler(void);
 void run_code(void);
+int check_if_reserved(char* str, int num);
 void update_bl(short* bl,short* destination);
 int call_lib_code(int lib_number);
 int set_value_in_register(unsigned char r,int val);

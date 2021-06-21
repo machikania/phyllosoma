@@ -23,7 +23,7 @@
 */
 
 /*
-	CMPDATA_TEMP structure
+	CMPDATA_TEMP structure, used to store any temporary data
 		type:      CMPDATA_TEMP
 		len:       n+1
 		data16:    id
@@ -159,14 +159,13 @@ void cmpdata_delete(int* record){
 }
 
 /*
-	Hash used for faster search
+	Hash used for faster string search
 */
 int cmpdata_nhash(unsigned char* str, int num){
 	int i;
 	int hash=0;
 	for(i=0;i<num;i++){
-		hash^=str[i];
-		hash<<=7;
+		hash=hash<<6 | hash>>26;
 		hash^=str[i];
 	}
 	return hash;

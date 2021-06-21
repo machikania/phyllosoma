@@ -9,6 +9,19 @@
 
 /*
 	BREAK/CONTINUE statements
+
+	CMPDATA_CONTINUE structure, used for storing address for BL statement destination
+		type:      CMPDATA_CONTINUE
+		len:       2
+		data16:    depth
+		record[1]: destinaion address
+	
+	CMPDATA_BREAK_BL structure, used for storing address of BL statement
+		type:      CMPDATA_BREAK_BL
+		len:       2
+		data16:    depth
+		record[1]: BL code address
+
 */
 
 int break_statement(void){
@@ -271,6 +284,19 @@ int next_statement(void){
 
 /*
 	IF/ELSEIF/ELSE/ENDIF statements
+
+	CMPDATA_IF_BL structure
+		type:      CMPDATA_IF_BL
+		len:       2
+		data16:    depth
+		record[1]: BL code address
+	
+	CMPDATA_ENDIF_BL structure
+		type:      CMPDATA_ENDIF_BL
+		len:       2
+		data16:    depth
+		record[1]: BL code address
+
 */
 
 int insert_if_bl(void){
@@ -434,6 +460,9 @@ int usevar_statement(void){
 		if (source[0]<'A' || 'Z'<source[0]) return ERROR_SYNTAX;
 		for(num=1;'A'<=source[num] && source[num]<='Z' || '_'==source[num] || '0'<=source[num] && source[num]<='9';num++);
 		if (1==num) return ERROR_SYNTAX;
+		// It must not be a reserved word
+		e=check_if_reserved(source,num);
+		if (e) return e;
 		// It must not be registered yet
 		if (cmpdata_nsearch_string_first(CMPDATA_VARNAME,source,num)) return ERROR_VARNAME_USED;
 		// Get a new var number

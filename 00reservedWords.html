@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html lang="ja-JP">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>List of reserved words</title>
+</head>
+<body>
+<pre>
+<script type="text/javascript">
+
+function kmhash(str){
+	var hash=0;
+	for(var i=0;i<str.length;i++){
+		hash=hash<<6 | hash>>26;
+		hash^=str.charCodeAt(i);
+		hash&=0xffffffff;
+	}
+	return hash;
+}
+
+words=[
+	'ABS',
+	'ACOS',
+	'ARGS',
+	'ASC',
+	'ASIN',
+	'ATAN',
+	'ATAN2',
+	'BREAK',
+	'CALL',
+	'CDATA',
+	'CEIL',
+	'CHR',
+	'CIRCLE',
+	'CLEAR',
+	'CLS',
+	'COLOR',
+	'COS',
+	'COSH',
+	'CREAD',
+	'CURSOR',
+	'DATA',
+	'DEC',
+	'DELETE',
+	'DIM',
+	'DO',
+	'ELSE',
+	'ELSEIF',
+	'END',
+	'ENDIF',
+	'EXEC',
+	'EXP',
+	'FABS',
+	'FCLOSE',
+	'FEOF',
+	'FGET',
+	'FGETC',
+	'FIELD',
+	'FILE',
+	'FINPUT',
+	'FLEN',
+	'FLOAT',
+	'FLOOR',
+	'FMOD',
+	'FOPEN',
+	'FOR',
+	'FPRINT',
+	'FPUT',
+	'FPUTC',
+	'FSEEK',
+	'GCLS',
+	'GCOLOR',
+	'GETDIR',
+	'GOSUB',
+	'GOTO',
+	'GPRINT',
+	'HEX',
+	'IDLE',
+	'IF',
+	'INKEY',
+	'INPUT',
+	'INT',
+	'KEYS',
+	'LABEL',
+	'LEN',
+	'LET',
+	'LINE',
+	'LOG',
+	'LOG10',
+	'LOOP',
+	'MODF',
+	'MUSIC',
+	'NEXT',
+	'NEW',
+	'NOT',
+	'OPTION',
+	'PCG',
+	'PEEK',
+	'PEEK16',
+	'PEEK32',
+	'PI',
+	'POINT',
+	'POKE',
+	'POKE16',
+	'POKE32',
+	'POW',
+	'PRINT',
+	'PSET',
+	'PUBLIC',
+	'PUTBMP',
+	'READ',
+	'REM',
+	'RETURN',
+	'RND',
+	'SCROLL',
+	'SETDIR',
+	'SGN',
+	'SIN',
+	'SINH',
+	'SOUND',
+	'SQRT',
+	'SYSTEM',
+	'TAN',
+	'TANH',
+	'TIMER',
+	'TVRAM',
+	'UNTIL',
+	'USEPCG',
+	'USEVAR',
+	'VAL',
+	'VAR',
+	'WAIT',
+	'WEND',
+	'WHILE',
+	'WIDTH',
+];
+
+document.write("const char* const g_reserved_words["+words.length+"]={\n");
+for(var i=0;i<words.length;i++){
+	document.write('\t"'+words[i]+'",');
+	document.write("\n");
+}
+document.write("};\n");
+document.write("const int const g_hash_resereved_words["+words.length+"]={\n");
+for(var i=0;i<words.length;i++){
+	h=kmhash(words[i]);
+	document.write("\t0x"+(h+0x100000000).toString(16).substr(-8));
+	document.write(', //'+words[i]);
+	document.write("\n");
+}
+document.write("};\n");
+
+</script>
+</pre>
+</body></html>
