@@ -51,11 +51,11 @@ int main() {
 	printstr("KM-BASIC for ARM\n");
 	init_compiler();
 	compile_line("PRINT 123,");
-	compile_line("GOSUB LBL1");
+	compile_line("PRINT GOSUB(LBL1)");
 	compile_line("END");
 	compile_line("LABEL LBL1");
 	compile_line("  PRINT 456,");
-	compile_line("RETURN");
+	compile_line("RETURN 789");
 	dump();
 	
 	run_code();

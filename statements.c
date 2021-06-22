@@ -7,6 +7,9 @@
 
 #include "./compiler.h"
 
+// Local prototypings
+int get_bool(void);
+
 /*
 	LABEL/GOTO/GOSUB/RETURN statements
 	
@@ -138,12 +141,18 @@ int gosub_statement(void){
 	check_object(2);      // lbl2:
 	update_bl(object,opos2);
 	object+=2;            //   bl lbl1
-
-	return ERROR_UNKNOWN;
+	return 0;
 }
 
 int return_statement(void){
-	// TODO: support return value
+	int e;
+	skip_blank();
+	if (':'!=source[0] && 0x00!=source[0]) {//TODO: debug around here
+		// There is a return value;
+		e=get_string();
+		if (e) e=get_bool();
+		if (e) return e;
+	}
 	check_object(1);
 	(object++)[0]=0xbd00; // pop	{pc}
 	return 0;

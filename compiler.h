@@ -132,6 +132,7 @@ int instruction_is(unsigned char* instruction);
 
 int kmbasic_library(int r0, int r1, int r2, int r3);
 
+int gosub_statement(void);
 int compile_statement(void);
 
 int get_string(void);
