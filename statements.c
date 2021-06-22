@@ -8,6 +8,128 @@
 #include "./compiler.h"
 
 /*
+	LABEL/GOTO/GOSUB/RETURN statements
+	
+	CMPDATA_LINENUM
+		type:      CMPDATA_LINENUM
+		len:       2
+		data16:    line number
+		record[1]: destinaion address
+	
+	CMPDATA_LABEL
+		type:      CMPDATA_LABEL
+		len:       2
+		data16:    id
+		record[1]: destinaion address
+	
+	CMPDATA_LABELNAME
+		type:      CMPDATA_LABELNAME
+		len:       n+1
+		data16:    id
+		record[1]: hash
+		record[2]: string
+		record[3]: string (continued)
+		...
+		record[n]: end of string
+	
+	CMPDATA_GOTO_NUM_BL
+		type:      CMPDATA_GOTO_NUM_BL
+		len:       2
+		data16:    line number
+		record[1]: BL assembly address
+	
+	CMPDATA_GOTO_LABEL_BL
+		type:      CMPDATA_GOTO_LABEL_BL
+		len:       2
+		data16:    id
+		record[1]: BL assembly address
+
+*/
+
+int get_label_id(void){
+	int* data;
+	int num,e;
+	unsigned short id;
+	// Check label name
+	if (source[0]<'A' || 'Z'<=source[0]) return ERROR_SYNTAX;
+	for(num=1;'A'<=source[num] && source[num]<='Z' || '_'==source[num] || '0'<=source[num] && source[num]<='9';num++);
+	// Check if registered
+	data=cmpdata_nsearch_string_first(CMPDATA_LABELNAME,source,num);
+	if (!data) {
+		// Register new CMPDATA_LABELNAME record
+		id=cmpdata_get_id();
+		e=cmpdata_insert_string(CMPDATA_LABELNAME,id,source,num);
+		if (e) return e;
+		// Reload CMPDATA_LABELNAME data
+		data=cmpdata_nsearch_string_first(CMPDATA_LABELNAME,source,num);
+		if (!data) return ERROR_UNKNOWN;
+		if ((data[0]&0xffff)!=id) return ERROR_UNKNOWN;
+	}
+	source+=num;
+	return data[0]&0xffff;
+}
+
+int label_statement(void){
+	int e;
+	int id;
+	int* data;
+	short* bl;
+	// Get label id
+	id=get_label_id();
+	if (id<0) return id;
+	// Check if this is the first time
+	if (cmpdata_findfirst_with_id(CMPDATA_LABEL,id)) return ERROR_LABEL_DUPLICATED;
+	// Register new CMPDATA_LABEL record
+	g_scratch_int[0]=(int)object;
+	e=cmpdata_insert(CMPDATA_LABEL,id,(int*)g_scratch_int,1);
+	if (e) return e;
+	// Resolve all CMPDATA_GOTO_LABEL_BL(s)
+	while(data=cmpdata_findfirst_with_id(CMPDATA_GOTO_LABEL_BL,id)){
+		// Found a CMPDATA_GOTO_LABEL_BL
+		bl=(short*)data[1];
+		// Update it
+		update_bl(bl,object);
+		// Delete the cmpdata record
+		cmpdata_delete(data);
+	}
+	// All done
+	return 0;
+}
+
+int goto_statement(void){
+	int id,e;
+	int* data;
+	// Get label id
+	id=get_label_id();
+	if (id<0) return id;
+	// Check if LABEL already set
+	data=cmpdata_findfirst_with_id(CMPDATA_LABEL,id);
+	check_object(2);
+	if (data) {
+		// BL destination is known
+		update_bl(object,(short*)data[1]);
+		object+=2;
+	} else {
+		// BL destination is not known yet
+		g_scratch_int[0]=(int)object;
+		(object++)[0]=0xf000;// bl
+		(object++)[0]=0xf800;// bl (continued)
+		e=cmpdata_insert(CMPDATA_GOTO_LABEL_BL,id,(int*)g_scratch_int,1);
+		if (e) return e;
+	}
+	// All done
+	return 0;
+}
+
+int gosub_statement(void){
+	return ERROR_UNKNOWN;
+}
+
+int return_statement(void){
+	return ERROR_UNKNOWN;
+}
+
+/*
 	BREAK/CONTINUE statements
 
 	CMPDATA_CONTINUE structure, used for storing address for BL statement destination
@@ -594,12 +716,6 @@ int debug_statement(void){
 	return call_lib_code(LIB_DEBUG);
 }
 
-int return_statement(void){
-	check_object(1);
-	(object++)[0]=0xbd00;//      	pop	{pc}
-	return 0;
-}
-
 int end_statement(void){
 	return call_lib_code(LIB_END);
 }
@@ -633,6 +749,10 @@ int compile_statement(void){
 	if (instruction_is("CONTINUE")) return continue_statement();
 	if (instruction_is("FOR")) return for_statement();
 	if (instruction_is("NEXT")) return next_statement();
+	if (instruction_is("LABEL")) return label_statement();
+	if (instruction_is("GOTO")) return goto_statement();
+	if (instruction_is("GOSUB")) return gosub_statement();
+	if (instruction_is("RETURN")) return return_statement();
 	// Finally, try let statement again as syntax error may be in LET statement.
 	return let_statement();
 }

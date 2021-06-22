@@ -50,10 +50,15 @@ int main() {
 	// Start
 	printstr("KM-BASIC for ARM\n");
 	init_compiler();
-	compile_line("USEVAR TEST");
-	compile_line("USEVAR WHILE");
-	compile_line("TEST=123");
-	compile_line("PRINT TEST");
+	compile_line("PRINT 123,");
+	compile_line("goto LBL2");
+	compile_line("LABEL LBL1");
+	compile_line("  PRINT 789,");
+	compile_line("  goto LBL3");
+	compile_line("LABEL LBL2");
+	compile_line("  PRINT 456,");
+	compile_line("  goto LBL1");
+	compile_line("LABEL LBL3");
 	compile_line("END");
 	dump();
 	

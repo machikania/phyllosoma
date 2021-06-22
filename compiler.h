@@ -27,6 +27,7 @@
 #define ERROR_VARNAME_USED _throw_error(-4)
 #define ERROR_TOO_MANY_VARS _throw_error(-5)
 #define ERROR_RESERVED_WORD _throw_error(-6)
+#define ERROR_LABEL_DUPLICATED _throw_error(-7)
 
 /*
 	Libraries
@@ -74,7 +75,6 @@
 #define CMPDATA_IF_BL 9
 #define CMPDATA_ENDIF_BL 10
 #define CMPDATA_ALL 255
-
 /*
 	Misc
 */
@@ -154,6 +154,7 @@ int cmpdata_insert(unsigned char type, short data16, int* data, unsigned char nu
 int cmpdata_insert_string(unsigned char type, short data16, unsigned char* str, int num);
 int* cmpdata_find(unsigned char type);
 int* cmpdata_findfirst(unsigned char type);
+int* cmpdata_findfirst_with_id(unsigned char type, unsigned short id);
 void cmpdata_delete(int* record);
 int* cmpdata_nsearch_string(unsigned int type,unsigned char* str,int num);
 int* cmpdata_search_string(unsigned int type,unsigned char* str);

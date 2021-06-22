@@ -138,6 +138,15 @@ int* cmpdata_findfirst(unsigned char type){
 	return cmpdata_find(type);
 }
 
+int* cmpdata_findfirst_with_id(unsigned char type, unsigned short id){
+	int* data;
+	cmpdata_reset();
+	while(data=cmpdata_find(type)){
+		if ((data[0]&0xffff)==id) break;
+	}
+	return data;
+}
+
 /*
 	Delete a record.
 */
