@@ -105,6 +105,9 @@ extern volatile int* g_scratch_int;
 extern volatile float* g_scratch_float;
 extern volatile char* g_scratch_char;
 
+extern const char* const g_reserved_words[114];
+extern const int const g_hash_resereved_words[114];
+
 /*
 	Prototypes
 */

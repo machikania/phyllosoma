@@ -122,11 +122,31 @@ int goto_statement(void){
 }
 
 int gosub_statement(void){
+	// TODO: arguments
+	unsigned short* opos1;
+	unsigned short* opos2;
+	int e;
+	check_object(3);
+	opos1=object;
+	(object++)[0]=0xf000; //   bl lbl2
+	(object++)[0]=0xf800; //   bl (continued)
+	opos2=object;         // lbl1:
+	(object++)[0]=0xb500; //   push	{lr}
+	e=goto_statement();   //   bl (GOTO statement)
+	if (e) return e;
+	update_bl(opos1,object);
+	check_object(2);      // lbl2:
+	update_bl(object,opos2);
+	object+=2;            //   bl lbl1
+
 	return ERROR_UNKNOWN;
 }
 
 int return_statement(void){
-	return ERROR_UNKNOWN;
+	// TODO: support return value
+	check_object(1);
+	(object++)[0]=0xbd00; // pop	{pc}
+	return 0;
 }
 
 /*
