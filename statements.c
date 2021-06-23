@@ -160,7 +160,12 @@ int goto_statement(void){
 		return goto_line(g_constant_int);
 	} else {
 		// Label is flexible
-		return ERROR_UNKNOWN;
+		e=call_lib_code(LIB_LINE_NUM);
+		if (e) return e;
+		check_object(2);
+		(object++)[0]=0x3001; // adds	r0, #1
+		(object++)[0]=0x4700; // bx	r0
+		return 0;
 	}
 }
 

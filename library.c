@@ -99,6 +99,16 @@ int lib_calc_float(int r0, int r1, int r2){
 	return g_scratch_int[2];
 }
 
+int lib_line_num(int r0, int r1, int r2){
+	int* data=cmpdata_findfirst_with_id(CMPDATA_LINENUM,r0);
+	if (data) return data[1];// Found
+	// Not found
+	printstr("\nLine ");
+	printint(r0);
+	printstr(" not found\n");
+	return lib_end(r0,r1,r2);
+}
+
 int lib_end(int r0, int r1, int r2){
 	asm("ldr r0, [r7, #0]");
 	asm("mov sp, r0");
@@ -108,8 +118,7 @@ int lib_end(int r0, int r1, int r2){
 }
 
 int debug(int r0, int r1, int r2){
-	asm("str r6,[sp,#4]");
-	return r0<<2;
+	return r0+1;
 }
 
 static const void* lib_list[]={
@@ -119,6 +128,7 @@ static const void* lib_list[]={
 	lib_calc,       // #define LIB_CALC 3
 	lib_calc_float, // #define LIB_CALC_FLOAT 4
 	lib_end,        // #define LIB_END 5
+	lib_line_num,   // #define LIB_LINE_NUM 6
 
 };
 

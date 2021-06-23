@@ -38,6 +38,7 @@
 #define LIB_CALC 3
 #define LIB_CALC_FLOAT 4
 #define LIB_END 5
+#define LIB_LINE_NUM 6
 
 /*
 	Operators
@@ -135,6 +136,7 @@ int set_value_in_register(unsigned char r,int val);
 int compile_line(unsigned char* code);
 int instruction_is(unsigned char* instruction);
 
+int lib_end(int r0, int r1, int r2);
 int kmbasic_library(int r0, int r1, int r2, int r3);
 
 int gosub_statement(void);
