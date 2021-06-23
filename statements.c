@@ -189,9 +189,9 @@ int gosub_statement(void){
 	short* obefore=object;
 	int i,e;
 	// Check the jump destination, first
-	// TODO: replace following routine with faster one without adding object
-	e=gosub_statement_main();
-	if (e) return e;
+	e=get_integer();
+	if (e) e=get_label_id();
+	if (e<0) return e;
 	skip_blank();
 	// Rewind object
 	rewind_object(obefore);

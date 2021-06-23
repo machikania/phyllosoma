@@ -44,12 +44,11 @@ void dump_cmpdata(void){
 
 int main() {
 	static char* const code[]={
-		"10 PRINT 123,",
-		"20 GOTO 50",
-		"30 PRINT 789,",
-		"40 END",
-		"50 PRINT 456,",
-		"60 GOTO 30",
+"PRINT 123,GOSUB(LBL1,456)",
+"END",
+"LABEL LBL1",
+"  PRINT ARGS(1),",
+"RETURN 789",
 		0
 	};
 	int e,i,s;
