@@ -43,30 +43,40 @@ void dump_cmpdata(void){
 }
 
 int main() {
-	int e;
+	static char* const code[]={
+		"10 PRINT 123,",
+		"20 GOTO 50",
+		"30 PRINT 789,",
+		"40 END",
+		"50 PRINT 456,",
+		"60 GOTO 30",
+		0
+	};
+	int e,i,s;
+	char* str;
 	stdio_init_all();
 	// Wait for two seconds
 	sleep_ms(2000);
 	// Start
 	printstr("KM-BASIC for ARM\n");
+	// Compile the code
+	s=time_us_32();
 	init_compiler();
-	compile_line("PRINT 12,");
-	compile_line("PRINT GOSUB(LBL1,34)");
-	compile_line("END");
-	compile_line("LABEL LBL1");
-	compile_line("  PRINT ARGS(1),");
-	compile_line("  GOSUB LBL2");
-	compile_line("RETURN 78");
-	compile_line("LABEL LBL2");
-	compile_line("  PRINT 56,");
-	compile_line("RETURN");
+	for(i=0;str=code[i];i++) {
+		e=compile_line(str);
+		if (e<0) break;
+	}
+	printint(time_us_32()-s);
+	printstr(" micro seconds spent for compiling\n");
+	// Show dump
 	dump();
-	
-	run_code();
-	for(e=0;true;e++){
+	// Run the code if error didn't occur
+	if (0<=e) run_code();
+	// Infinite loop
+	for(i=0;true;i++){
 		sleep_ms(1000);
 		//run_code();
-		printchar("-/|\\"[e&0x03]); printchar(0x08);
+		printchar("-/|\\"[i&0x03]); printchar(0x08);
 	}
 	return 0;
 }

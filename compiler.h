@@ -108,6 +108,10 @@ extern volatile char* g_scratch_char;
 extern const char* const g_reserved_words[114];
 extern const int const g_hash_resereved_words[114];
 
+extern char g_constant_value_flag;
+extern int g_constant_int;
+extern float g_constant_float;
+
 /*
 	Prototypes
 */
@@ -137,8 +141,11 @@ int gosub_statement(void);
 int compile_statement(void);
 
 int get_string(void);
+
+int get_positive_decimal_value(void);
 int get_simple_integer(void);
 int get_integer(void);
+
 int get_simple_float(void);
 int get_float(void);
 

@@ -7,6 +7,13 @@
 
 #include "./compiler.h"
 
+int get_positive_decimal_value(void){
+	int i;
+	if (source[0]<'0' || '9'<source[0]) return ERROR_SYNTAX;
+	for(i=0;'0'<=source[0] && source[0]<='9';source++) i=i*10+(source[0]-'0');
+	return i;
+}
+
 int get_simple_integer(void){
 	int i,vn;
 	skip_blank();
@@ -18,6 +25,7 @@ int get_simple_integer(void){
 		if (i) return i;
 		check_object(1);
 		(object++)[0]=0x4240; // negs	r0, r0
+		g_constant_int=0-i;
 		return 0;
 	}
 	if ('$'==source[0] || '0'==source[0] && 'X'==source[1]) {
@@ -35,20 +43,17 @@ int get_simple_integer(void){
 				break;
 			}
 		}
+		g_constant_int=i;
 		return set_value_in_register(0,i);
 	} else if ('0'<=source[0] && source[0]<'9') {
 		// Decimal value
-		i=0;
-		while(1){
-			if ('0'<=source[0] && source[0]<='9') {
-				i=i*10+(source[0]-'0');
-				source++;
-			} else {
-				break;
-			}
-		}
+		i=get_positive_decimal_value();
+		if (i<0) return i;
+		g_constant_int=i;
 		return set_value_in_register(0,i);
 	} else if ('A'<=source[0] && source[0]<'Z' || '_'==source[0]) {
+		// Lower constant flag
+		g_constant_value_flag=0;
 		// Variable or function
 		vn=get_var_number();
 		if (0<=vn) {

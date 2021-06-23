@@ -120,6 +120,8 @@ int get_value_sub(int pr, int vmode){
 		prevpos=source;
 		op=get_operator(vmode);
 		if (op<0) return 0;
+		// Lower constant flag
+		g_constant_value_flag=0;
 		// Compair current and previous operators.
 		// If the previous operator has higher priolity, return.
 		if (pr>=priority(op)) {
@@ -150,6 +152,8 @@ int get_value(int vmode){
 	int prev_maxsdepth=g_maxsdepth;
 	unsigned short* prev_scodeaddr=g_scodeaddr;
 	g_sdepth=g_maxsdepth=0;
+	// Raise constant flag, first
+	g_constant_value_flag=1;
 	// Get value
 	e=get_value_sub(priority(OP_VOID),vmode);
 	if (e) return e;

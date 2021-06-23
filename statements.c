@@ -96,7 +96,7 @@ int label_statement(void){
 	return 0;
 }
 
-int goto_statement(void){
+int goto_label(void){
 	int id,e;
 	int* data;
 	// Get label id
@@ -119,6 +119,49 @@ int goto_statement(void){
 	}
 	// All done
 	return 0;
+}
+
+int goto_line(int id){
+	int e;
+	int* data;
+	// Check if line is already set
+	data=cmpdata_findfirst_with_id(CMPDATA_LINENUM,id);
+	check_object(2);
+	if (data) {
+		// BL destination is known
+		update_bl(object,(short*)data[1]);
+		object+=2;
+	} else {
+		// BL destination is not known yet
+		g_scratch_int[0]=(int)object;
+		(object++)[0]=0xf000;// bl
+		(object++)[0]=0xf800;// bl (continued)
+		e=cmpdata_insert(CMPDATA_GOTO_NUM_BL,id,(int*)g_scratch_int,1);
+		if (e) return e;
+	}
+	// All done
+	return 0;
+}
+
+int goto_statement(void){
+	unsigned short* obefore;
+	char* sbefore=source;
+	int e;
+	obefore=object;
+	e=get_integer();
+	if (e) {
+		// Label is used
+		rewind_object(obefore);
+		source=sbefore;
+		return goto_label();
+	} else if (g_constant_value_flag) {
+		// Label number is used
+		rewind_object(obefore);
+		return goto_line(g_constant_int);
+	} else {
+		// Label is flexible
+		return ERROR_UNKNOWN;
+	}
 }
 
 int gosub_statement_main(void){

@@ -199,14 +199,52 @@ unsigned char* code2upper(unsigned char* code){
 	return result;
 }
 
-// This function returns number of bytes being compiled.
-// If an error occured. this returns negative value as error code.
+/*
+	New line number handling. See also label_statement
+*/
+
+int handle_line_number(int id){
+	int e;
+	int* data;
+	short* bl;
+	// Check if this is the first time
+	if (cmpdata_findfirst_with_id(CMPDATA_LINENUM,id)) return ERROR_LABEL_DUPLICATED;
+	// Register new CMPDATA_LINENUM record
+	g_scratch_int[0]=(int)object;
+	e=cmpdata_insert(CMPDATA_LINENUM,id,(int*)g_scratch_int,1);
+	if (e) return e;
+	// Resolve all CMPDATA_GOTO_NUM_BL(s)
+	while(data=cmpdata_findfirst_with_id(CMPDATA_GOTO_NUM_BL,id)){
+		// Found a CMPDATA_GOTO_NUM_BL
+		bl=(short*)data[1];
+		// Update it
+		update_bl(bl,object);
+		// Delete the cmpdata record
+		cmpdata_delete(data);
+	}
+	// All done
+	return 0;
+}
+
+/* 
+	This function returns number of bytes being compiled.
+	If an error occured. this returns negative value as error code.
+*/
 int compile_line(unsigned char* code){
 	int e;
 	unsigned char* before;
 	// Initialize
 	g_linenum++;
 	before=source=code2upper(code);
+	// Get line number if exists
+	e=get_positive_decimal_value();
+	if (0<=e) {
+		g_linenum=e;
+		if (' '!=source[0]) return ERROR_SYNTAX;
+		source++;
+	}
+	e=handle_line_number(g_linenum);
+	if (e) return e;
 	// Compile the statement(s)
 	while(1){
 		e=compile_statement();

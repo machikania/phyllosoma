@@ -18,8 +18,9 @@ int get_simple_float(void){
 		source++;
 	} else if ('-'==source[0]){
 		source++;
-		i=get_simple_integer();
+		i=get_simple_float();
 		if (i) return i;
+		g_constant_float=0-g_constant_float;
 		check_object(2);
 		(object++)[0]=0x2100;          // movs	r1, #0
 		(object++)[0]=0x2200 | OP_SUB; // movs	r2, #OP_SUB
@@ -32,8 +33,11 @@ int get_simple_float(void){
 		if (0==i) return ERROR_SYNTAX;
 		source+=i;
 		g_scratch_float[0]=f;
+		g_constant_float=f;
 		return set_value_in_register(0,g_scratch_int[0]);
 	} else if ('A'<=source[0] && source[0]<'Z' || '_'==source[0]) {
+		// Lower constant flag
+		g_constant_value_flag=0;
 		// Variable or function
 		vn=get_var_number();
 		if (0<=vn) {

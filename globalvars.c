@@ -39,6 +39,11 @@ volatile char g_scratch[32];
 volatile int* g_scratch_int=(volatile int*)&g_scratch[0];
 volatile float* g_scratch_float=(volatile float*)&g_scratch[0];
 
+// Constant values
+char g_constant_value_flag;
+int g_constant_int;
+float g_constant_float;
+
 // Reserved words
 const char* const g_reserved_words[114]={
 	"ABS",
