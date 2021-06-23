@@ -168,6 +168,34 @@ void cmpdata_delete(int* record){
 }
 
 /*
+	Delete all records with invalid object positions.
+*/
+void cmpdata_delete_invalid(void){
+	const static int const types[6]={
+		CMPDATA_GOTO_NUM_BL,
+		CMPDATA_GOTO_LABEL_BL,
+		CMPDATA_BREAK_BL,
+		CMPDATA_IF_BL,
+		CMPDATA_ENDIF_BL,
+		CMPDATA_CONTINUE,
+	};
+	int typenum;
+	int* data;
+	for(typenum=0;typenum<(sizeof types/sizeof types[0]);typenum++){
+		do {
+			cmpdata_reset();
+			while(data=cmpdata_find(types[typenum])){
+				if ((int)object<=data[1]) {
+					// This is invalid
+					cmpdata_delete(data);
+					break;
+				}
+			}
+		} while (data);
+	}
+}
+
+/*
 	Hash used for faster string search
 */
 int cmpdata_nhash(unsigned char* str, int num){

@@ -23,6 +23,12 @@ void init_compiler(void){
 	g_linenum=0;
 }
 
+const int const g_r6_array[]={
+	0,                         // Pointer to object
+	(const int)&g_r6_array[0], // Pointer to previous argument array
+	0                          // Number of argument(s)
+};
+
 void run_code(void){
 	// Push r0-r12
 	asm("push {lr}");
@@ -36,6 +42,8 @@ void run_code(void){
 	// Set special registers
 	// R5 is pointer to array containing variable values
 	asm("ldr r5,=kmbasic_variables");
+	// R6 is pointer to argument array
+	asm("ldr r6,=g_r6_array");
 	// R7 is pointer to array containing various data
 	asm("ldr r7,=kmbasic_data");
 	// R8 is pointer to library function
@@ -62,6 +70,11 @@ void run_code(void){
 	asm("mov r12,r4");
 	asm("pop {r0,r1,r2,r3,r4,r5,r6,r7}");
 	asm("pop {pc}");
+}
+
+void rewind_object(unsigned short* objpos){
+	object=objpos;
+	cmpdata_delete_invalid();
 }
 
 int check_if_reserved(char* str, int num){

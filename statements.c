@@ -7,9 +7,6 @@
 
 #include "./compiler.h"
 
-// Local prototypings
-int get_bool(void);
-
 /*
 	LABEL/GOTO/GOSUB/RETURN statements
 	
@@ -124,8 +121,7 @@ int goto_statement(void){
 	return 0;
 }
 
-int gosub_statement(void){
-	// TODO: arguments
+int gosub_statement_main(void){
 	unsigned short* opos1;
 	unsigned short* opos2;
 	int e;
@@ -144,13 +140,50 @@ int gosub_statement(void){
 	return 0;
 }
 
+int gosub_statement(void){
+	char* safter;
+	char* sbefore=source;
+	short* obefore=object;
+	int i,e;
+	// Check the jump destination, first
+	// TODO: replace following routine with faster one without adding object
+	e=gosub_statement_main();
+	if (e) return e;
+	skip_blank();
+	// Rewind object
+	rewind_object(obefore);
+	// Prepare argument array (R6 as the pointer)
+	check_object(3);
+	(object++)[0]=0xb080; //      	sub	sp, #xx (this will be updated; see below)
+	(object++)[0]=0x9601; //      	str	r6, [sp, #4]
+	(object++)[0]=0x466e; //      	mov	r6, sp
+	for(i=3;','==source[0];i++){
+		source++;
+		e=get_string_int_or_float();
+		if (e) return e;
+		check_object(1);
+		(object++)[0]=0x6030 | (i<<6); // str	r0, [r6, #xx]
+	}
+	obefore[0]|=i; // Update sub sp,#xx assembly
+	// GOSUB again
+	safter=source;
+	source=sbefore;
+	e=gosub_statement_main();
+	if (e) return e;
+	source=safter;
+	// Delete argeuement array
+	(object++)[0]=0x6876;   // ldr	r6, [r6, #4]
+	(object++)[0]=0xb000|i; // add	sp, #xx
+	// All done
+	return 0;
+}
+
 int return_statement(void){
 	int e;
 	skip_blank();
-	if (':'!=source[0] && 0x00!=source[0]) {//TODO: debug around here
+	if (':'!=source[0] && 0x00!=source[0]) {
 		// There is a return value;
-		e=get_string();
-		if (e) e=get_bool();
+		e=get_string_int_or_float();
 		if (e) return e;
 	}
 	check_object(1);
@@ -206,28 +239,12 @@ int continue_statement(void){
 	DO/LOOP/WHILE/WEND statements
 */
 
-int get_bool(void){
-	char* sbefore=source;
-	unsigned short* obefore=object;
-	int e;
-	// Get int or float
-	e=get_integer();
-	if (0!=e || 0x00!=source[0] && ':'!=source[0]) {
-		source=sbefore;
-		object=obefore;
-		e=get_float();
-		if (e) return e;
-		if (0x00!=source[0] && ':'!=source[0]) return ERROR_SYNTAX;
-	}
-	return 0;
-}
-
 int do_statement(void){
 	int e;
 	g_fordepth++;
 	unsigned short* obefore=object;
 	if (instruction_is("WHILE")) {
-		e=get_bool();
+		e=get_int_or_float();
 		if (e) return e;
 		check_object(2);
 		(object++)[0]=0x2800;// cmp	r0, #0
@@ -236,7 +253,7 @@ int do_statement(void){
 		                     // skip:
 		if (e) return e;
 	} else if (instruction_is("UNTIL")) {
-		e=get_bool();
+		e=get_int_or_float();
 		if (e) return e;
 		check_object(2);
 		(object++)[0]=0x2800;// cmp	r0, #0
@@ -281,13 +298,13 @@ int contine_end_loop(void){
 int loop_statement(void){
 	int e;
 	if (instruction_is("WHILE")) {
-		e=get_bool();
+		e=get_int_or_float();
 		if (e) return e;
 		check_object(2);
 		(object++)[0]=0x2800;// cmp	r0, #0
 		(object++)[0]=0xd001;// beq.n	skip
 	} else if (instruction_is("UNTIL")) {
-		e=get_bool();
+		e=get_int_or_float();
 		if (e) return e;
 		check_object(2);
 		(object++)[0]=0x2800;// cmp	r0, #0
@@ -302,7 +319,7 @@ int while_statement(void){
 	int e;
 	g_fordepth++;
 	unsigned short* obefore=object;
-	e=get_bool();
+	e=get_int_or_float();
 	if (e) return e;
 	check_object(2);
 	(object++)[0]=0x2800;// cmp	r0, #0
@@ -542,7 +559,7 @@ int if_statement(void){
 	e=get_integer();
 	if (0!=e || (!instruction_is("THEN"))) {
 		source=sbefore;
-		object=obefore;
+		rewind_object(obefore);
 		e=get_float();
 		if (e) return e;
 		if (!instruction_is("THEN")) return ERROR_SYNTAX;
@@ -711,13 +728,13 @@ int print_statement(void) {
 		e=get_string();
 		if (e || ','!=source[0] && ';'!=source[0] && ':'!=source[0] && 0x00!=source[0]) {
 			source=sb;
-			object=ob;
+			rewind_object(ob);
 			mode=0x00;
 			e=get_integer();
 		}
 		if (e || ','!=source[0] && ';'!=source[0] && ':'!=source[0] && 0x00!=source[0]) {
 			source=sb;
-			object=ob;
+			rewind_object(ob);
 			mode=0x02;
 			e=get_float();
 		}
@@ -759,7 +776,7 @@ int compile_statement(void){
 	// "LET" may be omitted.
 	e=let_statement();
 	if (!e) return 0;
-	object=bobj;
+	rewind_object(bobj);
 	source=bsrc;
 	// It's not LET statement. Let's continue for possibilities of the other statements.
 	if (instruction_is("PRINT")) return print_statement();

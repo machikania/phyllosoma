@@ -123,6 +123,7 @@ void printstr(unsigned char *s);
 
 void init_compiler(void);
 void run_code(void);
+void rewind_object(unsigned short* objpos);
 int check_if_reserved(char* str, int num);
 void update_bl(short* bl,short* destination);
 int call_lib_code(int lib_number);
@@ -141,6 +142,8 @@ int get_integer(void);
 int get_simple_float(void);
 int get_float(void);
 
+int get_int_or_float(void);
+int get_string_int_or_float(void);
 int get_value(int vmode);
 
 int get_operator(int vmode);
@@ -160,6 +163,7 @@ int* cmpdata_find(unsigned char type);
 int* cmpdata_findfirst(unsigned char type);
 int* cmpdata_findfirst_with_id(unsigned char type, unsigned short id);
 void cmpdata_delete(int* record);
+void cmpdata_delete_invalid(void);
 int* cmpdata_nsearch_string(unsigned int type,unsigned char* str,int num);
 int* cmpdata_search_string(unsigned int type,unsigned char* str);
 int* cmpdata_nsearch_string_first(unsigned int type,unsigned char* str,int num);
