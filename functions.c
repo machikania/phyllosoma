@@ -39,3 +39,10 @@ int float_functions(void){
 	return ERROR_SYNTAX;
 }
 
+int string_functions(void){
+	if (instruction_is("HEX$(")) return hex_function();
+	if (instruction_is("ARGS$(")) return args_function();
+	if (instruction_is("GOSUB$(")) return gosub_function();
+	if (instruction_is("DEBUG$(")) return debug_function();
+	return ERROR_SYNTAX;
+}

@@ -14,7 +14,7 @@ void printstr(unsigned char *s){
 }
 
 void printchar(unsigned char c){
-	printf("%c",c);
+	putchar(c);
 	sleep_ms(1);
 }
 

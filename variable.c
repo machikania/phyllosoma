@@ -19,14 +19,12 @@
 		record[n]: end of string
 */
 
-static int g_next_varnum;
-
 void variable_init(void){
 	g_next_varnum=26;
 }
 
 short get_new_varnum(void){
-	if (g_next_varnum<256-TEMPVAR_NUMBER) return g_next_varnum++;
+	if (g_next_varnum<ALLOC_BLOCK_NUM-TEMPVAR_NUMBER) return g_next_varnum++;
 	return 0;
 }
 
@@ -56,14 +54,20 @@ int var_num_to_r1(int vn){
 int r0_to_variable(int vn){
 	int e;
 	if (vn<32) {
-		check_object(1);
+		check_object(4);
 		(object++)[0]=0x6028 | (vn<<6); // str	r0, [r5, #xx]
+		(object++)[0]=0x2300;           // movs	r3, #0
+		(object++)[0]=0x68ba;           // ldr	r2, [r7, #8]
+		(object++)[0]=0x8013 | (vn<<6); // strh	r3, [r2, #xx]
 		return 0;
 	} else if (vn<256) {
 		e=var_num_to_r1(vn);
 		if (e) return e;
-		check_object(1);
+		check_object(4);
 		(object++)[0]=0x5068;           // str	r0, [r5, r1]
+		(object++)[0]=0x2300;           // movs	r3, #0
+		(object++)[0]=0x68ba;           // ldr	r2, [r7, #8]
+		(object++)[0]=0x5253;           // strh	r3, [r2, r1]
 		return 0;
 	} else return ERROR_UNKNOWN;
 }

@@ -11,6 +11,7 @@
 
 #define DEBUG_MODE
 #define TEMPVAR_NUMBER 10
+#define ALLOC_BLOCK_NUM 256
 
 /*
 	Error codes
@@ -28,17 +29,28 @@
 #define ERROR_TOO_MANY_VARS _throw_error(-5)
 #define ERROR_RESERVED_WORD _throw_error(-6)
 #define ERROR_LABEL_DUPLICATED _throw_error(-7)
+#define ERROR_NO_TEMP_VAR _throw_error(-8)
+#define ERROR_OUT_OF_MEMORY _throw_error(-9)
 
 /*
 	Libraries
+		0-127:
+			Quick libraries.
+			Used for calculations, functions, etc.
+		128-255:
+			Statement libraries.
+			Garbage collection flag will raised after executing the library function.
+			Break key will be also checked.
 */
-#define LIB_DEBUG 0
-#define LIB_PRINT 1
-#define LIB_LET_STR 2
-#define LIB_CALC 3
-#define LIB_CALC_FLOAT 4
-#define LIB_END 5
-#define LIB_LINE_NUM 6
+#define LIB_CALC 0
+#define LIB_CALC_FLOAT 1
+#define LIB_HEX 2
+
+#define LIB_DEBUG 128
+#define LIB_PRINT 129
+#define LIB_LET_STR 130
+#define LIB_END 131
+#define LIB_LINE_NUM 132
 
 /*
 	Operators
@@ -89,13 +101,15 @@
 */
 extern unsigned short kmbasic_object[512*192];
 extern int kmbasic_data[32];
-extern int kmbasic_variables[256];
+extern int kmbasic_variables[ALLOC_BLOCK_NUM];
+extern unsigned short kmbasic_var_size[ALLOC_BLOCK_NUM];
 
 extern unsigned char* source;
 extern unsigned short* object;
 extern unsigned short* g_objmax;
 
 extern int g_linenum;
+extern int g_next_varnum;
 extern int g_sdepth;
 extern int g_maxsdepth;
 extern short g_ifdepth;
@@ -112,6 +126,8 @@ extern const int const g_hash_resereved_words[114];
 extern char g_constant_value_flag;
 extern int g_constant_int;
 extern float g_constant_float;
+
+extern char g_garbage_collection;
 
 /*
 	Prototypes
@@ -142,6 +158,7 @@ int kmbasic_library(int r0, int r1, int r2, int r3);
 int gosub_statement(void);
 int compile_statement(void);
 
+int hex_function(void);
 int get_string(void);
 
 int get_positive_decimal_value(void);
@@ -160,6 +177,7 @@ int calculation(int op,int vmode);
 
 int kmbasic_library(int r0, int r1, int r2, int r3);
 
+int string_functions(void);
 int integer_functions(void);
 int float_functions(void);
 
@@ -181,6 +199,12 @@ int cmpdata_nhash(unsigned char* str, int num);
 int cmpdata_hash(unsigned char* str);
 
 void show_error(int e, int pos);
+void stop_with_error(int e);
+
+void init_memory(void);
+void* alloc_memory(int size, int var_num);
+void* calloc_memory(int size, int var_num);
+void delete_memory(void* data);
 
 // For debugging
 void dump_cmpdata(void);

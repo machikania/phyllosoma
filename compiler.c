@@ -5,6 +5,32 @@
    https://github.com/kmorimatsu
 */
 
+/*
+	Usage of ARM registers
+	
+	R0-R3
+		R0: integer/float calculation, argument for function call
+		R1: integer/float calculation, argument for function call
+		R2: argument for function call
+		R3: argument for function call (library number)
+	R4-R7
+		R4: Not used yet
+		R5: &kmbasic_variables[0], pointer to array containing variables values
+		R6: Pointer to array containing arguments etc ()
+			R6[0]: pointer to class object
+			R6[1]: pointer to previous R6
+			R6[2]: number of arguments
+			R6[3]: argument 1
+			R6[4]: argument 2
+			...
+		R7: &kmbasic_data[0], pointer to array containing KMBASIC data
+			kmbasic_data[0]: stack pointer value for ending program
+			kmbasic_data[1]: address to return for ending program
+			kmbasic_data[2]: &kmbasic_var_size[0]
+			kmbasic_data[3]: 
+			kmbasic_data[4]: 
+*/
+
 #include <string.h>
 #include "./api.h"
 #include "./compiler.h"
@@ -25,11 +51,11 @@ void init_compiler(void){
 
 const int const g_r6_array[]={
 	0,                         // Pointer to object
-	(const int)&g_r6_array[0], // Pointer to previous argument array
+	(const int)&g_r6_array[0], // Pointer to previous argument array (recursive)
 	0                          // Number of argument(s)
 };
 
-void run_code(void){
+void run_code_main(void){
 	// Push r0-r12
 	asm("push {lr}");
 	asm("push {r0,r1,r2,r3,r4,r5,r6,r7}");
@@ -70,6 +96,13 @@ void run_code(void){
 	asm("mov r12,r4");
 	asm("pop {r0,r1,r2,r3,r4,r5,r6,r7}");
 	asm("pop {pc}");
+}
+
+void run_code(void){
+	// Initializing environment
+	init_memory();
+	// Run code
+	asm("bl run_code_main");
 }
 
 void rewind_object(unsigned short* objpos){
@@ -214,6 +247,7 @@ int handle_line_number(int id){
 	e=cmpdata_insert(CMPDATA_LINENUM,id,(int*)g_scratch_int,1);
 	if (e) return e;
 	// Resolve all CMPDATA_GOTO_NUM_BL(s)
+	// TODO: consider skipping following lines when not using line numbers in BASIC program
 	while(data=cmpdata_findfirst_with_id(CMPDATA_GOTO_NUM_BL,id)){
 		// Found a CMPDATA_GOTO_NUM_BL
 		bl=(short*)data[1];

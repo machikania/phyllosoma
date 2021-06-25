@@ -44,13 +44,10 @@ void dump_cmpdata(void){
 
 int main() {
 	static char* const code[]={
-"10 FOR I=1 TO 3",
-"20   GOSUB 50+I",
-"30 NEXT",
-"40 END",
-"51 PRINT 123,:RETURN",
-"52 PRINT 456,:RETURN",
-"53 PRINT 789,:RETURN",
+"FOR I=0 to 260 STEP 5",
+"  PRINT HEX$(I),",
+"NEXT",
+"END",
 		0
 	};
 	int e,i,s;

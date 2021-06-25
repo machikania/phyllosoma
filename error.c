@@ -10,13 +10,17 @@
 static char* g_error_file;
 static int g_error_line;
 
-static const char* g_error_text[]={
-	"No error", 
-	"Syntax error",
-	"Unknown error",
-	"Compile object too large",
-	"Same variable name used twice",
-	"Too many variables",
+static const char* g_error_text[10]={
+	"No error",
+	"Syntax error",                  // #define ERROR_SYNTAX _throw_error(-1)
+	"Unknown error",                 // #define ERROR_UNKNOWN _throw_error(-2)
+	"Compile object too large",      // #define ERROR_OBJ_TOO_LARGE _throw_error(-3)
+	"Same variable name used twice", // #define ERROR_VARNAME_USED _throw_error(-4)
+	"Too many variables",            // #define ERROR_TOO_MANY_VARS _throw_error(-5)
+	"Reserved word",                 // #define ERROR_RESERVED_WORD _throw_error(-6)
+	"Duplicated label",              // #define ERROR_LABEL_DUPLICATED _throw_error(-7)
+	"String too complicated",        // #define ERROR_NO_TEMP_VAR _throw_error(-8)
+	"Out of memory",                 // #define ERROR_OUT_OF_MEMORY _throw_error(-9)
 };
 
 void show_error(int e, int pos){
@@ -52,4 +56,17 @@ int throw_error(int e,int line, char* file){
 	}
 	g_error_line=line;
 	return e;
+}
+
+void stop_with_error(int e){
+	e=-e;
+	printstr("\n");
+	if (e<((sizeof g_error_text)/4)) {
+		printstr((char*)g_error_text[e]);
+	} else {
+		printstr("Error #");
+		printint(e);
+	}
+	// TODO: line number calculation
+	lib_end(0,0,0);
 }

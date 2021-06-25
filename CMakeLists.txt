@@ -15,6 +15,7 @@ if (TARGET tinyusb_device)
 			value.c
 			cmpdata.c
 			error.c
+			memory.c
 		)
 
 	# Pull in our pico_stdlib which aggregates commonly used features

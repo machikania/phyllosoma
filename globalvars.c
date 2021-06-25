@@ -19,12 +19,16 @@ unsigned short* object;
 
 unsigned short kmbasic_object[512*192]; // 192K bytes RAM area
 int kmbasic_data[32];
-int kmbasic_variables[256];
+int kmbasic_variables[ALLOC_BLOCK_NUM];
+unsigned short kmbasic_var_size[ALLOC_BLOCK_NUM];
 
 unsigned short* g_objmax;
 
 // Line number
 int g_linenum;
+
+// Variable number used when compiling
+int g_next_varnum;
 
 // Depth of stack used for calculation
 int g_sdepth;
@@ -43,6 +47,9 @@ volatile float* g_scratch_float=(volatile float*)&g_scratch[0];
 char g_constant_value_flag;
 int g_constant_int;
 float g_constant_float;
+
+// Memory allocation
+char g_garbage_collection;
 
 // Reserved words
 const char* const g_reserved_words[114]={

@@ -24,6 +24,29 @@
 	asm("mov sp,r4");\
 	asm("pop {r4,pc}")
 
+int lib_hex(int width, int num, int r2){
+	char* str;
+	int i,j,minus;
+	str=alloc_memory(3,-1);
+	for(i=0;i<8;i++){
+		str[i]="0123456789ABCDEF"[(num>>((7-i)<<2))&0x0F];
+	}
+	// Width must be between 0 and 8;
+	if (width<0||8<width) width=8;
+	if (width==0) {
+		// Width not asigned. Use the minimum width.
+		for(i=0;i<7;i++){
+			if ('0'!=str[i]) break;
+		}
+		width=8-i;
+	}
+	// Shift string
+	j=8-width;
+	for(i=0;i<width;i++) str[i]=str[j++];
+	str[i]=0x00;
+	return (int)str;
+}
+
 int lib_print_main(int r0, int r1, int r2){
 	// Mode; 0x00: ingeger, 0x01: string, 0x02: float
 	// Mode; 0x00: CR, 0x10: ';', 0x20: ','
@@ -118,21 +141,41 @@ int lib_end(int r0, int r1, int r2){
 }
 
 int debug(int r0, int r1, int r2){
-	return r0+1;
+	asm("strh	r3, [r2, r1]");
+	return r0;
 }
 
-static const void* lib_list[]={
-	debug,          // #define LIB_DEBUG 0
-	lib_print,      // #define LIB_PRINT 1
-	lib_let_str,    // #define LIB_LET_STR 2
-	lib_calc,       // #define LIB_CALC 3
-	lib_calc_float, // #define LIB_CALC_FLOAT 4
-	lib_end,        // #define LIB_END 5
-	lib_line_num,   // #define LIB_LINE_NUM 6
-
+static const void* lib_list1[]={
+	lib_calc,       // #define LIB_CALC 0
+	lib_calc_float, // #define LIB_CALC_FLOAT 1
+	lib_hex,        // #define LIB_HEX 2
 };
 
+static const void* lib_list2[]={
+	debug,          // #define LIB_DEBUG 128
+	lib_print,      // #define LIB_PRINT 129
+	lib_let_str,    // #define LIB_LET_STR 130
+	lib_end,        // #define LIB_END 131
+	lib_line_num,   // #define LIB_LINE_NUM 132
+};
+
+int statement_library(int r0, int r1, int r2, int r3){
+	int (*f)(int r0, int r1, int r2) = lib_list2[r3-128];
+	r0=f(r0,r1,r2);
+	// Raise garbage collection flag
+	g_garbage_collection=1;
+	// TODO: Check break key
+	return r0;
+}
+
 int kmbasic_library(int r0, int r1, int r2, int r3){
-	int (*f)(int r0, int r1, int r2) = lib_list[r3];
-	return f(r0,r1,r2);
+	// Confirm push {r4, lr} assembly in kmbasic.dis file
+	// Store return address in R7[3]
+	asm("mov r4,lr");
+	asm("str r4,[r7,#12]");
+	// Quick library
+	int (*f)(int r0, int r1, int r2) = lib_list1[r3];
+	if (r3<128) return f(r0,r1,r2);
+	// Statement library
+	else return statement_library(r0,r1,r2,r3);
 }
