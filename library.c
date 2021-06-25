@@ -24,6 +24,23 @@
 	asm("mov sp,r4");\
 	asm("pop {r4,pc}")
 
+int lib_add_string(int r0, int r1, int r2){
+	int i,j;
+	char* res;
+	char* str1=(char*)r1;
+	char* str2=(char*)r0;
+	// Determine total lengthj
+	for(i=0;str1[i];i++);
+	for(j=0;str2[j];j++);
+	// Allocate memory
+	res=alloc_memory((i+j+4)/4,-1);
+	// Copy string
+	for(i=0;str1[i];i++) res[i]=str1[i];
+	for(j=0;str2[j];j++) res[i++]=str2[j];
+	res[i]=0x00;
+	// Return string
+	return (int)res;
+}
 int lib_hex(int width, int num, int r2){
 	char* str;
 	int i,j,minus;
@@ -149,6 +166,7 @@ static const void* lib_list1[]={
 	lib_calc,       // #define LIB_CALC 0
 	lib_calc_float, // #define LIB_CALC_FLOAT 1
 	lib_hex,        // #define LIB_HEX 2
+	lib_add_string, // #define LIB_ADD_STRING 3
 };
 
 static const void* lib_list2[]={

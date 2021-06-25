@@ -71,7 +71,7 @@ int string_char(){
 	}
 }
 
-int get_string(void){
+int get_simple_string(void){
 	int e,i,vn;
 	unsigned char c;
 	skip_blank();
@@ -126,4 +126,24 @@ int get_string(void){
 			return ERROR_SYNTAX;
 		}
 	}
+}
+
+int get_string(void){
+	int e;
+	e=get_simple_string();
+	if (e) return e;
+	skip_blank();
+	// Only '+' can be used as an operator
+	while('+'==source[0]) {
+		source++;
+		check_object(1);
+		(object++)[0]=0xb401;// push	{r0}
+		e=get_simple_string();
+		if (e) return e;
+		check_object(1);
+		(object++)[0]=0xbc02; // pop	{r1}
+		e=call_lib_code(LIB_ADD_STRING);
+		if (e) return e;
+	}
+	return 0;
 }

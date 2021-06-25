@@ -45,6 +45,7 @@
 #define LIB_CALC 0
 #define LIB_CALC_FLOAT 1
 #define LIB_HEX 2
+#define LIB_ADD_STRING 3
 
 #define LIB_DEBUG 128
 #define LIB_PRINT 129

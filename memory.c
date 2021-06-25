@@ -63,7 +63,7 @@ void init_memory(void){
 	g_heap_end=(int*)i;
 	// Garbage collection in the very beginning
 	g_garbage_collection=1;
-	// Reset delete lise
+	// Reset delete list
 	g_deleted_num=0;
 }
 

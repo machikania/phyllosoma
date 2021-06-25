@@ -44,9 +44,7 @@ void dump_cmpdata(void){
 
 int main() {
 	static char* const code[]={
-"FOR I=0 to 260 STEP 5",
-"  PRINT HEX$(I),",
-"NEXT",
+"PRINT \"Hello\"+\" \"+\"World!\"",
 "END",
 		0
 	};
