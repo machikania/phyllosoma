@@ -31,6 +31,7 @@
 #define ERROR_LABEL_DUPLICATED _throw_error(-7)
 #define ERROR_NO_TEMP_VAR _throw_error(-8)
 #define ERROR_OUT_OF_MEMORY _throw_error(-9)
+#define ERROR_NOT_OBJECT _throw_error(-10)
 
 /*
 	Libraries
@@ -142,6 +143,12 @@ int r0_to_variable(int vn);
 int variable_to_r0(int vn);
 
 void printstr(unsigned char *s);
+void printchar(unsigned char c);
+void printint(int i);
+void printhex4(unsigned char c);
+void printhex8(unsigned char c);
+void printhex16(unsigned short s);
+void printhex32(unsigned int i);
 
 void init_compiler(void);
 void run_code(void);
@@ -206,6 +213,11 @@ void init_memory(void);
 void* alloc_memory(int size, int var_num);
 void* calloc_memory(int size, int var_num);
 void delete_memory(void* data);
+int move_from_temp(int vn, int pdata);
+
+int get_class_number(void);
+int static_method_or_property(int cn, char stringorfloat);
+int method_or_property(int vn, char stringorfloat);
 
 // For debugging
 void dump_cmpdata(void);

@@ -29,7 +29,7 @@ int lib_add_string(int r0, int r1, int r2){
 	char* res;
 	char* str1=(char*)r1;
 	char* str2=(char*)r0;
-	// Determine total lengthj
+	// Determine total length
 	for(i=0;str1[i];i++);
 	for(j=0;str2[j];j++);
 	// Allocate memory
@@ -101,7 +101,20 @@ void lib_print(){
 }
 
 int lib_let_str(int r0, int r1, int r2){
-	return r0;
+	int i;
+	char* str=(char*)r0;
+	char* res;
+	// If r0 is pointer to temporary area, use it.
+	if (move_from_temp(r1,r0)) return r0;
+	// It's not in temporary area. Need to be copied.
+	// Calculate length
+	for(i=0;str[i];i++);
+	// Allocate memory
+	res=alloc_memory((i+4)/4,r1);
+	// Copy string
+	for(i=0;res[i]=str[i];i++);
+	// All done
+	return (int)res;
 }
 
 int lib_calc(int r0, int r1, int r2){

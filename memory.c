@@ -126,14 +126,14 @@ void* alloc_memory(int size, int var_num){
 		}
 		if (min) {
 			// Found one
-			kmbasic_var_size[var_num]=g_deleted_size[j];
-			kmbasic_variables[var_num]=g_deleted_pointer[j];
+			candidate=(int*)g_deleted_pointer[j];
 			// Discard it from the deleted list
 			for(i=j;i<g_deleted_num-1;i++){
 				g_deleted_pointer[i]=g_deleted_pointer[i+1];
 				g_deleted_size[i]=g_deleted_size[i+1];
 			}
 			g_deleted_num--;
+			break;
 		} else {
 			// Not found
 			// Invalidate deleted list
@@ -177,6 +177,8 @@ void* alloc_memory(int size, int var_num){
 		stop_with_error(ERROR_OUT_OF_MEMORY);
 	}
 	// A free area found
+	kmbasic_var_size[var_num]=size;
+	kmbasic_variables[var_num]=(int)candidate;
 	return candidate;
 }
 
@@ -213,3 +215,17 @@ void delete_memory(void* data){
 	g_deleted_num++;
 }
 
+int move_from_temp(int vn, int pdata){
+	int i,var_num;
+	for(i=0;i<TEMPVAR_NUMBER;i++) {
+		if (0==kmbasic_var_size[ALLOC_TEMP_BLOCK+i]) continue;
+		if (pdata!=kmbasic_variables[ALLOC_TEMP_BLOCK+i]) continue;
+		// Found it.
+		kmbasic_variables[vn]=kmbasic_variables[ALLOC_TEMP_BLOCK+i];
+		kmbasic_var_size[vn]=kmbasic_var_size[ALLOC_TEMP_BLOCK+i];
+		kmbasic_var_size[ALLOC_TEMP_BLOCK+i]=0;
+		return 1;
+	}
+	// Not found
+	return 0;
+}

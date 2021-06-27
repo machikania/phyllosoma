@@ -38,9 +38,16 @@ int get_simple_float(void){
 	} else if ('A'<=source[0] && source[0]<'Z' || '_'==source[0]) {
 		// Lower constant flag
 		g_constant_value_flag=0;
+		// Class static property or method
+		vn=get_class_number();
+		if (0<=vn) return static_method_or_property(vn,'#');
 		// Variable or function
 		vn=get_var_number();
 		if (0<=vn) {
+			if ('.'==source[0]) {
+				source++;
+				return method_or_property(vn,'#');
+			}
 			// This is a variable
 			if ('#'!=source[0]) return ERROR_SYNTAX;
 			source++;

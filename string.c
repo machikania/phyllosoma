@@ -109,9 +109,16 @@ int get_simple_string(void){
 		// Return without error
 		return 0;
 	} else if ('A'<=source[0] && source[0]<'Z' || '_'==source[0]) {
+		// Class static property or method
+		vn=get_class_number();
+		if (0<=vn) return static_method_or_property(vn,'$');
 		// Variable or function
 		vn=get_var_number();
 		if (0<=vn) {
+			if ('.'==source[0]) {
+				source++;
+				return method_or_property(vn,'$');
+			}
 			// This is a variable
 			if ('$'!=source[0]) return ERROR_SYNTAX;
 			source++;
@@ -137,13 +144,14 @@ int get_string(void){
 	while('+'==source[0]) {
 		source++;
 		check_object(1);
-		(object++)[0]=0xb401;// push	{r0}
+		(object++)[0]=0xb401; // push	{r0}
 		e=get_simple_string();
 		if (e) return e;
 		check_object(1);
 		(object++)[0]=0xbc02; // pop	{r1}
 		e=call_lib_code(LIB_ADD_STRING);
 		if (e) return e;
+		skip_blank();
 	}
 	return 0;
 }

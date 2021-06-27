@@ -49,6 +49,7 @@ int var_num_to_r1(int vn){
 	if (vn<256) {
 		check_object(1);
 		(object++)[0]=0x2100 | vn;      // movs	r1, #xx
+		return 0;
 	} else return ERROR_UNKNOWN;
 }
 int r0_to_variable(int vn){

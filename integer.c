@@ -54,13 +54,21 @@ int get_simple_integer(void){
 	} else if ('A'<=source[0] && source[0]<'Z' || '_'==source[0]) {
 		// Lower constant flag
 		g_constant_value_flag=0;
+		// Class static property or method
+		vn=get_class_number();
+		if (0<=vn) return static_method_or_property(vn,0);
 		// Variable or function
 		vn=get_var_number();
 		if (0<=vn) {
+			if ('.'==source[0]) {
+				source++;
+				return method_or_property(vn,0);
+			}
 			// This is a variable
 			// TODO: support array
 			return variable_to_r0(vn);
 		} else {
+			// TODO: support class static property
 			// This must be a function
 			i=integer_functions();
 			if (i) return i;
