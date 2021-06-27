@@ -705,6 +705,23 @@ int let_integer(int vn){
 			if (e) return e;
 			return r0_to_variable(vn);
 		case '(': // integer array
+			e=variable_to_r0(vn);
+			if (e) return e;
+			e=get_dim_pointer();
+			if (e) return e;
+			if (')'!=source[0]) return ERROR_SYNTAX;
+			source++;
+			check_object(1);
+			(object++)[0]=0xb401; // push	{r0}
+			skip_blank();
+			if ('='!=source[0]) return ERROR_SYNTAX;
+			source++;
+			e=get_integer();
+			if (e) return e;
+			check_object(1);
+			(object++)[0]=0xbc02; // pop	{r1}
+			(object++)[0]=0x6008; // str	r0, [r1, #0]
+			return 0;
 		default:
 			source--;
 			return ERROR_SYNTAX;
@@ -733,6 +750,23 @@ int let_float(int vn){
 			if (e) return e;
 			return r0_to_variable(vn);
 		case '(': // float array
+			e=variable_to_r0(vn);
+			if (e) return e;
+			e=get_dim_pointer();
+			if (e) return e;
+			if (')'!=source[0]) return ERROR_SYNTAX;
+			source++;
+			check_object(1);
+			(object++)[0]=0xb401; // push	{r0}
+			skip_blank();
+			if ('='!=source[0]) return ERROR_SYNTAX;
+			source++;
+			e=get_float();
+			if (e) return e;
+			check_object(1);
+			(object++)[0]=0xbc02; // pop	{r1}
+			(object++)[0]=0x6008; // str	r0, [r1, #0]
+			return 0;
 		default:
 			source--;
 			return ERROR_SYNTAX;

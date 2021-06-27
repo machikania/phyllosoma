@@ -60,13 +60,23 @@ int get_simple_integer(void){
 		// Variable or function
 		vn=get_var_number();
 		if (0<=vn) {
+			// Get variable value
+			i=variable_to_r0(vn);
+			if (i) return i;
+			// Check if an array
+			if ('('==source[0]) {
+				source++;
+				i=get_dim_value();
+				if (i) return i;
+				if (')'!=source[0]) return ERROR_SYNTAX;
+				source++;
+			}
+			// Check if an object
 			if ('.'==source[0]) {
 				source++;
-				return method_or_property(vn,0);
+				return method_or_property(0);
 			}
-			// This is a variable
-			// TODO: support array
-			return variable_to_r0(vn);
+			return 0;
 		} else {
 			// TODO: support class static property
 			// This must be a function

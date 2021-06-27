@@ -53,6 +53,11 @@ static unsigned short g_deleted_size[DELETE_LIST_SIZE];
 
 void init_memory(void){
 	int i;
+	// Clear all variables
+	for(i=0;i<ALLOC_BLOCK_NUM;i++) {
+		kmbasic_variables[i]=0;
+		kmbasic_var_size[i]=0;
+	}
 	// HEAP_BEGIN
 	i=(int)(&object[1]);
 	i&=0xfffffffc;

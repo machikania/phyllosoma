@@ -21,10 +21,10 @@ int static_method_or_property(int cn, char stringorfloat){
 	return ERROR_SYNTAX;
 }
 
-int method_or_property(int vn, char stringorfloat){
+int method_or_property(char stringorfloat){
 	// '.' has been detected before comming this line
 	// stringorfloat is either 0, '$', or '#' for integer, string, or float
-	if (vn<0) return vn;
+	// Pointer to object is in r0 register
 	// TODO: detect property
 	// TODO: detect method
 	return ERROR_SYNTAX;

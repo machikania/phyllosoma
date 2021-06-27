@@ -176,6 +176,8 @@ int get_integer(void);
 int get_simple_float(void);
 int get_float(void);
 
+int get_dim_pointer(void);
+int get_dim_value(void);
 int get_int_or_float(void);
 int get_string_int_or_float(void);
 int get_value(int vmode);
@@ -217,7 +219,7 @@ int move_from_temp(int vn, int pdata);
 
 int get_class_number(void);
 int static_method_or_property(int cn, char stringorfloat);
-int method_or_property(int vn, char stringorfloat);
+int method_or_property(char stringorfloat);
 
 // For debugging
 void dump_cmpdata(void);

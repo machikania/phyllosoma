@@ -44,15 +44,25 @@ int get_simple_float(void){
 		// Variable or function
 		vn=get_var_number();
 		if (0<=vn) {
+			// Get variable value
+			i=variable_to_r0(vn);
+			if (i) return i;
+			// Check if an array
+			if ('('==source[0]) {
+				source++;
+				i=get_dim_value();
+				if (i) return i;
+				if (')'!=source[0]) return ERROR_SYNTAX;
+				source++;
+			}
+			// Check if an object
 			if ('.'==source[0]) {
 				source++;
-				return method_or_property(vn,'#');
+				return method_or_property(0);
 			}
-			// This is a variable
 			if ('#'!=source[0]) return ERROR_SYNTAX;
 			source++;
-			// TODO: support array
-			return variable_to_r0(vn);
+			return 0;
 		} else {
 			// This must be a function
 			i=float_functions();

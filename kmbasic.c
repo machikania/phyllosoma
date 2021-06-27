@@ -44,7 +44,12 @@ void dump_cmpdata(void){
 
 int main() {
 	static char* const code[]={
-"PRINT HEX$(&A),HEX$(&B)",
+"I=&A",
+"PRINT A,B,I(0),I(1)",
+"A=123:B=456",
+"PRINT A,B,I(0),I(1)",
+"I(0)=234:I(1)=567",
+"PRINT A,B,I(0),I(1)",
 "END",
 		0
 	};

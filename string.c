@@ -117,7 +117,9 @@ int get_simple_string(void){
 		if (0<=vn) {
 			if ('.'==source[0]) {
 				source++;
-				return method_or_property(vn,'$');
+				e=variable_to_r0(vn);
+				if (e) return e;
+				return method_or_property('$');
 			}
 			// This is a variable
 			if ('$'!=source[0]) return ERROR_SYNTAX;
