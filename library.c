@@ -171,8 +171,9 @@ int lib_end(int r0, int r1, int r2){
 }
 
 int debug(int r0, int r1, int r2){
-	asm("strh	r3, [r2, r1]");
-	return r0;
+	asm("mov r0,#0");
+	asm("add r0,r0,r5");
+	return r0<<2;
 }
 
 static const void* lib_list1[]={

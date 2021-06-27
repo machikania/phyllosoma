@@ -44,9 +44,7 @@ void dump_cmpdata(void){
 
 int main() {
 	static char* const code[]={
-"T$=\"Hello\"",
-"T$=T$+\" World!\"",
-"PRINT T$",
+"PRINT HEX$(&A),HEX$(&B)",
 "END",
 		0
 	};

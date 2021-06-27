@@ -149,6 +149,7 @@ void* alloc_memory(int size, int var_num){
 		}
 		if (&candidate[size]<=HEAP_END) break; // Found an available block
 		// Check between blocks
+		// TODO: confirm this logic
 		candidate=HEAP_BEGIN;
 		for(i=0;i<=ALLOC_BLOCK_NUM;i++){
 			// Check the overlap
@@ -161,15 +162,15 @@ void* alloc_memory(int size, int var_num){
 				break;
 			}
 			if (candidate) break;
+			if (ALLOC_BLOCK_NUM<=i) break;
 			// Check after a block
-			for(i=i;i<=ALLOC_BLOCK_NUM;i++){
+			for(i=i;i<ALLOC_BLOCK_NUM;i++){
 				if (0==kmbasic_var_size[i]) continue; // Not using heap
 				var=(int*)kmbasic_variables[i];
 				if (var<HEAP_BEGIN || HEAP_END <=var) continue; // Invalid
-			}
-			if (i<ALLOC_BLOCK_NUM) {
 				var=(int*)kmbasic_variables[i];
 				candidate=&var[kmbasic_var_size[i]];
+				break;
 			}
 		}
 		if (candidate) break;

@@ -76,7 +76,18 @@ int get_simple_integer(void){
 			source--;
 			return ERROR_SYNTAX;
 		}
+	} else if ('&'==source[0]) {
+		// '&' operator
+		source++;
+		vn=get_var_number();
+		if (vn<0) return vn;
+		check_object(3);
+		(object++)[0]=0x2000 | vn; // movs	r0, #xx
+		(object++)[0]=0x0080;      // lsls	r0, r0, #2
+		(object++)[0]=0x1940;      // adds	r0, r0, r5
+		return 0;
 	}
+	return ERROR_SYNTAX;
 }
 
 /*

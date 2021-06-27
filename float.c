@@ -62,6 +62,7 @@ int get_simple_float(void){
 			return ERROR_SYNTAX;
 		}
 	}
+	return ERROR_SYNTAX;
 }
 int get_float(void){
 	return get_value(VAR_MODE_FLOAT);
