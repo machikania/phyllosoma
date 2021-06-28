@@ -9,6 +9,13 @@
 #include <stdlib.h>
 #include "./compiler.h"
 
+int float_functions(void){
+	if (instruction_is("ARGS#(")) return args_function();
+	if (instruction_is("GOSUB#(")) return gosub_function();
+	if (instruction_is("DEBUG#(")) return debug_function();
+	return ERROR_SYNTAX;
+}
+
 int get_simple_float(void){
 	int i,vn;
 	unsigned char* err;

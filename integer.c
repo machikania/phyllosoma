@@ -7,6 +7,83 @@
 
 #include "./compiler.h"
 
+/*
+TODO:
+
+INT(x#)
+	実数値x#を整数値に変換して返す。
+LEN(x$)
+	文字列の長さを返す。
+PEEK(x)
+	xで示される物理アドレスから１バイト読み取り、返す。
+PEEK16(x)
+	xで示される物理アドレスから２バイト読み取り、16ビット値で返す。xが奇数値の場
+	合、例外停止するので注意。
+PEEK32(x)
+	xで示される物理アドレスから４バイト読み取り、32ビット値で返す。xが４の倍数で
+	無い場合、例外停止するので注意。
+RND()
+	0から32767までの擬似乱数を返す。
+STRNCMP(x$,y$,z)
+	２つの文字列のうちz文字分を比較し、結果を返す。同じ文字列の場合は０。
+VAL(x$)
+	１０進数もしくは１６進数文字列としてのx$の値を、整数値で返す。
+*/
+
+int asc_function(void){
+	int e;
+	e=get_string();
+	if (e) return e;
+	check_object(1);
+	(object++)[0]=0x7800; //      	ldrb	r0, [r0, #0]
+	return 0;
+}
+
+int sgn_function(void){
+	int e;
+	e=get_integer();
+	if (e) return e;
+	check_object(5);
+	(object++)[0]=0x17c3; //      	asrs	r3, r0, #31
+	(object++)[0]=0x1a1b; //      	subs	r3, r3, r0
+	(object++)[0]=0x0fdb; //      	lsrs	r3, r3, #31
+	(object++)[0]=0x0fc0; //      	lsrs	r0, r0, #31
+	(object++)[0]=0x1a18; //      	subs	r0, r3, r0
+	return 0;
+}
+
+int abs_function(void){
+	int e;
+	e=get_integer();
+	if (e) return e;
+	check_object(3);
+	(object++)[0]=0x17c3; //      	asrs	r3, r0, #31
+	(object++)[0]=0x18c0; //      	adds	r0, r0, r3
+	(object++)[0]=0x4058; //      	eors	r0, r3
+	return 0;
+}
+
+int not_function(void){
+	int e;
+	e=get_integer();
+	if (e) return e;
+	check_object(2);
+	(object++)[0]=0x4243; //      	negs	r3, r0
+	(object++)[0]=0x4158; //      	adcs	r0, r3
+	return 0;
+}
+
+int integer_functions(void){
+	if (instruction_is("ABS(")) return abs_function();
+	if (instruction_is("ASC(")) return asc_function();
+	if (instruction_is("NOT(")) return not_function();
+	if (instruction_is("SGN(")) return sgn_function();
+	if (instruction_is("ARGS(")) return args_function();
+	if (instruction_is("GOSUB(")) return gosub_function();
+	if (instruction_is("DEBUG(")) return debug_function();
+	return ERROR_SYNTAX;
+}
+
 int get_positive_decimal_value(void){
 	int i;
 	if (source[0]<'0' || '9'<source[0]) return ERROR_SYNTAX;

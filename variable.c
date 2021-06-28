@@ -29,6 +29,12 @@ int set_value_in_register(unsigned char r,int val){
 		check_object(1);
 		(object++)[0]=0x2000 | val | (r<<8);      // movs	rx, #xx
 		return 0;
+	} else if (-255<=val && val<0) {
+		val=0-val;
+		check_object(2);
+		(object++)[0]=0x2000 | val | (r<<8);      // movs	rx, #xx
+		(object++)[0]=0x4240;                     // negs	r0, r0
+		return 0;
 	} else if ((int)object&0x03) {
 		// Lower 2 bit of object is 0b10
 		check_object(5);

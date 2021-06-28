@@ -99,6 +99,22 @@
 #define VAR_MODE_STRING  1
 #define VAR_MODE_FLOAT   2
 
+#define ARG_NONE    0
+#define ARG_INTEGER 1
+#define ARG_FLOAT   2
+#define ARG_STRING  3
+#define ARG_OPTIONAL         4
+#define ARG_INTEGER_OPTIONAL 5
+#define ARG_FLOAT_OPTIONAL   6
+#define ARG_STRING_OPTIONAL  7
+#define ARG1      0
+#define ARG2      3
+#define ARG3      6
+#define ARG4      9
+#define ARG5      12
+#define ARG6      15
+#define LIBOPTION 24
+
 /*
 	Variables
 */
@@ -110,6 +126,8 @@ extern unsigned short kmbasic_var_size[ALLOC_BLOCK_NUM];
 extern unsigned char* source;
 extern unsigned short* object;
 extern unsigned short* g_objmax;
+
+extern int* g_default_args;
 
 extern int g_linenum;
 extern int g_next_varnum;
@@ -167,7 +185,6 @@ int kmbasic_library(int r0, int r1, int r2, int r3);
 int gosub_statement(void);
 int compile_statement(void);
 
-int hex_function(void);
 int get_string(void);
 
 int get_positive_decimal_value(void);
@@ -188,9 +205,10 @@ int calculation(int op,int vmode);
 
 int kmbasic_library(int r0, int r1, int r2, int r3);
 
-int string_functions(void);
-int integer_functions(void);
-int float_functions(void);
+int argn_function(int lib,int mode);
+int args_function(void);
+int gosub_function(void);
+int debug_function(void);
 
 void cmpdata_init(void);
 unsigned short cmpdata_get_id(void);

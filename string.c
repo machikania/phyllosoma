@@ -7,6 +7,10 @@
 
 #include "./compiler.h"
 
+int mid_string(int vn){
+	return ERROR_SYNTAX;
+}
+
 int hex_function(void){
 	int e;
 	e=get_integer();
@@ -26,6 +30,13 @@ int hex_function(void){
 	return call_lib_code(LIB_HEX);
 }
 
+int string_functions(void){
+	if (instruction_is("HEX$(")) return hex_function();
+	if (instruction_is("ARGS$(")) return args_function();
+	if (instruction_is("GOSUB$(")) return gosub_function();
+	if (instruction_is("DEBUG$(")) return debug_function();
+	return ERROR_SYNTAX;
+}
 int get_byte(void){
 	unsigned char c;
 	if ('0'<=source[0] && source[0]<='9') c=source[0]-'0';
@@ -124,8 +135,17 @@ int get_simple_string(void){
 			// This is a variable
 			if ('$'!=source[0]) return ERROR_SYNTAX;
 			source++;
-			// TODO: support part of string
-			return variable_to_r0(vn);
+			if ('('==source[0]) {
+				// Part of string variable
+				e=mid_string(vn);
+				if (e) return e;
+				if (')'!=source[0]) return ERROR_SYNTAX;
+				source++;
+				return 0;
+			} else {
+				// Simple string variable
+				return variable_to_r0(vn);
+			}
 		} else {
 			// This must be a function
 			e=string_functions();
