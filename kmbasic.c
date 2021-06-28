@@ -44,9 +44,8 @@ void dump_cmpdata(void){
 
 int main() {
 	static char* const code[]={
-"FOR I=-5 TO 5",
-"  PRINT I,NOT(I),ABS(I),SGN(I),ASC(HEX$(I))",
-"NEXT",
+"I=0x12345678",
+"PRINT HEX$(PEEK(&I)),HEX$(PEEK16(&I)),HEX$(PEEK32(&I)),",
 "END",
 		0
 	};

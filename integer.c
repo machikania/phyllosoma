@@ -14,14 +14,6 @@ INT(x#)
 	実数値x#を整数値に変換して返す。
 LEN(x$)
 	文字列の長さを返す。
-PEEK(x)
-	xで示される物理アドレスから１バイト読み取り、返す。
-PEEK16(x)
-	xで示される物理アドレスから２バイト読み取り、16ビット値で返す。xが奇数値の場
-	合、例外停止するので注意。
-PEEK32(x)
-	xで示される物理アドレスから４バイト読み取り、32ビット値で返す。xが４の倍数で
-	無い場合、例外停止するので注意。
 RND()
 	0から32767までの擬似乱数を返す。
 STRNCMP(x$,y$,z)
@@ -29,6 +21,33 @@ STRNCMP(x$,y$,z)
 VAL(x$)
 	１０進数もしくは１６進数文字列としてのx$の値を、整数値で返す。
 */
+
+int peek_function(void){
+	int e;
+	e=get_integer();
+	if (e) return e;
+	check_object(1);
+	(object++)[0]=0x7800; //      	ldrb	r0, [r0, #0]
+	return 0;
+}
+
+int peek16_function(void){
+	int e;
+	e=get_integer();
+	if (e) return e;
+	check_object(1);
+	(object++)[0]=0x8800; //      	ldrh	r0, [r0, #0]
+	return 0;
+}
+
+int peek32_function(void){
+	int e;
+	e=get_integer();
+	if (e) return e;
+	check_object(1);
+	(object++)[0]=0x6800; //      	ldr	r0, [r0, #0]
+	return 0;
+}
 
 int asc_function(void){
 	int e;
@@ -77,6 +96,9 @@ int integer_functions(void){
 	if (instruction_is("ABS(")) return abs_function();
 	if (instruction_is("ASC(")) return asc_function();
 	if (instruction_is("NOT(")) return not_function();
+	if (instruction_is("PEEK(")) return peek_function();
+	if (instruction_is("PEEK16(")) return peek16_function();
+	if (instruction_is("PEEK32(")) return peek32_function();
 	if (instruction_is("SGN(")) return sgn_function();
 	if (instruction_is("ARGS(")) return args_function();
 	if (instruction_is("GOSUB(")) return gosub_function();

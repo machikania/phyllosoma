@@ -201,8 +201,10 @@ int lib_dim(int argsnum, int varnum, int r2){
 
 
 int debug(int r0, int r1, int r2){
-	asm("ldrb r0,[r0,#0]");
-	return r0;
+	asm("ldrb	r0, [r0, #0]");
+	asm("ldrh	r0, [r0, #0]");
+	asm("ldr	r0, [r0, #0]");
+	return r1;
 }
 
 static const void* lib_list1[]={
