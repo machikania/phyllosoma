@@ -44,13 +44,19 @@ void dump_cmpdata(void){
 
 int main() {
 	static char* const code[]={
-"DIM D(2,1,4)",
-"FOR I=0 TO 2:FOR J=0 TO 1:FOR K=0 TO 4",
-"  D(I,J,K)=I*100+J*10+K",
-"NEXT:NEXT:NEXT",
-"FOR I=0 TO 2:FOR J=0 TO 1:FOR K=0 TO 4",
-"  PRINT D(I,J,K),",
-"NEXT:NEXT:NEXT",
+"DIM A(2),B(3)",
+"FOR I=0 TO 2",
+"  A(I)=I",
+"NEXT",
+"FOR I=0 TO 3",
+"  B(I)=I*10",
+"NEXT",
+"FOR I=0 TO 2",
+"  PRINT A(I),",
+"NEXT",
+"FOR I=0 TO 3",
+"  PRINT B(I),",
+"NEXT",
 "END",
 		0
 	};
