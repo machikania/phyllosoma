@@ -7,20 +7,29 @@
 
 #include "./compiler.h"
 
-/*
-TODO:
+int strncmp_function(void){
+	return argn_function(LIB_STRNCMP,
+		ARG_STRING<<ARG1 |
+		ARG_STRING<<ARG2 |
+		ARG_INTEGER<<ARG3 );
+}
 
-INT(x#)
-	実数値x#を整数値に変換して返す。
-LEN(x$)
-	文字列の長さを返す。
-RND()
-	0から32767までの擬似乱数を返す。
-STRNCMP(x$,y$,z)
-	２つの文字列のうちz文字分を比較し、結果を返す。同じ文字列の場合は０。
-VAL(x$)
-	１０進数もしくは１６進数文字列としてのx$の値を、整数値で返す。
-*/
+int val_function(void){
+	return argn_function(LIB_VAL,ARG_STRING<<ARG1);
+}
+
+int len_function(void){
+	return argn_function(LIB_LEN,ARG_STRING<<ARG1);
+}
+
+int int_function(void){
+	return argn_function(LIB_INT,ARG_FLOAT<<ARG1);
+}
+
+int rnd_function(void){
+	return call_lib_code(LIB_RND);
+}
+
 
 int peek_function(void){
 	int e;
@@ -95,11 +104,16 @@ int not_function(void){
 int integer_functions(void){
 	if (instruction_is("ABS(")) return abs_function();
 	if (instruction_is("ASC(")) return asc_function();
+	if (instruction_is("INT(")) return int_function();
+	if (instruction_is("LEN(")) return len_function();
 	if (instruction_is("NOT(")) return not_function();
 	if (instruction_is("PEEK(")) return peek_function();
 	if (instruction_is("PEEK16(")) return peek16_function();
 	if (instruction_is("PEEK32(")) return peek32_function();
 	if (instruction_is("SGN(")) return sgn_function();
+	if (instruction_is("STRNCMP(")) return strncmp_function();
+	if (instruction_is("RND(")) return rnd_function();
+	if (instruction_is("VAL(")) return val_function();
 	if (instruction_is("ARGS(")) return args_function();
 	if (instruction_is("GOSUB(")) return gosub_function();
 	if (instruction_is("DEBUG(")) return debug_function();

@@ -101,6 +101,8 @@ void run_code_main(void){
 void run_code(void){
 	// Initializing environment
 	init_memory();
+	// Random seed
+	g_rnd_seed=0x92D68CA2; //2463534242
 	// Run code
 	asm("bl run_code_main");
 }

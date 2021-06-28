@@ -6,6 +6,8 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "./api.h"
 #include "./compiler.h"
 
@@ -199,6 +201,40 @@ int lib_dim(int argsnum, int varnum, int r2){
 	return (int)heap;
 };
 
+int lib_rnd(int r0, int r1, int r2){
+	int y;
+	y=g_rnd_seed;
+	y = y ^ (y << 13);
+	y = y ^ (y >> 17);
+	y = y ^ (y << 5);
+	g_rnd_seed=y;
+	return y&0x7fff;
+}
+
+int lib_int(int r0, int r1, int r2){
+	g_scratch_int[0]=r0;
+	return (int)g_scratch_float[0];
+}
+
+int lib_len(int r0, int r1, int r2){
+	char* str=(char*)r0;
+	for(r0=0;str[r0];r0++);
+	return r0;
+}
+
+int lib_val(int r0, int r1, int r2){
+	char* str=(char*)r0;
+	if ('$'==str[0] || '0'==str[0] && ('X'==str[1] || 'x'==str[1])) {
+		if ('$'==str[0]) str++;
+		else str+=2;
+		return strtol(str,0,16);
+	}
+	return strtol(str,0,10);
+}
+
+int lib_strncmp(int r0, int r1, int r2){
+	return strncmp((char*)r2,(char*)r1,r0);
+}
 
 int debug(int r0, int r1, int r2){
 	asm("ldrb	r0, [r0, #0]");
@@ -212,6 +248,11 @@ static const void* lib_list1[]={
 	lib_calc_float, // #define LIB_CALC_FLOAT 1
 	lib_hex,        // #define LIB_HEX 2
 	lib_add_string, // #define LIB_ADD_STRING 3
+	lib_strncmp,    // #define LIB_STRNCMP 4
+	lib_val,        // #define LIB_VAL 5
+	lib_len,        // #define LIB_LEN 6
+	lib_int,        // #define LIB_INT 7
+	lib_rnd,        // #define LIB_RND 8
 };
 
 static const void* lib_list2[]={
