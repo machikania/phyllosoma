@@ -848,6 +848,39 @@ int end_statement(void){
 	return call_lib_code(LIB_END);
 }
 
+int dim_statement(void){
+	unsigned short* obefore;
+	int i,e,vn;
+	vn=get_var_number();
+	if (vn<0) return vn;
+	if ('#'==source[0]) source++;
+	if ('('!=source[0]) return ERROR_SYNTAX;
+	source++;
+	obefore=object++; // sub sp,#xx
+	i=0;
+	do {
+		e=get_integer();
+		if (e) return e;
+		(object++)[0]=0x9000 | i; // str	r0, [sp, #xx]
+		i++;
+	} while (','==(source++)[0]);
+	source--;
+	if (')'!=source[0]) return ERROR_SYNTAX;
+	source++;
+	// R1 is var number
+	e=var_num_to_r1(vn);
+	if (e) return e;
+	// R0 is number of integer values
+	set_value_in_register(0,i);
+	// R2 is pointer of data array
+	check_object(1);
+	(object++)[0]=0x466a; // mov	r2, sp
+	e=call_lib_code(LIB_DIM);
+	obefore[0]=0xb080 | i; // sub	sp, #xx
+	(object++)[0] =0xb000 | i; // add	sp, #xx
+	return 0;
+}
+
 int compile_statement(void){
 	int e;
 	// Initialize
@@ -881,6 +914,7 @@ int compile_statement(void){
 	if (instruction_is("GOTO")) return goto_statement();
 	if (instruction_is("GOSUB")) return gosub_statement();
 	if (instruction_is("RETURN")) return return_statement();
+	if (instruction_is("DIM")) return dim_statement();
 	// Finally, try let statement again as syntax error may be in LET statement.
 	return let_statement();
 }

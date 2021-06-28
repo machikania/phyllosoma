@@ -170,9 +170,38 @@ int lib_end(int r0, int r1, int r2){
 	return r0;
 }
 
+int lib_dim(int argsnum, int varnum, int r2){
+	// R1 is var number
+	// R0 is number of integer values
+	// R2 is pointer of data array
+	int* sp=(int*)r2;
+	int i,j;
+	static int* heap;
+	// Calculate total length.
+	int len=0;  // Total length
+	int size=1; // Size of current block
+	for(i=0;i<argsnum;i++){
+		size*=sp[i]+1;
+		len+=size;
+	}
+	// Allocate memory
+	heap=calloc_memory(len,varnum);
+	// Construct pointers
+	len=0;
+	size=1;
+	for(i=0;i<argsnum-1;i++){
+		size*=sp[i]+1;
+		for(j=0;j<size;j++){
+			heap[len+j]=(int)&heap[len+size+(sp[i+1]+1)*j];
+		}
+		len+=size;
+	}
+	return (int)heap;
+};
+
+
 int debug(int r0, int r1, int r2){
-	asm("pop {r1}");
-	asm("ldr r0,[r1,#0]");
+	asm("mov r2,sp");
 	return r0+r1;
 }
 
@@ -189,6 +218,7 @@ static const void* lib_list2[]={
 	lib_let_str,    // #define LIB_LET_STR 130
 	lib_end,        // #define LIB_END 131
 	lib_line_num,   // #define LIB_LINE_NUM 132
+	lib_dim,        // #define LIB_DIM 133
 };
 
 int statement_library(int r0, int r1, int r2, int r3){

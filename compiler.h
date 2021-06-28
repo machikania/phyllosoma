@@ -53,6 +53,7 @@
 #define LIB_LET_STR 130
 #define LIB_END 131
 #define LIB_LINE_NUM 132
+#define LIB_DIM 133
 
 /*
 	Operators

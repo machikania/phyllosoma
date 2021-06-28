@@ -142,34 +142,6 @@ int call_lib_code(int lib_number){
 	return 0;
 }
 
-int set_value_in_register(unsigned char r,int val){
-	if (7<r) return ERROR_UNKNOWN;
-	if (0<=val && val<=255) {
-		check_object(1);
-		(object++)[0]=0x2000 | val | (r<<8);      // movs	rx, #xx
-		return 0;
-	} else if ((int)object&0x03) {
-		// Lower 2 bit of object is 0b10
-		check_object(5);
-		(object++)[0]=0x4801|(r<<8); // ldr    rx, [pc, #4]
-		(object++)[0]=0xe002;        // b.n    <skip>
-		(object++)[0]=0x46c0;        // nop            ; (mov r8, r8)
-		(object++)[0]=val&0xffff;    // lower 16 bits
-		(object++)[0]=val>>16;       // upper 16 bits
-		                             // <skip>:	
-		return 0;
-	} else {
-		// Lower 2 bit of object is 0b00
-		check_object(4);
-		(object++)[0]=0x4800|(r<<8); // ldr    rx, [pc, #4]
-		(object++)[0]=0xe001;        // b.n    <skip>
-		(object++)[0]=val&0xffff;    // lower 16 bits
-		(object++)[0]=val>>16;       // upper 16 bits
-		                             // <skip>:	
-		return 0;
-	}
-}
-
 int instruction_is(unsigned char* instruction){
 	int n;
 	// Skip blank first

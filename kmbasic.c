@@ -15,7 +15,7 @@ void dump(void){
 	printf("\nkmbasic_object:");
 	printhex32((int)&kmbasic_object[0]);
 	printf("\n");
-	for(i=0;i<128;i++){
+	for(i=0;i<256;i++){
 		printf("%x%x%x%x ",
 			(kmbasic_object[i]>>12)&0xf,
 			(kmbasic_object[i]>>8)&0xf,
@@ -44,12 +44,13 @@ void dump_cmpdata(void){
 
 int main() {
 	static char* const code[]={
-"I=&A",
-"PRINT A,B,I(0),I(1)",
-"A=123:B=456",
-"PRINT A,B,I(0),I(1)",
-"I(0)=234:I(1)=567",
-"PRINT A,B,I(0),I(1)",
+"DIM D(2,1,4)",
+"FOR I=0 TO 2:FOR J=0 TO 1:FOR K=0 TO 4",
+"  D(I,J,K)=I*100+J*10+K",
+"NEXT:NEXT:NEXT",
+"FOR I=0 TO 2:FOR J=0 TO 1:FOR K=0 TO 4",
+"  PRINT D(I,J,K),",
+"NEXT:NEXT:NEXT",
 "END",
 		0
 	};

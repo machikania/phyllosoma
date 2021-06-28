@@ -17,29 +17,33 @@ int get_value_sub(int pr,int vmode);
 	Array related functions
 */
 
-int get_dim_pointer(void){
+int get_dim_value(void){
 	int e;
-	// Push pointer to variable data
-	check_object(1);
-	(object++)[0]=0xb401; // push	{r0}
-	// Get index value
-	e=get_integer();
-	if (e) return e;
-	check_object(3);
-	(object++)[0]=0x0080; // lsls	r0, r0, #2
-	(object++)[0]=0xbc02; // pop	{r1}
-	(object++)[0]=0x1840; // adds	r0, r0, r1
+	do {
+		// Push pointer to variable data
+		check_object(1);
+		(object++)[0]=0xb401; // push	{r0}
+		// Get index value
+		e=get_integer();
+		if (e) return e;
+		check_object(3);
+		(object++)[0]=0x0080; // lsls	r0, r0, #2
+		(object++)[0]=0xbc02; // pop	{r1}
+		(object++)[0]=0x5808; // ldr	r0, [r1, r0]
+	} while (','==(source++)[0]); // Check if 2d, 3d, or more
+	source--;
 	return 0;
 }
 
-int get_dim_value(void){
+int get_dim_pointer(void){
 	int e;
-	e=get_dim_pointer();
+	e=get_dim_value();
 	if (e) return e;
-	check_object(1);
-	(object++)[0]=0x6800; // ldr	r0, [r0, #0]
+	// Replace the last assembly (see abve)
+	object[-1]=0x1840; // adds	r0, r0, r1
 	return 0;
 }
+
 /*
 	General functions
 */
