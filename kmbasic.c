@@ -44,7 +44,7 @@ void dump_cmpdata(void){
 
 int main() {
 	static char* const code[]={
-"PRINT FLOAT#(123),VAL#(\"456.789\"),",
+"PRINT POW#(10,3),SIN#(PI#),COS#(PI#),SIN#(PI#/2),COS#(PI#/2)",
 "END",
 		0
 	};

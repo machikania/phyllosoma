@@ -54,6 +54,7 @@
 #define LIB_RND 8
 #define LIB_FLOAT 9
 #define LIB_VAL_FLOAT 10
+#define LIB_MATH 11
 
 #define LIB_DEBUG 128
 #define LIB_PRINT 129
@@ -61,6 +62,30 @@
 #define LIB_END 131
 #define LIB_LINE_NUM 132
 #define LIB_DIM 133
+
+/*
+	LIB MATH options
+*/
+#define MATH_ACOS 1
+#define MATH_ASIN 2
+#define MATH_ATAN 3
+#define MATH_ATAN2 4
+#define MATH_CEIL 5
+#define MATH_COS 6
+#define MATH_COSH 7
+#define MATH_EXP 8
+#define MATH_FABS 9
+#define MATH_FLOOR 10
+#define MATH_FMOD 11
+#define MATH_LOG 12
+#define MATH_LOG10 13
+#define MATH_MODF 14
+#define MATH_POW 15
+#define MATH_SIN 16
+#define MATH_SINH 17
+#define MATH_SQRT 18
+#define MATH_TAN 19
+#define MATH_TANH 20
 
 /*
 	Operators

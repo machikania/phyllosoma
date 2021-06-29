@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "./api.h"
 #include "./compiler.h"
 
@@ -246,6 +247,38 @@ int lib_val_float(int r0, int r1, int r2){
 	return g_scratch_int[0];
 }
 
+int lib_math(int r0, int r1, int r2){
+	float f0,f1;
+	g_scratch_int[0]=r0;
+	g_scratch_int[1]=r1;
+	f0=g_scratch_float[0];
+	f1=g_scratch_float[1];
+	switch(r2){
+		case MATH_ACOS: g_scratch_float[0]=acosf(f0); break;
+		case MATH_ASIN: g_scratch_float[0]=asinf(f0); break;
+		case MATH_ATAN: g_scratch_float[0]=atanf(f0); break;
+		case MATH_ATAN2: g_scratch_float[0]=atan2f(f1,f0); break;
+		case MATH_CEIL: g_scratch_float[0]=ceilf(f0); break;
+		case MATH_COS: g_scratch_float[0]=cosf(f0); break;
+		case MATH_COSH: g_scratch_float[0]=coshf(f0); break;
+		case MATH_EXP: g_scratch_float[0]=expf(f0); break;
+		case MATH_FABS: g_scratch_float[0]=fabsf(f0); break;
+		case MATH_FLOOR: g_scratch_float[0]=floorf(f0); break;
+		case MATH_FMOD: g_scratch_float[0]=fmodf(f1,f0); break;
+		case MATH_LOG: g_scratch_float[0]=logf(f0); break;
+		case MATH_LOG10: g_scratch_float[0]=log10f(f0); break;
+		case MATH_MODF: g_scratch_float[0]=modff(f0,(void*)&g_scratch[0]); break;
+		case MATH_POW: g_scratch_float[0]=powf(f1,f0); break;
+		case MATH_SIN: g_scratch_float[0]=sinf(f0); break;
+		case MATH_SINH: g_scratch_float[0]=sinhf(f0); break;
+		case MATH_SQRT: g_scratch_float[0]=sqrtf(f0); break;
+		case MATH_TAN: g_scratch_float[0]=tanf(f0); break;
+		case MATH_TANH: g_scratch_float[0]=tanhf(f0); break;
+		default: g_scratch_float[0]=0; break;
+	}
+	return g_scratch_int[0];
+}
+
 int debug(int r0, int r1, int r2){
 	return r0;
 }
@@ -262,7 +295,7 @@ static const void* lib_list1[]={
 	lib_rnd,        // #define LIB_RND 8
 	lib_float,      // #define LIB_FLOAT 9
 	lib_val_float,  // #define LIB_VAL_FLOAT 10
-
+	lib_math,       // #define LIB_MATH 11
 };
 
 static const void* lib_list2[]={

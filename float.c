@@ -43,8 +43,6 @@ LOG10#(x#)
 	x# の常用対数を実数値で返す。
 MODF#(x#)
 	x# の小数部を実数値で返す。
-PI#
-	3.141593を返す。
 POW#(x#,y#)
 	x# の y# 乗を実数値で返す。
 SIN#(x#)
@@ -59,6 +57,21 @@ TANH#(x#)
 	x# の双曲線正接を実数値で返す。
 */
 
+
+
+int float_arg1_function(int func){
+	return argn_function(LIB_MATH,ARG_FLOAT<<ARG1 | func<<LIBOPTION);
+}
+
+int float_arg2_function(int func){
+	return argn_function(LIB_MATH,ARG_FLOAT<<ARG1 | ARG_FLOAT<<ARG2 | func<<LIBOPTION);
+}
+
+int pi_function(void){
+	g_scratch_float[0]=3.141593;
+	return set_value_in_register(0,g_scratch_int[0]);
+}
+
 int float_function(void){
 	return argn_function(LIB_FLOAT,ARG_INTEGER<<ARG1);
 }
@@ -68,6 +81,26 @@ int val_float_function(void){
 }
 
 int float_functions(void){
+	if (instruction_is("ACOS#(")) return float_arg1_function(MATH_ACOS);
+	if (instruction_is("ASIN#(")) return float_arg1_function(MATH_ASIN);
+	if (instruction_is("ATAN#(")) return float_arg1_function(MATH_ATAN);
+	if (instruction_is("ATAN2#(")) return float_arg2_function(MATH_ATAN2);
+	if (instruction_is("CEIL#(")) return float_arg1_function(MATH_CEIL);
+	if (instruction_is("COS#(")) return float_arg1_function(MATH_COS);
+	if (instruction_is("COSH#(")) return float_arg1_function(MATH_COSH);
+	if (instruction_is("EXP#(")) return float_arg1_function(MATH_EXP);
+	if (instruction_is("FABS#(")) return float_arg1_function(MATH_FABS);
+	if (instruction_is("FLOOR#(")) return float_arg1_function(MATH_FLOOR);
+	if (instruction_is("FMOD#(")) return float_arg2_function(MATH_FMOD);
+	if (instruction_is("LOG#(")) return float_arg1_function(MATH_LOG);
+	if (instruction_is("LOG10#(")) return float_arg1_function(MATH_LOG10);
+	if (instruction_is("MODF#(")) return float_arg1_function(MATH_MODF);
+	if (instruction_is("POW#(")) return float_arg2_function(MATH_POW);
+	if (instruction_is("SIN#(")) return float_arg1_function(MATH_SIN);
+	if (instruction_is("SINH#(")) return float_arg1_function(MATH_SINH);
+	if (instruction_is("SQRT#(")) return float_arg1_function(MATH_SQRT);
+	if (instruction_is("TAN#(")) return float_arg1_function(MATH_TAN);
+	if (instruction_is("TANH#(")) return float_arg1_function(MATH_TANH);
 	if (instruction_is("FLOAT#(")) return float_function();
 	if (instruction_is("VAL#(")) return val_float_function();
 	if (instruction_is("ARGS#(")) return args_function();
@@ -130,6 +163,10 @@ int get_simple_float(void){
 			if ('#'!=source[0]) return ERROR_SYNTAX;
 			source++;
 			return 0;
+		} else if ('P'==source[0] && 'I'==source[1] && '#'==source[2]) {
+			// PI#
+			source+=3;
+			return pi_function();
 		} else {
 			// This must be a function
 			i=float_functions();
