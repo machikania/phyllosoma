@@ -52,6 +52,8 @@
 #define LIB_LEN 6
 #define LIB_INT 7
 #define LIB_RND 8
+#define LIB_FLOAT 9
+#define LIB_VAL_FLOAT 10
 
 #define LIB_DEBUG 128
 #define LIB_PRINT 129

@@ -236,11 +236,18 @@ int lib_strncmp(int r0, int r1, int r2){
 	return strncmp((char*)r2,(char*)r1,r0);
 }
 
+int lib_float(int r0, int r1, int r2){
+	g_scratch_float[0]=(float)r0;
+	return g_scratch_int[0];
+}
+
+int lib_val_float(int r0, int r1, int r2){
+	g_scratch_float[0]=strtof((const char*)r0,0);
+	return g_scratch_int[0];
+}
+
 int debug(int r0, int r1, int r2){
-	asm("ldrb	r0, [r0, #0]");
-	asm("ldrh	r0, [r0, #0]");
-	asm("ldr	r0, [r0, #0]");
-	return r1;
+	return r0;
 }
 
 static const void* lib_list1[]={
@@ -253,6 +260,9 @@ static const void* lib_list1[]={
 	lib_len,        // #define LIB_LEN 6
 	lib_int,        // #define LIB_INT 7
 	lib_rnd,        // #define LIB_RND 8
+	lib_float,      // #define LIB_FLOAT 9
+	lib_val_float,  // #define LIB_VAL_FLOAT 10
+
 };
 
 static const void* lib_list2[]={

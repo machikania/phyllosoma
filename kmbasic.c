@@ -44,14 +44,7 @@ void dump_cmpdata(void){
 
 int main() {
 	static char* const code[]={
-"T$=\"1\"",
-"F#=123.4",
-"FOR I=1 to 4",
-"  PRINT RND(),LEN(T$),VAL(T$),HEX$(VAL(\"0x\"+T$)),INT(F#)",
-"  T$=T$+T$",
-"  F#=F#+F#",
-"NEXT",
-"PRINT STRNCMP(\"1117\",T$,3),STRNCMP(\"1117\",T$,4),",
+"PRINT FLOAT#(123),VAL#(\"456.789\"),",
 "END",
 		0
 	};
