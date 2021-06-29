@@ -55,6 +55,11 @@
 #define LIB_FLOAT 9
 #define LIB_VAL_FLOAT 10
 #define LIB_MATH 11
+#define LIB_MID 12
+#define LIB_CHR 13
+#define LIB_DEC 14
+#define LIB_FLOAT_STRING 15
+#define LIB_SPRINTF 16
 
 #define LIB_DEBUG 128
 #define LIB_PRINT 129
@@ -183,6 +188,8 @@ extern float g_constant_float;
 extern char g_garbage_collection;
 
 extern int g_rnd_seed;
+
+extern int g_last_var_num;
 
 /*
 	Prototypes

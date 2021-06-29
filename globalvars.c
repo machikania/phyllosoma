@@ -57,6 +57,9 @@ char g_garbage_collection;
 // Random seed
 int g_rnd_seed;
 
+// Last var number used for memory allocation
+int g_last_var_num;
+
 // Reserved words
 const char* const g_reserved_words[114]={
 	"ABS",

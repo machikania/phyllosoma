@@ -44,15 +44,18 @@ void dump_cmpdata(void){
 
 int main() {
 	static char* const code[]={
-"PRINT POW#(10,3),SIN#(PI#),COS#(PI#),SIN#(PI#/2),COS#(PI#/2)",
+"T$=\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\"",
+"PRINT T$(20),T$(-5),T$(20,3),T$(-5,3),T$(0,3)",
+"PRINT HEX$(0x89AB),HEX$(0x89AB,8)",
+"PRINT CHR$(0x40),DEC$(12345),FLOAT$(123.456),SPRINTF$(\"%e\",123.456)",
 "END",
 		0
 	};
 	int e,i,s;
 	char* str;
 	stdio_init_all();
-	// Wait for two seconds
-	sleep_ms(2000);
+	// Wait for three seconds
+	sleep_ms(3000);
 	// Start
 	printstr("KM-BASIC for ARM\n");
 	// Compile the code

@@ -7,31 +7,39 @@
 
 #include "./compiler.h"
 
+int chr_function(void){
+	return argn_function(LIB_CHR,ARG_INTEGER<<ARG1);
+}
+
+int dec_function(void){
+	return argn_function(LIB_DEC,ARG_INTEGER<<ARG1);
+}
+
+int float_str_function(void){
+	return argn_function(LIB_FLOAT_STRING,ARG_FLOAT<<ARG1);
+}
+
+int sprintf_function(void){
+	return argn_function(LIB_SPRINTF,ARG_STRING<<ARG1 | ARG_FLOAT<<ARG2);
+}
+
 int mid_string(int vn){
-	return ERROR_SYNTAX;
+	g_default_args[2]=-1;
+	// Need to increment vn to support the variable 'A'. See lib_mid().
+	return argn_function(LIB_MID,ARG_INTEGER<<ARG1 | ARG_INTEGER_OPTIONAL<<ARG2 | (vn+1)<<LIBOPTION);
 }
 
 int hex_function(void){
-	int e;
-	e=get_integer();
-	if (','==source[0]) {
-		source++;
-		check_object(1);
-		(object++)[0]=0xb401; // push	{r0}
-		e=get_integer();
-		if (e) return e;
-		check_object(1);
-		(object++)[0]=0xbc02; // pop	{r1}
-	
-	} else {
-		(object++)[0]=0x0001; // movs	r1, r0
-		(object++)[0]=0x2000; // movs	r0, #0
-	}
-	return call_lib_code(LIB_HEX);
+	g_default_args[2]=0;
+	return argn_function(LIB_HEX,ARG_INTEGER<<ARG1 | ARG_INTEGER_OPTIONAL<<ARG2);
 }
 
 int string_functions(void){
+	if (instruction_is("CHR$(")) return chr_function();
+	if (instruction_is("DEC$(")) return dec_function();
+	if (instruction_is("FLOAT$(")) return float_str_function();
 	if (instruction_is("HEX$(")) return hex_function();
+	if (instruction_is("SPRINTF$(")) return sprintf_function();
 	if (instruction_is("ARGS$(")) return args_function();
 	if (instruction_is("GOSUB$(")) return gosub_function();
 	if (instruction_is("DEBUG$(")) return debug_function();
@@ -136,6 +144,7 @@ int get_simple_string(void){
 			if ('$'!=source[0]) return ERROR_SYNTAX;
 			source++;
 			if ('('==source[0]) {
+				source++;
 				// Part of string variable
 				e=mid_string(vn);
 				if (e) return e;

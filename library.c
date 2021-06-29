@@ -67,7 +67,7 @@ int lib_hex(int width, int num, int r2){
 	return (int)str;
 }
 
-int lib_print_main(int r0, int r1, int r2){
+int lib_print(int r0, int r1, int r2){
 	// Mode; 0x00: ingeger, 0x01: string, 0x02: float
 	// Mode; 0x00: CR, 0x10: ';', 0x20: ','
 	int i;
@@ -99,9 +99,17 @@ int lib_print_main(int r0, int r1, int r2){
 	return r0;
 }
 
+/*
+
+In some cases, following code is required for the correct response from printf() function used for float value.
+See also the comment in run_code_main() function in compiler.c.
+Briefly, different stack area is used for printf() function. In detail, see following repository:
+https://github.com/kmorimatsu/kmbasic4arm/tree/31db9c2df3c0bcf61e184c23eb656b8dbcc5133d
+
+int lib_print_main(int r0, int r1, int r2);
 void lib_print(){
 	use_lib_stack("lib_print_main");
-}
+}*/
 
 int lib_let_str(int r0, int r1, int r2){
 	int i;
@@ -279,6 +287,73 @@ int lib_math(int r0, int r1, int r2){
 	return g_scratch_int[0];
 }
 
+int lib_mid(int r0, int r1, int r2){
+	int i;
+	char* str=(char*)kmbasic_variables[r2-1]; // Need to decrement vn (r2) to support the variable 'A'. See mid_string().
+	char* str2;
+	// Count the number of characters
+	for(i=0;str[i];i++);
+	if (r1<0) {
+		// Shift the initial position
+		if ((-r1)<=i) str+=i+r1;
+	} else {
+		// Shift the initial position
+		if (r1<=i) str+=r1;
+	}
+	// If the 2nd parameter is omitted, return
+	if (r0<0) return (int)str;
+	// Count again
+	for(i=0;str[i];i++);
+	// It the 2nd parameter is more than the string length, return
+	if (i<=r0) return (int)str;
+	// Copy the part of string
+	str2=alloc_memory((r0+4)/4,-1);
+	for(i=0;i<r0;i++) str2[i]=str[i];
+	str2[i]=0;
+	// Return
+	return (int)str2;
+}
+
+int lib_chr(int r0, int r1, int r2){
+	char* res;
+	res=alloc_memory(1,-1);
+	res[0]=r0;
+	res[1]=0;
+	return (int)res;
+}
+
+int lib_dec(int r0, int r1, int r2){
+	char* res;
+	int i;
+	res=alloc_memory(8,-1);
+	i=snprintf(res,32,"%d",r0);
+	// Adjust the size of memory
+	kmbasic_var_size[g_last_var_num]=(i+4)/4;
+	return (int)res;
+}
+
+int lib_float_str(int r0, int r1, int r2){
+	char* res;
+	int i;
+	g_scratch_int[0]=r0;
+	res=alloc_memory(4,-1);
+	i=snprintf(res,16,"%g",g_scratch_float[0]);
+	// Adjust the size of memory
+	kmbasic_var_size[g_last_var_num]=(i+4)/4;
+	return (int)res;
+}
+
+int lib_sprintf(int r0, int r1, int r2){
+	char* res;
+	int i;
+	g_scratch_int[0]=r0;
+	res=alloc_memory(8,-1);
+	i=snprintf(res,32,(char*)r1,g_scratch_float[0]);
+	// Adjust the size of memory
+	kmbasic_var_size[g_last_var_num]=(i+4)/4;
+	return (int)res;
+}
+
 int debug(int r0, int r1, int r2){
 	return r0;
 }
@@ -296,6 +371,11 @@ static const void* lib_list1[]={
 	lib_float,      // #define LIB_FLOAT 9
 	lib_val_float,  // #define LIB_VAL_FLOAT 10
 	lib_math,       // #define LIB_MATH 11
+	lib_mid,        // #define LIB_MID 12
+	lib_chr,        // #define LIB_CHR 13
+	lib_dec,        // #define LIB_DEC 14
+	lib_float_str,  // #define LIB_FLOAT_STRING 15
+	lib_sprintf,    // #define LIB_SPRINTF 16
 };
 
 static const void* lib_list2[]={

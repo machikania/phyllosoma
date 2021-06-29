@@ -43,7 +43,9 @@
 		r0: last argument
 		r1: pointer to array
 	For optional arguments, set the default value(s) in:
-		g_default_args[]
+		g_default_args[1]: default of 1st argument
+		g_default_args[2]: default of 1st argument
+		...
 
 */
 
@@ -53,13 +55,13 @@ int arg_to_r0(int mode, int argpos){
 	mode&=(1<<ARG2)-1;
 	skip_blank();
 	if (argpos<0 || 5<argpos) return ERROR_UNKNOWN; // Max argument number is 6
-	if (ARG_OPTIONAL<mode && ')'==source[argpos]) {
-		return set_value_in_register(0,g_default_args[argpos]);
-	} else if (ARG_OPTIONAL<mode && ','==source[argpos]) {
+	if (ARG_OPTIONAL<mode && ')'==source[0]) {
+		return set_value_in_register(0,g_default_args[argpos+1]);
+	} else if (ARG_OPTIONAL<mode && ','==source[0]) {
 		source++;
-		return set_value_in_register(0,g_default_args[argpos]);
+		return set_value_in_register(0,g_default_args[argpos+1]);
 	} else {
-		switch(mode & ((1<<ARG_OPTIONAL)-1)){
+		switch(mode & (ARG_OPTIONAL-1)){
 			case ARG_INTEGER:
 				e=get_integer();
 				break;
