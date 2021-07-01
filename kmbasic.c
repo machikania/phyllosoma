@@ -44,14 +44,15 @@ void dump_cmpdata(void){
 
 int main() {
 	static char* const code[]={
-"PRINT HEX$(READ()),HEX$(READ())",
-"FOR I=1 TO 7",
-"  PRINT CREAD(),",
+"FOR I=1 TO 5",
+"  PRINT READ(),",
 "NEXT",
-"DATA 0x12345678,0x23456789",
-"CDATA 12,34,56",
-"CDATA 78,90",
-"CDATA 23,45,67",
+"RESTORE LBL",
+"FOR I=1 TO 5",
+"  PRINT READ(),",
+"NEXT",
+"LABEL LBL",
+"DATA 123,456,789,234,567",
 "END",
 		0
 	};

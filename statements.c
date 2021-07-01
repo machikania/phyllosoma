@@ -17,6 +17,51 @@
 
 */
 
+int goto_label(void);
+int goto_line(int id);
+int restore_statement(void){
+	unsigned short* obefore;
+	char* sbefore=source;
+	int e;
+	obefore=object;
+	e=get_integer();
+	if (e) {
+		// Label is used
+		rewind_object(obefore);
+		source=sbefore;
+		// Get BL instruction code in r0 register
+		e=set_value_in_register(0,0xf800f000);
+		if (e) return e;
+		// Replace "0xf800f000" with BL instruction
+		object-=2;
+		e=goto_label();
+		if (e) return e;
+		// Get pc in r1 and call library
+		check_object(1);
+		(object++)[0]=0x4679; //      	mov	r1, pc
+		return call_lib_code(LIB_RESTORE);
+	} else if (g_constant_value_flag) {
+		// Label number is used
+		rewind_object(obefore);
+		// Get BL instruction code in r0 register
+		e=set_value_in_register(0,0xf800f000);
+		if (e) return e;
+		// Replace "0xf800f000" with BL instruction
+		object-=2;
+		e=goto_line(g_constant_int);
+		if (e) return e;
+		// Get pc in r1 and call library
+		check_object(1);
+		(object++)[0]=0x4679; //      	mov	r1, pc
+		return call_lib_code(LIB_RESTORE);
+	} else {
+		// Label is flexible
+		e=call_lib_code(LIB_LINE_NUM);
+		if (e) return e;
+		return call_lib_code(LIB_RESTORE);
+	}
+}
+
 int data_statement(void){
 	int e;
 	char* sbefore;
@@ -1005,7 +1050,7 @@ int compile_statement(void){
 	if (instruction_is("DIM")) return dim_statement();
 	if (instruction_is("DATA")) return data_statement();
 	if (instruction_is("CDATA")) return cdata_statement();
+	if (instruction_is("RESTORE")) return restore_statement();
 	// Finally, try let statement again as syntax error may be in LET statement.
 	return let_statement();
 }
-

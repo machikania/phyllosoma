@@ -429,11 +429,23 @@ int lib_cread(int r0, int r1, int r2){
 }
 
 int lib_restore(int r0, int r1, int r2){
+	int i;
+	if (0xf0000000 == (0xf0000000 & r0)) {
+		// Calculate address from BL instruction and pc
+		i=(r0>>16)&0x7ff;
+		i|=(r0&0x3ff)<<11;
+		if (r0&0x0400) i|=0xffe00000; // Negative value
+		r0=r1+i*2-4;
+	}
+	// r0 is the address
+	g_read_point=(unsigned short*)r0;
+	g_read_mode=0;
+	g_read_valid_len=0;
+	return (int)g_read_point;
 }
 
 int debug(int r0, int r1, int r2){
-	asm volatile("nop");
-	asm volatile("movs r0,r1");
+	asm volatile("mov r1,pc");
 	return r0;
 }
 
