@@ -44,8 +44,10 @@ void dump_cmpdata(void){
 
 int main() {
 	static char* const code[]={
-"PRINT READ(),READ$();READ$(),READ()",
-"DATA 123,\"Hello \",\"World!\",456",
+"FOR I=0 TO 63",
+"  PRINT HEX$(I),",
+"NEXT",
+"PRINT ASC(\"@\")",
 "END",
 		0
 	};

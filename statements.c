@@ -373,7 +373,13 @@ int gosub_statement(void){
 	e=gosub_statement_main();
 	if (e) return e;
 	source=safter;
+	// Garbage collection
+	check_object(1);
+	(object++)[0]=0x0031;   // movs	r1, r6
+	e=call_lib_code(LIB_POST_GOSUB);
+	if (e) return e;
 	// Delete argeuement array
+	check_object(2);
 	(object++)[0]=0x6876;   // ldr	r6, [r6, #4]
 	(object++)[0]=0xb000|i; // add	sp, #xx
 	// All done
@@ -998,6 +1004,11 @@ int debug_statement(void){
 	return call_lib_code(LIB_DEBUG);
 }
 
+int rem_statement(void){
+	while(source[0]) source++;
+	return 0;
+}
+
 int end_statement(void){
 	return call_lib_code(LIB_END);
 }
@@ -1075,6 +1086,7 @@ int compile_statement(void){
 	if (instruction_is("DATA")) return data_statement();
 	if (instruction_is("CDATA")) return cdata_statement();
 	if (instruction_is("RESTORE")) return restore_statement();
+	if (instruction_is("REM")) return rem_statement();
 	// Finally, try let statement again as syntax error may be in LET statement.
 	return let_statement();
 }

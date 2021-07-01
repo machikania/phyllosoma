@@ -64,6 +64,8 @@
 #define LIB_READ 17
 #define LIB_CREAD 18
 #define LIB_READ_STR 19
+#define LIB_ASC 20
+#define LIB_POST_GOSUB 21
 
 #define LIB_DEBUG 128
 #define LIB_PRINT 129
@@ -288,6 +290,7 @@ void* alloc_memory(int size, int var_num);
 void* calloc_memory(int size, int var_num);
 void delete_memory(void* data);
 int move_from_temp(int vn, int pdata);
+void garbage_collection(void* data);
 
 int get_class_number(void);
 int static_method_or_property(int cn, char stringorfloat);

@@ -41,6 +41,9 @@ int lib_add_string(int r0, int r1, int r2){
 	for(i=0;str1[i];i++) res[i]=str1[i];
 	for(j=0;str2[j];j++) res[i++]=str2[j];
 	res[i]=0x00;
+	// Garbage collection
+	garbage_collection((char*)r1);
+	garbage_collection((char*)r0);
 	// Return string
 	return (int)res;
 }
@@ -78,6 +81,7 @@ int lib_print(int r0, int r1, int r2){
 			for(i=0;((unsigned char*)r0)[i];i++);
 			printstr((unsigned char*)r0);
 			if (0x00 == (r1&0xf0)) printchar('\n');
+			garbage_collection((char*)r0);
 			break;
 		case 0x02: // float
 			g_scratch_int[0]=r0;
@@ -174,6 +178,7 @@ int lib_line_num(int r0, int r1, int r2){
 }
 
 int lib_end(int r0, int r1, int r2){
+	asm("ldr r7,=kmbasic_data");
 	asm("ldr r0, [r7, #0]");
 	asm("mov sp, r0");
 	asm("ldr r0, [r7, #4]");
@@ -228,6 +233,7 @@ int lib_int(int r0, int r1, int r2){
 int lib_len(int r0, int r1, int r2){
 	char* str=(char*)r0;
 	for(r0=0;str[r0];r0++);
+	garbage_collection(str);
 	return r0;
 }
 
@@ -236,13 +242,17 @@ int lib_val(int r0, int r1, int r2){
 	if ('$'==str[0] || '0'==str[0] && ('X'==str[1] || 'x'==str[1])) {
 		if ('$'==str[0]) str++;
 		else str+=2;
-		return strtol(str,0,16);
-	}
-	return strtol(str,0,10);
+		r1 = strtol(str,0,16);
+	} else r1=strtol(str,0,10);
+	garbage_collection((char*)r0);
+	return r1;
 }
 
 int lib_strncmp(int r0, int r1, int r2){
-	return strncmp((char*)r2,(char*)r1,r0);
+	r0=strncmp((char*)r2,(char*)r1,r0);
+	garbage_collection((char*)r1);
+	garbage_collection((char*)r2);
+	return r0;
 }
 
 int lib_float(int r0, int r1, int r2){
@@ -252,6 +262,7 @@ int lib_float(int r0, int r1, int r2){
 
 int lib_val_float(int r0, int r1, int r2){
 	g_scratch_float[0]=strtof((const char*)r0,0);
+	garbage_collection((char*)r0);
 	return g_scratch_int[0];
 }
 
@@ -351,6 +362,8 @@ int lib_sprintf(int r0, int r1, int r2){
 	i=snprintf(res,32,(char*)r1,g_scratch_float[0]);
 	// Adjust the size of memory
 	kmbasic_var_size[g_last_var_num]=(i+4)/4;
+	// Garbage collection
+	garbage_collection((char*)r1);
 	return (int)res;
 }
 
@@ -460,6 +473,24 @@ int lib_restore(int r0, int r1, int r2){
 	return (int)g_read_point;
 }
 
+int lib_asc(int r0, int r1, int r2){
+	unsigned char* str=(unsigned char*)r0;
+	r0=str[0];
+	garbage_collection(str);
+	return r0;
+}
+
+int lib_post_gosub(int r0, int r1, int r2){
+	// r1 is pointer to r6 array, that contains argument data
+	// r0 must retain after this function
+	int i;
+	int* r6=(int*)r1;
+	int num=r6[2];
+	// Garbage collection
+	for(i=0;i<num;i++) garbage_collection((void*)r6[3+i]);
+	return r0;
+}
+
 int debug(int r0, int r1, int r2){
 	asm volatile("mov r1,pc");
 	return r0;
@@ -486,6 +517,8 @@ static const void* lib_list1[]={
 	lib_read,       // #define LIB_READ 17
 	lib_cread,      // #define LIB_CREAD 18
 	lib_read_str,   // #define LIB_READ_STR 19
+	lib_asc,        // #define LIB_ASC 20
+	lib_post_gosub, // #define LIB_POST_GOSUB 21
 };
 
 static const void* lib_list2[]={
@@ -495,14 +528,14 @@ static const void* lib_list2[]={
 	lib_end,        // #define LIB_END 131
 	lib_line_num,   // #define LIB_LINE_NUM 132
 	lib_dim,        // #define LIB_DIM 133
-	lib_restore,    //#define LIB_RESTORE 134
+	lib_restore,    // #define LIB_RESTORE 134
 };
 
 int statement_library(int r0, int r1, int r2, int r3){
 	int (*f)(int r0, int r1, int r2) = lib_list2[r3-128];
 	r0=f(r0,r1,r2);
 	// Raise garbage collection flag
-	g_garbage_collection=1;
+	// g_garbage_collection=1; // This feature is disabled. See galbage_collection() function.
 	// TODO: Check break key
 	return r0;
 }

@@ -61,6 +61,7 @@ int throw_error(int e,int line, char* file){
 }
 
 void stop_with_error(int e){
+	int* data;
 	e=-e;
 	printstr("\n");
 	if (e<((sizeof g_error_text)/4)) {
@@ -69,6 +70,22 @@ void stop_with_error(int e){
 		printstr("Error #");
 		printint(e);
 	}
-	// TODO: line number calculation
+	// Line number calculation
+	cmpdata_reset();
+	while(data=cmpdata_find(CMPDATA_LINENUM)){
+		if (kmbasic_data[3]<data[1]) continue;
+		// Found
+		printstr(" in line ");
+		printint(data[0]&0xffff);
+		printstr("\n");
+		break;
+	}
+	if (!data) {
+		// Line number not found
+		printstr(" at ");
+		printhex32(kmbasic_data[3]);
+		printstr("\n");
+	}
+	// End BASIC program
 	lib_end(0,0,0);
 }

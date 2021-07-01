@@ -59,12 +59,7 @@ int peek32_function(void){
 }
 
 int asc_function(void){
-	int e;
-	e=get_string();
-	if (e) return e;
-	check_object(1);
-	(object++)[0]=0x7800; //      	ldrb	r0, [r0, #0]
-	return 0;
+	return argn_function(LIB_ASC,ARG_STRING<<ARG1);
 }
 
 int sgn_function(void){

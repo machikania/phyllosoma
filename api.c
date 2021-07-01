@@ -9,7 +9,7 @@
 #include "./api.h"
 
 void printstr(unsigned char *s){
-	printf(s);
+	printf("%s",s);
 	sleep_ms(1);
 }
 
