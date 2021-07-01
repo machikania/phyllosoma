@@ -354,7 +354,86 @@ int lib_sprintf(int r0, int r1, int r2){
 	return (int)res;
 }
 
+void seek_data(int mode){
+	int i;
+	unsigned short* obj=g_read_point;
+	while(obj<object) { // Search until the end of compiled object
+		switch (obj[0]&0xfc00) {
+			case 0xe000:
+				// B instruction forward found
+				i=obj[0]&0x03ff;
+				obj+=i+2;
+				continue;
+			case 0xf000:
+				// BL instruction forward found
+				i=obj[0]&0x03ff;
+				i=(i<<11)|(obj[1]&0x7ff);
+				switch(obj[2]){
+					case 0x462d: // DATA
+						if (mode!=0x462d) break;
+						g_read_mode=obj[2];
+						g_read_valid_len=i-1;
+						g_read_point=&obj[3];
+						return;
+					case 0x4636: // CDATA, last byte is valid
+					case 0x463f: // CDATA, last byte is invalid
+						if (mode!=0x4636 && mode!=0x463f) break;
+						g_read_mode=obj[2];
+						g_read_valid_len=i-1;
+						g_read_point=&obj[3];
+						return;
+					default:
+						// This is not DATA/CDATA
+						obj+=2;
+						continue;
+				}
+				// Skip this DATA/CDATA
+				obj+=i+2;
+				continue;
+			default:
+				obj++;
+				continue;
+		}
+	}
+	stop_with_error(ERROR_DATA_NOT_FOUND);
+}
+
+int lib_read(int r0, int r1, int r2){
+	if (g_read_mode!=0x462d || g_read_valid_len<=0) seek_data(0x462d);
+	r0=(g_read_point++)[0];
+	r0=r0 | ((g_read_point++)[0]<<16);
+	g_read_valid_len-=2;
+	return r0;
+}
+
+int lib_cread(int r0, int r1, int r2){
+	static int odd;
+	if (g_read_mode!=0x463f && g_read_mode!=0x4636) {
+		seek_data(0x4636);
+		odd=0;
+	} else if (g_read_mode==0x463f && g_read_valid_len<=0) {
+		seek_data(0x4636);
+		odd=0;
+	} else if (g_read_mode==0x4636 && g_read_valid_len<=0 && 0==odd) {
+		seek_data(0x4636);
+		odd=0;
+	}
+	if (odd){
+		odd=0;
+		return (g_read_point++)[0]>>8;
+	} else {
+		g_read_valid_len--;
+		odd=1;
+		return g_read_point[0]&0x00ff;
+	}
+}
+
+int lib_restore(int r0, int r1, int r2){
+}
+
 int debug(int r0, int r1, int r2){
+	asm volatile("nop");
+	asm volatile("movs r0,r1");
 	return r0;
 }
 
@@ -376,6 +455,8 @@ static const void* lib_list1[]={
 	lib_dec,        // #define LIB_DEC 14
 	lib_float_str,  // #define LIB_FLOAT_STRING 15
 	lib_sprintf,    // #define LIB_SPRINTF 16
+	lib_read,       // #define LIB_READ 17
+	lib_cread,      // #define LIB_CREAD 18
 };
 
 static const void* lib_list2[]={
@@ -385,6 +466,7 @@ static const void* lib_list2[]={
 	lib_end,        // #define LIB_END 131
 	lib_line_num,   // #define LIB_LINE_NUM 132
 	lib_dim,        // #define LIB_DIM 133
+	lib_restore,    //#define LIB_RESTORE 134
 };
 
 int statement_library(int r0, int r1, int r2, int r3){

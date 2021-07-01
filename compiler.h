@@ -32,6 +32,7 @@
 #define ERROR_NO_TEMP_VAR _throw_error(-8)
 #define ERROR_OUT_OF_MEMORY _throw_error(-9)
 #define ERROR_NOT_OBJECT _throw_error(-10)
+#define ERROR_DATA_NOT_FOUND  _throw_error(-11)
 
 /*
 	Libraries
@@ -60,6 +61,8 @@
 #define LIB_DEC 14
 #define LIB_FLOAT_STRING 15
 #define LIB_SPRINTF 16
+#define LIB_READ 17
+#define LIB_CREAD 18
 
 #define LIB_DEBUG 128
 #define LIB_PRINT 129
@@ -67,6 +70,7 @@
 #define LIB_END 131
 #define LIB_LINE_NUM 132
 #define LIB_DIM 133
+#define LIB_RESTORE 134
 
 /*
 	LIB MATH options
@@ -191,6 +195,10 @@ extern int g_rnd_seed;
 
 extern int g_last_var_num;
 
+extern unsigned short* g_read_point;
+extern int g_read_valid_len;
+extern unsigned short g_read_mode;
+
 /*
 	Prototypes
 */
@@ -235,6 +243,8 @@ int get_integer(void);
 int get_simple_float(void);
 int get_float(void);
 
+int read_function(void);
+int cread_function(void);
 int get_dim_pointer(void);
 int get_dim_value(void);
 int get_int_or_float(void);

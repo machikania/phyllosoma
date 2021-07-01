@@ -60,6 +60,11 @@ int g_rnd_seed;
 // Last var number used for memory allocation
 int g_last_var_num;
 
+// Reading point used for READ() and CREAD() and reading mode
+unsigned short* g_read_point;
+int g_read_valid_len;
+unsigned short g_read_mode;
+
 // Reserved words
 const char* const g_reserved_words[114]={
 	"ABS",

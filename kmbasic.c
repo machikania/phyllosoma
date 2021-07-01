@@ -44,10 +44,14 @@ void dump_cmpdata(void){
 
 int main() {
 	static char* const code[]={
-"T$=\"ABCDEFGHIJKLMNOPQRSTUVWXYZ\"",
-"PRINT T$(20),T$(-5),T$(20,3),T$(-5,3),T$(0,3)",
-"PRINT HEX$(0x89AB),HEX$(0x89AB,8)",
-"PRINT CHR$(0x40),DEC$(12345),FLOAT$(123.456),SPRINTF$(\"%e\",123.456)",
+"PRINT HEX$(READ()),HEX$(READ())",
+"FOR I=1 TO 7",
+"  PRINT CREAD(),",
+"NEXT",
+"DATA 0x12345678,0x23456789",
+"CDATA 12,34,56",
+"CDATA 78,90",
+"CDATA 23,45,67",
 "END",
 		0
 	};

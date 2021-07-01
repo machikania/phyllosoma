@@ -104,12 +104,14 @@ int not_function(void){
 int integer_functions(void){
 	if (instruction_is("ABS(")) return abs_function();
 	if (instruction_is("ASC(")) return asc_function();
+	if (instruction_is("CREAD(")) return cread_function();
 	if (instruction_is("INT(")) return int_function();
 	if (instruction_is("LEN(")) return len_function();
 	if (instruction_is("NOT(")) return not_function();
 	if (instruction_is("PEEK(")) return peek_function();
 	if (instruction_is("PEEK16(")) return peek16_function();
 	if (instruction_is("PEEK32(")) return peek32_function();
+	if (instruction_is("READ(")) return read_function();
 	if (instruction_is("SGN(")) return sgn_function();
 	if (instruction_is("STRNCMP(")) return strncmp_function();
 	if (instruction_is("RND(")) return rnd_function();
@@ -158,7 +160,7 @@ int get_simple_integer(void){
 		}
 		g_constant_int=i;
 		return set_value_in_register(0,i);
-	} else if ('0'<=source[0] && source[0]<'9') {
+	} else if ('0'<=source[0] && source[0]<='9') {
 		// Decimal value
 		i=get_positive_decimal_value();
 		if (i<0) return i;

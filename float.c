@@ -76,7 +76,7 @@ int get_simple_float(void){
 		(object++)[0]=0x2200 | OP_SUB; // movs	r2, #OP_SUB
 		return call_lib_code(LIB_CALC_FLOAT);
 	}
-	if ('0'<=source[0] && source[0]<'9' || '.'==source[0]) {
+	if ('0'<=source[0] && source[0]<='9' || '.'==source[0]) {
 		// Float literal
 		f=strtof((const char*)&source[0],(char**)&err);
 		i=err-source;

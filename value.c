@@ -14,6 +14,18 @@
 int get_value_sub(int pr,int vmode);
 
 /*
+	READ(), CREAD(), READ#() functions
+*/
+
+int read_function(void){
+	return argn_function(LIB_READ,ARG_NONE);
+}
+
+int cread_function(void){
+	return argn_function(LIB_CREAD,ARG_NONE);
+}
+
+/*
 	Array related functions
 */
 

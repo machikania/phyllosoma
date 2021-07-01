@@ -105,6 +105,10 @@ void run_code_main(void){
 void run_code(void){
 	// Initializing environment
 	init_memory();
+	// Initialize READ/DATA
+	g_read_point=&kmbasic_object[0];
+	g_read_mode=0;
+	g_read_valid_len=0;
 	// Random seed
 	g_rnd_seed=0x92D68CA2; //2463534242
 	// Run code

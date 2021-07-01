@@ -8,6 +8,91 @@
 #include "./compiler.h"
 
 /*
+	DATA/CDATA/RESTORE statements
+
+	} else if (g_constant_value_flag) {
+		// Label number is used
+		rewind_object(obefore);
+		return goto_line(g_constant_int);
+
+*/
+
+int data_statement(void){
+	int e;
+	char* sbefore;
+	unsigned short* obefore;
+	unsigned short* obegin=object;
+	check_object(3);
+	// BL instruction
+	object+=2;
+	(object++)[0]=0x462d; // Marker for DATA statement (MOV R5,R5)
+	do {
+		sbefore=source;
+		obefore=object;
+		e=get_integer();
+		if (e) return e;
+		// Rewind object
+		rewind_object(obefore);
+		if (!g_constant_value_flag) {
+			source=sbefore;
+			return ERROR_SYNTAX;
+		}
+		// Got 4 byte data in g_constant_int
+		check_object(2);
+		(object++)[0]=g_constant_int & 0xffff;
+		(object++)[0]=g_constant_int >>16;
+	} while (','==(source++)[0]);
+	source--;
+	// Update BL
+	update_bl(obegin,object);
+	return 0;
+}
+
+int cdata_statement(void){
+	int e,odd;
+	char* sbefore;
+	unsigned short* obefore;
+	unsigned short* obegin=object;
+	check_object(3);
+	// BL instruction
+	object+=2;
+	(object++)[0]=0x4636; // Marker for DATA statement (MOV R6,R6)
+	                      // It may be 463f (MOV R7,R7; in the case of odd number of CDATA)
+	odd=0;
+	do {
+		sbefore=source;
+		obefore=object;
+		e=get_integer();
+		if (e) return e;
+		// Rewind object
+		rewind_object(obefore);
+		if (!g_constant_value_flag) {
+			source=sbefore;
+			return ERROR_SYNTAX;
+		}
+		// Check if 8 bit data
+		if (g_constant_int<0 || 255<g_constant_int) {
+			source=sbefore;
+			return ERROR_SYNTAX;
+		}
+		// Got 1 byte data in g_constant_int
+		if (0==odd) {
+			odd=1;
+			check_object(1);
+			(object++)[0]=g_constant_int;
+		} else {
+			odd=0;
+			object[-1]|=g_constant_int<<8;
+		}
+	} while (','==(source++)[0]);
+	source--;
+	if (odd) obegin[2]=0x463f;
+	// Update BL
+	update_bl(obegin,object);
+	return 0;
+}
+
+/*
 	LABEL/GOTO/GOSUB/RETURN statements
 	
 	CMPDATA_LINENUM
@@ -918,6 +1003,8 @@ int compile_statement(void){
 	if (instruction_is("GOSUB")) return gosub_statement();
 	if (instruction_is("RETURN")) return return_statement();
 	if (instruction_is("DIM")) return dim_statement();
+	if (instruction_is("DATA")) return data_statement();
+	if (instruction_is("CDATA")) return cdata_statement();
 	// Finally, try let statement again as syntax error may be in LET statement.
 	return let_statement();
 }

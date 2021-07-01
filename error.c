@@ -10,7 +10,7 @@
 static char* g_error_file;
 static int g_error_line;
 
-static const char* g_error_text[11]={
+static const char* g_error_text[12]={
 	"No error",
 	"Syntax error",                  // #define ERROR_SYNTAX _throw_error(-1)
 	"Unknown error",                 // #define ERROR_UNKNOWN _throw_error(-2)
@@ -22,6 +22,7 @@ static const char* g_error_text[11]={
 	"String too complicated",        // #define ERROR_NO_TEMP_VAR _throw_error(-8)
 	"Out of memory",                 // #define ERROR_OUT_OF_MEMORY _throw_error(-9)
 	"Not class or object",           // #define ERROR_NOT_OBJECT _throw_error(-10)
+	"DATA not found",                // #define ERROR_DATA_NOT_FOUND  _throw_error(-11)
 };
 
 void show_error(int e, int pos){
