@@ -63,6 +63,7 @@
 #define LIB_SPRINTF 16
 #define LIB_READ 17
 #define LIB_CREAD 18
+#define LIB_READ_STR 19
 
 #define LIB_DEBUG 128
 #define LIB_PRINT 129
@@ -234,6 +235,7 @@ int kmbasic_library(int r0, int r1, int r2, int r3);
 int gosub_statement(void);
 int compile_statement(void);
 
+int string_char(void);
 int get_string(void);
 
 int get_positive_decimal_value(void);

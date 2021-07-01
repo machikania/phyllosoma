@@ -406,6 +406,22 @@ int lib_read(int r0, int r1, int r2){
 	return r0;
 }
 
+int lib_read_str(int r0, int r1, int r2){
+	int i;
+	char* str;
+	if (g_read_mode!=0x462d || g_read_valid_len<=0) seek_data(0x462d);
+	str=(char*)g_read_point;
+	// Determine the length
+	for(i=0;str[i];i++);
+	// Calculate for unsigned short* (note that null character at end is also included)
+	i=(i+2)/2;
+	// Go forward
+	g_read_point+=i;
+	g_read_valid_len-=2;
+	// Return
+	return (int)str;
+}
+
 int lib_cread(int r0, int r1, int r2){
 	static int odd;
 	if (g_read_mode!=0x463f && g_read_mode!=0x4636) {
@@ -469,6 +485,7 @@ static const void* lib_list1[]={
 	lib_sprintf,    // #define LIB_SPRINTF 16
 	lib_read,       // #define LIB_READ 17
 	lib_cread,      // #define LIB_CREAD 18
+	lib_read_str,   // #define LIB_READ_STR 19
 };
 
 static const void* lib_list2[]={

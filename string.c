@@ -7,6 +7,10 @@
 
 #include "./compiler.h"
 
+int read_str_function(void){
+	return argn_function(LIB_READ_STR,ARG_NONE);
+}
+
 int chr_function(void){
 	return argn_function(LIB_CHR,ARG_INTEGER<<ARG1);
 }
@@ -39,6 +43,7 @@ int string_functions(void){
 	if (instruction_is("DEC$(")) return dec_function();
 	if (instruction_is("FLOAT$(")) return float_str_function();
 	if (instruction_is("HEX$(")) return hex_function();
+	if (instruction_is("READ$(")) return read_str_function();
 	if (instruction_is("SPRINTF$(")) return sprintf_function();
 	if (instruction_is("ARGS$(")) return args_function();
 	if (instruction_is("GOSUB$(")) return gosub_function();
@@ -61,7 +66,7 @@ int get_byte(void){
 	return (int)c;
 }
 
-int string_char(){
+int string_char(void){
 	unsigned char c;
 	c=source[0];
 	source++;

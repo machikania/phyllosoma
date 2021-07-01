@@ -63,6 +63,7 @@ int restore_statement(void){
 }
 
 int data_statement(void){
+	unsigned char c;
 	int e;
 	char* sbefore;
 	unsigned short* obefore;
@@ -72,20 +73,43 @@ int data_statement(void){
 	object+=2;
 	(object++)[0]=0x462d; // Marker for DATA statement (MOV R5,R5)
 	do {
+		skip_blank();
 		sbefore=source;
 		obefore=object;
-		e=get_integer();
-		if (e) return e;
-		// Rewind object
-		rewind_object(obefore);
-		if (!g_constant_value_flag) {
-			source=sbefore;
-			return ERROR_SYNTAX;
+		if ('"'==source[0]) {
+			// String
+			source++;
+			while(1){
+				e=string_char();
+				if (e<0) return e;
+				if (0==e) {
+					(object++)[0]=0x0000;
+					break;
+				}
+				c=e;
+				e=string_char();
+				if (e<0) return e;
+				if (0==e) {
+					(object++)[0]=c;
+					break;
+				}
+				(object++)[0]=(e<<8)|c;
+			}
+		} else {
+			// 32 bit integer
+			e=get_integer();
+			if (e) return e;
+			// Rewind object
+			rewind_object(obefore);
+			if (!g_constant_value_flag) {
+				source=sbefore;
+				return ERROR_SYNTAX;
+			}
+			// Got 4 byte data in g_constant_int
+			check_object(2);
+			(object++)[0]=g_constant_int & 0xffff;
+			(object++)[0]=g_constant_int >>16;
 		}
-		// Got 4 byte data in g_constant_int
-		check_object(2);
-		(object++)[0]=g_constant_int & 0xffff;
-		(object++)[0]=g_constant_int >>16;
 	} while (','==(source++)[0]);
 	source--;
 	// Update BL

@@ -44,15 +44,8 @@ void dump_cmpdata(void){
 
 int main() {
 	static char* const code[]={
-"FOR I=1 TO 5",
-"  PRINT READ(),",
-"NEXT",
-"RESTORE LBL",
-"FOR I=1 TO 5",
-"  PRINT READ(),",
-"NEXT",
-"LABEL LBL",
-"DATA 123,456,789,234,567",
+"PRINT READ(),READ$();READ$(),READ()",
+"DATA 123,\"Hello \",\"World!\",456",
 "END",
 		0
 	};
