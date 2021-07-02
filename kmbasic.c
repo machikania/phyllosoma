@@ -44,17 +44,15 @@ void dump_cmpdata(void){
 
 int main() {
 	static char* const code[]={
-"I=123",
-"PRINT I,",
-"GOSUB LBL1",
-"PRINT I,",
+"I=0",
+"PRINT HEX$(I),",
+"POKE32 &I,0x12345678",
+"PRINT HEX$(I),",
+"POKE16 &I,0x9ABC",
+"PRINT HEX$(I),",
+"POKE &I,0xDE",
+"PRINT HEX$(I),",
 "END",
-"LABEL LBL1",
-"  VAR I",
-"  PRINT I,",
-"  I=234",
-"  PRINT I,",
-"RETURN",
 		0
 	};
 	int e,i,s;

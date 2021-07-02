@@ -8,6 +8,39 @@
 #include "./compiler.h"
 
 /*
+	POKE statements
+*/
+
+int poke_main(unsigned int code){
+	int e;
+	e=get_integer();
+	if (e) return e;
+	check_object(1);
+	(object++)[0]=0xb401; // push	{r0}
+	if (','!=source[0]) return ERROR_SYNTAX;
+	source++;
+	e=get_integer();
+	if (e) return e;
+	check_object(2);
+	(object++)[0]=0xbc02; // pop	{r1}
+	(object++)[0]=code;   // str/strh/strb	r0, [r1, #0]
+	return 0;
+}
+
+int poke_statement(void){
+	return poke_main(0x7008); // strb	r0, [r1, #0]
+}
+
+int poke16_statement(void){
+	return poke_main(0x8008); // strh	r0, [r1, #0]
+	return 0;
+}
+
+int poke32_statement(void){
+	return poke_main(0x6008); // str	r0, [r1, #0]
+}
+
+/*
 	VAR statement
 	
 	r1 is the pointer to array containing variable data
@@ -1166,6 +1199,9 @@ int compile_statement(void){
 	if (instruction_is("RESTORE")) return restore_statement();
 	if (instruction_is("REM")) return rem_statement();
 	if (instruction_is("VAR")) return var_statement();
+	if (instruction_is("POKE")) return poke_statement();
+	if (instruction_is("POKE16")) return poke16_statement();
+	if (instruction_is("POKE32")) return poke32_statement();
 	// Finally, try let statement again as syntax error may be in LET statement.
 	return let_statement();
 }

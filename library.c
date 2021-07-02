@@ -541,8 +541,10 @@ int lib_var_pop(int r0, int r1, int r2){
 }
 
 int debug(int r0, int r1, int r2){
-	asm volatile("mov r1,pc");
-	return r0;
+	((volatile unsigned int*)r1)[0]=r0;
+//	((volatile unsigned short*)r1)[0]=r0;
+//	((volatile unsigned char*)r1)[0]=r0;
+//	return r0;
 }
 
 static const void* lib_list1[]={
