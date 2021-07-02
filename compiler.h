@@ -33,6 +33,7 @@
 #define ERROR_OUT_OF_MEMORY _throw_error(-9)
 #define ERROR_NOT_OBJECT _throw_error(-10)
 #define ERROR_DATA_NOT_FOUND  _throw_error(-11)
+#define ERROR_OBJ_TOO_MANY  _throw_error(-12)
 
 /*
 	Libraries
@@ -74,6 +75,8 @@
 #define LIB_LINE_NUM 132
 #define LIB_DIM 133
 #define LIB_RESTORE 134
+#define LIB_VAR_PUSH 135
+#define LIB_VAR_POP 136
 
 /*
 	LIB MATH options
@@ -283,6 +286,7 @@ int cmpdata_nhash(unsigned char* str, int num);
 int cmpdata_hash(unsigned char* str);
 
 void show_error(int e, int pos);
+int line_number_from_address(int addr);
 void stop_with_error(int e);
 
 void init_memory(void);
@@ -291,6 +295,7 @@ void* calloc_memory(int size, int var_num);
 void delete_memory(void* data);
 int move_from_temp(int vn, int pdata);
 void garbage_collection(void* data);
+int get_permanent_block_number(void);
 
 int get_class_number(void);
 int static_method_or_property(int cn, char stringorfloat);

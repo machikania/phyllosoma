@@ -491,6 +491,55 @@ int lib_post_gosub(int r0, int r1, int r2){
 	return r0;
 }
 
+int lib_var_push(int r0, int r1, int r2){
+	// r1 is the pointer to array containing variable data
+	// r1[0]; Lower half: variable number; Upper half: permanent block to store string data
+	// r1[1]; Variable value
+	// r2 is number of variables to push
+	int i,vn,on;
+	int* stack=(int*)r1;
+	for(i=0;i<r2;i++){
+		vn=stack[i*2]&0xffff;
+		stack[i*2+1]=kmbasic_variables[vn];
+		// Check if object
+		if (0<kmbasic_var_size[vn]) {
+			// This is object
+			on=get_permanent_block_number();
+			kmbasic_variables[on]=kmbasic_variables[vn];
+			kmbasic_var_size[on]=kmbasic_var_size[vn];
+			stack[i*2+1]|=on<<16;
+		}
+		// Clear the variable
+		kmbasic_variables[vn]=0;
+		kmbasic_var_size[vn]=0;
+	}
+	return r0;
+}
+
+int lib_var_pop(int r0, int r1, int r2){
+	// r1 is the pointer to array containing variable data
+	// r1[0]; Lower half: variable number; Upper half: permanent block to store string data
+	// r1[1]; Variable value
+	// r2 is number of variables to push
+	int i,vn,on;
+	int* stack=(int*)r1;
+	for(i=0;i<r2;i++){
+		vn=stack[i*2]&0xffff;
+		on=(stack[i*2]>>16)&0xffff;
+		if (0<on) {
+			// This is object
+			kmbasic_variables[vn]=kmbasic_variables[on];
+			kmbasic_var_size[vn]=kmbasic_var_size[on];
+			kmbasic_var_size[on]=0;
+		} else {
+			// This is simple value
+			kmbasic_variables[vn]=stack[i*2+1];
+			kmbasic_var_size[vn]=0;
+		}
+	}
+	return r0;
+}
+
 int debug(int r0, int r1, int r2){
 	asm volatile("mov r1,pc");
 	return r0;
@@ -529,6 +578,8 @@ static const void* lib_list2[]={
 	lib_line_num,   // #define LIB_LINE_NUM 132
 	lib_dim,        // #define LIB_DIM 133
 	lib_restore,    // #define LIB_RESTORE 134
+	lib_var_push,   // #define LIB_VAR_PUSH 135
+	lib_var_pop,    // #define LIB_VAR_POP 136
 };
 
 int statement_library(int r0, int r1, int r2, int r3){

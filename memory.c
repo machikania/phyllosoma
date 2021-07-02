@@ -16,11 +16,11 @@
 	TEMPVAR_NUMBER
 		# of temporary blocks used for string handling etc
 
+	PERMVAR_NUMBER
+		# of permanent blocks used for string handling etc
+
 	ALLOC_BLOCK_NUM
-		# of blocks that can be used for memory allocation.
-		This # includes the ones for ALLOC_VAR_NUM, ALLOC_PCG_BLOCK etc, ALLOC_LNV_BLOCK,
-		ALLOC_PERM_BLOCK.
-		After ALLOC_VAR_NUM area, dedicated memory area and permanent area follows.
+		# of blocks that is used for memory allocation. Now, it is 256.
 
 	ALLOC_TEMP_BLOCK
 		Start # of temporary blocks.
@@ -40,6 +40,7 @@
 
 #define ALLOC_TEMP_BLOCK g_next_varnum
 #define ALLOC_PERM_BLOCK (ALLOC_TEMP_BLOCK+TEMPVAR_NUMBER)
+#define PERMVAR_NUMBER (ALLOC_BLOCK_NUM-ALLOC_PERM_BLOCK)
 #define HEAP_BEGIN g_heap_begin
 #define HEAP_END g_heap_end
 
@@ -244,4 +245,12 @@ void garbage_collection(void* data){
 		// Found it.
 		kmbasic_var_size[ALLOC_TEMP_BLOCK+i]=0;
 	}
+}
+
+int get_permanent_block_number(void){
+	int i;
+	for(i=0;i<PERMVAR_NUMBER;i++){
+		if (0==kmbasic_var_size[ALLOC_PERM_BLOCK+i]) return ALLOC_PERM_BLOCK+i;
+	}
+	return -1;
 }

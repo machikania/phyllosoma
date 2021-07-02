@@ -8,6 +8,80 @@
 #include "./compiler.h"
 
 /*
+	VAR statement
+	
+	r1 is the pointer to array containing variable data
+	r1[0]; Lower half: variable number; Upper half: permanent block to store string data
+	r1[1]; Variable value
+	r2 is number of variables to push
+	
+	Structure is as follows:
+		1. create stack
+		2. lib_var_push
+		3. bl skip
+		4. lib_var_pop
+		5. delete stack
+		6. pop {pc} (return to the next of original gosub code)
+		skip:
+		7. push {lr}
+		...
+		(some code here)
+		...
+		pop {pc} (return to lib_var_pop above, the next of bl above)
+*/
+
+int var_statement(void){
+	int i,e,vn;
+	unsigned short* subsp;
+	unsigned short* bl;
+	// Push routine follows
+	check_object(1);
+	subsp=object;
+	object++; // sub	sp, #xx
+	i=0;
+	do {
+		vn=get_var_number();
+		if (vn<0) return vn;
+		e=set_value_in_register(0,vn);
+		if (e<0) return e;
+		check_object(1);
+		(object++)[0]=0x9000 | i*2; // str	r0, [sp, #xx]
+		skip_blank();
+		i++;
+	} while(','==(source++)[0]);
+	source--;
+	subsp[0]=0xb080 | i*2; // sub	sp, #xx
+	e=set_value_in_register(2,i);
+	if (e<0) return e;
+	check_object(1);
+	(object++)[0]=0x4669;         // mov	r1, sp
+	e=call_lib_code(LIB_VAR_PUSH);
+	if (e<0) return e;
+	// BL instruction
+	bl=object;
+	object+=2;
+	// Return destination is here
+	// POP routine follows
+	e=set_value_in_register(2,i);
+	if (e<0) return e;
+	check_object(1);
+	(object++)[0]=0x4669;         // mov	r1, sp
+	e=call_lib_code(LIB_VAR_POP);
+	if (e<0) return e;
+	// Delete stack
+	check_object(2);
+	(object++)[0]=0xb000 | i*2; // add	sp, #xx
+	// Return
+	(object++)[0]=0xbd00; // pop	{pc}
+	// BL jump destination is here
+	update_bl(bl,object);
+	check_object(1);
+	(object++)[0]=0xb500; //   push	{lr}
+	// All done
+	return 0;
+}
+
+/*
 	DATA/CDATA/RESTORE statements
 
 	} else if (g_constant_value_flag) {
@@ -367,6 +441,10 @@ int gosub_statement(void){
 		(object++)[0]=0x6030 | (i<<6); // str	r0, [r6, #xx]
 	}
 	obefore[0]|=i; // Update sub sp,#xx assembly
+	// Set number of variables
+	set_value_in_register(0,i-3);
+	check_object(1);
+	(object++)[0]=0x6030 | (2<<6); // str	r0, [r6, #xx]
 	// GOSUB again
 	safter=source;
 	source=sbefore;
@@ -1087,6 +1165,7 @@ int compile_statement(void){
 	if (instruction_is("CDATA")) return cdata_statement();
 	if (instruction_is("RESTORE")) return restore_statement();
 	if (instruction_is("REM")) return rem_statement();
+	if (instruction_is("VAR")) return var_statement();
 	// Finally, try let statement again as syntax error may be in LET statement.
 	return let_statement();
 }

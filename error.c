@@ -10,7 +10,7 @@
 static char* g_error_file;
 static int g_error_line;
 
-static const char* g_error_text[12]={
+static const char* g_error_text[13]={
 	"No error",
 	"Syntax error",                  // #define ERROR_SYNTAX _throw_error(-1)
 	"Unknown error",                 // #define ERROR_UNKNOWN _throw_error(-2)
@@ -23,6 +23,7 @@ static const char* g_error_text[12]={
 	"Out of memory",                 // #define ERROR_OUT_OF_MEMORY _throw_error(-9)
 	"Not class or object",           // #define ERROR_NOT_OBJECT _throw_error(-10)
 	"DATA not found",                // #define ERROR_DATA_NOT_FOUND  _throw_error(-11)
+	"Too many objects",              // #define ERROR_OBJ_TOO_MANY  _throw_error(-12)
 };
 
 void show_error(int e, int pos){
@@ -60,6 +61,19 @@ int throw_error(int e,int line, char* file){
 	return e;
 }
 
+int line_number_from_address(int addr){
+	int* data;
+	cmpdata_reset();
+	while(data=cmpdata_find(CMPDATA_LINENUM)){
+		if (addr<data[1]) continue;
+		// Found
+		return data[0]&0xffff;
+	}
+	// Not found
+	stop_with_error(ERROR_OBJ_TOO_MANY);
+	return 0;
+}
+
 void stop_with_error(int e){
 	int* data;
 	e=-e;
@@ -70,20 +84,16 @@ void stop_with_error(int e){
 		printstr("Error #");
 		printint(e);
 	}
-	// Line number calculation
-	cmpdata_reset();
-	while(data=cmpdata_find(CMPDATA_LINENUM)){
-		if (kmbasic_data[3]<data[1]) continue;
-		// Found
-		printstr(" in line ");
-		printint(data[0]&0xffff);
-		printstr("\n");
-		break;
-	}
-	if (!data) {
+	// Show line number
+	e=line_number_from_address(kmbasic_data[3]);
+	if (e<0) {
 		// Line number not found
 		printstr(" at ");
 		printhex32(kmbasic_data[3]);
+		printstr("\n");
+	} else {
+		printstr(" in line ");
+		printint(e);
 		printstr("\n");
 	}
 	// End BASIC program
