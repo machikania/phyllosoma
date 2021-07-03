@@ -10,6 +10,12 @@
 #include "./api.h"
 #include "./compiler.h"
 
+/*
+	Local prototypings follow
+*/
+
+void display_init(void);
+
 void dump(void){
 	int i;
 	printf("\nkmbasic_object:");
@@ -44,15 +50,15 @@ void dump_cmpdata(void){
 
 int main() {
 	static char* const code[]={
-"FOR I=1 TO 10",
-"  PRINT DEBUG(I),",
-"NEXT",
+"PRINT \"Hello MachiKania World!\"",
 "END",
 		0
 	};
 	int e,i,s;
 	char* str;
+	// Initializations
 	stdio_init_all();
+	display_init();
 	// Wait for three seconds
 	sleep_ms(3000);
 	// Start

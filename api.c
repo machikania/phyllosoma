@@ -6,25 +6,49 @@
 
 #include <stdio.h>
 #include "pico/stdlib.h"
+#include "./compiler.h"
 #include "./api.h"
 
-void printstr(unsigned char *s){
+#undef printchar
+#undef printstr
+#undef printnum
+#undef printnum2
+#undef cls
+
+void _printstr(unsigned char *s){
 	printf("%s",s);
-	sleep_ms(1);
+	printstr(s);
 }
 
-void printchar(unsigned char c){
+void _printchar(unsigned char c){
 	putchar(c);
-	sleep_ms(1);
+	printchar(c);
+}
+
+void _printnum(unsigned int n){
+	printf("%d",n);
+	printnum(n);
+}
+
+void _printnum2(unsigned int n,unsigned char e){
+	int i;
+	char* buff=(char*)&g_scratch[0];
+	i=snprintf(buff,sizeof g_scratch,"%d",n);
+	e-=i;
+	for(i=0;i<e;i++) putchar(' ');
+	printf("%s",buff);
+}
+
+void _cls(void){
+
 }
 
 void printint(int i){
-	printf("%d",i);
-	sleep_ms(1);
+	_printnum(i);
 }
 
 void printhex4(unsigned char c){
-	printchar("0123456789ABCDEF"[c&0x0f]);
+	_printchar("0123456789ABCDEF"[c&0x0f]);
 }
 
 void printhex8(unsigned char c){

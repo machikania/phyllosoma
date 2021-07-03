@@ -67,6 +67,7 @@
 #define LIB_READ_STR 19
 #define LIB_ASC 20
 #define LIB_POST_GOSUB 21
+#define LIB_DISPLAY 22
 
 #define LIB_DEBUG 128
 #define LIB_PRINT 129

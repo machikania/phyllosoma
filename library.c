@@ -11,6 +11,7 @@
 #include <math.h>
 #include "./api.h"
 #include "./compiler.h"
+#include "./display.h"
 
 /*
 	Local macros
@@ -571,6 +572,7 @@ static const void* lib_list1[]={
 	lib_read_str,   // #define LIB_READ_STR 19
 	lib_asc,        // #define LIB_ASC 20
 	lib_post_gosub, // #define LIB_POST_GOSUB 21
+	lib_display,    // #define LIB_DISPLAY 22
 };
 
 static const void* lib_list2[]={

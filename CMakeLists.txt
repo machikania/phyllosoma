@@ -17,10 +17,15 @@ if (TARGET tinyusb_device)
 			error.c
 			memory.c
 			class.c
+			file.c
+			display.c
+			interface/fontdata.c
+			interface/graphlib.c
+			interface/ili9341_spi.c
 		)
 
 	# Pull in our pico_stdlib which aggregates commonly used features
-	target_link_libraries(kmbasic pico_stdlib)
+	target_link_libraries(kmbasic pico_stdlib hardware_spi)
 
 	# enable usb output, disable uart output
 	pico_enable_stdio_usb(kmbasic 1)

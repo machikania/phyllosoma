@@ -6,6 +6,7 @@
 */
 
 #include "./compiler.h"
+#include "./api.h"
 
 /*
 	This file provide functions for handling data used when compiling.
