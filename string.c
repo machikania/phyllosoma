@@ -39,17 +39,18 @@ int hex_function(void){
 }
 
 int string_functions(void){
+	if (instruction_is("ARGS$(")) return args_function();
 	if (instruction_is("CHR$(")) return chr_function();
+	if (instruction_is("DEBUG$(")) return debug_function();
 	if (instruction_is("DEC$(")) return dec_function();
 	if (instruction_is("FLOAT$(")) return float_str_function();
+	if (instruction_is("GOSUB$(")) return gosub_function();
 	if (instruction_is("HEX$(")) return hex_function();
 	if (instruction_is("READ$(")) return read_str_function();
 	if (instruction_is("SPRINTF$(")) return sprintf_function();
-	if (instruction_is("ARGS$(")) return args_function();
-	if (instruction_is("GOSUB$(")) return gosub_function();
-	if (instruction_is("DEBUG$(")) return debug_function();
 	return ERROR_SYNTAX;
 }
+
 int get_byte(void){
 	unsigned char c;
 	if ('0'<=source[0] && source[0]<='9') c=source[0]-'0';

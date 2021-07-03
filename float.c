@@ -32,16 +32,20 @@ int val_float_function(void){
 
 int float_functions(void){
 	if (instruction_is("ACOS#(")) return float_arg1_function(MATH_ACOS);
+	if (instruction_is("ARGS#(")) return args_function();
 	if (instruction_is("ASIN#(")) return float_arg1_function(MATH_ASIN);
 	if (instruction_is("ATAN#(")) return float_arg1_function(MATH_ATAN);
 	if (instruction_is("ATAN2#(")) return float_arg2_function(MATH_ATAN2);
 	if (instruction_is("CEIL#(")) return float_arg1_function(MATH_CEIL);
 	if (instruction_is("COS#(")) return float_arg1_function(MATH_COS);
 	if (instruction_is("COSH#(")) return float_arg1_function(MATH_COSH);
+	if (instruction_is("DEBUG#(")) return debug_function();
 	if (instruction_is("EXP#(")) return float_arg1_function(MATH_EXP);
 	if (instruction_is("FABS#(")) return float_arg1_function(MATH_FABS);
+	if (instruction_is("FLOAT#(")) return float_function();
 	if (instruction_is("FLOOR#(")) return float_arg1_function(MATH_FLOOR);
 	if (instruction_is("FMOD#(")) return float_arg2_function(MATH_FMOD);
+	if (instruction_is("GOSUB#(")) return gosub_function();
 	if (instruction_is("LOG#(")) return float_arg1_function(MATH_LOG);
 	if (instruction_is("LOG10#(")) return float_arg1_function(MATH_LOG10);
 	if (instruction_is("MODF#(")) return float_arg1_function(MATH_MODF);
@@ -51,11 +55,7 @@ int float_functions(void){
 	if (instruction_is("SQRT#(")) return float_arg1_function(MATH_SQRT);
 	if (instruction_is("TAN#(")) return float_arg1_function(MATH_TAN);
 	if (instruction_is("TANH#(")) return float_arg1_function(MATH_TANH);
-	if (instruction_is("FLOAT#(")) return float_function();
 	if (instruction_is("VAL#(")) return val_float_function();
-	if (instruction_is("ARGS#(")) return args_function();
-	if (instruction_is("GOSUB#(")) return gosub_function();
-	if (instruction_is("DEBUG#(")) return debug_function();
 	return ERROR_SYNTAX;
 }
 

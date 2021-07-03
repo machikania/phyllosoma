@@ -188,6 +188,13 @@ int gosub_function(void){
 }
 
 int debug_function(void){
-	return call_lib_code(LIB_DEBUG);
+#ifdef DEBUG_MODE
+	g_default_args[1]=0;
+	g_default_args[2]=0;
+	g_default_args[3]=0;
+	return argn_function(LIB_DEBUG,ARG_INTEGER_OPTIONAL<<ARG1 | ARG_INTEGER_OPTIONAL<<ARG2 | ARG_INTEGER_OPTIONAL<<ARG3);
+#else
+	return ERROR_SYNTAX;
+#endif
 }
 

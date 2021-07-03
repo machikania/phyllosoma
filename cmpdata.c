@@ -202,7 +202,7 @@ int cmpdata_nhash(unsigned char* str, int num){
 	int i;
 	int hash=0;
 	for(i=0;i<num;i++){
-		hash=hash<<6 | hash>>26;
+		hash=hash<<6 ^ hash>>26;
 		hash^=str[i];
 	}
 	return hash;

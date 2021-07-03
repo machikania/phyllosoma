@@ -98,8 +98,11 @@ int not_function(void){
 
 int integer_functions(void){
 	if (instruction_is("ABS(")) return abs_function();
+	if (instruction_is("ARGS(")) return args_function();
 	if (instruction_is("ASC(")) return asc_function();
 	if (instruction_is("CREAD(")) return cread_function();
+	if (instruction_is("DEBUG(")) return debug_function();
+	if (instruction_is("GOSUB(")) return gosub_function();
 	if (instruction_is("INT(")) return int_function();
 	if (instruction_is("LEN(")) return len_function();
 	if (instruction_is("NOT(")) return not_function();
@@ -107,13 +110,10 @@ int integer_functions(void){
 	if (instruction_is("PEEK16(")) return peek16_function();
 	if (instruction_is("PEEK32(")) return peek32_function();
 	if (instruction_is("READ(")) return read_function();
+	if (instruction_is("RND(")) return rnd_function();
 	if (instruction_is("SGN(")) return sgn_function();
 	if (instruction_is("STRNCMP(")) return strncmp_function();
-	if (instruction_is("RND(")) return rnd_function();
 	if (instruction_is("VAL(")) return val_function();
-	if (instruction_is("ARGS(")) return args_function();
-	if (instruction_is("GOSUB(")) return gosub_function();
-	if (instruction_is("DEBUG(")) return debug_function();
 	return ERROR_SYNTAX;
 }
 
@@ -209,17 +209,6 @@ int get_simple_integer(void){
 	}
 	return ERROR_SYNTAX;
 }
-
-/*
-// r0=1-r0
-100003bc:	2301      	movs	r3, #1
-100003be:	1a18      	subs	r0, r3, r0
-
-// NOT
-100003bc:	4243      	negs	r3, r0
-100003be:	4158      	adcs	r0, r3
-
-*/
 
 int get_integer(void){
 	return get_value(VAR_MODE_INTEGER);

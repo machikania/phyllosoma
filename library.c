@@ -541,10 +541,11 @@ int lib_var_pop(int r0, int r1, int r2){
 }
 
 int debug(int r0, int r1, int r2){
-	((volatile unsigned int*)r1)[0]=r0;
-//	((volatile unsigned short*)r1)[0]=r0;
-//	((volatile unsigned char*)r1)[0]=r0;
-//	return r0;
+#ifdef DEBUG_MODE
+	return r2+r1+r0+1;
+#else
+	return r0;
+#endif
 }
 
 static const void* lib_list1[]={

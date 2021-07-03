@@ -1112,7 +1112,14 @@ int print_statement(void) {
 }
 
 int debug_statement(void){
-	return call_lib_code(LIB_DEBUG);
+#ifdef DEBUG_MODE
+	g_default_args[1]=0;
+	g_default_args[2]=0;
+	g_default_args[3]=0;
+	return argn_function(LIB_DEBUG,ARG_INTEGER_OPTIONAL<<ARG1 | ARG_INTEGER_OPTIONAL<<ARG2 | ARG_INTEGER_OPTIONAL<<ARG3);
+#else
+	return ERROR_SYNTAX;
+#endif
 }
 
 int rem_statement(void){
@@ -1173,35 +1180,35 @@ int compile_statement(void){
 	rewind_object(bobj);
 	source=bsrc;
 	// It's not LET statement. Let's continue for possibilities of the other statements.
-	if (instruction_is("PRINT")) return print_statement();
-	if (instruction_is("END")) return end_statement();
+	if (instruction_is("BREAK")) return break_statement();
+	if (instruction_is("CDATA")) return cdata_statement();
+	if (instruction_is("CONTINUE")) return continue_statement();
+	if (instruction_is("DATA")) return data_statement();
 	if (instruction_is("DEBUG")) return debug_statement();
-	if (instruction_is("USEVAR")) return usevar_statement();
-	if (instruction_is("IF")) return if_statement();
+	if (instruction_is("DIM")) return dim_statement();
+	if (instruction_is("DO")) return do_statement();
 	if (instruction_is("ELSE")) return else_statement();
 	if (instruction_is("ELSEIF")) return elseif_statement();
+	if (instruction_is("END")) return end_statement();
 	if (instruction_is("ENDIF")) return endif_statement();
-	if (instruction_is("DO")) return do_statement();
-	if (instruction_is("LOOP")) return loop_statement();
-	if (instruction_is("WHILE")) return while_statement();
-	if (instruction_is("WEND")) return wend_statement();
-	if (instruction_is("BREAK")) return break_statement();
-	if (instruction_is("CONTINUE")) return continue_statement();
 	if (instruction_is("FOR")) return for_statement();
-	if (instruction_is("NEXT")) return next_statement();
-	if (instruction_is("LABEL")) return label_statement();
-	if (instruction_is("GOTO")) return goto_statement();
 	if (instruction_is("GOSUB")) return gosub_statement();
-	if (instruction_is("RETURN")) return return_statement();
-	if (instruction_is("DIM")) return dim_statement();
-	if (instruction_is("DATA")) return data_statement();
-	if (instruction_is("CDATA")) return cdata_statement();
-	if (instruction_is("RESTORE")) return restore_statement();
-	if (instruction_is("REM")) return rem_statement();
-	if (instruction_is("VAR")) return var_statement();
+	if (instruction_is("GOTO")) return goto_statement();
+	if (instruction_is("IF")) return if_statement();
+	if (instruction_is("LABEL")) return label_statement();
+	if (instruction_is("LOOP")) return loop_statement();
+	if (instruction_is("NEXT")) return next_statement();
 	if (instruction_is("POKE")) return poke_statement();
 	if (instruction_is("POKE16")) return poke16_statement();
 	if (instruction_is("POKE32")) return poke32_statement();
+	if (instruction_is("PRINT")) return print_statement();
+	if (instruction_is("REM")) return rem_statement();
+	if (instruction_is("RESTORE")) return restore_statement();
+	if (instruction_is("RETURN")) return return_statement();
+	if (instruction_is("USEVAR")) return usevar_statement();
+	if (instruction_is("VAR")) return var_statement();
+	if (instruction_is("WEND")) return wend_statement();
+	if (instruction_is("WHILE")) return while_statement();
 	// Finally, try let statement again as syntax error may be in LET statement.
 	return let_statement();
 }

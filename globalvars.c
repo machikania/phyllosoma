@@ -66,7 +66,9 @@ int g_read_valid_len;
 unsigned short g_read_mode;
 
 // Reserved words
-const char* const g_reserved_words[114]={
+
+
+const char* const g_reserved_words[116]={
 	"ABS",
 	"ACOS",
 	"ARGS",
@@ -166,7 +168,9 @@ const char* const g_reserved_words[114]={
 	"SIN",
 	"SINH",
 	"SOUND",
+	"SPRINTF",
 	"SQRT",
+	"STRNCMP",
 	"SYSTEM",
 	"TAN",
 	"TANH",
@@ -182,7 +186,7 @@ const char* const g_reserved_words[114]={
 	"WHILE",
 	"WIDTH",
 };
-const int const g_hash_resereved_words[114]={
+const int const g_hash_resereved_words[116]={
 	0x000400d3, //ABS
 	0x01002393, //ACOS
 	0x01013193, //ARGS
@@ -282,7 +286,9 @@ const int const g_hash_resereved_words[114]={
 	0x0005220e, //SIN
 	0x014883c8, //SINH
 	0x523943c4, //SOUND
+	0xffffffa2, //SPRINTF
 	0x014904d4, //SQRT
+	0xffffffb5, //STRNCMP
 	0x98495119, //SYSTEM
 	0x0005500e, //TAN
 	0x015403c8, //TANH
