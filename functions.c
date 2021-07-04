@@ -55,7 +55,7 @@ int arg_to_r0(int mode, int argpos){
 	mode&=(1<<ARG2)-1;
 	skip_blank();
 	if (argpos<0 || 5<argpos) return ERROR_UNKNOWN; // Max argument number is 6
-	if (ARG_OPTIONAL<mode && ')'==source[0]) {
+	if (ARG_OPTIONAL<mode && (')'==source[0] || ':'==source[0] || 0x00==source[0])) {
 		return set_value_in_register(0,g_default_args[argpos+1]);
 	} else if (ARG_OPTIONAL<mode && ','==source[0]) {
 		source++;
@@ -74,7 +74,8 @@ int arg_to_r0(int mode, int argpos){
 			default:
 				return ERROR_UNKNOWN;
 		}
-		if (')'==source[0]) return 0;
+		if (e) return e;
+		if (')'==source[0] || ':'==source[0] || 0x00==source[0]) return 0;
 		if (','!=source[0]) return ERROR_SYNTAX;
 		source++;
 		return 0;

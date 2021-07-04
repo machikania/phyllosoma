@@ -1211,8 +1211,7 @@ int compile_statement(void){
 	if (instruction_is("WEND")) return wend_statement();
 	if (instruction_is("WHILE")) return while_statement();
 	// Environment statements
-	e=display_statements();
-	if (!e) return 0;
+	return display_statements();
 	// Finally, try let statement again as syntax error may be in LET statement.
-	return let_statement();
+	//return let_statement();
 }

@@ -52,6 +52,8 @@ void dump_cmpdata(void){
 int main() {
 	static char* const code[]={
 "PRINT \"Hello MachiKania World!\"",
+"USEGRAPHIC",
+"LINE 0,0,100,100",
 "END",
 		0
 	};
