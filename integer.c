@@ -6,6 +6,7 @@
 */
 
 #include "./compiler.h"
+#include "./display.h"
 
 int strncmp_function(void){
 	return argn_function(LIB_STRNCMP,
@@ -114,7 +115,8 @@ int integer_functions(void){
 	if (instruction_is("SGN(")) return sgn_function();
 	if (instruction_is("STRNCMP(")) return strncmp_function();
 	if (instruction_is("VAL(")) return val_function();
-	return ERROR_SYNTAX;
+	// Environment
+	return display_functions();
 }
 
 int get_positive_decimal_value(void){

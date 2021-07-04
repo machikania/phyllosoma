@@ -37,6 +37,7 @@ void _printnum2(unsigned int n,unsigned char e){
 	e-=i;
 	for(i=0;i<e;i++) putchar(' ');
 	printf("%s",buff);
+	printnum2(n,e);
 }
 
 void _cls(void){

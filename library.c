@@ -572,7 +572,7 @@ static const void* lib_list1[]={
 	lib_read_str,   // #define LIB_READ_STR 19
 	lib_asc,        // #define LIB_ASC 20
 	lib_post_gosub, // #define LIB_POST_GOSUB 21
-	lib_display,    // #define LIB_DISPLAY 22
+	lib_display,    // #define LIB_DISPLAY_FUNCTION 22
 };
 
 static const void* lib_list2[]={
@@ -585,6 +585,7 @@ static const void* lib_list2[]={
 	lib_restore,    // #define LIB_RESTORE 134
 	lib_var_push,   // #define LIB_VAR_PUSH 135
 	lib_var_pop,    // #define LIB_VAR_POP 136
+	lib_display,    // #define LIB_DISPLAY 137
 };
 
 int statement_library(int r0, int r1, int r2, int r3){

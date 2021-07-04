@@ -13,115 +13,15 @@
 #include "./display.h"
 
 /*
+	Local prototypings
+*/
+int lib_cread(int r0, int r1, int r2);
+
+/*
 
 CLEAR
 	すべての文字列型変数と整数型配列を破棄し、整数値を０とする。また、
 	PCGの使用をやめ、表示キャラクターをリセットする。
-
-
-void set_bgcolor(unsigned char b,unsigned char r,unsigned char g); //バックグランドカラー設定
-BGCOLOR r,g,b
-	背景色指定。
-
-void cls(void);
-CLS
-	スクリーン消去。
-
-void setcursorcolor(unsigned char c);
-COLOR x
-	テキスト色指定。
-
-void setcursor(unsigned char x,unsigned char y,unsigned char c);
-CURSOR x,y
-	カーソル位置指定。
-
-void set_palette(unsigned char n,unsigned char b,unsigned char r,unsigned char g);
-PALETTE n,r,g,b
-	パレット指定。
-
-void startPCG(unsigned char *p,int a);
-	// RAMフォント（PCG）の利用開始、pがフォント格納場所、aが0以外でシステムフォントをコピー
-void stopPCG(void);
-	// RAMフォント（PCG）の利用停止
-PCG x,y,z
-	ASCIIコードがxの文字の表示キャラクターを変更する。y,zは、キャラク
-	ターデーター。詳細は、下記<PCG>の項を参照。
-USEPCG [x]
-	PCGを使用、もしくは使用停止する。x=0で使用停止、x=1で使用、x=2で
-	キャラクターをリセットして使用。xを省略した場合は、x=1と同じ。
-
-SCROLL x,y
-	画面を横方向、もしくは縦方向(斜めも可)に動かす。動かす方向と大きさ
-	は、x, yでそれぞれ、横方向の移動度、縦方向の移動度として指定する。
-WIDTH x
-	キャラクターディスプレイの横幅を文字数で指定。xは30、36、40、48、
-	もしくは80。
-
-TVRAM([x])
-	ビデオRAMのx番目の内容を、バイト値で返す。xを省略した場合、ビデオ
-	RAMの開始位置の物理アドレスを返す。
-
-void g_boxfill(int x1,int y1,int x2,int y2,unsigned char c);
-BOXFILL [x1,y1],x2,y2[,c]
-	座標(x1,y1),(x2,y2)を対角線とするカラーcで塗られた長方形を描画。
-
-void g_circle(int x0,int y0,unsigned int r,unsigned char c);
-CIRCLE [x,y],r[,c]
-	座標(x,y)を中心に、半径r、カラーcの円を描画。
-
-void g_circlefill(int x0,int y0,unsigned int r,unsigned char c);
-CIRCLEFILL [x,y],r[,c]
-	座標(x,y)を中心に、半径r、カラーcで塗られた円を描画。
-GCLS
-	画面クリアー。
-
-GCOLOR c
-	それぞれの命令で、cを省略した場合の色を指定。
-GPALETTE n,r,g,b
-	パレット指定。
-
-void g_printstr(int x,int y,unsigned char c,int bc,unsigned char *s);
-GPRINT [x,y],c,bc,s$
-	座標(x,y)にカラーcで文字列s$を表示、bc:背景色（負数の場合背景色指定なし）。
-
-void g_gline(int x1,int y1,int x2,int y2,unsigned char c);
-void g_hline(int x1,int x2,int y,unsigned char c);
-LINE [x1,y1],x2,y2[,c]
-	座標(x1,y1)から(x2,y2)にカラーcで線分を描画。
-POINT x,y
-	グラフィック現在位置を、設定する。
-
-void g_pset(int x,int y,unsigned char c);
-PSET [x,y][,c]
-	座標(x,y)の位置にカラーcで点を描画。
-
-void g_putbmpmn(int x,int y,unsigned char m,unsigned char n,const unsigned char bmp[]);
-PUTBMP [x,y],m,n,bbb
-	横m*縦nドットのキャラクター(bbbで指定)を座標(x,y)に表示。
-	サイズm*nの配列bmpに、単純にカラー番号を並べる。
-	ただし、カラーが0の部分は透明色として扱う。ただし、bbbはラベル名もし
-	くは配列へのポインター。
-
-USEGRAPHIC [x]
-Type Mの場合
-	グラフィックディスプレイを使用、もしくは使用停止する。x=0で使用停止、
-	x=1, 5, 9で使用、x=2, 6, 10で画面とパレットをクリアーして使用、x=3,7, 
-	11でグラフィック領域を確保するが表示はキャラクターディスプレイのまま。
-	ただし、グラフィックディスプレイ未使用の状態でx=0, 4, 8の場合は、領域
-	を確保する。xを省略した場合は、x=1と同じ。
-	ただし、xの値が0-3の場合はType-Z互換グラフィック、4-7の場合は標準グラ
-	フィック、8-11の場合はワイドグラフィック。
-Type Zの場合
-	グラフィックディスプレイを使用、もしくは使用停止する。x=0で使用停止、
-	x=1で使用、x=2で画面とパレットをクリアーして使用、x=3でグラフィック領
-	域を確保するが表示はキャラクターディスプレイのまま。ただし、グラフィッ
-	クディスプレイ未使用の状態でx=0の場合は、領域を確保する。xを省略した場
-	合は、x=1と同じ。
-
-
-GCOLOR(x,y)
-	グラフィック座標(x,y)の表示中パレット番号を返す。
-
 */
 
 void display_init(void){
@@ -145,5 +45,445 @@ void display_init(void){
 }
 
 int lib_display(int r0, int r1, int r2){
+	static unsigned char cursorcolor=7;
+	static unsigned char gcolor=7;
+	static unsigned char* ppcg=0;
+	static int prevx1=0,prevy1=0;
+	int* sp=(int*)r1;
+	int i,j,gc;
+	unsigned char* bmp;
+	unsigned int x1,y1,x2,y2;
+	// Set x1,y1,x2,y2 for graphic
+	if (r1&0xfff0000) {
+		// r1 is a pointer to stack
+		x1=sp[0];
+		y1=sp[1];
+		x2=sp[2];
+		y2=sp[3];
+		if (x1==0x80000000) x1=prevx1;
+		if (y1==0x80000000) y1=prevy1;
+	}
+	// Set graphic color
+	gc=r0;
+	if (gc<0) gc=gcolor;
+	// Do each
+	switch(r2){
+		case DISPLAY_BGCOLOR:
+			// void set_bgcolor(unsigned char b,unsigned char r,unsigned char g);
+			// BGCOLOR r,g,b
+			set_bgcolor(r0,sp[0],sp[1]);
+			break;
+		case DISPLAY_CLS:
+			// void cls(void);
+			// CLS
+			cls();
+			break;
+		case DISPLAY_COLOR:
+			// void setcursorcolor(unsigned char c);
+			// COLOR x
+			cursorcolor=r0;
+			break;
+		case DISPLAY_CURSOR:
+			//void setcursor(unsigned char x,unsigned char y,unsigned char c);
+			//CURSOR x,y
+			setcursor(r1,r0,cursorcolor);
+			break;
+		case DISPLAY_PALETTE:
+		case DISPLAY_GPALETTE:
+			//void set_palette(unsigned char n,unsigned char b,unsigned char r,unsigned char g);
+			//PALETTE n,r,g,b
+			set_palette(sp[0],r0,sp[1],sp[2]);
+			break;
+		case DISPLAY_PCG:
+			//PCG x,y,z
+			if (0==ppcg) break;
+			ppcg[sp[0]*8+0]=sp[1]>>24;
+			ppcg[sp[0]*8+1]=sp[1]>>16;
+			ppcg[sp[0]*8+2]=sp[1]>>8;
+			ppcg[sp[0]*8+3]=sp[1];
+			ppcg[sp[0]*8+4]=r0>>24;
+			ppcg[sp[0]*8+5]=r0>>16;
+			ppcg[sp[0]*8+6]=r0>>8;
+			ppcg[sp[0]*8+7]=r0;
+			break;
+		case DISPLAY_USEPCG:
+			// void startPCG(unsigned char *p,int a);
+			switch(r0){
+				case 0:
+					stopPCG();
+					break;
+				case 2:
+					if (0==ppcg) {
+						i=get_permanent_block_number();
+						ppcg=alloc_memory(512,i);
+					}
+					startPCG(ppcg,1);
+					break;
+				case 1:
+				default:
+					if (0==ppcg) {
+						i=get_permanent_block_number();
+						ppcg=alloc_memory(512,i);
+						startPCG(ppcg,1);
+					} else {
+						startPCG(ppcg,0);
+					}
+					break;
+			}
+			break;
+		case DISPLAY_SCROLL:
+			//SCROLL x,y
+			//	画面を横方向、もしくは縦方向(斜めも可)に動かす。動かす方向と大きさ
+			//	は、x, yでそれぞれ、横方向の移動度、縦方向の移動度として指定する。
+			// TODO: here
+			break;
+		case DISPLAY_WIDTH:
+			//WIDTH x
+			//	キャラクターディスプレイの横幅を文字数で指定。xは30、36、40、48、
+			//	もしくは80。
+			break;
+		case DISPLAY_TVRAM:
+			if (r0<0) return (int)&TVRAM[0];
+			else return TVRAM[r0];
+		case DISPLAY_BOXFILL:
+			//void g_boxfill(int x1,int y1,int x2,int y2,unsigned char c);
+			g_boxfill(x1,y1,x2,y2,gc);
+			prevx1=x2;
+			prevy1=y2;
+			break;
+		case DISPLAY_CIRCLE:
+			//void g_circle(int x0,int y0,unsigned int r,unsigned char c);
+			g_circle(x1,y1,x1,gc);
+			prevx1=x1;
+			prevy1=y1;
+			break;
+		case DISPLAY_CIRCLEFILL:
+			//void g_circlefill(int x0,int y0,unsigned int r,unsigned char c);
+			g_circlefill(x1,y1,x1,gc);
+			prevx1=x1;
+			prevy1=y1;
+			break;
+		case DISPLAY_GCLS:
+			//GCLS
+			// TODO: here
+			break;
+		case DISPLAY_GCOLOR:
+			//GCOLOR c
+			gcolor=r0;
+			break;
+		case DISPLAY_GPRINT:
+			//void g_printstr(int x,int y,unsigned char c,int bc,unsigned char *s);
+			//GPRINT [x,y],c,bc,s$
+			break;
+		case DISPLAY_LINE:
+			//void g_gline(int x1,int y1,int x2,int y2,unsigned char c);
+			//void g_hline(int x1,int x2,int y,unsigned char c);
+			if (y1==y2) g_hline(x1,x2,y1,gc);
+			else g_gline(x1,y1,x2,y2,gc);
+			prevx1=x2;
+			prevy1=y2;
+			break;
+		case DISPLAY_POINT:
+			prevx1=r1;
+			prevy1=r0;
+			break;
+		case DISPLAY_PSET:
+			// void g_pset(int x,int y,unsigned char c);
+			g_pset(x1,y1,gc);
+			prevx1=x1;
+			prevy1=y1;
+			break;
+		case DISPLAY_PUTBMP:
+			// void g_putbmpmn(int x,int y,unsigned char m,unsigned char n,const unsigned char bmp[]);
+			if (r0) {
+				g_putbmpmn(x1,y1,x2,y2,(unsigned char*)r0);
+			} else {
+				// Note that this is a slow speed process. Use array for faster drawing
+				bmp=alloc_memory((x1*y1+3)/4,-1);
+				for(j=0;j<y2;j++){
+					for(i=0;i<x2;i++){
+						bmp[j*x2+i]=lib_cread(0,0,0);
+					}
+				}
+				g_putbmpmn(x1,y1,x2,y2,bmp);
+				garbage_collection(bmp);
+			}
+			prevx1=x1;
+			prevy1=y1;
+			break;
+		case DISPLAY_USEGRAPHIC:
+			switch(r0&3){
+				case 0:
+					set_graphmode(0);
+					break;
+				case 2:
+					// TODO: clear palette
+					// TODO: clear graphic display
+				case 1:
+				default:
+					set_graphmode(1);
+					break;
+			}
+			break;
+		case DISPLAY_GCOLOR_FUNC:
+			//GCOLOR(x,y)
+			// TODO: here
+			break;
+		default:
+			break;
+	}
 	return r0;
+}
+
+int bgcolor_statement(void){
+	// BGCOLOR r,g,b
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER<<ARG1 | 
+		ARG_INTEGER<<ARG2 | 
+		ARG_INTEGER<<ARG3 | 
+		DISPLAY_BGCOLOR<<LIBOPTION);
+}
+
+int cls_statement(void){
+	// CLS
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_NONE | 
+		DISPLAY_CLS<<LIBOPTION);
+}
+
+int color_statement(void){
+	// COLOR x
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER<<ARG1 | 
+		DISPLAY_COLOR<<LIBOPTION);
+}
+
+int cursor_statement(void){
+	// CURSOR x,y
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER<<ARG1 | 
+		ARG_INTEGER<<ARG2 | 
+		DISPLAY_CURSOR<<LIBOPTION);
+}
+
+int palette_statement(void){
+	// PALETTE n,r,g,b
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER<<ARG1 | 
+		ARG_INTEGER<<ARG2 | 
+		ARG_INTEGER<<ARG3 | 
+		ARG_INTEGER<<ARG4 | 
+		DISPLAY_PALETTE<<LIBOPTION);
+}
+
+int pcg_statement(void){
+	// PCG x,y,z
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER<<ARG1 | 
+		ARG_INTEGER<<ARG2 | 
+		ARG_INTEGER<<ARG3 | 
+		DISPLAY_PCG<<LIBOPTION);
+}
+
+int usepcg_statement(void){
+	// USEPCG [x]
+	g_default_args[1]=1;
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER_OPTIONAL<<ARG1 | 
+		DISPLAY_USEPCG<<LIBOPTION);
+}
+
+int scroll_statement(void){
+	// SCROLL x,y
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER<<ARG1 | 
+		ARG_INTEGER<<ARG2 | 
+		DISPLAY_SCROLL<<LIBOPTION);
+}
+
+int width_statement(void){
+	// WIDTH x
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER<<ARG1 | 
+		DISPLAY_WIDTH<<LIBOPTION);
+}
+
+int boxfill_statement(void){
+	// BOXFILL [x1,y1],x2,y2[,c]
+	g_default_args[1]=0x80000000;
+	g_default_args[2]=0x80000000;
+	g_default_args[5]=-1;
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER_OPTIONAL<<ARG1 | 
+		ARG_INTEGER_OPTIONAL<<ARG2 | 
+		ARG_INTEGER<<ARG3 | 
+		ARG_INTEGER<<ARG4 | 
+		ARG_INTEGER_OPTIONAL<<ARG5 | 
+		DISPLAY_BOXFILL<<LIBOPTION);
+}
+
+int circle_statement(void){
+	// CIRCLE [x,y],r[,c]
+	g_default_args[1]=0x80000000;
+	g_default_args[2]=0x80000000;
+	g_default_args[4]=-1;
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER_OPTIONAL<<ARG1 | 
+		ARG_INTEGER_OPTIONAL<<ARG2 | 
+		ARG_INTEGER<<ARG3 | 
+		ARG_INTEGER_OPTIONAL<<ARG4 | 
+		DISPLAY_CIRCLE<<LIBOPTION);
+}
+
+int circlefill_statement(void){
+	// CIRCLEFILL [x,y],r[,c]
+	g_default_args[1]=0x80000000;
+	g_default_args[2]=0x80000000;
+	g_default_args[4]=-1;
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER_OPTIONAL<<ARG1 | 
+		ARG_INTEGER_OPTIONAL<<ARG2 | 
+		ARG_INTEGER<<ARG3 | 
+		ARG_INTEGER_OPTIONAL<<ARG4 | 
+		DISPLAY_CIRCLEFILL<<LIBOPTION);
+}
+
+int gcls_statement(void){
+	// GCLS
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_NONE | 
+		DISPLAY_GCLS<<LIBOPTION);
+}
+
+int gcolor_statement(void){
+	// GCOLOR c
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER<<ARG1 | 
+		DISPLAY_GCOLOR<<LIBOPTION);
+}
+
+int gpalette_statement(void){
+	// GPALETTE n,r,g,b
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER<<ARG1 | 
+		ARG_INTEGER<<ARG2 | 
+		ARG_INTEGER<<ARG3 | 
+		ARG_INTEGER<<ARG4 | 
+		DISPLAY_GPALETTE<<LIBOPTION);
+}
+
+int gprint_statement(void){
+	// GPRINT [x,y],c,bc,s$
+	g_default_args[1]=0x80000000;
+	g_default_args[2]=0x80000000;
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER_OPTIONAL<<ARG1 | 
+		ARG_INTEGER_OPTIONAL<<ARG2 | 
+		ARG_INTEGER<<ARG3 | 
+		ARG_INTEGER<<ARG4 | 
+		ARG_STRING<<ARG5 | 
+		DISPLAY_GPRINT<<LIBOPTION);
+}
+
+int line_statement(void){
+	// LINE [x1,y1],x2,y2[,c]
+	g_default_args[1]=0x80000000;
+	g_default_args[2]=0x80000000;
+	g_default_args[5]=-1;
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER_OPTIONAL<<ARG1 | 
+		ARG_INTEGER_OPTIONAL<<ARG2 | 
+		ARG_INTEGER<<ARG3 | 
+		ARG_INTEGER<<ARG4 | 
+		ARG_INTEGER_OPTIONAL<<ARG5 | 
+		DISPLAY_LINE<<LIBOPTION);
+}
+
+int point_statement(void){
+	// POINT x,y
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER<<ARG1 | 
+		ARG_INTEGER<<ARG2 | 
+		DISPLAY_POINT<<LIBOPTION);
+}
+
+int pset_statement(void){
+	// PSET [x,y][,c]
+	g_default_args[1]=0x80000000;
+	g_default_args[2]=0x80000000;
+	g_default_args[3]=-1;
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER_OPTIONAL<<ARG1 | 
+		ARG_INTEGER_OPTIONAL<<ARG2 | 
+		ARG_INTEGER_OPTIONAL<<ARG3 | 
+		DISPLAY_PSET<<LIBOPTION);
+}
+
+int putbmp_statement(void){
+	// PUTBMP [x,y],m,n,bbb
+	// TODO: support label; ARG5 is label
+	g_default_args[1]=0x80000000;
+	g_default_args[2]=0x80000000;
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER_OPTIONAL<<ARG1 | 
+		ARG_INTEGER_OPTIONAL<<ARG2 | 
+		ARG_INTEGER<<ARG3 | 
+		ARG_INTEGER<<ARG4 | 
+		ARG_INTEGER<<ARG5 | 
+		DISPLAY_PUTBMP<<LIBOPTION);
+}
+
+int usegraphic_statement(void){
+	// USEGRAPHIC [x]
+	g_default_args[1]=1;
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER_OPTIONAL<<ARG1 | 
+		DISPLAY_USEGRAPHIC<<LIBOPTION);
+}
+
+int tvram_function(void){
+	// TVRAM([x])
+	g_default_args[1]=-1;
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER_OPTIONAL<<ARG1 | 
+		DISPLAY_TVRAM<<LIBOPTION);
+}
+
+int gcolor_function(void){
+	/// GCOLOR(x,y)
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER_OPTIONAL<<ARG1 | 
+		ARG_INTEGER_OPTIONAL<<ARG2 | 
+		DISPLAY_GCOLOR_FUNC<<LIBOPTION);
+}
+
+int display_statements(void){
+	if (instruction_is("BGCOLOR")) return bgcolor_statement();
+	if (instruction_is("BOXFILL")) return boxfill_statement();
+	if (instruction_is("CIRCLE")) return circle_statement();
+	if (instruction_is("CIRCLEFILL")) return circlefill_statement();
+	if (instruction_is("CLS")) return cls_statement();
+	if (instruction_is("COLOR")) return color_statement();
+	if (instruction_is("CURSOR")) return cursor_statement();
+	if (instruction_is("GCLS")) return gcls_statement();
+	if (instruction_is("GCOLOR")) return gcolor_statement();
+	if (instruction_is("GPALETTE")) return gpalette_statement();
+	if (instruction_is("GPRINT")) return gprint_statement();
+	if (instruction_is("LINE")) return line_statement();
+	if (instruction_is("PALETTE")) return palette_statement();
+	if (instruction_is("PCG")) return pcg_statement();
+	if (instruction_is("POINT")) return point_statement();
+	if (instruction_is("PSET")) return pset_statement();
+	if (instruction_is("PUTBMP")) return putbmp_statement();
+	if (instruction_is("SCROLL")) return scroll_statement();
+	if (instruction_is("USEGRAPHIC")) return usegraphic_statement();
+	if (instruction_is("USEPCG")) return usepcg_statement();
+	if (instruction_is("WIDTH")) return width_statement();
+	return ERROR_SYNTAX;
+}
+
+int display_functions(void){
+	if (instruction_is("TVRAM(")) return tvram_function();
+	if (instruction_is("GCOLOR(")) return gcolor_function();
+	return ERROR_SYNTAX;
 }

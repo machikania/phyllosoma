@@ -6,6 +6,7 @@
 */
 
 #include "./compiler.h"
+#include "./display.h"
 
 /*
 	POKE statements
@@ -1209,6 +1210,9 @@ int compile_statement(void){
 	if (instruction_is("VAR")) return var_statement();
 	if (instruction_is("WEND")) return wend_statement();
 	if (instruction_is("WHILE")) return while_statement();
+	// Environment statements
+	e=display_statements();
+	if (!e) return 0;
 	// Finally, try let statement again as syntax error may be in LET statement.
 	return let_statement();
 }

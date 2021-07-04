@@ -32,3 +32,5 @@
 int display_statements(void);
 int display_functions(void);
 int lib_display(int r0, int r1, int r2);
+
+extern unsigned char TVRAM[];

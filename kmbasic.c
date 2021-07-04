@@ -16,20 +16,21 @@
 
 void display_init(void);
 
+/*
+	Dump functions for debugging follow
+*/
+
 void dump(void){
 	int i;
-	printf("\nkmbasic_object:");
+	printstr("\nkmbasic_object:");
 	printhex32((int)&kmbasic_object[0]);
-	printf("\n");
-	for(i=0;i<256;i++){
-		printf("%x%x%x%x ",
-			(kmbasic_object[i]>>12)&0xf,
-			(kmbasic_object[i]>>8)&0xf,
-			(kmbasic_object[i]>>4)&0xf,
-			kmbasic_object[i]&0xf);
+	printstr("\n");
+	for(i=0;i<256;i++) {
+		printhex16(kmbasic_object[i]);
+		printchar(' ');
 		if (0x0000==kmbasic_object[i] && 0x0000==kmbasic_object[i+1] && 0x0000==kmbasic_object[i+2]) break;
 	}
-	printf("\n\n");
+	printstr("\n\n");
 	sleep_ms(1);
 }
 
