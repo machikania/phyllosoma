@@ -67,8 +67,7 @@ unsigned short g_read_mode;
 
 // Reserved words
 
-
-const char* const g_reserved_words[116]={
+const char* const g_reserved_words[122]={
 	"ABS",
 	"ACOS",
 	"ARGS",
@@ -76,12 +75,15 @@ const char* const g_reserved_words[116]={
 	"ASIN",
 	"ATAN",
 	"ATAN2",
+	"BGCOLOR",
+	"BOXFILL",
 	"BREAK",
 	"CALL",
 	"CDATA",
 	"CEIL",
 	"CHR",
 	"CIRCLE",
+	"CIRCLEFILL",
 	"CLEAR",
 	"CLS",
 	"COLOR",
@@ -123,6 +125,7 @@ const char* const g_reserved_words[116]={
 	"GETDIR",
 	"GOSUB",
 	"GOTO",
+	"GPALETTE",
 	"GPRINT",
 	"HEX",
 	"IDLE",
@@ -140,10 +143,11 @@ const char* const g_reserved_words[116]={
 	"LOOP",
 	"MODF",
 	"MUSIC",
-	"NEXT",
 	"NEW",
+	"NEXT",
 	"NOT",
 	"OPTION",
+	"PALETTE",
 	"PCG",
 	"PEEK",
 	"PEEK16",
@@ -177,6 +181,7 @@ const char* const g_reserved_words[116]={
 	"TIMER",
 	"TVRAM",
 	"UNTIL",
+	"USEGRAPHIC",
 	"USEPCG",
 	"USEVAR",
 	"VAL",
@@ -186,7 +191,7 @@ const char* const g_reserved_words[116]={
 	"WHILE",
 	"WIDTH",
 };
-const int const g_hash_resereved_words[116]={
+const int const g_hash_resereved_words[122]={
 	0x000400d3, //ABS
 	0x01002393, //ACOS
 	0x01013193, //ARGS
@@ -194,12 +199,15 @@ const int const g_hash_resereved_words[116]={
 	0x0101220e, //ASIN
 	0x0101500e, //ATAN
 	0x405403b2, //ATAN2
+	0x7dc72863, //BGCOLOR
+	0x66e378bf, //BOXFILL
 	0x434c400b, //BREAK
 	0x0108034c, //CALL
 	0x42140541, //CDATA
 	0x0108420c, //CEIL
 	0x00042252, //CHR
 	0x884c2355, //CIRCLE
+	0xab94cf50, //CIRCLEFILL
 	0x42344012, //CLEAR
 	0x00042353, //CLS
 	0x4238d392, //COLOR
@@ -241,6 +249,7 @@ const int const g_hash_resereved_words[116]={
 	0x84545203, //GETDIR
 	0x46392502, //GOSUB
 	0x0118e54f, //GOTO
+	0x0d1043aa, //GPALETTE
 	0x914c83c5, //GPRINT
 	0x00049118, //HEX
 	0x01205345, //IDLE
@@ -258,10 +267,11 @@ const int const g_hash_resereved_words[116]={
 	0x0134e390, //LOOP
 	0x0130e146, //MODF
 	0x4c512203, //MUSIC
-	0x013c4654, //NEXT
 	0x0004f117, //NEW
+	0x013c4654, //NEXT
 	0x0004f394, //NOT
 	0x9154839d, //OPTION
+	0x0d115055, //PALETTE
 	0x00051087, //PCG
 	0x0144410b, //PEEK
 	0x4410bc62, //PEEK16
@@ -286,15 +296,16 @@ const int const g_hash_resereved_words[116]={
 	0x0005220e, //SIN
 	0x014883c8, //SINH
 	0x523943c4, //SOUND
-	0xffffffa2, //SPRINTF
+	0xacdf0fa2, //SPRINTF
 	0x014904d4, //SQRT
-	0xffffffb5, //STRNCMP
+	0xacc3d9f5, //STRNCMP
 	0x98495119, //SYSTEM
 	0x0005500e, //TAN
 	0x015403c8, //TANH
 	0x5520c112, //TIMER
 	0x555d300d, //TVRAM
 	0x543d520c, //UNTIL
+	0x2aaa8267, //USEGRAPHIC
 	0x12111092, //USEPCG
 	0x12117007, //USEVAR
 	0x0005700c, //VAL
