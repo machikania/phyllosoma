@@ -9,45 +9,8 @@
 #include "pico/stdlib.h"
 #include "./api.h"
 #include "./compiler.h"
-
-/*
-	Local prototypings follow
-*/
-
-void display_init(void);
-
-/*
-	Dump functions for debugging follow
-*/
-
-void dump(void){
-	int i;
-	printstr("\nkmbasic_object:");
-	printhex32((int)&kmbasic_object[0]);
-	printstr("\n");
-	for(i=0;i<256;i++) {
-		printhex16(kmbasic_object[i]);
-		printchar(' ');
-		if (0x0000==kmbasic_object[i] && 0x0000==kmbasic_object[i+1] && 0x0000==kmbasic_object[i+2]) break;
-	}
-	printstr("\n\n");
-	sleep_ms(1);
-}
-
-void dump_cmpdata(void){
-	int* data;
-	unsigned int i,num;
-	printstr("\nCMPDATA dump\n");
-	cmpdata_reset();
-	while(data=cmpdata_find(CMPDATA_ALL)){
-		num=(data[0]>>16)&0xff;
-		for(i=0;i<num;i++){
-			printhex32(data[i]);
-			printstr(" ");
-		}
-		printstr("\n");
-	}
-}
+#include "./debug.h"
+#include "./display.h"
 
 int main() {
 	static char* const code[]={
@@ -79,6 +42,7 @@ int main() {
 	printstr(" micro seconds spent for compiling\n");
 	// Show dump
 	dump();
+	//dump_cmpdata();
 	// Run the code if error didn't occur
 	if (0<=e) run_code();
 	// Infinite loop

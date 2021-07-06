@@ -31,6 +31,7 @@ if (TARGET tinyusb_device)
 			class.c
 			file.c
 			display.c
+			debug.c
 			interface/fontdata.c
 			interface/graphlib.c
 			interface/ili9341_spi.c

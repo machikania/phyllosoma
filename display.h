@@ -30,6 +30,7 @@
 #define DISPLAY_USEGRAPHIC 23
 #define DISPLAY_GCOLOR_FUNC 24
 
+void display_init(void);
 int display_statements(void);
 int display_functions(void);
 int lib_display(int r0, int r1, int r2);
