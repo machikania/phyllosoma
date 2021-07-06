@@ -163,7 +163,7 @@ int get_simple_integer(void){
 		if (i<0) return i;
 		g_constant_int=i;
 		return set_value_in_register(0,i);
-	} else if ('A'<=source[0] && source[0]<'Z' || '_'==source[0]) {
+	} else if ('A'<=source[0] && source[0]<='Z' || '_'==source[0]) {
 		// Lower constant flag
 		g_constant_value_flag=0;
 		// Class static property or method

@@ -368,7 +368,7 @@ int lib_sprintf(int r0, int r1, int r2){
 	return (int)res;
 }
 
-void seek_data(int mode){
+unsigned short* seek_data(int mode){
 	int i;
 	unsigned short* obj=g_read_point;
 	while(obj<object) { // Search until the end of compiled object
@@ -388,14 +388,14 @@ void seek_data(int mode){
 						g_read_mode=obj[2];
 						g_read_valid_len=i-1;
 						g_read_point=&obj[3];
-						return;
+						return g_read_point;
 					case 0x4636: // CDATA, last byte is valid
 					case 0x463f: // CDATA, last byte is invalid
 						if (mode!=0x4636 && mode!=0x463f) break;
 						g_read_mode=obj[2];
 						g_read_valid_len=i-1;
 						g_read_point=&obj[3];
-						return;
+						return g_read_point;
 					default:
 						// This is not DATA/CDATA
 						obj+=2;

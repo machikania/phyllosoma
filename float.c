@@ -85,7 +85,7 @@ int get_simple_float(void){
 		g_scratch_float[0]=f;
 		g_constant_float=f;
 		return set_value_in_register(0,g_scratch_int[0]);
-	} else if ('A'<=source[0] && source[0]<'Z' || '_'==source[0]) {
+	} else if ('A'<=source[0] && source[0]<='Z' || '_'==source[0]) {
 		// Lower constant flag
 		g_constant_value_flag=0;
 		// Class static property or method
@@ -97,6 +97,13 @@ int get_simple_float(void){
 			// Get variable value
 			i=variable_to_r0(vn);
 			if (i) return i;
+			// Check if an object
+			if ('.'==source[0]) {
+				source++;
+				return method_or_property('#');
+			}
+			if ('#'!=source[0]) return ERROR_SYNTAX;
+			source++;
 			// Check if an array
 			if ('('==source[0]) {
 				source++;
@@ -105,13 +112,6 @@ int get_simple_float(void){
 				if (')'!=source[0]) return ERROR_SYNTAX;
 				source++;
 			}
-			// Check if an object
-			if ('.'==source[0]) {
-				source++;
-				return method_or_property(0);
-			}
-			if ('#'!=source[0]) return ERROR_SYNTAX;
-			source++;
 			return 0;
 		} else if ('P'==source[0] && 'I'==source[1] && '#'==source[2]) {
 			// PI#

@@ -34,4 +34,3 @@ void printnum2(unsigned int n,unsigned char e);
 void _cls(void);
 void cls(void);
 #define cls() _cls()
-

@@ -51,6 +51,7 @@
 
 int arg_to_r0(int mode, int argpos){
 	int e;
+	int (*f)(void) = g_callback_args[argpos+1];
 	mode>>=ARG2*argpos;
 	mode&=(1<<ARG2)-1;
 	skip_blank();
@@ -72,7 +73,8 @@ int arg_to_r0(int mode, int argpos){
 				e=get_string();
 				break;
 			default:
-				return ERROR_UNKNOWN;
+				if (ARG_CALLBACK==mode) e=f();
+				else return ERROR_UNKNOWN;
 		}
 		if (e) return e;
 		if (')'==source[0] || ':'==source[0] || 0x00==source[0]) return 0;
@@ -80,6 +82,12 @@ int arg_to_r0(int mode, int argpos){
 		source++;
 		return 0;
 	}
+}
+
+int arg0_function(int lib,int mode){
+	mode>>=LIBOPTION;
+	if (mode) set_value_in_register(2,mode);
+	return call_lib_code(lib);
 }
 
 int arg1_function(int lib,int mode){
@@ -130,7 +138,7 @@ int argn_function(int lib,int mode){
 	for(n=0;((mode&((1<<LIBOPTION)-1))>>(ARG2*n));n++);
 	switch(n){
 		case 0:
-			return call_lib_code(lib);
+			return arg0_function(lib,mode);
 		case 1:
 			return arg1_function(lib,mode);
 		case 2:

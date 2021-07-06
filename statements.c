@@ -236,7 +236,7 @@ int cdata_statement(void){
 	(object++)[0]=0x4636; // Marker for DATA statement (MOV R6,R6)
 	                      // It may be 463f (MOV R7,R7; in the case of odd number of CDATA)
 	odd=0;
-	do {
+	do { // TODO: support multiline CDATA statement
 		sbefore=source;
 		obefore=object;
 		e=get_integer();
@@ -313,11 +313,17 @@ int get_label_id(void){
 	int num,e;
 	unsigned short id;
 	// Check label name
-	if (source[0]<'A' || 'Z'<=source[0]) return ERROR_SYNTAX;
+	if (source[0]<'A' || 'Z'<source[0]) return ERROR_SYNTAX;
 	for(num=1;'A'<=source[num] && source[num]<='Z' || '_'==source[num] || '0'<=source[num] && source[num]<='9';num++);
+	// Check if reserved name
+	if (check_if_reserved(source,num)) return ERROR_RESERVED_WORD;
+	// It must not be variable
+	if (1==num) return ERROR_SYNTAX;
+	if (cmpdata_nsearch_string_first(CMPDATA_VARNAME,source,num)) return ERROR_SYNTAX;
 	// Check if registered
 	data=cmpdata_nsearch_string_first(CMPDATA_LABELNAME,source,num);
 	if (!data) {
+		// TODO: Check if variable/class name
 		// Register new CMPDATA_LABELNAME record
 		id=cmpdata_get_id();
 		e=cmpdata_insert_string(CMPDATA_LABELNAME,id,source,num);
@@ -949,8 +955,7 @@ int usevar_statement(void){
 		for(num=1;'A'<=source[num] && source[num]<='Z' || '_'==source[num] || '0'<=source[num] && source[num]<='9';num++);
 		if (1==num) return ERROR_SYNTAX;
 		// It must not be a reserved word
-		e=check_if_reserved(source,num);
-		if (e) return e;
+		if (check_if_reserved(source,num)) return ERROR_RESERVED_WORD;
 		// It must not be registered yet
 		if (cmpdata_nsearch_string_first(CMPDATA_VARNAME,source,num)) return ERROR_VARNAME_USED;
 		// Get a new var number

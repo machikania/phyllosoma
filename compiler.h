@@ -152,6 +152,7 @@
 #define ARG_INTEGER 1
 #define ARG_FLOAT   2
 #define ARG_STRING  3
+#define ARG_CALLBACK         4
 #define ARG_OPTIONAL         4
 #define ARG_INTEGER_OPTIONAL 5
 #define ARG_FLOAT_OPTIONAL   6
@@ -177,6 +178,7 @@ extern unsigned short* object;
 extern unsigned short* g_objmax;
 
 extern int* g_default_args;
+extern void** g_callback_args;
 
 extern int g_linenum;
 extern int g_next_varnum;
@@ -237,8 +239,11 @@ int compile_line(unsigned char* code);
 int instruction_is(unsigned char* instruction);
 
 int lib_end(int r0, int r1, int r2);
+unsigned short* seek_data(int mode);
+int lib_restore(int r0, int r1, int r2);
 int kmbasic_library(int r0, int r1, int r2, int r3);
 
+int goto_label(void);
 int gosub_statement(void);
 int compile_statement(void);
 

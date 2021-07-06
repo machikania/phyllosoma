@@ -82,6 +82,7 @@ int lib_display(int r0, int r1, int r2){
 			// void setcursorcolor(unsigned char c);
 			// COLOR x
 			cursorcolor=r0;
+			setcursorcolor(r0);
 			break;
 		case DISPLAY_CURSOR:
 			//void setcursor(unsigned char x,unsigned char y,unsigned char c);
@@ -164,8 +165,9 @@ int lib_display(int r0, int r1, int r2){
 			prevy1=y1;
 			break;
 		case DISPLAY_GCLS:
+			//void g_clearscreen(void);
 			//GCLS
-			// TODO: here
+			g_clearscreen();
 			break;
 		case DISPLAY_GCOLOR:
 			//GCOLOR c
@@ -193,21 +195,14 @@ int lib_display(int r0, int r1, int r2){
 			prevx1=x1;
 			prevy1=y1;
 			break;
+		case DISPLAY_PUTBMP2:
+			// Label is used. Get CREAD() point
+			r0=(int)seek_data(0x4636);
+			// Now, r0 is the address of bmp data
+			// Continue to following main code
 		case DISPLAY_PUTBMP:
 			// void g_putbmpmn(int x,int y,unsigned char m,unsigned char n,const unsigned char bmp[]);
-			if (r0) {
-				g_putbmpmn(x1,y1,x2,y2,(unsigned char*)r0);
-			} else {
-				// Note that this is a slow speed process. Use array for faster drawing
-				bmp=alloc_memory((x1*y1+3)/4,-1);
-				for(j=0;j<y2;j++){
-					for(i=0;i<x2;i++){
-						bmp[j*x2+i]=lib_cread(0,0,0);
-					}
-				}
-				g_putbmpmn(x1,y1,x2,y2,bmp);
-				garbage_collection(bmp);
-			}
+			g_putbmpmn(x1,y1,x2,y2,(unsigned char*)r0);
 			prevx1=x1;
 			prevy1=y1;
 			break;
@@ -419,11 +414,42 @@ int pset_statement(void){
 		DISPLAY_PSET<<LIBOPTION);
 }
 
+int putbmp_callback(void){
+	int e;
+	e=set_value_in_register(0,0xf800f000);
+	if (e) return e;
+	// Embed bl instruction
+	object-=2;
+	e=goto_label();
+	if (e) return e;
+	// Get pc in r1 and call restore library
+	check_object(1);
+	(object++)[0]=0x4679; //      	mov	r1, pc
+	return call_lib_code(LIB_RESTORE);
+}
+
+
 int putbmp_statement(void){
 	// PUTBMP [x,y],m,n,bbb
-	// TODO: support label; ARG5 is label
+	int e;
+	unsigned char* sbefore=source;
+	unsigned short* obefore=object;
+	// bbb may be label
 	g_default_args[1]=0x80000000;
 	g_default_args[2]=0x80000000;
+	g_callback_args[5]=putbmp_callback;
+	e=argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER_OPTIONAL<<ARG1 | 
+		ARG_INTEGER_OPTIONAL<<ARG2 | 
+		ARG_INTEGER<<ARG3 | 
+		ARG_INTEGER<<ARG4 | 
+		ARG_CALLBACK<<ARG5 | 
+		DISPLAY_PUTBMP2<<LIBOPTION);
+	if (0==e) return 0;
+	// Rewind source and object
+	source=sbefore;
+	rewind_object(obefore);
+	// bbb must be pointer
 	return argn_function(LIB_DISPLAY_FUNCTION,
 		ARG_INTEGER_OPTIONAL<<ARG1 | 
 		ARG_INTEGER_OPTIONAL<<ARG2 | 

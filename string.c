@@ -133,7 +133,7 @@ int get_simple_string(void){
 		object+=i;
 		// Return without error
 		return 0;
-	} else if ('A'<=source[0] && source[0]<'Z' || '_'==source[0]) {
+	} else if ('A'<=source[0] && source[0]<='Z' || '_'==source[0]) {
 		// Class static property or method
 		vn=get_class_number();
 		if (0<=vn) return static_method_or_property(vn,'$');

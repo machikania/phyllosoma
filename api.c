@@ -41,7 +41,7 @@ void _printnum2(unsigned int n,unsigned char e){
 }
 
 void _cls(void){
-
+	cls();
 }
 
 void printint(int i){

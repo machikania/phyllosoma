@@ -25,7 +25,8 @@ unsigned short kmbasic_var_size[ALLOC_BLOCK_NUM];
 unsigned short* g_objmax;
 
 // kmbasic_data[] area is also used for temporary region when compiling
-int* g_default_args=(int*)&kmbasic_data[0]; // Use 6 words
+int* g_default_args=(int*)&kmbasic_data[-1];      // Use 6 words; g_default_args[1] - g_default_args[6]
+void** g_callback_args=(void**)&kmbasic_data[-1]; // Use 6 functions; g_callback_args[1] - g_callback_args[6]
 
 // Line number
 int g_linenum;
