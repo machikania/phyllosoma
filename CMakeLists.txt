@@ -12,7 +12,7 @@ pico_sdk_init()
 
 if (TARGET tinyusb_device)
 	add_executable(kmbasic
-			kmbasic.c
+			main.c
 			api.c
 			library.c
 			compiler.c
