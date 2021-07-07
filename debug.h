@@ -9,6 +9,10 @@
 	Use embed codes for compiling instead of files in MMC card
 */
 
+#ifndef KMBASIC_COMPILER_H
+#error "compiler.h" must be included before "debug.h"
+#endif
+
 #ifdef DEBUG_MODE
 #ifdef FF_DEFINED
 

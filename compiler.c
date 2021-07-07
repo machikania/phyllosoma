@@ -32,8 +32,8 @@
 */
 
 #include <string.h>
-#include "./api.h"
 #include "./compiler.h"
+#include "./api.h"
 
 void init_compiler(void){
 	// Initialize variables

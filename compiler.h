@@ -13,6 +13,12 @@
 #define TEMPVAR_NUMBER 10
 #define ALLOC_BLOCK_NUM 256
 
+#ifdef KMBASIC_COMPILER_H
+#error "compiler.h" included more than once
+#else
+#define KMBASIC_COMPILER_H
+#endif
+
 /*
 	Error codes
 */

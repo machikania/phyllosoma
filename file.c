@@ -4,5 +4,9 @@
    https://github.com/kmorimatsu
 */
 
-#include "./interface/ff.h"
+#include "./compiler.h"
+#include "./api.h"
 
+// TODO: replace '\n' and '\r' by '\0', and "\r\n" by "\0\n"
+// TODO: replace '\t' by ' '
+// TODO: replace 'a' etc by 'A' etc

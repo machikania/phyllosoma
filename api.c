@@ -15,6 +15,9 @@
 #undef printnum2
 #undef cls
 
+// graphlib.c
+extern unsigned char *cursor;
+
 void _printstr(unsigned char *s){
 	printf("%s",s);
 	printstr(s);
@@ -22,7 +25,14 @@ void _printstr(unsigned char *s){
 
 void _printchar(unsigned char c){
 	putchar(c);
-	printchar(c);
+	switch(c){
+		case 0x08: // BS
+			if (&TVRAM[0]<cursor) cursor--;
+			break;
+		default:
+			printchar(c);
+			break;
+	}
 }
 
 void _printnum(unsigned int n){
@@ -41,6 +51,9 @@ void _printnum2(unsigned int n,unsigned char e){
 }
 
 void _cls(void){
+	int i;
+	printf("\n");
+	for(i=0;i<192;i++) printf("\b \b\b \b\b \b\b \b\b \b\b \b\b \b\b \b\b \b\b \b");
 	cls();
 }
 

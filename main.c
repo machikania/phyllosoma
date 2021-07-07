@@ -7,18 +7,20 @@
 
 #include <stdio.h>
 #include "pico/stdlib.h"
-#include "./api.h"
 #include "./compiler.h"
+#include "./api.h"
 #include "./debug.h"
 #include "./display.h"
 
 int main() {
 	static char* const code[]={
-"DIM D(0)",
-"PUTBMP ,,1,1,D",
-"PUTBMP ,,1,1,BMPDAT",
-"LABEL BMPDAT",
-"CDATA 0,1,2,3",
+"FOR I=1 TO 25",
+"PRINT I",
+"NEXT",
+"CLS",
+"FOR I=1 TO 25",
+"PRINT I,",
+"NEXT",
 "END",
 		0
 	};

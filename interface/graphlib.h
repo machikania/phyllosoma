@@ -73,6 +73,9 @@ void g_printnum(int x,int y,unsigned char c,int bc,unsigned int n);
 void g_printnum2(int x,int y,unsigned char c,int bc,unsigned int n,unsigned char e);
 //座標(x,y)にカラー番号cで数値nを表示、bc:バックグランドカラー、e桁で表示
 
+void g_clearscreen(void);
+// グラフィック画面クリア
+
 void init_graphic(void);
 //グラフィックLCD使用開始
 
@@ -81,3 +84,6 @@ extern unsigned short palette[];
 
 extern const unsigned char FontData[];
 //フォントデータ
+
+extern unsigned char TVRAM[];
+//テキストVRAM

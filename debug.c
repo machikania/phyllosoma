@@ -4,9 +4,9 @@
    https://github.com/kmorimatsu
 */
 
-#include "./api.h"
 #include "pico/stdlib.h"
 #include "./compiler.h"
+#include "./api.h"
 
 #ifndef DEBUG_MODE
 void debug_dummy(void){}

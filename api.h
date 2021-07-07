@@ -7,6 +7,12 @@
 
 #include <stdio.h>
 #include "pico/stdlib.h"
+#include "./interface/graphlib.h"
+#include "./interface/LCDdriver.h"
+
+#ifndef KMBASIC_COMPILER_H
+#error "compiler.h" must be included before "api.h"
+#endif
 
 // Prototypings follow
 void printint(int i);

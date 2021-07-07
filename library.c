@@ -9,8 +9,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include "./api.h"
 #include "./compiler.h"
+#include "./api.h"
 #include "./display.h"
 
 /*
@@ -80,7 +80,7 @@ int lib_print(int r0, int r1, int r2){
 	switch(r1&0x0f){
 		case 0x01: // string
 			for(i=0;((unsigned char*)r0)[i];i++);
-			printstr((unsigned char*)r0);
+			if (r0) printstr((unsigned char*)r0);
 			if (0x00 == (r1&0xf0)) printchar('\n');
 			garbage_collection((char*)r0);
 			break;

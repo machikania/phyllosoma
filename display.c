@@ -6,10 +6,8 @@
 
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
-#include "./interface/graphlib.h"
-#include "./interface/LCDdriver.h"
-#include "./api.h"
 #include "./compiler.h"
+#include "./api.h"
 #include "./display.h"
 
 /*
@@ -175,7 +173,9 @@ int lib_display(int r0, int r1, int r2){
 			break;
 		case DISPLAY_GPRINT:
 			//void g_printstr(int x,int y,unsigned char c,int bc,unsigned char *s);
-			//GPRINT [x,y],c,bc,s$
+			prevx1=x1;
+			prevy1=y1;
+			g_printstr(x1,y1,x1,y1,(unsigned char*)r0);
 			break;
 		case DISPLAY_LINE:
 			//void g_gline(int x1,int y1,int x2,int y2,unsigned char c);

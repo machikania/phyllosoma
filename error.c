@@ -4,8 +4,8 @@
    https://github.com/kmorimatsu
 */
 
-#include "./api.h"
 #include "./compiler.h"
+#include "./api.h"
 
 static char* g_error_file;
 static int g_error_line;

@@ -76,6 +76,7 @@ int var_statement(void){
 	do {
 		vn=get_var_number();
 		if (vn<0) return vn;
+		if ('#'==source[0] || '$'==source[0]) source++;
 		e=set_value_in_register(0,vn);
 		if (e<0) return e;
 		check_object(1);
@@ -905,24 +906,39 @@ int if_statement(void){
 		return 0;
 	} else {
 		// This is a single line IF-THEN statement
-		// TODO: support label/line number
-		while(1){
-			e=compile_statement();
-			if (e) return e; // An error occured
-			// Skip blank
-			skip_blank();
-			// Check null as the end of line
-			if (source[0]==0x00) break;
-			// Check ELSE
+		sbefore=source;
+		obefore=object;
+		// Support THEN label or THEN line number
+		e=goto_statement();
+		if (0==e) {
 			if (instruction_is("ELSE")) {
 				e=else_statement();
 				if (e) return e;
-				continue;
+				e=goto_statement();
+				if (e) return e;
 			}
-			// Check ':'
-			if (source[0]!=':') return ERROR_SYNTAX;
-			// Continue this  line
-			source++;
+		} else {
+			// Ordinary statemen(s) follow(s) after THEN
+			source=sbefore;
+			rewind_object(obefore);
+			while(1){
+				e=compile_statement();
+				if (e) return e; // An error occured
+				// Skip blank
+				skip_blank();
+				// Check null as the end of line
+				if (source[0]==0x00) break;
+				// Check ELSE
+				if (instruction_is("ELSE")) {
+					e=else_statement();
+					if (e) return e;
+					continue;
+				}
+				// Check ':'
+				if (source[0]!=':') return ERROR_SYNTAX;
+				// Continue this  line
+				source++;
+			}
 		}
 		// ENDIF is omitted in this case
 		return endif_statement();
@@ -1078,8 +1094,17 @@ int print_statement(void) {
 	// Mode; 0x00: CR, 0x10: ';', 0x20: ','
 	int e;
 	unsigned char mode;
-	unsigned char* sb;
 	unsigned short* ob;
+	unsigned char* sb=source;
+	// Support PRINT without argument
+	if (':'==source[0] || 0x00==source[0] || instruction_is("ELSE")) {
+		source=sb;
+		e=set_value_in_register(0,0);
+		if (e) return e;
+		e=set_value_in_register(1,0);
+		if (e) return e;
+		return call_lib_code(LIB_PRINT);
+	}
 	while(1){
 		sb=source;
 		ob=object;
