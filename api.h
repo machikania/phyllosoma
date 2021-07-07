@@ -40,3 +40,7 @@ void printnum2(unsigned int n,unsigned char e);
 void _cls(void);
 void cls(void);
 #define cls() _cls()
+
+void _setcursor(unsigned char x,unsigned char y,unsigned char c);
+void setcursor(unsigned char x,unsigned char y,unsigned char c);
+#define setcursor(a,b,c) _setcursor(a,b,c)

@@ -14,13 +14,9 @@
 
 int main() {
 	static char* const code[]={
-"FOR I=1 TO 25",
-"PRINT I",
-"NEXT",
-"CLS",
-"FOR I=1 TO 25",
-"PRINT I,",
-"NEXT",
+"CURSOR 1,1",
+"PRINT 12345678;",
+"PRINT 5678;",
 "END",
 		0
 	};

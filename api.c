@@ -14,39 +14,65 @@
 #undef printnum
 #undef printnum2
 #undef cls
+#undef setcursor
 
 // graphlib.c
 extern unsigned char *cursor;
 
-void _printstr(unsigned char *s){
-	printf("%s",s);
-	printstr(s);
+static int g_cursor=0;
+
+void _putchar(unsigned char c){
+	switch(c){
+		case 0x08: // BS
+			putchar(c);
+			if (0<g_cursor) g_cursor--;
+			break;
+		case 0x0d: // CR
+			g_cursor/=80;
+			g_cursor*=80;
+			putchar(c);
+			break;
+		case 0x0a: // LF
+			g_cursor+=80;
+			g_cursor/=80;
+			g_cursor*=80;
+			putchar(c);
+			break;
+		default:
+			g_cursor++;
+			putchar(c);
+			break;
+	}
+	while(80*24<=g_cursor) g_cursor-=80;
 }
 
 void _printchar(unsigned char c){
-	putchar(c);
-	switch(c){
-		case 0x08: // BS
-			if (&TVRAM[0]<cursor) cursor--;
-			break;
-		default:
-			printchar(c);
-			break;
-	}
+	_putchar(c);
+	printchar(c);
+}
+
+void _printstr(unsigned char *s){
+	unsigned char c;
+	printstr(s);
+	while(c=(s++)[0]) _putchar(c);
 }
 
 void _printnum(unsigned int n){
-	printf("%d",n);
+	unsigned char c;
+	char* buff=(char*)&g_scratch[0];
+	snprintf(buff,sizeof g_scratch,"%d",n);
+	while(c=(buff++)[0]) _putchar(c);
 	printnum(n);
 }
 
 void _printnum2(unsigned int n,unsigned char e){
+	unsigned char c;
 	int i;
 	char* buff=(char*)&g_scratch[0];
 	i=snprintf(buff,sizeof g_scratch,"%d",n);
 	e-=i;
-	for(i=0;i<e;i++) putchar(' ');
-	printf("%s",buff);
+	for(i=0;i<e;i++) _putchar(' ');
+	while(c=(buff++)[0]) _putchar(c);
 	printnum2(n,e);
 }
 
@@ -55,6 +81,27 @@ void _cls(void){
 	printf("\n");
 	for(i=0;i<192;i++) printf("\b \b\b \b\b \b\b \b\b \b\b \b\b \b\b \b\b \b\b \b");
 	cls();
+}
+
+void _setcursor(unsigned char x,unsigned char y,unsigned char c){
+	int dest,i;
+	dest=x+y*80;
+	if (80*23<=dest && g_cursor<dest) {
+		// Last line and moving forward
+		// Cannot use LF/BS to reach this position
+		for(i=0;i<dest-g_cursor;i++) putchar(cursor[i]);
+	} else if (dest<=g_cursor) {
+		// Moving backward
+		// Can use BS to reach this position
+		while(dest<(g_cursor--)) putchar('\b');
+	} else {
+		// Moving forward but not in last line
+		// Can use LF/BS to reach this position
+		while(g_cursor<dest) _putchar('\n');
+		while(dest<(g_cursor--)) putchar('\b');
+	}
+	g_cursor=dest;
+	setcursor(x,y,c);
 }
 
 void printint(int i){
