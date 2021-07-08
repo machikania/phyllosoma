@@ -78,29 +78,48 @@ void _printnum2(unsigned int n,unsigned char e){
 
 void _cls(void){
 	int i;
-	printf("\n");
-	for(i=0;i<192;i++) printf("\b \b\b \b\b \b\b \b\b \b\b \b\b \b\b \b\b \b\b \b");
+	printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+	for(i=0;i<23;i++) {
+		// Go up
+		putchar(0x1b); putchar(0x5b); putchar(0x41);
+	}
+	g_cursor=0;
 	cls();
 }
 
+/*
+up key:    1b 5b 41
+down key:  1b 5b 42
+right key: 1b 5b 43
+left key:  1b 5b 44
+*/
 void _setcursor(unsigned char x,unsigned char y,unsigned char c){
-	int dest,i;
-	dest=x+y*80;
-	if (80*23<=dest && g_cursor<dest) {
-		// Last line and moving forward
-		// Cannot use LF/BS to reach this position
-		for(i=0;i<dest-g_cursor;i++) putchar(cursor[i]);
-	} else if (dest<=g_cursor) {
-		// Moving backward
-		// Can use BS to reach this position
-		while(dest<(g_cursor--)) putchar('\b');
-	} else {
-		// Moving forward but not in last line
-		// Can use LF/BS to reach this position
-		while(g_cursor<dest) _putchar('\n');
-		while(dest<(g_cursor--)) putchar('\b');
+	int i,cx,cy;
+	cy=g_cursor/80;
+	cx=g_cursor-cy*80;
+	if (y<cy) {
+		// Go up
+		for(i=0;i<cy-y;i++) {
+			putchar(0x1b); putchar(0x5b); putchar(0x41);
+		}
+	} else if (cy<y) {
+		// Go down
+		for(i=0;i<y-cy;i++) {
+			putchar(0x1b); putchar(0x5b); putchar(0x42);
+		}
 	}
-	g_cursor=dest;
+	if (x<cx) {
+		// Go left
+		for(i=0;i<cx-x;i++) {
+			putchar(0x1b); putchar(0x5b); putchar(0x44);
+		}
+	} else if (cx<x) {
+		// Go right
+		for(i=0;i<x-cx;i++) {
+			putchar(0x1b); putchar(0x5b); putchar(0x43);
+		}
+	}
+	g_cursor=x+y*80;
 	setcursor(x,y,c);
 }
 
