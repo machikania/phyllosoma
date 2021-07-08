@@ -46,7 +46,9 @@
 		g_default_args[1]: default of 1st argument
 		g_default_args[2]: default of 1st argument
 		...
-
+	Special feature of omitting artuments:
+		Sequence of 0x80000001 and 0x80000002 as defult arguments indicates that the two parameters are omitted simultaneously.
+		For example, "LINE ,50,20" means first two arguments are omitted. "LINE ,,50,20" will cause syntax error in this case.
 */
 
 int arg_to_r0(int mode, int argpos){
@@ -60,6 +62,7 @@ int arg_to_r0(int mode, int argpos){
 		return set_value_in_register(0,g_default_args[argpos+1]);
 	} else if (ARG_OPTIONAL<mode && ','==source[0]) {
 		source++;
+		if (g_default_args[argpos+1]==0x80000001 && g_default_args[argpos+2]==0x80000002) source--;
 		return set_value_in_register(0,g_default_args[argpos+1]);
 	} else {
 		switch(mode & (ARG_OPTIONAL-1)){

@@ -58,8 +58,8 @@ int lib_display(int r0, int r1, int r2){
 		y1=sp[1];
 		x2=sp[2];
 		y2=sp[3];
-		if (x1==0x80000000) x1=prevx1;
-		if (y1==0x80000000) y1=prevy1;
+		if (x1&0xF0000000 == 0x80000000) x1=prevx1;
+		if (y1&0xF0000000 == 0x80000000) y1=prevy1;
 	}
 	// Set graphic color
 	gc=r0;
@@ -305,8 +305,8 @@ int width_statement(void){
 
 int boxfill_statement(void){
 	// BOXFILL [x1,y1],x2,y2[,c]
-	g_default_args[1]=0x80000000;
-	g_default_args[2]=0x80000000;
+	g_default_args[1]=0x80000001;
+	g_default_args[2]=0x80000002;
 	g_default_args[5]=-1;
 	return argn_function(LIB_DISPLAY_FUNCTION,
 		ARG_INTEGER_OPTIONAL<<ARG1 | 
@@ -319,8 +319,8 @@ int boxfill_statement(void){
 
 int circle_statement(void){
 	// CIRCLE [x,y],r[,c]
-	g_default_args[1]=0x80000000;
-	g_default_args[2]=0x80000000;
+	g_default_args[1]=0x80000001;
+	g_default_args[2]=0x80000002;
 	g_default_args[4]=-1;
 	return argn_function(LIB_DISPLAY_FUNCTION,
 		ARG_INTEGER_OPTIONAL<<ARG1 | 
@@ -332,8 +332,8 @@ int circle_statement(void){
 
 int circlefill_statement(void){
 	// CIRCLEFILL [x,y],r[,c]
-	g_default_args[1]=0x80000000;
-	g_default_args[2]=0x80000000;
+	g_default_args[1]=0x80000001;
+	g_default_args[2]=0x80000002;
 	g_default_args[4]=-1;
 	return argn_function(LIB_DISPLAY_FUNCTION,
 		ARG_INTEGER_OPTIONAL<<ARG1 | 
@@ -369,8 +369,8 @@ int gpalette_statement(void){
 
 int gprint_statement(void){
 	// GPRINT [x,y],c,bc,s$
-	g_default_args[1]=0x80000000;
-	g_default_args[2]=0x80000000;
+	g_default_args[1]=0x80000001;
+	g_default_args[2]=0x80000002;
 	return argn_function(LIB_DISPLAY_FUNCTION,
 		ARG_INTEGER_OPTIONAL<<ARG1 | 
 		ARG_INTEGER_OPTIONAL<<ARG2 | 
@@ -382,8 +382,8 @@ int gprint_statement(void){
 
 int line_statement(void){
 	// LINE [x1,y1],x2,y2[,c]
-	g_default_args[1]=0x80000000;
-	g_default_args[2]=0x80000000;
+	g_default_args[1]=0x80000001;
+	g_default_args[2]=0x80000002;
 	g_default_args[5]=-1;
 	return argn_function(LIB_DISPLAY_FUNCTION,
 		ARG_INTEGER_OPTIONAL<<ARG1 | 
@@ -404,8 +404,8 @@ int point_statement(void){
 
 int pset_statement(void){
 	// PSET [x,y][,c]
-	g_default_args[1]=0x80000000;
-	g_default_args[2]=0x80000000;
+	g_default_args[1]=0x80000001;
+	g_default_args[2]=0x80000002;
 	g_default_args[3]=-1;
 	return argn_function(LIB_DISPLAY_FUNCTION,
 		ARG_INTEGER_OPTIONAL<<ARG1 | 
@@ -435,8 +435,8 @@ int putbmp_statement(void){
 	unsigned char* sbefore=source;
 	unsigned short* obefore=object;
 	// bbb may be label
-	g_default_args[1]=0x80000000;
-	g_default_args[2]=0x80000000;
+	g_default_args[1]=0x80000001;
+	g_default_args[2]=0x80000002;
 	g_callback_args[5]=putbmp_callback;
 	e=argn_function(LIB_DISPLAY_FUNCTION,
 		ARG_INTEGER_OPTIONAL<<ARG1 | 

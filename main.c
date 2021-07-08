@@ -14,10 +14,8 @@
 
 int main() {
 	static char* const code[]={
-"CLS",
-"CURSOR 2,2",
-"PRINT 12345678;",
-"PRINT 5678;",
+"LINE ,50,20",
+"rem LINE ,,50,20",
 "END",
 		0
 	};
