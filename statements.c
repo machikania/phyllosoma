@@ -694,6 +694,16 @@ int for_statement(void){
 	if (e) return e;
 	check_object(1);
 	(object++)[0]=0xb401;// push	{r0}
+	// Check STEP
+	if (instruction_is("STEP")) {
+		// This is required for the first time checking using r2 register (see below)
+		// Get integer
+		e=get_integer();
+		if (e) return e;
+		// Move r0 to r2
+		check_object(1);
+		(object++)[0]=0x0002;// movs	r2, r0
+	}
 	// Ger r0 from var
 	e=variable_to_r0(vn);
 	if (e) return e;
@@ -717,8 +727,9 @@ int for_statement(void){
 		e=get_integer();
 		if (e) return e;
 		// Move r0 to r2
-		check_object(1);
+		check_object(2);
 		(object++)[0]=0x0002;// movs	r2, r0
+		(object++)[0]=0xb404;// push	{r2}
 		// Get r0 from variable
 		e=variable_to_r0(vn);
 		if (e) return e;
@@ -728,6 +739,8 @@ int for_statement(void){
 		// Store r0 to variable
 		e=r0_to_variable(vn);
 		if (e) return e;
+		check_object(1);
+		(object++)[0]=0xbc04;// pop	{r2}
 		// BL jump here
 		update_bl(bl,object);
 		// Pop r1 as "TO" value
