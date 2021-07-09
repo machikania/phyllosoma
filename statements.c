@@ -1155,6 +1155,10 @@ int print_statement(void) {
 	return 0;
 }
 
+/*
+	Misc
+*/
+
 int debug_statement(void){
 #ifdef DEBUG_MODE
 	g_default_args[1]=0;
@@ -1164,6 +1168,10 @@ int debug_statement(void){
 #else
 	return ERROR_SYNTAX;
 #endif
+}
+
+int wait_statement(void){
+	return argn_function(LIB_WAIT,ARG_INTEGER<<ARG1);
 }
 
 int rem_statement(void){
@@ -1251,6 +1259,7 @@ int compile_statement(void){
 	if (instruction_is("RETURN")) return return_statement();
 	if (instruction_is("USEVAR")) return usevar_statement();
 	if (instruction_is("VAR")) return var_statement();
+	if (instruction_is("WAIT")) return wait_statement();
 	if (instruction_is("WEND")) return wend_statement();
 	if (instruction_is("WHILE")) return while_statement();
 	// Environment statements

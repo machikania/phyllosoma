@@ -75,6 +75,8 @@
 #define LIB_ASC 20
 #define LIB_POST_GOSUB 21
 #define LIB_DISPLAY_FUNCTION 22
+#define LIB_INKEY 23
+#define LIB_INPUT 24
 
 #define LIB_DEBUG 128
 #define LIB_PRINT 129
@@ -86,6 +88,7 @@
 #define LIB_VAR_PUSH 135
 #define LIB_VAR_POP 136
 #define LIB_DISPLAY 137
+#define LIB_WAIT 138
 
 /*
 	LIB MATH options

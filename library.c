@@ -541,6 +541,66 @@ int lib_var_pop(int r0, int r1, int r2){
 	return r0;
 }
 
+int lib_wait(int r0, int r1, int r2){
+	unsigned short n=(unsigned short)r0;
+	uint64_t t=to_us_since_boot(get_absolute_time())%16667;
+	sleep_us(16667*n-t);
+	return r0;
+}
+
+int lib_inkey(int r0, int r1, int r2){
+	int i=getchar_timeout_us(0);
+	if (i<0 || 255<i) i=0;
+	if (0==r0) return i;
+	else return r0==i ? 1:0;
+}
+
+int lib_input(int r0, int r1, int r2){
+	int max=15;
+	int num=0;
+	unsigned char* str=alloc_memory(4,-1);
+	unsigned char* str2;
+	int c;
+	while(1){
+		// Get a character from console
+		c=getchar_timeout_us(0);
+		if (c<0 || 255<c) continue;
+		// Detect special keys
+		switch(c){
+			case '\r': // Enter
+			case '\n': // Enter
+				break;
+			case 0x08: // BS
+			case 0x7f: // BS
+				if (0<num) {
+					printstr("\b \b");
+					num--;
+				}
+				continue;
+			default:
+				if (c<0x20) continue;
+				break;
+		}
+		if ('\r'==c || '\n'==c) break;
+		// Show the character on display
+		printchar(c);
+		// Add a character to buffer
+		str[num++]=c;
+		// If number of string exceeds maximum, increase buffer size
+		if (max<num) {
+			max=(max+1)*2;
+			str2=alloc_memory(max/4,-1);
+			max-=1;
+			memcpy(str2,str,num);
+			garbage_collection(str);
+			str=str2;
+		}
+	}
+	printchar('\n');
+	str[num]=0x00;
+	return (int)str;
+}
+
 int debug(int r0, int r1, int r2){
 #ifdef DEBUG_MODE
 	return r2+r1+r0+1;
@@ -573,6 +633,8 @@ static const void* lib_list1[]={
 	lib_asc,        // #define LIB_ASC 20
 	lib_post_gosub, // #define LIB_POST_GOSUB 21
 	lib_display,    // #define LIB_DISPLAY_FUNCTION 22
+	lib_inkey,      // #define LIB_INKEY 23
+	lib_input,      // #define LIB_INPUT 24
 };
 
 static const void* lib_list2[]={
@@ -586,6 +648,7 @@ static const void* lib_list2[]={
 	lib_var_push,   // #define LIB_VAR_PUSH 135
 	lib_var_pop,    // #define LIB_VAR_POP 136
 	lib_display,    // #define LIB_DISPLAY 137
+	lib_wait,       // #define LIB_WAIT 138
 };
 
 int statement_library(int r0, int r1, int r2, int r3){

@@ -38,6 +38,10 @@ int hex_function(void){
 	return argn_function(LIB_HEX,ARG_INTEGER<<ARG1 | ARG_INTEGER_OPTIONAL<<ARG2);
 }
 
+int input_function(void){
+	return argn_function(LIB_INPUT,ARG_NONE);
+}
+
 int string_functions(void){
 	if (instruction_is("ARGS$(")) return args_function();
 	if (instruction_is("CHR$(")) return chr_function();
@@ -46,6 +50,7 @@ int string_functions(void){
 	if (instruction_is("FLOAT$(")) return float_str_function();
 	if (instruction_is("GOSUB$(")) return gosub_function();
 	if (instruction_is("HEX$(")) return hex_function();
+	if (instruction_is("INPUT$(")) return input_function();
 	if (instruction_is("READ$(")) return read_str_function();
 	if (instruction_is("SPRINTF$(")) return sprintf_function();
 	return ERROR_SYNTAX;

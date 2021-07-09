@@ -16,11 +16,16 @@ void debug_dummy(void){}
 #define CR "\n"
 static const char* debug_files[]={
 	"main.bas",
-		"DIM D#(1)" CR
-		"X=12:Z=23" CR
-		"A#=FLOAT#(X*X+Z*Z)" CR
-		"D#(0)=123" CR
-		"PRINT A#,D#(0)" CR
+		"PRINT \"Hit any key\"" CR
+		"DO UNTIL INKEY(0)" CR
+		"LOOP" CR
+		"PRINT \"OK\"" CR
+		"PRINT \"Hit space key\"" CR
+		"DO UNTIL INKEY(0x20)" CR
+		"LOOP" CR
+		"PRINT \"OK\"" CR
+		"PRINT \"Hit any keys, then enter\"" CR
+		"PRINT INPUT$()" CR
 		"END" CR
 	,0
 };

@@ -97,6 +97,11 @@ int not_function(void){
 	return 0;
 }
 
+int inkey_function(void){
+	g_default_args[1]=0;
+	return argn_function(LIB_INKEY,ARG_INTEGER_OPTIONAL<<ARG1);
+}
+
 int integer_functions(void){
 	if (instruction_is("ABS(")) return abs_function();
 	if (instruction_is("ARGS(")) return args_function();
@@ -104,6 +109,7 @@ int integer_functions(void){
 	if (instruction_is("CREAD(")) return cread_function();
 	if (instruction_is("DEBUG(")) return debug_function();
 	if (instruction_is("GOSUB(")) return gosub_function();
+	if (instruction_is("INKEY(")) return inkey_function();
 	if (instruction_is("INT(")) return int_function();
 	if (instruction_is("LEN(")) return len_function();
 	if (instruction_is("NOT(")) return not_function();
