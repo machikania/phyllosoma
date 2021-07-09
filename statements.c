@@ -176,13 +176,24 @@ int data_statement(void){
 	int e;
 	char* sbefore;
 	unsigned short* obefore;
-	unsigned short* obegin=object;
-	check_object(3);
-	// BL instruction
-	object+=2;
-	(object++)[0]=0x462d; // Marker for DATA statement (MOV R5,R5)
+	static unsigned short* obegin;
+	if (0==g_multiple_statement) {
+		// Initialize DATA statement
+		obegin=object;
+		check_object(3);
+		// BL instruction
+		object+=2;
+		(object++)[0]=0x462d; // Marker for DATA statement (MOV R5,R5)
+	} else if (data_statement==g_multiple_statement) {
+		g_multiple_statement=0;
+	} else return ERROR_UNKNOWN;
 	do {
 		skip_blank();
+		// Check if the end of line for multiple DATA statement
+		if (0x00==source[0]) {
+			g_multiple_statement=data_statement;
+			return 0;
+		}
 		sbefore=source;
 		obefore=object;
 		if ('"'==source[0]) {
@@ -227,17 +238,30 @@ int data_statement(void){
 }
 
 int cdata_statement(void){
-	int e,odd;
+	int e;
 	char* sbefore;
 	unsigned short* obefore;
-	unsigned short* obegin=object;
-	check_object(3);
-	// BL instruction
-	object+=2;
-	(object++)[0]=0x4636; // Marker for DATA statement (MOV R6,R6)
-	                      // It may be 463f (MOV R7,R7; in the case of odd number of CDATA)
-	odd=0;
-	do { // TODO: support multiline CDATA statement
+	static unsigned short* obegin;
+	static int odd;
+	if (0==g_multiple_statement) {
+		// Initialize CDATA statement
+		obegin=object;
+		check_object(3);
+		// BL instruction
+		object+=2;
+		(object++)[0]=0x4636; // Marker for DATA statement (MOV R6,R6)
+		                      // It may be 463f (MOV R7,R7; in the case of odd number of CDATA)
+		odd=0;
+	} else if (cdata_statement==g_multiple_statement) {
+		g_multiple_statement=0;
+	} else return ERROR_UNKNOWN;
+	do {
+		// Check if the end of line for multiple CDATA statement
+		if (0x00==source[0]) {
+			g_multiple_statement=cdata_statement;
+			return 0;
+		}
+		// Continue
 		sbefore=source;
 		obefore=object;
 		e=get_integer();
@@ -1220,10 +1244,13 @@ int dim_statement(void){
 }
 
 int compile_statement(void){
+	int (*f)(void) = g_multiple_statement;
 	int e;
 	// Initialize
 	unsigned short* bobj=object;
 	unsigned char* bsrc=source;
+	// Check if multiple statement
+	if (g_multiple_statement) return f();
 	// Check LET statement, first
 	if (instruction_is("LET")) return let_statement();
 	// "LET" may be omitted.

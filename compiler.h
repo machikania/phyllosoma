@@ -194,6 +194,7 @@ extern unsigned char* g_file_buffer;
 extern unsigned char* g_compile_buffer;
 extern const int g_file_buffer_size;
 
+extern void* g_multiple_statement;
 extern int g_linenum;
 extern int g_next_varnum;
 extern int g_sdepth;

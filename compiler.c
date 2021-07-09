@@ -47,6 +47,7 @@ void init_compiler(void){
 	g_ifdepth=0;
 	g_fordepth=0;
 	g_linenum=0;
+	g_multiple_statement=0;
 }
 
 const int const g_r6_array[]={

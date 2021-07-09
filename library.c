@@ -563,7 +563,7 @@ int lib_input(int r0, int r1, int r2){
 	int c;
 	while(1){
 		// Get a character from console
-		c=getchar_timeout_us(0);
+		c=getchar_timeout_us(1000);
 		if (c<0 || 255<c) continue;
 		// Detect special keys
 		switch(c){

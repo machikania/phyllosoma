@@ -37,6 +37,9 @@ const int g_file_buffer_size=ALLOC_BLOCK_NUM*2;
 // Line number
 int g_linenum;
 
+// Function to call when multipe line statement
+void* g_multiple_statement;
+
 // Variable number used when compiling
 int g_next_varnum;
 
