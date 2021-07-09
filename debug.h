@@ -42,3 +42,18 @@ void debug_dummy(void);
 #define dump_cmpdata() debug_dummy()
 
 #endif // DEBUG_MODE
+
+/*
+	File to compile
+*/
+
+#ifdef DEBUG_MODE
+
+FRESULT debug_f_open (FIL* fp, const TCHAR* path, BYTE mode);
+FRESULT debug_f_close (FIL* fp);
+TCHAR* debug_f_gets (TCHAR* buff, int len, FIL* fp);
+#define f_open debug_f_open
+#define f_close debug_f_close
+#define f_gets debug_f_gets
+
+#endif // DEBUG_MODE

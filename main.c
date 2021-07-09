@@ -13,12 +13,6 @@
 #include "./display.h"
 
 int main() {
-	static char* const code[]={
-"LINE ,50,20",
-"rem LINE ,,50,20",
-"END",
-		0
-	};
 	int e,i,s;
 	char* str;
 	// Initializations
@@ -31,10 +25,7 @@ int main() {
 	// Compile the code
 	s=time_us_32();
 	init_compiler();
-	for(i=0;str=code[i];i++) {
-		e=compile_line(str);
-		if (e<0) break;
-	}
+	compile_file("main.bas");
 	printint(time_us_32()-s);
 	printstr(" micro seconds spent for compiling\n");
 	// Show dump

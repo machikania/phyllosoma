@@ -40,6 +40,7 @@
 #define ERROR_NOT_OBJECT _throw_error(-10)
 #define ERROR_DATA_NOT_FOUND  _throw_error(-11)
 #define ERROR_OBJ_TOO_MANY  _throw_error(-12)
+#define ERROR_FILE  _throw_error(-13)
 
 /*
 	Libraries
@@ -186,6 +187,10 @@ extern unsigned short* g_objmax;
 extern int* g_default_args;
 extern void** g_callback_args;
 
+extern unsigned char* g_file_buffer;
+extern unsigned char* g_compile_buffer;
+extern const int g_file_buffer_size;
+
 extern int g_linenum;
 extern int g_next_varnum;
 extern int g_sdepth;
@@ -313,6 +318,8 @@ int get_permanent_block_number(void);
 int get_class_number(void);
 int static_method_or_property(int cn, char stringorfloat);
 int method_or_property(char stringorfloat);
+
+int compile_file(unsigned char* fname);
 
 // For debugging
 void dump_cmpdata(void);

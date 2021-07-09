@@ -27,6 +27,12 @@ unsigned short* g_objmax;
 // kmbasic_data[] area is also used for temporary region when compiling
 int* g_default_args=(int*)&kmbasic_data[-1];      // Use 6 words; g_default_args[1] - g_default_args[6]
 void** g_callback_args=(void**)&kmbasic_data[-1]; // Use 6 functions; g_callback_args[1] - g_callback_args[6]
+// (26 words remaining)
+
+// kmbasic_variables[] is also used for file buffer and compiling buffer
+unsigned char* g_file_buffer=(unsigned char*)&kmbasic_variables[0];
+unsigned char* g_compile_buffer=(unsigned char*)&kmbasic_variables[ALLOC_BLOCK_NUM/2];
+const int g_file_buffer_size=ALLOC_BLOCK_NUM*2;
 
 // Line number
 int g_linenum;

@@ -189,7 +189,7 @@ int instruction_is(unsigned char* instruction){
 unsigned char* code2upper(unsigned char* code){
 	int i;
 	unsigned char c;
-	unsigned char* result=(unsigned char*)&kmbasic_variables[0];
+	unsigned char* result=g_compile_buffer;
 	char instring=0;
 	for(i=0;i<1024;i++){
 		c=code[i];
@@ -218,18 +218,22 @@ unsigned char* code2upper(unsigned char* code){
 	New line number handling. See also label_statement
 */
 
-int handle_line_number(int id){
-	int e;
+int register_line_number(int id){
 	int* data;
 	short* bl;
 	// Check if this is the first time
 	if (cmpdata_findfirst_with_id(CMPDATA_LINENUM,id)) return ERROR_LABEL_DUPLICATED;
 	// Register new CMPDATA_LINENUM record
 	g_scratch_int[0]=(int)object;
-	e=cmpdata_insert(CMPDATA_LINENUM,id,(int*)g_scratch_int,1);
+	return cmpdata_insert(CMPDATA_LINENUM,id,(int*)g_scratch_int,1);
+}
+
+int handle_line_number(int id){
+	int e;
+	int* data;
+	short* bl;
 	if (e) return e;
 	// Resolve all CMPDATA_GOTO_NUM_BL(s)
-	// TODO: consider skipping following lines when not using line numbers in BASIC program
 	while(data=cmpdata_findfirst_with_id(CMPDATA_GOTO_NUM_BL,id)){
 		// Found a CMPDATA_GOTO_NUM_BL
 		bl=(short*)data[1];
@@ -255,14 +259,25 @@ int compile_line(unsigned char* code){
 	// Get line number if exists
 	e=get_positive_decimal_value();
 	if (0<=e) {
+		// Line number exists
 		g_linenum=e;
 		if (' '!=source[0]) return ERROR_SYNTAX;
 		source++;
+		e=register_line_number(g_linenum);
+		if (e) return e;
+		e=handle_line_number(g_linenum);
+	} else {
+		// Line number does not exist
+		e=register_line_number(g_linenum);
 	}
-	e=handle_line_number(g_linenum);
-	if (e) return e;
+	if (e<0) {
+		// Error happened
+		show_error(e,source-before);
+		return e;
+	}
 	// Compile the statement(s)
-	while(1){
+	skip_blank();
+	if (0x00!=source[0]) while(1){
 		e=compile_statement();
 		if (e) break; // An error occured
 		// Skip blank

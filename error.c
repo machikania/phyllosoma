@@ -10,7 +10,7 @@
 static char* g_error_file;
 static int g_error_line;
 
-static const char* g_error_text[13]={
+static const char* g_error_text[14]={
 	"No error",
 	"Syntax error",                  // #define ERROR_SYNTAX _throw_error(-1)
 	"Unknown error",                 // #define ERROR_UNKNOWN _throw_error(-2)
@@ -24,6 +24,7 @@ static const char* g_error_text[13]={
 	"Not class or object",           // #define ERROR_NOT_OBJECT _throw_error(-10)
 	"DATA not found",                // #define ERROR_DATA_NOT_FOUND  _throw_error(-11)
 	"Too many objects",              // #define ERROR_OBJ_TOO_MANY  _throw_error(-12)
+	"File error",                    // #define ERROR_FILE  _throw_error(-13)
 };
 
 void show_error(int e, int pos){
