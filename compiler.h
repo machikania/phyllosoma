@@ -228,6 +228,7 @@ extern unsigned short g_read_mode;
 	Prototypes
 */
 
+// variable.c
 void variable_init(void);
 short get_new_varnum(void);
 int get_var_number(void);
@@ -235,14 +236,7 @@ int var_num_to_r1(int vn);
 int r0_to_variable(int vn);
 int variable_to_r0(int vn);
 
-void printstr(unsigned char *s);
-void printchar(unsigned char c);
-void printint(int i);
-void printhex4(unsigned char c);
-void printhex8(unsigned char c);
-void printhex16(unsigned short s);
-void printhex32(unsigned int i);
-
+// compiler.c
 void init_compiler(void);
 void run_code(void);
 void rewind_object(unsigned short* objpos);
@@ -253,25 +247,32 @@ int set_value_in_register(unsigned char r,int val);
 int compile_line(unsigned char* code);
 int instruction_is(unsigned char* instruction);
 
+// library.c
 int lib_end(int r0, int r1, int r2);
 unsigned short* seek_data(int mode);
 int lib_restore(int r0, int r1, int r2);
 int kmbasic_library(int r0, int r1, int r2, int r3);
 
+// statement.c
 int goto_label(void);
 int gosub_statement(void);
 int compile_statement(void);
+int end_of_statement(void);
 
+// string.c
 int string_char(void);
 int get_string(void);
 
+// integer.c
 int get_positive_decimal_value(void);
 int get_simple_integer(void);
 int get_integer(void);
 
+// float.c
 int get_simple_float(void);
 int get_float(void);
 
+// value.c
 int read_function(void);
 int cread_function(void);
 int get_dim_pointer(void);
@@ -279,17 +280,19 @@ int get_dim_value(void);
 int get_int_or_float(void);
 int get_string_int_or_float(void);
 int get_value(int vmode);
+int end_of_value(void);
 
+// operators.c
 int get_operator(int vmode);
 int calculation(int op,int vmode);
 
-int kmbasic_library(int r0, int r1, int r2, int r3);
-
+// function.c
 int argn_function(int lib,int mode);
 int args_function(void);
 int gosub_function(void);
 int debug_function(void);
 
+// cmpdata.c
 void cmpdata_init(void);
 unsigned short cmpdata_get_id(void);
 void cmpdata_reset(void);
@@ -307,10 +310,12 @@ int* cmpdata_search_string_first(unsigned int type,unsigned char* str);
 int cmpdata_nhash(unsigned char* str, int num);
 int cmpdata_hash(unsigned char* str);
 
+// error.c
 void show_error(int e, int pos);
 int line_number_from_address(int addr);
 void stop_with_error(int e);
 
+// memory.c
 void init_memory(void);
 void* alloc_memory(int size, int var_num);
 void* calloc_memory(int size, int var_num);
@@ -319,10 +324,12 @@ int move_from_temp(int vn, int pdata);
 void garbage_collection(void* data);
 int get_permanent_block_number(void);
 
+// class.c
 int get_class_number(void);
 int static_method_or_property(int cn, char stringorfloat);
 int method_or_property(char stringorfloat);
 
+// file.c
 int compile_file(unsigned char* fname);
 
 // For debugging

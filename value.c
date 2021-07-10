@@ -66,12 +66,12 @@ int get_int_or_float(void){
 	int e;
 	// Get int or float
 	e=get_integer();
-	if (0!=e || 0x00!=source[0] && ':'!=source[0] && ','!=source[0] && ')'!=source[0]) {
+	if (0!=e || !end_of_value()) {
 		source=sbefore;
 		rewind_object(obefore);
 		e=get_float();
 		if (e) return e;
-		if (0x00!=source[0] && ':'!=source[0] && ','!=source[0] && ')'!=source[0]) return ERROR_SYNTAX;
+		if (!end_of_value()) return ERROR_SYNTAX;
 	}
 	return 0;
 }
@@ -82,13 +82,20 @@ int get_string_int_or_float(void){
 	int e;
 	// Get string
 	e=get_string();
-	if (0!=e || 0x00!=source[0] && ':'!=source[0] && ','!=source[0] && ')'!=source[0]) {
+	if (0!=e || !end_of_value()) {
 		source=sbefore;
 		rewind_object(obefore);
 		e=get_int_or_float();
 		if (e) return e;
-		if (0x00!=source[0] && ':'!=source[0] && ','!=source[0] && ')'!=source[0]) return ERROR_SYNTAX;
+		if (!end_of_value()) return ERROR_SYNTAX;
 	}
+	return 0;
+}
+
+int end_of_value(void){
+	int i=end_of_statement();
+	if (i) return i;
+	if (','==source[0] || ')'==source[1]) return 1;
 	return 0;
 }
 

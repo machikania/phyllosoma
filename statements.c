@@ -531,8 +531,7 @@ int gosub_statement(void){
 
 int return_statement(void){
 	int e;
-	skip_blank();
-	if (':'!=source[0] && 0x00!=source[0]) {
+	if (!end_of_statement()) {
 		// There is a return value;
 		e=get_string_int_or_float();
 		if (e) return e;
@@ -947,12 +946,13 @@ int if_statement(void){
 		obefore=object;
 		// Support THEN label or THEN line number
 		e=goto_statement();
-		if (0==e) {
+		if (0==e && end_of_statement()) {
 			if (instruction_is("ELSE")) {
 				e=else_statement();
 				if (e) return e;
 				e=goto_statement();
 				if (e) return e;
+				if (!end_of_statement()) return ERROR_SYNTAX;
 			}
 		} else {
 			// Ordinary statemen(s) follow(s) after THEN
@@ -1106,7 +1106,7 @@ int let_statement(void){
 	int i;
 	// Check if there is '='
 	for(i=0;source[i]!='=';i++){
-		if (':'==source[i] || 0x00==source[i] || '"'==source[i]) return ERROR_SYNTAX;
+		if (0x00==source[i] || ':'==source[i] || '"'==source[i]) return ERROR_SYNTAX;
 	}
 	i=get_var_number();
 	if (i<0) return i;
@@ -1134,7 +1134,7 @@ int print_statement(void) {
 	unsigned short* ob;
 	unsigned char* sb=source;
 	// Support PRINT without argument
-	if (':'==source[0] || 0x00==source[0] || instruction_is("ELSE")) {
+	if (end_of_statement()) {
 		source=sb;
 		e=set_value_in_register(0,0);
 		if (e) return e;
@@ -1147,13 +1147,13 @@ int print_statement(void) {
 		ob=object;
 		mode=0x01;
 		e=get_string();
-		if (e || ','!=source[0] && ';'!=source[0] && ':'!=source[0] && 0x00!=source[0]) {
+		if (e || ','!=source[0] && ';'!=source[0] && !end_of_statement()) {
 			source=sb;
 			rewind_object(ob);
 			mode=0x00;
 			e=get_integer();
 		}
-		if (e || ','!=source[0] && ';'!=source[0] && ':'!=source[0] && 0x00!=source[0]) {
+		if (e || ','!=source[0] && ';'!=source[0] && !end_of_statement()) {
 			source=sb;
 			rewind_object(ob);
 			mode=0x02;
@@ -1173,8 +1173,7 @@ int print_statement(void) {
 		e=call_lib_code(LIB_PRINT);
 		if (e) return e;
 		if (0x00==mode&0xf0) break;
-		skip_blank();
-		if (0x00==source[0] || ':'==source[0]) break;
+		if (end_of_statement()) break;
 	}
 	return 0;
 }
@@ -1240,6 +1239,17 @@ int dim_statement(void){
 		(object++)[0] =0xb000 | i; // add	sp, #xx
 	} while (','==(source++)[0]);
 	source--;
+	return 0;
+}
+
+int end_of_statement(void){
+	skip_blank();
+	if (0x00==source[0]) return 1;
+	if (':'==source[0] && ':'!=source[1]) return 1;
+	if ('E'==source[0] && 'L'==source[1] && 'S'==source[2] && 'E'==source[3] && ' '==source[4]) return 1;
+	if ('T'==source[0] && 'H'==source[1] && 'E'==source[2] && 'N'==source[3] && ' '==source[4]) return 1;
+	if ('S'==source[0] && 'T'==source[1] && 'E'==source[2] && 'P'==source[3] && ' '==source[4]) return 1;
+	if ('T'==source[0] && 'O'==source[1] && ' '==source[2]) return 1;
 	return 0;
 }
 

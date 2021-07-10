@@ -16,11 +16,8 @@ void debug_dummy(void){}
 #define CR "\n"
 static const char* debug_files[]={
 	"main.bas",
-		"PRINT \"Hit ctrl+Z to stop\"" CR
-		"DO" CR
-		"  WAIT 1" CR
-		"LOOP" CR
-		"END" CR
+		"DIM M#(10)" CR
+		"IF Y#<M#(0) THEN M#(0)=Y#" CR
 	,0
 };
 
