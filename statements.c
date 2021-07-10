@@ -345,10 +345,10 @@ int get_label_id(void){
 	// It must not be variable
 	if (1==num) return ERROR_SYNTAX;
 	if (cmpdata_nsearch_string_first(CMPDATA_VARNAME,source,num)) return ERROR_SYNTAX;
+	// TODO: Check if class name
 	// Check if registered
 	data=cmpdata_nsearch_string_first(CMPDATA_LABELNAME,source,num);
 	if (!data) {
-		// TODO: Check if variable/class name
 		// Register new CMPDATA_LABELNAME record
 		id=cmpdata_get_id();
 		e=cmpdata_insert_string(CMPDATA_LABELNAME,id,source,num);
@@ -590,7 +590,7 @@ int continue_statement(void){
 	DO/LOOP/WHILE/WEND statements
 */
 
-int do_statement(void){
+int do_statement(void){// TODO: debug "DO" statement without WHILE/LOOP
 	int e;
 	g_fordepth++;
 	unsigned short* obefore=object;
@@ -624,9 +624,9 @@ int contine_end_loop(void){
 	unsigned short* bl;
 	// Continue
 	e=continue_statement();
+	if (e) return e;
 	// Delete the CMPDATA_CONTINUE (see continue_statement())
 	cmpdata_delete((int*)g_scratch_int[0]);
-	if (e) return e;
 	// Resolve all CMPDATA_BREAK_BL(s)
 	while(1){
 		cmpdata_reset();

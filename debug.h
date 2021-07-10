@@ -13,18 +13,23 @@
 #error "compiler.h" must be included before "debug.h"
 #endif
 
+/*
+	File to compile
+*/
+
 #ifdef DEBUG_MODE
 #ifdef FF_DEFINED
 
 FRESULT debug_f_open (FIL* fp, const TCHAR* path, BYTE mode);
 FRESULT debug_f_close (FIL* fp);
-FRESULT debug_f_read (FIL* fp, void* buff, UINT btr, UINT* br);
+TCHAR* debug_f_gets (TCHAR* buff, int len, FIL* fp);
 #define f_open debug_f_open
 #define f_close debug_f_close
-#define f_read  debug_f_read
+#define f_gets debug_f_gets
 
 #endif // FF_DEFINED
 #endif // DEBUG_MODE
+
 
 /*
 	Dump code and cmpdata
@@ -43,17 +48,3 @@ void debug_dummy(void);
 
 #endif // DEBUG_MODE
 
-/*
-	File to compile
-*/
-
-#ifdef DEBUG_MODE
-
-FRESULT debug_f_open (FIL* fp, const TCHAR* path, BYTE mode);
-FRESULT debug_f_close (FIL* fp);
-TCHAR* debug_f_gets (TCHAR* buff, int len, FIL* fp);
-#define f_open debug_f_open
-#define f_close debug_f_close
-#define f_gets debug_f_gets
-
-#endif // DEBUG_MODE

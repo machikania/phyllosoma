@@ -186,7 +186,7 @@ void cmpdata_delete_invalid(void){
 		do {
 			cmpdata_reset();
 			while(data=cmpdata_find(types[typenum])){
-				if ((int)object<=data[1]) {
+				if ((int)object<data[1]) {
 					// This is invalid
 					cmpdata_delete(data);
 					break;

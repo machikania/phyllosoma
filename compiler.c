@@ -158,7 +158,7 @@ int instruction_is(unsigned char* instruction){
 	// Skip blank first
 	skip_blank();
 	// Count number
-	while(instruction[n]) n++;
+	for(n=0;instruction[n];n++);
 	// Compare strings
 	if (strncmp(source,instruction,n)) return 0;
 	// If this is function, everything is alright.

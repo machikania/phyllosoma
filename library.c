@@ -656,7 +656,8 @@ int statement_library(int r0, int r1, int r2, int r3){
 	r0=f(r0,r1,r2);
 	// Raise garbage collection flag
 	// g_garbage_collection=1; // This feature is disabled. See galbage_collection() function.
-	// TODO: Check break key
+	// Check break key (Ctrl-Z)
+	if (getchar_timeout_us(0)==0x1a) return lib_end(0,0,0);
 	return r0;
 }
 
