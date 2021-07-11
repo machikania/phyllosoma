@@ -151,6 +151,7 @@ void* alloc_memory(int size, int var_num){
 			if (0==kmbasic_var_size[i]) continue; // Not using heap
 			var=(int*)kmbasic_variables[i];
 			if (var<HEAP_BEGIN || HEAP_END <=var) continue; // Invalid
+			if (&var[kmbasic_var_size[i]]<candidate) continue; // Not last one
 			candidate=&var[kmbasic_var_size[i]];
 		}
 		if (&candidate[size]<=HEAP_END) break; // Found an available block

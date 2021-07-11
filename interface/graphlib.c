@@ -237,11 +237,11 @@ void g_putfont(int x,int y,unsigned char c,int bc,unsigned char n)
 	if(x<=-8 || x>=X_RES || y<=-8 || y>=Y_RES) return; //画面外
 	if(y<0){ //画面上部に切れる場合
 		i=0;
-		p=FontData+n*8-y;
+		p=fontp+n*8-y;
 	}
 	else{
 		i=y;
-		p=FontData+n*8;
+		p=fontp+n*8;
 	}
 	c1=palette[c];
 	for(;i<y+8;i++){

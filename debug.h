@@ -39,6 +39,7 @@ TCHAR* debug_f_gets (TCHAR* buff, int len, FIL* fp);
 
 void dump(void);
 void dump_cmpdata(void);
+void dump_variables(void);
 
 #else // DEBUG_MODE
 

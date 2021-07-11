@@ -22,6 +22,8 @@ int main() {
 	sleep_ms(3000);
 	// Start
 	printstr("KM-BASIC for ARM\n");
+	// Initialize file system
+	init_file_system();
 	// Compile the code
 	s=time_us_32();
 	init_compiler();
@@ -33,6 +35,8 @@ int main() {
 	//dump_cmpdata();
 	// Run the code if error didn't occur
 	if (0<=e) run_code();
+	// Show dump
+	//dump_variables();
 	// Infinite loop
 	for(i=0;true;i++){
 		sleep_ms(1000);

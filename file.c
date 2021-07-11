@@ -16,6 +16,13 @@
 		#define f_eof(fp) ((int)((fp)->fptr == (fp)->obj.objsize))
 */
 
+FATFS g_FatFs;
+
+void init_file_system(void){
+	printstr("Initializing file system, ");
+	if (FR_OK==f_mount(&g_FatFs, "", 0)) printstr("done\n");
+	else printstr("failed\n");
+}
 
 int compile_file(unsigned char* fname){
 	int e;
@@ -23,7 +30,7 @@ int compile_file(unsigned char* fname){
 	FIL* fp=&fpo;
 	if (f_open(fp,fname,FA_READ)) return ERROR_FILE;
 	while(!f_eof(fp)){
-		if (f_gets(g_file_buffer,g_file_buffer_size,fp)) break;
+		if (!f_gets(g_file_buffer,g_file_buffer_size,fp)) break;
 		e=compile_line(g_file_buffer);
 		if (e<0) {
 			f_close(fp);

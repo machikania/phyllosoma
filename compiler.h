@@ -330,6 +330,7 @@ int static_method_or_property(int cn, char stringorfloat);
 int method_or_property(char stringorfloat);
 
 // file.c
+void init_file_system(void);
 int compile_file(unsigned char* fname);
 
 // For debugging

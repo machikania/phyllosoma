@@ -16,8 +16,10 @@ void debug_dummy(void){}
 #define CR "\n"
 static const char* debug_files[]={
 	"main.bas",
-		"DIM M#(10)" CR
-		"IF Y#<M#(0) THEN M#(0)=Y#" CR
+		"DIM X#(0),Y#(0),U#(0),V#(0)" CR
+		"U#(0)=1:V#(0)=3" CR
+		"PRINT U#(0),V#(0)" CR
+		"END" CR
 	,0
 };
 
@@ -48,6 +50,20 @@ void dump_cmpdata(void){
 		}
 		printstr("\n");
 	}
+}
+
+void dump_variables(void){
+	int i;
+	printstr("dump variables\n");
+	for(i=0;i<26;i++){
+		printchar('A'+i);
+		printchar(' ');
+		printhex32(kmbasic_variables[i]);
+		printchar(' ');
+		printhex16(kmbasic_var_size[i]);
+		printchar(' ');
+	}
+	printchar('\n');
 }
 
 FRESULT debug_f_open (FIL* fp, const TCHAR* path, BYTE mode){
@@ -92,7 +108,7 @@ TCHAR* debug_f_gets (TCHAR* buff, int len, FIL* fp){
 		}
 	}
 	buff[i]=0;
-	return FR_OK;
+	return buff;
 }
 
 #endif // DEBUG_MODE

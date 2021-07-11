@@ -35,6 +35,8 @@ if (TARGET tinyusb_device)
 			interface/fontdata.c
 			interface/graphlib.c
 			interface/ili9341_spi.c
+			interface/ff.c
+			interface/pico-sdmm.c
 		)
 
 	# Pull in our pico_stdlib which aggregates commonly used features
