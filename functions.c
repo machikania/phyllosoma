@@ -58,11 +58,11 @@ int arg_to_r0(int mode, int argpos){
 	mode&=(1<<ARG2)-1;
 	skip_blank();
 	if (argpos<0 || 5<argpos) return ERROR_UNKNOWN; // Max argument number is 6
-	if (ARG_OPTIONAL<mode && end_of_value()) {
-		return set_value_in_register(0,g_default_args[argpos+1]);
-	} else if (ARG_OPTIONAL<mode && ','==source[0]) {
+	if (ARG_OPTIONAL<mode && ','==source[0]) {
 		source++;
 		if (g_default_args[argpos+1]==0x80000001 && g_default_args[argpos+2]==0x80000002) source--;
+		return set_value_in_register(0,g_default_args[argpos+1]);
+	} else if (ARG_OPTIONAL<mode && end_of_value()) {
 		return set_value_in_register(0,g_default_args[argpos+1]);
 	} else {
 		switch(mode & (ARG_OPTIONAL-1)){

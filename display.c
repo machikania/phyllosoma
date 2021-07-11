@@ -58,8 +58,8 @@ int lib_display(int r0, int r1, int r2){
 		y1=sp[1];
 		x2=sp[2];
 		y2=sp[3];
-		if (x1&0xF0000000 == 0x80000000) x1=prevx1;
-		if (y1&0xF0000000 == 0x80000000) y1=prevy1;
+		if ((x1&0xF0000000) == 0x80000000) x1=prevx1;
+		if ((y1&0xF0000000) == 0x80000000) y1=prevy1;
 	}
 	// Set graphic color
 	gc=r0;
