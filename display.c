@@ -152,13 +152,13 @@ int lib_display(int r0, int r1, int r2){
 			break;
 		case DISPLAY_CIRCLE:
 			//void g_circle(int x0,int y0,unsigned int r,unsigned char c);
-			g_circle(x1,y1,x1,gc);
+			g_circle(x1,y1,x2,gc);
 			prevx1=x1;
 			prevy1=y1;
 			break;
 		case DISPLAY_CIRCLEFILL:
 			//void g_circlefill(int x0,int y0,unsigned int r,unsigned char c);
-			g_circlefill(x1,y1,x1,gc);
+			g_circlefill(x1,y1,x2,gc);
 			prevx1=x1;
 			prevy1=y1;
 			break;
@@ -175,7 +175,7 @@ int lib_display(int r0, int r1, int r2){
 			//void g_printstr(int x,int y,unsigned char c,int bc,unsigned char *s);
 			prevx1=x1;
 			prevy1=y1;
-			g_printstr(x1,y1,x1,y1,(unsigned char*)r0);
+			g_printstr(x1,y1,x2,(y2<0 ? y2:palette[y2]),(unsigned char*)r0);
 			break;
 		case DISPLAY_LINE:
 			//void g_gline(int x1,int y1,int x2,int y2,unsigned char c);
