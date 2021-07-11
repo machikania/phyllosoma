@@ -102,12 +102,18 @@ int inkey_function(void){
 	return argn_function(LIB_INKEY,ARG_INTEGER_OPTIONAL<<ARG1);
 }
 
+int drawcount_function(void){
+	set_value_in_register(0,-1);
+	return call_lib_code(LIB_DRAWCOUNT);
+}
+
 int integer_functions(void){
 	if (instruction_is("ABS(")) return abs_function();
 	if (instruction_is("ARGS(")) return args_function();
 	if (instruction_is("ASC(")) return asc_function();
 	if (instruction_is("CREAD(")) return cread_function();
 	if (instruction_is("DEBUG(")) return debug_function();
+	if (instruction_is("DRAWCOUNT(")) return drawcount_function();
 	if (instruction_is("GOSUB(")) return gosub_function();
 	if (instruction_is("INKEY(")) return inkey_function();
 	if (instruction_is("INT(")) return int_function();

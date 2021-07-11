@@ -16,10 +16,15 @@ void debug_dummy(void){}
 #define CR "\n"
 static const char* debug_files[]={
 	"main.bas",
-		"LINE ,0,100" CR
-		"LINE ,100,100" CR
-		"LINE ,100,0" CR
-		"LINE ,0,0" CR
+		"FOR I=1 TO 10" CR
+		"  PRINT DRAWCOUNT()," CR
+		"  WAIT 60" CR
+		"NEXT" CR
+		"DRAWCOUNT 65235" CR
+		"FOR I=1 TO 10" CR
+		"  PRINT DRAWCOUNT()," CR
+		"  WAIT 60" CR
+		"NEXT" CR
 		"END" CR
 	,0
 };

@@ -1206,6 +1206,10 @@ int end_statement(void){
 	return call_lib_code(LIB_END);
 }
 
+int drawcount_statement(void){
+	return argn_function(LIB_SET_DRAWCOUNT,ARG_INTEGER<<ARG1);
+}
+
 int dim_statement(void){
 	unsigned short* obefore;
 	int i,e,vn;
@@ -1276,6 +1280,7 @@ int compile_statement(void){
 	if (instruction_is("DEBUG")) return debug_statement();
 	if (instruction_is("DIM")) return dim_statement();
 	if (instruction_is("DO")) return do_statement();
+	if (instruction_is("DRAWCOUNT")) return drawcount_statement();
 	if (instruction_is("ELSE")) return else_statement();
 	if (instruction_is("ELSEIF")) return elseif_statement();
 	if (instruction_is("END")) return end_statement();

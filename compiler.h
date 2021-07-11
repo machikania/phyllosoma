@@ -77,6 +77,7 @@
 #define LIB_DISPLAY_FUNCTION 22
 #define LIB_INKEY 23
 #define LIB_INPUT 24
+#define LIB_DRAWCOUNT 25
 
 #define LIB_DEBUG 128
 #define LIB_PRINT 129
@@ -89,6 +90,7 @@
 #define LIB_VAR_POP 136
 #define LIB_DISPLAY 137
 #define LIB_WAIT 138
+#define LIB_SET_DRAWCOUNT 139
 
 /*
 	LIB MATH options
