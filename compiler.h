@@ -240,7 +240,6 @@ int variable_to_r0(int vn);
 
 // compiler.c
 void init_compiler(void);
-void run_code(void);
 void rewind_object(unsigned short* objpos);
 int check_if_reserved(char* str, int num);
 void update_bl(short* bl,short* destination);
@@ -248,6 +247,11 @@ int call_lib_code(int lib_number);
 int set_value_in_register(unsigned char r,int val);
 int compile_line(unsigned char* code);
 int instruction_is(unsigned char* instruction);
+
+// run.c
+void pre_run(void);
+void run_code(void);
+void post_run(void);
 
 // library.c
 int lib_end(int r0, int r1, int r2);

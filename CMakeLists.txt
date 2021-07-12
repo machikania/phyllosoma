@@ -16,6 +16,7 @@ if (TARGET tinyusb_device)
 			api.c
 			library.c
 			compiler.c
+			run.c
 			statements.c
 			functions.c
 			integer.c

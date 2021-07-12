@@ -107,7 +107,7 @@ int lib_print(int r0, int r1, int r2){
 /*
 
 In some cases, following code is required for the correct response from printf() function used for float value.
-See also the comment in run_code_main() function in compiler.c.
+See also the comment in run_code() function in compiler.c.
 Briefly, different stack area is used for printf() function. In detail, see following repository:
 https://github.com/kmorimatsu/kmbasic4arm/tree/31db9c2df3c0bcf61e184c23eb656b8dbcc5133d
 

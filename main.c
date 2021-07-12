@@ -34,7 +34,11 @@ int main() {
 	dump();
 	//dump_cmpdata();
 	// Run the code if error didn't occur
-	if (0<=e) run_code();
+	if (0<=e) {
+		pre_run();
+		run_code();
+		post_run();
+	}
 	// Show dump
 	//dump_variables();
 	// Infinite loop
