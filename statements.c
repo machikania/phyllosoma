@@ -446,13 +446,14 @@ int goto_statement(void){
 		// Label is used
 		rewind_object(obefore);
 		source=sbefore;
+		g_constant_value_flag=1;
 		return goto_label();
 	} else if (g_constant_value_flag) {
 		// Label number is used
 		rewind_object(obefore);
 		return goto_line(g_constant_int);
 	} else {
-		// Label is flexible
+		// Label number is flexible
 		e=call_lib_code(LIB_LINE_NUM);
 		if (e) return e;
 		check_object(2);
@@ -945,14 +946,15 @@ int if_statement(void){
 		sbefore=source;
 		obefore=object;
 		// Support THEN label or THEN line number
+		// Note that frexible line number cannot be used
 		e=goto_statement();
-		if (0==e && end_of_statement()) {
+		if (0==e && g_constant_value_flag && end_of_statement()) {
 			if (instruction_is("ELSE")) {
 				e=else_statement();
 				if (e) return e;
 				e=goto_statement();
 				if (e) return e;
-				if (!end_of_statement()) return ERROR_SYNTAX;
+				if ((!g_constant_value_flag) || !end_of_statement()) return ERROR_SYNTAX;
 			}
 		} else {
 			// Ordinary statemen(s) follow(s) after THEN

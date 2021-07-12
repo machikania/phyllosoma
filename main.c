@@ -27,14 +27,14 @@ int main() {
 	// Compile the code
 	s=time_us_32();
 	init_compiler();
-	compile_file("main.bas");
+	e=compile_file("main.bas");
 	printint(time_us_32()-s);
 	printstr(" micro seconds spent for compiling\n");
 	// Show dump
 	dump();
 	//dump_cmpdata();
 	// Run the code if error didn't occur
-	if (0<=e) {
+	if (!e) {
 		pre_run();
 		run_code();
 		post_run();
