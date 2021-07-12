@@ -95,7 +95,7 @@ int get_string_int_or_float(void){
 int end_of_value(void){
 	int i=end_of_statement();
 	if (i) return i;
-	if (','==source[0] || ')'==source[1]) return 1;
+	if (','==source[0] || ')'==source[0]) return 1;
 	return 0;
 }
 
