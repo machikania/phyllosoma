@@ -32,15 +32,6 @@
 		record[2]: any data
 		...
 		record[n]: any data
-	
-	CMPDATA_STRSTACK used to store strings as stack
-		type:      CMPDATA_TEMP
-		len:       n+1
-		data16:    id
-		record[1]: start string
-		...
-		record[n]: end string
-	
 */
 
 static int* g_cmpdata;
@@ -56,14 +47,6 @@ void cmpdata_init(void){
 	g_cmpdata_end=(int*)g_objmax;
 	g_cmpdata_point=(int*)g_objmax;
 	g_cmpdata_id=1;
-}
-
-/*
-	Returns current record (g_cmpdata_point)
-*/
-
-int* cmpdata_current_record(void){
-	return g_cmpdata_point;
 }
 
 /*
@@ -93,29 +76,12 @@ void cmpdata_reset(void){
 */
 int cmpdata_insert(unsigned char type, short data16, int* data, unsigned char num){
 	unsigned char i;
-	// Check the type
-	if (CMPDATA_STRSTACK==type) {
-		// Store the new record in the end as stack
-		g_cmpdata_point=cmpdata_findfirst(CMPDATA_STRSTACK);
-		if (!g_cmpdata_point) g_cmpdata_point=g_cmpdata_end;
-		// Shift the record
-		for(i=0;(&g_cmpdata[i])<g_cmpdata_point;i++){
-			g_cmpdata[i-num-1]=g_cmpdata[i];
-		}
-		g_cmpdata_point-=num+1;
-	} else {
-		// Store the new record in the beginning
-		g_cmpdata_point=g_cmpdata-num-1;
-	}
 	g_cmpdata-=num+1;
 	g_objmax=(unsigned short*)&g_cmpdata[0];
 	if (g_objmax<object) return ERROR_OBJ_TOO_LARGE;
-	// Store the new record at the position
-	g_cmpdata_point[0]=(type<<24)|(num+1)<<16|data16;
-	if (data) {
-		for(i=0;i<num;i++){
-			g_cmpdata_point[i+1]=data[i];
-		}
+	g_cmpdata[0]=(type<<24)|(num+1)<<16|data16;
+	for(i=0;i<num;i++){
+		g_cmpdata[i+1]=data[i];
 	}
 	return 0;
 }
@@ -289,23 +255,4 @@ int* cmpdata_nsearch_string_first(unsigned int type,unsigned char* str,int num){
 int* cmpdata_search_string_first(unsigned int type,unsigned char* str){
 	cmpdata_reset();
 	return cmpdata_search_string(type,str);
-}
-
-/*
-	String stack
-*/
-unsigned char* cmpdata_insert_string_stack(int num){
-	int i;
-	unsigned char* res;
-	// Create a CMPDATA record
-	i=cmpdata_insert(CMPDATA_STRSTACK,cmpdata_get_id(),0,(num+3)/4);
-	if (i) return 0;
-	return (unsigned char*)(&g_cmpdata_point[1]);
-}
-
-void cmpdata_delete_string_stack(unsigned char* str){
-	// Delete only the top of stack
-	int* data;
-	data=cmpdata_findfirst(CMPDATA_STRSTACK);
-	if (str==(unsigned char*)(&data[1])) cmpdata_delete(data);
 }

@@ -616,8 +616,7 @@ int lib_input(int r0, int r1, int r2){
 
 int debug(int r0, int r1, int r2){
 #ifdef DEBUG_MODE
-	asm("ldr	r0, [r0, r1]");
-	return r0;
+	return r2+r1+r0+1;
 #else
 	return r0;
 #endif

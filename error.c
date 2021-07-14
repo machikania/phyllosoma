@@ -10,7 +10,7 @@
 static char* g_error_file;
 static int g_error_line;
 
-static const char* g_error_text[17]={
+static const char* g_error_text[14]={
 	"No error",
 	"Syntax error",                  // #define ERROR_SYNTAX _throw_error(-1)
 	"Unknown error",                 // #define ERROR_UNKNOWN _throw_error(-2)
@@ -25,12 +25,9 @@ static const char* g_error_text[17]={
 	"DATA not found",                // #define ERROR_DATA_NOT_FOUND  _throw_error(-11)
 	"Too many objects",              // #define ERROR_OBJ_TOO_MANY  _throw_error(-12)
 	"File error",                    // #define ERROR_FILE  _throw_error(-13)
-	"",                              // #define ERROR_COMPILE_CLASS (-14)
-	"Not class field/method",        // #define ERROR_NOT_FIELD  _throw_error(-15)
-	"Not public field/method",       // #define ERROR_NOT_PUBLIC  _throw_error(-16)
 };
 
-int show_error(int e, int pos){
+void show_error(int e, int pos){
 	e=-e;
 	printstr("\n");
 #ifdef DEBUG_MODE
@@ -45,14 +42,11 @@ int show_error(int e, int pos){
 		printstr("Error #");
 		printint(e);
 	}
-	if (g_linenum) {
-		printstr(" in line ");
-		printint(g_linenum);
-		printstr(" at ");
-		printint(pos);
-	}
+	printstr(" in line ");
+	printint(g_linenum);
+	printstr(" at ");
+	printint(pos);
 	printstr("\n");
-	return e;
 }
 
 int throw_error(int e,int line, char* file){

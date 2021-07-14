@@ -75,11 +75,6 @@ unsigned short* g_read_point;
 int g_read_valid_len;
 unsigned short g_read_mode;
 
-// Class related
-
-char* g_class_file;
-unsigned short g_class_id;
-
 // Reserved words
 
 const char* const g_reserved_words[122]={

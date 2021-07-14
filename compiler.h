@@ -41,9 +41,6 @@
 #define ERROR_DATA_NOT_FOUND  _throw_error(-11)
 #define ERROR_OBJ_TOO_MANY  _throw_error(-12)
 #define ERROR_FILE  _throw_error(-13)
-#define ERROR_COMPILE_CLASS (-14)
-#define ERROR_NOT_FIELD  _throw_error(-15)
-#define ERROR_NOT_PUBLIC  _throw_error(-16)
 
 /*
 	Libraries
@@ -154,26 +151,11 @@
 #define CMPDATA_BREAK_BL 8
 #define CMPDATA_IF_BL 9
 #define CMPDATA_ENDIF_BL 10
-#define CMPDATA_CLASSNAME 11
-#define CMPDATA_FIELDNAME 12
-#define CMPDATA_FIELD 13
-#define CMPDATA_CLASS 14
-#define CMPDATA_METHOD 15
-#define CMPDATA_STATICFIELD 16
-#define CMPDATA_STRSTACK 17
 #define CMPDATA_ALL 255
-
-/*
-	Class
-*/
-#define CLASS_METHOD 0x00010000
-#define CLASS_FIELD  0x00020000
-#define CLASS_PUBLIC 0x00100000
-#define CLASS_STATIC 0x01000000
-
 /*
 	Misc
 */
+
 #define VAR_MODE_INTEGER 0
 #define VAR_MODE_STRING  1
 #define VAR_MODE_FLOAT   2
@@ -198,7 +180,6 @@
 /*
 	Variables
 */
-
 extern unsigned short kmbasic_object[512*192];
 extern int kmbasic_data[32];
 extern int kmbasic_variables[ALLOC_BLOCK_NUM];
@@ -244,9 +225,6 @@ extern int g_last_var_num;
 extern unsigned short* g_read_point;
 extern int g_read_valid_len;
 extern unsigned short g_read_mode;
-
-extern char* g_class_file;
-extern unsigned short g_class_id;
 
 /*
 	Prototypes
@@ -322,7 +300,6 @@ int debug_function(void);
 
 // cmpdata.c
 void cmpdata_init(void);
-int* cmpdata_current_record(void);
 unsigned short cmpdata_get_id(void);
 void cmpdata_reset(void);
 int cmpdata_insert(unsigned char type, short data16, int* data, unsigned char num);
@@ -338,11 +315,9 @@ int* cmpdata_nsearch_string_first(unsigned int type,unsigned char* str,int num);
 int* cmpdata_search_string_first(unsigned int type,unsigned char* str);
 int cmpdata_nhash(unsigned char* str, int num);
 int cmpdata_hash(unsigned char* str);
-unsigned char* cmpdata_insert_string_stack(int num);
-void cmpdata_delete_string_stack(unsigned char* str);
 
 // error.c
-int show_error(int e, int pos);
+void show_error(int e, int pos);
 int line_number_from_address(int addr);
 void stop_with_error(int e);
 
@@ -356,8 +331,6 @@ void garbage_collection(void* data);
 int get_permanent_block_number(void);
 
 // class.c
-int init_class_compiling(void);
-int length_of_field(void);
 int get_class_number(void);
 int static_method_or_property(int cn, char stringorfloat);
 int method_or_property(char stringorfloat);
@@ -373,7 +346,6 @@ void dump(void);
 /*
 	Macros
 */
-
 // Skip blank
 #define skip_blank() \
 	do {\
@@ -388,4 +360,4 @@ void dump(void);
 
 // Operator priority
 extern const unsigned char g_priority[];
-#define priority(x) ((int)g_priority[(int)(x)])
+#define priority(x) (int)g_priority[(int)(x)]

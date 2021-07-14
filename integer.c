@@ -180,13 +180,9 @@ int get_simple_integer(void){
 		g_constant_value_flag=0;
 		// Class static property or method
 		vn=get_class_number();
-		if (0<=vn) {
-			vn=static_method_or_property(vn,0);
-			if (vn<=0) return vn; // Error (vn==0) or method (vn<0)
-		} else {
-			// Variable or function
-			vn=get_var_number();
-		}
+		if (0<=vn) return static_method_or_property(vn,0);
+		// Variable or function
+		vn=get_var_number();
 		if (0<=vn) {
 			// Get variable value
 			i=variable_to_r0(vn);
