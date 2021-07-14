@@ -227,10 +227,16 @@ int compile_line(unsigned char* code){
 		// Continue this  line
 		source++;
 	}
-	if (e) {
-		// Error happened
-		show_error(e,source-before);
-		return e;
+	switch(e){
+		case 0:
+			// No error
+			break;
+		case ERROR_COMPILE_CLASS:
+			return e;
+		default:
+			// Error happened
+			show_error(e,source-before);
+			return e;
 	}
 	// Error didn't happen
 	e=source-before;

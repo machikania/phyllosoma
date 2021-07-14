@@ -13,23 +13,14 @@
 void debug_dummy(void){}
 #else // DEBUG_MODE
 
+#warning DEBOG_MODE is active
+
 #define CR "\n"
 static const char* debug_files[]={
 	"main.bas",
-"P=0x1000000" CR
-"IF P=$1000000 THEN P=1:Q=Q+1 ELSE P=P*$100" CR
-"PRINT P,Q" CR
-"IF P=$1000000 THEN P=1:Q=Q+1 ELSE P=P*$100" CR
-"PRINT P,Q" CR
-"IF P=256 THEN T1 ELSE F1" CR
-"LABEL T1" CR
-"PRINT 1" CR
-"IF P=257 THEN T2 ELSE F1" CR
-"LABEL F1" CR
-"PRINT 0" CR
+"USECLASS CLASS1" CR
 "END" CR
-"LABEL T2" CR
-"PRINT 2" CR
+	,"CLASS1.BAS",
 "END" CR
 	,0
 };

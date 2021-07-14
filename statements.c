@@ -9,6 +9,25 @@
 #include "./display.h"
 
 /*
+	Class
+*/
+
+int useclass_statement(void){
+	int i,e;
+	do {
+		e=get_class_number();
+		if (e<0) {
+			// Class not found.
+			// Compile it
+			return init_class_compiling();
+		}
+		skip_blank();
+	} while (','==(source++)[0]);
+	source--;
+	return 0;
+}
+
+/*
 	POKE statements
 */
 
@@ -1301,6 +1320,7 @@ int compile_statement(void){
 	if (instruction_is("REM")) return rem_statement();
 	if (instruction_is("RESTORE")) return restore_statement();
 	if (instruction_is("RETURN")) return return_statement();
+	if (instruction_is("USECLASS")) return useclass_statement();
 	if (instruction_is("USEVAR")) return usevar_statement();
 	if (instruction_is("VAR")) return var_statement();
 	if (instruction_is("WAIT")) return wait_statement();

@@ -98,10 +98,12 @@ int r0_to_variable(int vn){
 	} else if (vn<256) {
 		e=var_num_to_r1(vn);
 		if (e) return e;
-		check_object(4);
+		check_object(6);
+		(object++)[0]=0x0089;           // lsls	r1, r1, #2
 		(object++)[0]=0x5068;           // str	r0, [r5, r1]
 		(object++)[0]=0x2300;           // movs	r3, #0
 		(object++)[0]=0x68ba;           // ldr	r2, [r7, #8]
+		(object++)[0]=0x0849;           // lsrs	r1, r1, #1
 		(object++)[0]=0x5253;           // strh	r3, [r2, r1]
 		return 0;
 	} else return ERROR_UNKNOWN;
@@ -115,7 +117,8 @@ int variable_to_r0(int vn){
 	} else if (vn<256) {
 		e=var_num_to_r1(vn);
 		if (e) return e;
-		check_object(1);
+		check_object(2);
+		(object++)[0]=0x0089;           // lsls	r1, r1, #2
 		(object++)[0]=0x5868;           // ldr	r0, [r5, r1]
 		return 0;
 	} else return ERROR_UNKNOWN;

@@ -141,9 +141,13 @@ int get_simple_string(void){
 	} else if ('A'<=source[0] && source[0]<='Z' || '_'==source[0]) {
 		// Class static property or method
 		vn=get_class_number();
-		if (0<=vn) return static_method_or_property(vn,'$');
-		// Variable or function
-		vn=get_var_number();
+		if (0<=vn) {
+			vn=static_method_or_property(vn,'$');
+			if (vn<=0) return vn; // Error (vn==0) or method (vn<0)
+		} else {
+			// Variable or function
+			vn=get_var_number();
+		}
 		if (0<=vn) {
 			if ('.'==source[0]) {
 				source++;
