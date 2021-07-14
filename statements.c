@@ -1159,7 +1159,7 @@ int print_statement(void) {
 		source=sb;
 		e=set_value_in_register(0,0);
 		if (e) return e;
-		e=set_value_in_register(1,0);
+		e=set_value_in_register(1,1);
 		if (e) return e;
 		return call_lib_code(LIB_PRINT);
 	}
