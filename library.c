@@ -71,7 +71,7 @@ int lib_hex(int width, int num, int r2){
 	return (int)str;
 }
 
-int lib_print(int r0, int r1, int r2){
+int lib_print_main(int r0, int r1, int r2){
 	// Mode; 0x00: ingeger, 0x01: string, 0x02: float
 	// Mode; 0x00: CR, 0x10: ';', 0x20: ','
 	int i;
@@ -79,10 +79,14 @@ int lib_print(int r0, int r1, int r2){
 	char* buff=(char*)&g_scratch[0];
 	switch(r1&0x0f){
 		case 0x01: // string
-			for(i=0;((unsigned char*)r0)[i];i++);
-			if (r0) printstr((unsigned char*)r0);
+			if (r0) {
+				for(i=0;((unsigned char*)r0)[i];i++);
+				printstr((unsigned char*)r0);
+				garbage_collection((char*)r0);
+			} else {
+				i=0;
+			}
 			if (0x00 == (r1&0xf0)) printchar('\n');
-			garbage_collection((char*)r0);
 			break;
 		case 0x02: // float
 			g_scratch_int[0]=r0;
@@ -104,17 +108,9 @@ int lib_print(int r0, int r1, int r2){
 	return r0;
 }
 
-/*
-
-In some cases, following code is required for the correct response from printf() function used for float value.
-See also the comment in run_code() function in compiler.c.
-Briefly, different stack area is used for printf() function. In detail, see following repository:
-https://github.com/kmorimatsu/kmbasic4arm/tree/31db9c2df3c0bcf61e184c23eb656b8dbcc5133d
-
-int lib_print_main(int r0, int r1, int r2);
 void lib_print(){
 	use_lib_stack("lib_print_main");
-}*/
+}
 
 int lib_let_str(int r0, int r1, int r2){
 	int i;

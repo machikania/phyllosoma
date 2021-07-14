@@ -35,13 +35,9 @@ void run_code(void){
 	// Store SP
 	asm("mov r0,sp");
 	asm("str r0,[r7,#0]");
-/*
-	See the comment in library.c
-	
 	// Reserve 1016 bytes stack area for some library functions (fprint etc)
 	asm("sub sp,#508");
 	asm("sub sp,#508");
-*/
 	// Store return address and call kmbasic_object
 	asm("ldr r1,=kmbasic_object+1");
 	asm("mov r0,pc");
