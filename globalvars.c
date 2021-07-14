@@ -79,10 +79,13 @@ unsigned short g_read_mode;
 
 char* g_class_file;
 unsigned short g_class_id;
+int g_class_mode;
 
 // Reserved words
 
-const char* const g_reserved_words[122]={
+
+
+const char* const g_reserved_words[123]={
 	"ABS",
 	"ACOS",
 	"ARGS",
@@ -174,6 +177,7 @@ const char* const g_reserved_words[122]={
 	"POKE32",
 	"POW",
 	"PRINT",
+	"PRIVATE",
 	"PSET",
 	"PUBLIC",
 	"PUTBMP",
@@ -206,7 +210,7 @@ const char* const g_reserved_words[122]={
 	"WHILE",
 	"WIDTH",
 };
-const int const g_hash_resereved_words[122]={
+const int const g_hash_resereved_words[123]={
 	0x000400d3, //ABS
 	0x01002393, //ACOS
 	0x01013193, //ARGS
@@ -298,6 +302,7 @@ const int const g_hash_resereved_words[122]={
 	0x4e285ce6, //POKE32
 	0x00051397, //POW
 	0x514c83d4, //PRINT
+	0xc85c0051, //PRIVATE
 	0x01452114, //PSET
 	0x540cd217, //PUBLIC
 	0x54543304, //PUTBMP

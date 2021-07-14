@@ -61,6 +61,7 @@
 		3. Pick up field ids of static field from class structure
 		4. CMPDATA_FIELDNAME to get field id
 		5. Check if id of 4 matches to id of 3
+		6. CMPDATA_STATICFIELD to get variable number
 	
 */
 
@@ -138,7 +139,7 @@ int static_method_or_property(int cn, char stringorfloat){
 		data=cmpdata_findfirst_with_id(CMPDATA_FIELDNAME,class[i]&0xffff);
 		if (!data) continue;
 		// check if the names match
-		if (strncmp(source,(char*)&data[1],num)) continue;
+		if (strncmp(source,(char*)&data[2],num)) continue;
 		// The name matches. Let's break.
 		break;
 	}
@@ -162,6 +163,7 @@ int static_method_or_property(int cn, char stringorfloat){
 		if (i) return i;
 		if (')'!=source[0]) return ERROR_SYNTAX;
 		source++;
+		g_class_mode=CLASS_PUBLIC | CLASS_METHOD;
 		return 0;
 	}
 	// Check if static field
@@ -171,7 +173,23 @@ int static_method_or_property(int cn, char stringorfloat){
 	data=cmpdata_findfirst_with_id(CMPDATA_STATICFIELD,class[i]&0xffff);
 	if (!data) return ERROR_UNKNOWN;
 	if (((data[1]>>16)&0xffff) != cn) return ERROR_UNKNOWN;
+	g_class_mode=CLASS_PUBLIC | CLASS_STATIC | CLASS_FIELD;
+	g_scratch_int[0]=data[1]&0xffff; // Store variable name to scratch int
 	return variable_to_r0(data[1]&0xffff);
+}
+
+int static_property_var_num(int cn){
+	int e;
+	char* sbefore=source;
+	unsigned short* obefore=object;
+	e=static_method_or_property(cn,0);
+	if (e) return e;
+	object=obefore;
+	if (g_class_mode!=(CLASS_PUBLIC | CLASS_STATIC | CLASS_FIELD)) {
+		source=sbefore;
+		return ERROR_SYNTAX;
+	}
+	return g_scratch_int[0]; // See above
 }
 
 int method_or_property(char stringorfloat){
@@ -244,4 +262,42 @@ int method_or_property(char stringorfloat){
 		(object++)[0]=0x5840;            // ldr	r0, [r0, r1]
 	}
 	return 0;
+}
+
+int update_cmpdata_class(int data){
+	int* olddata;
+	int e,num;
+	// Get old recod
+	olddata=cmpdata_findfirst_with_id(CMPDATA_CLASS,g_class_id);
+	if (!olddata) return ERROR_UNKNOWN;
+	// Number of data in new record
+	num=(olddata[0]>>16)&0xff;
+	// Create new recrd
+	e=cmpdata_insert(CMPDATA_CLASS,g_class_id,&olddata[1],num);
+	if (e) return e;
+	// Update last data
+	cmpdata_current_record()[num]=data;
+	// Delete old record
+	cmpdata_delete(olddata);
+	return 0;
+}
+
+int register_class_static_field(int var_number){
+	int* data;
+	unsigned short fid;
+	int e;
+	// Get the var name
+	data=cmpdata_findfirst_with_id(CMPDATA_VARNAME,var_number);
+	if (!data) return ERROR_UNKNOWN;
+	// Create the field id
+	fid=cmpdata_get_id();
+	// Add CMPDATA_FIELDNAME (copy from CMPDATA_VARNAME)
+	e=cmpdata_insert(CMPDATA_FIELDNAME,fid,(int*)&data[1],((data[0]>>16)&0xff)-1);
+	if (e) return e;
+	// Add CMPDATA_STATICFIELD
+	g_scratch_int[0]=(g_class_id<<16)|var_number;
+	e=cmpdata_insert(CMPDATA_STATICFIELD,fid,(int*)g_scratch_int,1);
+	if (e) return e;
+	// Update CMPDATA_CLASS
+	return update_cmpdata_class(CLASS_PUBLIC | CLASS_STATIC | CLASS_FIELD | fid);
 }

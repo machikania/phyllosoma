@@ -18,15 +18,14 @@ void debug_dummy(void){}
 #define CR "\n"
 static const char* debug_files[]={
 	"main.bas",
-"E#=0.5" CR
-"PRINT E#" CR
-"GOSUB CHECK" CR
+"USECLASS CLASS1" CR
+"PRINT CLASS1::TEST" CR
+"CLASS1::TEST=123" CR
+"PRINT CLASS1::TEST" CR
 "END" CR
-"LABEL CHECK" CR
-"VAR E#" CR
-"E#=0.5" CR
-"PRINT E#" CR
-"RETURN" CR
+	,"CLASS1.BAS",
+"STATIC TEST" CR
+"END" CR
 	,0
 };
 
@@ -62,7 +61,7 @@ void dump_cmpdata(void){
 void dump_variables(void){
 	int i;
 	printstr("dump variables\n");
-	for(i=0;i<26;i++){
+	for(i=0;i<30;i++){
 		printchar('A'+i);
 		printchar(' ');
 		printhex32(kmbasic_variables[i]);

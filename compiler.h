@@ -228,8 +228,8 @@ extern volatile int* g_scratch_int;
 extern volatile float* g_scratch_float;
 extern volatile char* g_scratch_char;
 
-extern const char* const g_reserved_words[122];
-extern const int const g_hash_resereved_words[122];
+extern const char* const g_reserved_words[123];
+extern const int const g_hash_resereved_words[123];
 
 extern char g_constant_value_flag;
 extern int g_constant_int;
@@ -247,6 +247,7 @@ extern unsigned short g_read_mode;
 
 extern char* g_class_file;
 extern unsigned short g_class_id;
+extern int g_class_mode;
 
 /*
 	Prototypes
@@ -262,6 +263,7 @@ int variable_to_r0(int vn);
 
 // compiler.c
 void init_compiler(void);
+void init_file_compiler(void);
 void rewind_object(unsigned short* objpos);
 int check_if_reserved(char* str, int num);
 void update_bl(short* bl,short* destination);
@@ -331,6 +333,7 @@ int* cmpdata_find(unsigned char type);
 int* cmpdata_findfirst(unsigned char type);
 int* cmpdata_findfirst_with_id(unsigned char type, unsigned short id);
 void cmpdata_delete(int* record);
+void cmpdata_delete_all(unsigned char type);
 void cmpdata_delete_invalid(void);
 int* cmpdata_nsearch_string(unsigned int type,unsigned char* str,int num);
 int* cmpdata_search_string(unsigned int type,unsigned char* str);
@@ -360,7 +363,9 @@ int init_class_compiling(void);
 int length_of_field(void);
 int get_class_number(void);
 int static_method_or_property(int cn, char stringorfloat);
+int static_property_var_num(int cn);
 int method_or_property(char stringorfloat);
+int register_class_static_field(int var_number);
 
 // file.c
 void init_file_system(void);

@@ -203,6 +203,15 @@ void cmpdata_delete(int* record){
 }
 
 /*
+	Delete all record of specific type
+*/
+void cmpdata_delete_all(unsigned char type){
+	int* data;
+	cmpdata_reset();
+	while(data=cmpdata_find(type)) cmpdata_delete(data);
+}
+
+/*
 	Delete all records with invalid object positions.
 */
 void cmpdata_delete_invalid(void){

@@ -40,7 +40,7 @@ int main() {
 		post_run();
 	}
 	// Show dump
-	//dump_variables();
+	dump_variables();
 	// Infinite loop
 	for(i=0;true;i++){
 		sleep_ms(1000);

@@ -43,6 +43,9 @@ void init_compiler(void){
 	cmpdata_init();
 	// Initialize variable
 	variable_init();
+}
+
+void init_file_compiler(void){
 	// Initialize followings every file
 	g_ifdepth=0;
 	g_fordepth=0;
@@ -156,8 +159,7 @@ unsigned char* code2upper(unsigned char* code){
 int register_line_number(int id){
 	int* data;
 	short* bl;
-	// Check if this is the first time
-	if (cmpdata_findfirst_with_id(CMPDATA_LINENUM,id)) return ERROR_LABEL_DUPLICATED;
+	// Note that line number can be duplicated as multiple files are compiled when using classes
 	// Register new CMPDATA_LINENUM record
 	g_scratch_int[0]=(int)object;
 	return cmpdata_insert(CMPDATA_LINENUM,id,(int*)g_scratch_int,1);

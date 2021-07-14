@@ -1017,7 +1017,7 @@ int elseif_statement(void){
 	return if_statement();
 }
 
-int usevar_statement(void){
+int usevar_statement_main(int static_var){
 	int e,num;
 	short data16;
 	int* data;
@@ -1038,6 +1038,11 @@ int usevar_statement(void){
 		// Insert a new cmpdata
 		e=cmpdata_insert_string(CMPDATA_VARNAME,data16,source,num);
 		if (e) return e;
+		// Insert a new cmpdata for class static field (if applied)
+		if (static_var) {
+			e=register_class_static_field(data16);
+			if (e) return e;
+		}
 		// Done. Check next
 		source+=num;
 		if ('$'==source[0] || '#'==source[0]) source++;
@@ -1046,6 +1051,10 @@ int usevar_statement(void){
 		source++;
 	}
 	return 0;
+}
+
+int usevar_statement(void){
+	return usevar_statement_main(0);
 }
 
 int let_integer(int vn){
@@ -1127,10 +1136,23 @@ int let_statement(void){
 	int i;
 	// Check if there is '='
 	for(i=0;source[i]!='=';i++){
-		if (0x00==source[i] || ':'==source[i] || '"'==source[i]) return ERROR_SYNTAX;
+		if (0x00==source[i] || '"'==source[i]) return ERROR_SYNTAX;
+		if (':'==source[i]) {
+			if (':'!=source[i]) return ERROR_SYNTAX;
+			i++;
+		}
 	}
 	i=get_var_number();
-	if (i<0) return i;
+	if (i<0) {
+		// Try class
+		i=get_class_number();
+		if (i<0) return i;
+		// Try class static property
+		i=static_property_var_num(i);
+		if (i<0) return i;
+		// It's a class static property
+		// i is the var number of this
+	}
 	switch(source[0]){
 		case '$': // string
 			source++;
@@ -1140,6 +1162,8 @@ int let_statement(void){
 			source++;
 			skip_blank();
 			return let_float(i);
+		case '.': // TODO: object
+			return ERROR_SYNTAX;
 		case '(': // integer array
 		default: // integer
 			skip_blank();
@@ -1197,6 +1221,24 @@ int print_statement(void) {
 		if (end_of_statement()) break;
 	}
 	return 0;
+}
+
+/*
+	Class related
+
+STATIC [PUBLIC] x[,y[,z[, ... ]]]
+	クラスファイル中で、パブリックスなタティック変数を宣言する。"PUBLIC"は省略可。
+STATIC PRIVATE x[,y[,z[, ... ]]]
+	クラスファイル中で、プライベートなスタティック変数を宣言する。USEVARと同じ。
+
+*/
+
+int static_statement(void){
+	// "STATIC PRIVATE" is the same as "USEVAR"
+	if (instruction_is("PRIVATE")) return usevar_statement_main(0);
+	// "STATIC PUBLIC" is the same as "STATIC"
+	instruction_is("PUBLIC");
+	return usevar_statement_main(1);
 }
 
 /*
@@ -1320,6 +1362,7 @@ int compile_statement(void){
 	if (instruction_is("REM")) return rem_statement();
 	if (instruction_is("RESTORE")) return restore_statement();
 	if (instruction_is("RETURN")) return return_statement();
+	if (instruction_is("STATIC")) return static_statement();
 	if (instruction_is("USECLASS")) return useclass_statement();
 	if (instruction_is("USEVAR")) return usevar_statement();
 	if (instruction_is("VAR")) return var_statement();
