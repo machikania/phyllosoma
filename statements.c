@@ -946,7 +946,7 @@ int if_statement(void){
 		sbefore=source;
 		obefore=object;
 		// Support THEN label or THEN line number
-		// Note that frexible line number cannot be used
+		// Note that flexible line number cannot be used
 		e=goto_statement();
 		if (0==e && g_constant_value_flag && end_of_statement()) {
 			if (instruction_is("ELSE")) {
