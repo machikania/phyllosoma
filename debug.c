@@ -16,11 +16,12 @@ void debug_dummy(void){}
 #define CR "\n"
 static const char* debug_files[]={
 	"main.bas",
-"FOR I=0 TO 2" CR
-" IF I=1 THEN  CONTINUE" CR
-" PRINT I" CR
-"NEXT" CR
+"RESTORE DATA1" CR
+"A=READ()" CR
+"PRINT A" CR
 "END" CR
+"LABEL DATA1" CR
+"DATA -1" CR
 	,0
 };
 

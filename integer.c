@@ -149,7 +149,7 @@ int get_simple_integer(void){
 		if (i) return i;
 		check_object(1);
 		(object++)[0]=0x4240; // negs	r0, r0
-		g_constant_int=0-i;
+		g_constant_int=0-g_constant_int;
 		return 0;
 	}
 	if ('$'==source[0] || '0'==source[0] && 'X'==source[1]) {
