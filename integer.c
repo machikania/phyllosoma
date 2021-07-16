@@ -118,6 +118,7 @@ int integer_functions(void){
 	if (instruction_is("INKEY(")) return inkey_function();
 	if (instruction_is("INT(")) return int_function();
 	if (instruction_is("LEN(")) return len_function();
+	if (instruction_is("NEW(")) return new_function();
 	if (instruction_is("NOT(")) return not_function();
 	if (instruction_is("PEEK(")) return peek_function();
 	if (instruction_is("PEEK16(")) return peek16_function();

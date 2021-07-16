@@ -13,56 +13,57 @@
 		data[1]- : class name string
 	
 	CMPDATA_FIELDNAME  : class field and method names and id
-		data16   : field id
+		data16   : variable number/method id
 		data[1]- : field name string
-	
-	CMPDATA_FIELD      : field information
-		data16 : field id
-		data[1]: upper half: method/field information, lower half: class id
 	
 	CMPDATA_CLASS      : class structure and id
 		data16 :   class id
-		data[1]:   upper half: method/field information, lower half: field id
-		data[2]:   upper half: method/field information, lower half: field id
+		data[1]:   upper half: method/field information, lower half: variable number/method id
+		data[2]:   upper half: method/field information, lower half: variable number/method id
 		data[3]:   ....
-		data[n-1]: upper half: method/field information, lower half: field id
+		data[n-1]: upper half: method/field information, lower half: variable number/method id
 	
 			method/field information (16 bit):
 				#define CLASS_METHOD 0x00010000
 				#define CLASS_FIELD  0x00020000
 				#define CLASS_PUBLIC 0x00100000
-				#define CLASS_STATIC 0x01000000
+				#define CLASS_STATIC 0x00200000
 	
 	CMPDATA_METHOD     : class method address and id
-		data16 : field id
+		data16 : method id
 		data[1]: method address to call
 	
-	CMPDATA_STATICFIELD: static field information
-		data16: field id
-		data[1]: upper half: class id, lower half: variable number
-	
-	To get a class structure,
+	To get a class structure from class name,
 		1. CMPDATA_CLASSNAME to get class id
 		2. CMPDATA_CLASS
 	
-	To get a field information
+	To get a field information from field name
 		1. CMPDATA_FIELDNAME to get field id
-		2. CMPDATA_FIELD
+		2. CMPDATA_CLASS to check if this class contain the field with this id
+		3. continue 2. until corresponding class will be found
 	
 	To get a method information
 		1. CMPDATA_FIELDNAME to get field id
-		2. CMPDATA_FIELD to get class id and check if it's a method of the class
-		3. CMPDATA_METHOD
-		4. CMPDATA_CLASS to obtain class structure
+		2. CMPDATA_CLASS to check if this class contain the field with this id
+		3. continue 2. until corresponding class will be found
+		4. CMPDATA_METHOD to find address to call
 	
-	To get a static field/method information
+	To get a static field information
 		1. CMPDATA_CLASSNAME to get class id
 		2. CMPDATA_CLASS
-		3. Pick up field ids of static field from class structure
-		4. CMPDATA_FIELDNAME to get field id
+		3. Pick up variable numbers of static field from class structure
+		4. CMPDATA_FIELDNAME to get variable number
 		5. Check if id of 4 matches to id of 3
-		6. CMPDATA_STATICFIELD to get variable number
 	
+*/
+
+/*
+	Structure of object
+		data[0]:   upper half: length of object (n), lower half: class id
+		data[1]:   private/public field value
+		data[2]:   private/public field value
+		...
+		data[n-1]: private/public field value
 */
 
 int init_class_compiling(void){
@@ -170,12 +171,9 @@ int static_method_or_property(int cn, char stringorfloat){
 	if (!(class[i]&CLASS_STATIC)) return ERROR_SYNTAX;
 	if (!(class[i]&CLASS_FIELD)) return ERROR_NOT_FIELD;
 	// This is a public static field
-	data=cmpdata_findfirst_with_id(CMPDATA_STATICFIELD,class[i]&0xffff);
-	if (!data) return ERROR_UNKNOWN;
-	if (((data[1]>>16)&0xffff) != cn) return ERROR_UNKNOWN;
 	g_class_mode=CLASS_PUBLIC | CLASS_STATIC | CLASS_FIELD;
-	g_scratch_int[0]=data[1]&0xffff; // Store variable name to scratch int
-	return variable_to_r0(data[1]&0xffff);
+	g_scratch_int[0]=class[1]&0xffff; // Store variable name to scratch int
+	return variable_to_r0(class[1]&0xffff);
 }
 
 int static_property_var_num(int cn){
@@ -282,22 +280,78 @@ int update_cmpdata_class(int data){
 	return 0;
 }
 
-int register_class_static_field(int var_number){
+int create_fieldname(int var_number){
 	int* data;
 	unsigned short fid;
 	int e;
 	// Get the var name
 	data=cmpdata_findfirst_with_id(CMPDATA_VARNAME,var_number);
 	if (!data) return ERROR_UNKNOWN;
-	// Create the field id
-	fid=cmpdata_get_id();
 	// Add CMPDATA_FIELDNAME (copy from CMPDATA_VARNAME)
-	e=cmpdata_insert(CMPDATA_FIELDNAME,fid,(int*)&data[1],((data[0]>>16)&0xff)-1);
+	e=cmpdata_insert(CMPDATA_FIELDNAME,var_number,(int*)&data[1],((data[0]>>16)&0xff)-1);
 	if (e) return e;
-	// Add CMPDATA_STATICFIELD
-	g_scratch_int[0]=(g_class_id<<16)|var_number;
-	e=cmpdata_insert(CMPDATA_STATICFIELD,fid,(int*)g_scratch_int,1);
+	return 0;
+}
+
+int register_class_field(int var_number, int fieldinfo){
+	// fieldinfo is either 
+	//   CLASS_FIELD | CLASS_PUBLIC
+	// or
+	//   CLASS_FIELD:
+	int e;
+	// Update CMPDATA_FIELDNAME
+	e=create_fieldname(var_number);
 	if (e) return e;
 	// Update CMPDATA_CLASS
-	return update_cmpdata_class(CLASS_PUBLIC | CLASS_STATIC | CLASS_FIELD | fid);
+	return update_cmpdata_class(fieldinfo | var_number);
+}
+
+int register_class_static_field(int var_number){
+	int e;
+	// Update CMPDATA_FIELDNAME
+	e=create_fieldname(var_number);
+	if (e) return e;
+	// Update CMPDATA_CLASS
+	return update_cmpdata_class(CLASS_PUBLIC | CLASS_STATIC | CLASS_FIELD | var_number);
+}
+
+int new_function(void){
+	int cn,e;
+	// Get class number
+	cn=get_class_number();
+	if (cn<0) return cn;
+	// R0 will be the class number
+	e=set_value_in_register(0,cn);
+	if (e) return e;
+	// Call library
+	e=call_lib_code(LIB_NEW);
+	if (e) return e;
+	// Prepare arguments for constructor
+	skip_blank();
+	if (','==source[0]) {
+		source++;
+		// TODO: prepare arguments
+		return ERROR_SYNTAX;
+	}
+	// TODO call constructor here
+	return 0;
+}
+
+int lib_new(int r0, int r1, int r2){
+	int num,i;
+	int* data;
+	// Get class structure
+	data=cmpdata_findfirst_with_id(CMPDATA_CLASS,r0);
+	if (!data) stop_with_error(ERROR_NOT_OBJECT);
+	// Count the number of fields
+	num=1;
+	for(i=1;i<((data[0]>>16)&0xff);i++){
+		if (data[i]&CLASS_FIELD) num++;
+	}
+	// Create the object
+	i=get_permanent_block_number();
+	if (i<0) stop_with_error(ERROR_OBJ_TOO_MANY);
+	data=calloc_memory(num,i);
+	data[0]=num<<16|r0;
+	return (int)data;
 }

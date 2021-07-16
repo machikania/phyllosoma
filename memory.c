@@ -253,5 +253,5 @@ int get_permanent_block_number(void){
 	for(i=0;i<PERMVAR_NUMBER;i++){
 		if (0==kmbasic_var_size[ALLOC_PERM_BLOCK+i]) return ALLOC_PERM_BLOCK+i;
 	}
-	return -1;
+	return ERROR_UNKNOWN;
 }

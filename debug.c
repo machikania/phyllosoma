@@ -19,12 +19,19 @@ void debug_dummy(void){}
 static const char* debug_files[]={
 	"main.bas",
 "USECLASS CLASS1" CR
-"PRINT CLASS1::TEST" CR
-"CLASS1::TEST=123" CR
-"PRINT CLASS1::TEST" CR
+"CLASS1::TEST#=123.456" CR
+"PRINT CLASS1::TEST#" CR
+"CLASS1::TEST$=HEX$(0xABC)" CR
+"PRINT CLASS1::TEST$" CR
+"O=NEW(CLASS1)" CR
+"FOR I=0 TO (O(0)>>16)-1" CR
+"  PRINT HEX$(O(I))," CR
+"NEXT" CR
 "END" CR
 	,"CLASS1.BAS",
 "STATIC TEST" CR
+"FIELD  TEST2" CR
+"FIELD PRIVATE TEST3" CR
 "END" CR
 	,0
 };
@@ -60,7 +67,7 @@ void dump_cmpdata(void){
 
 void dump_variables(void){
 	int i;
-	printstr("dump variables\n");
+	printstr("\ndump variables\n");
 	for(i=0;i<30;i++){
 		printchar('A'+i);
 		printchar(' ');

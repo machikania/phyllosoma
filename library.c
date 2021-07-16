@@ -646,6 +646,7 @@ static const void* lib_list1[]={
 	lib_inkey,      // #define LIB_INKEY 23
 	lib_input,      // #define LIB_INPUT 24
 	lib_drawcount,  // #define LIB_DRAWCOUNT 25
+	lib_new,        // #define LIB_NEW 26
 };
 
 static const void* lib_list2[]={

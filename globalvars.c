@@ -83,9 +83,7 @@ int g_class_mode;
 
 // Reserved words
 
-
-
-const char* const g_reserved_words[123]={
+const char* const g_reserved_words[132]={
 	"ABS",
 	"ACOS",
 	"ARGS",
@@ -105,15 +103,18 @@ const char* const g_reserved_words[123]={
 	"CLEAR",
 	"CLS",
 	"COLOR",
+	"CONTINUE",
 	"COS",
 	"COSH",
 	"CREAD",
 	"CURSOR",
 	"DATA",
+	"DEBUG",
 	"DEC",
 	"DELETE",
 	"DIM",
 	"DO",
+	"DRAWCOUNT",
 	"ELSE",
 	"ELSEIF",
 	"END",
@@ -183,6 +184,7 @@ const char* const g_reserved_words[123]={
 	"PUTBMP",
 	"READ",
 	"REM",
+	"RESTORE",
 	"RETURN",
 	"RND",
 	"SCROLL",
@@ -193,13 +195,18 @@ const char* const g_reserved_words[123]={
 	"SOUND",
 	"SPRINTF",
 	"SQRT",
+	"STATIC",
+	"STEP",
 	"STRNCMP",
 	"SYSTEM",
 	"TAN",
 	"TANH",
+	"THEN",
 	"TIMER",
+	"TO",
 	"TVRAM",
 	"UNTIL",
+	"USECLASS",
 	"USEGRAPHIC",
 	"USEPCG",
 	"USEVAR",
@@ -210,7 +217,7 @@ const char* const g_reserved_words[123]={
 	"WHILE",
 	"WIDTH",
 };
-const int const g_hash_resereved_words[123]={
+const int const g_hash_resereved_words[132]={
 	0x000400d3, //ABS
 	0x01002393, //ACOS
 	0x01013193, //ARGS
@@ -230,15 +237,18 @@ const int const g_hash_resereved_words[123]={
 	0x42344012, //CLEAR
 	0x00042353, //CLS
 	0x4238d392, //COLOR
+	0x2ade0dd9, //CONTINUE
 	0x00042393, //COS
 	0x0108e488, //COSH
 	0x424c4004, //CREAD
 	0x944d2382, //CURSOR
 	0x01140541, //DATA
+	0x45103507, //DEBUG
 	0x00045103, //DEC
 	0x44344554, //DELETE
 	0x0004520d, //DIM
 	0x0000114f, //DO
+	0x827c002e, //DRAWCOUNT
 	0x0110d485, //ELSE
 	0x0d484217, //ELSEIF
 	0x000443c4, //END
@@ -308,6 +318,7 @@ const int const g_hash_resereved_words[123]={
 	0x54543304, //PUTBMP
 	0x014c4004, //READ
 	0x0005310d, //REM
+	0xedab1e34, //RESTORE
 	0xc45544da, //RETURN
 	0x000533c4, //RND
 	0x824ce358, //SCROLL
@@ -318,13 +329,18 @@ const int const g_hash_resereved_words[123]={
 	0x523943c4, //SOUND
 	0xacdf0fa2, //SPRINTF
 	0x014904d4, //SQRT
+	0x95015217, //STATIC
+	0x01495110, //STEP
 	0xacc3d9f5, //STRNCMP
 	0x98495119, //SYSTEM
 	0x0005500e, //TAN
 	0x015403c8, //TANH
+	0x0154910e, //THEN
 	0x5520c112, //TIMER
+	0x0000154f, //TO
 	0x555d300d, //TVRAM
 	0x543d520c, //UNTIL
+	0xfdcaaa72, //USECLASS
 	0x2aaa8267, //USEGRAPHIC
 	0x12111092, //USEPCG
 	0x12117007, //USEVAR

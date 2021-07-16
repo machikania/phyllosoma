@@ -81,6 +81,7 @@
 #define LIB_INKEY 23
 #define LIB_INPUT 24
 #define LIB_DRAWCOUNT 25
+#define LIB_NEW 26
 
 #define LIB_DEBUG 128
 #define LIB_PRINT 129
@@ -156,11 +157,9 @@
 #define CMPDATA_ENDIF_BL 10
 #define CMPDATA_CLASSNAME 11
 #define CMPDATA_FIELDNAME 12
-#define CMPDATA_FIELD 13
-#define CMPDATA_CLASS 14
-#define CMPDATA_METHOD 15
-#define CMPDATA_STATICFIELD 16
-#define CMPDATA_STRSTACK 17
+#define CMPDATA_CLASS 13
+#define CMPDATA_METHOD 14
+#define CMPDATA_STRSTACK 15
 #define CMPDATA_ALL 255
 
 /*
@@ -169,7 +168,7 @@
 #define CLASS_METHOD 0x00010000
 #define CLASS_FIELD  0x00020000
 #define CLASS_PUBLIC 0x00100000
-#define CLASS_STATIC 0x01000000
+#define CLASS_STATIC 0x00200000
 
 /*
 	Misc
@@ -228,8 +227,8 @@ extern volatile int* g_scratch_int;
 extern volatile float* g_scratch_float;
 extern volatile char* g_scratch_char;
 
-extern const char* const g_reserved_words[123];
-extern const int const g_hash_resereved_words[123];
+extern const char* const g_reserved_words[132];
+extern const int const g_hash_resereved_words[132];
 
 extern char g_constant_value_flag;
 extern int g_constant_int;
@@ -365,7 +364,10 @@ int get_class_number(void);
 int static_method_or_property(int cn, char stringorfloat);
 int static_property_var_num(int cn);
 int method_or_property(char stringorfloat);
+int register_class_field(int var_number, int fieldinfo);
 int register_class_static_field(int var_number);
+int new_function(void);
+int lib_new(int r0, int r1, int r2);
 
 // file.c
 void init_file_system(void);

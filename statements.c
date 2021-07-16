@@ -965,7 +965,7 @@ int if_statement(void){
 		sbefore=source;
 		obefore=object;
 		// Support THEN label or THEN line number
-		// Note that frexible line number cannot be used
+		// Note that flexible line number cannot be used
 		e=goto_statement();
 		if (0==e && g_constant_value_flag && end_of_statement()) {
 			if (instruction_is("ELSE")) {
@@ -1017,7 +1017,7 @@ int elseif_statement(void){
 	return if_statement();
 }
 
-int usevar_statement_main(int static_var){
+int usevar_statement_main(int for_class){
 	int e,num;
 	short data16;
 	int* data;
@@ -1038,10 +1038,19 @@ int usevar_statement_main(int static_var){
 		// Insert a new cmpdata
 		e=cmpdata_insert_string(CMPDATA_VARNAME,data16,source,num);
 		if (e) return e;
-		// Insert a new cmpdata for class static field (if applied)
-		if (static_var) {
-			e=register_class_static_field(data16);
-			if (e) return e;
+		// Class related
+		switch(for_class){
+			case CLASS_STATIC:
+				e=register_class_static_field(data16);
+				if (e) return e;
+				break;
+			case CLASS_FIELD | CLASS_PUBLIC:
+			case CLASS_FIELD:
+				e=register_class_field(data16,for_class);
+				if (e) return e;
+				break;
+			default:
+				break;
 		}
 		// Done. Check next
 		source+=num;
@@ -1226,19 +1235,28 @@ int print_statement(void) {
 /*
 	Class related
 
-STATIC [PUBLIC] x[,y[,z[, ... ]]]
-	クラスファイル中で、パブリックスなタティック変数を宣言する。"PUBLIC"は省略可。
-STATIC PRIVATE x[,y[,z[, ... ]]]
-	クラスファイル中で、プライベートなスタティック変数を宣言する。USEVARと同じ。
+FIELD [PUBLIC] x[,y[,z[, ... ]]]
+	クラスファイル中で、パブリックフィールドを宣言する。"PUBLIC"は省略可。
+	x,y,z等はフィールド名を6文字以内の英数字で指定。
+FIELD PRIVATE x[,y[,z[, ... ]]]
+	クラスファイル中で、プライベートフィールドを宣言する。x,y,z等はフィールド
+	名を6文字以内の英数字で指定。
 
 */
+
+int field_statement(void){
+	if (instruction_is("PRIVATE")) return usevar_statement_main(CLASS_FIELD);
+	// "FIELD PUBLIC" is the same as "FIELD"
+	instruction_is("PUBLIC");
+	return usevar_statement_main(CLASS_FIELD | CLASS_PUBLIC);
+}
 
 int static_statement(void){
 	// "STATIC PRIVATE" is the same as "USEVAR"
 	if (instruction_is("PRIVATE")) return usevar_statement_main(0);
 	// "STATIC PUBLIC" is the same as "STATIC"
 	instruction_is("PUBLIC");
-	return usevar_statement_main(1);
+	return usevar_statement_main(CLASS_STATIC);
 }
 
 /*
@@ -1314,7 +1332,7 @@ int end_of_statement(void){
 	if (0x00==source[0]) return 1;
 	if (':'==source[0] && ':'!=source[1]) return 1;
 	if ('E'==source[0] && 'L'==source[1] && 'S'==source[2] && 'E'==source[3] && ' '==source[4]) return 1;
-	if ('T'==source[0] && 'H'==source[1] && 'E'==source[2] && 'N'==source[3] && ' '==source[4]) return 1;
+	if ('T'==source[0] && 'H'==source[1] && 'E'==source[2] && 'N'==source[3] && (' '==source[4] || 0x00==source[4])) return 1;
 	if ('S'==source[0] && 'T'==source[1] && 'E'==source[2] && 'P'==source[3] && ' '==source[4]) return 1;
 	if ('T'==source[0] && 'O'==source[1] && ' '==source[2]) return 1;
 	return 0;
@@ -1348,6 +1366,7 @@ int compile_statement(void){
 	if (instruction_is("ELSEIF")) return elseif_statement();
 	if (instruction_is("END")) return end_statement();
 	if (instruction_is("ENDIF")) return endif_statement();
+	if (instruction_is("FIELD")) return field_statement();
 	if (instruction_is("FOR")) return for_statement();
 	if (instruction_is("GOSUB")) return gosub_statement();
 	if (instruction_is("GOTO")) return goto_statement();

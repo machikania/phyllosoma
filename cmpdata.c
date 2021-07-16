@@ -55,7 +55,7 @@ void cmpdata_init(void){
 	g_cmpdata=(int*)g_objmax;
 	g_cmpdata_end=(int*)g_objmax;
 	g_cmpdata_point=(int*)g_objmax;
-	g_cmpdata_id=1;
+	g_cmpdata_id=ALLOC_BLOCK_NUM; // Avoid collision between id and variable number
 }
 
 /*
