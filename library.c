@@ -610,6 +610,43 @@ int lib_input(int r0, int r1, int r2){
 	return (int)str;
 }
 
+#define GPIO_KEYUP 0
+#define GPIO_KEYLEFT 1
+#define GPIO_KEYRIGHT 2
+#define GPIO_KEYDOWN 3
+#define GPIO_KEYSTART 4
+#define GPIO_KEYFIRE 5
+#define KEYUP (1<<GPIO_KEYUP)
+#define KEYLEFT (1<<GPIO_KEYLEFT)
+#define KEYRIGHT (1<<GPIO_KEYRIGHT)
+#define KEYDOWN (1<<GPIO_KEYDOWN)
+#define KEYSTART (1<<GPIO_KEYSTART)
+#define KEYFIRE (1<<GPIO_KEYFIRE)
+#define KEYSMASK (KEYUP|KEYLEFT|KEYRIGHT|KEYDOWN|KEYSTART|KEYFIRE)
+int lib_keys(int r0, int r1, int r2){
+	static char init=0;
+	int res,k;
+	if (!init) {
+		init=1;
+		gpio_init_mask(KEYSMASK);
+		gpio_set_dir_in_masked(KEYSMASK);
+		gpio_pull_up(GPIO_KEYUP);
+		gpio_pull_up(GPIO_KEYLEFT);
+		gpio_pull_up(GPIO_KEYRIGHT);
+		gpio_pull_up(GPIO_KEYDOWN);
+		gpio_pull_up(GPIO_KEYSTART);
+		gpio_pull_up(GPIO_KEYFIRE);
+	}
+	k=~gpio_get_all() & KEYSMASK;
+	res =(k&KEYUP)    ?  1:0;
+	res|=(k&KEYDOWN)  ?  2:0;
+	res|=(k&KEYLEFT)  ?  4:0;
+	res|=(k&KEYRIGHT) ?  8:0;
+	res|=(k&KEYSTART) ? 16:0;
+	res|=(k&KEYFIRE)  ? 32:0;
+	return res&r0;
+}
+
 int debug(int r0, int r1, int r2){
 #ifdef DEBUG_MODE
 	return r2+r1+r0+1;
@@ -645,6 +682,7 @@ static const void* lib_list1[]={
 	lib_inkey,      // #define LIB_INKEY 23
 	lib_input,      // #define LIB_INPUT 24
 	lib_drawcount,  // #define LIB_DRAWCOUNT 25
+	lib_keys,       // #define LIB_KEYS 26
 };
 
 static const void* lib_list2[]={

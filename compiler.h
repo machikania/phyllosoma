@@ -78,6 +78,7 @@
 #define LIB_INKEY 23
 #define LIB_INPUT 24
 #define LIB_DRAWCOUNT 25
+#define LIB_KEYS 26
 
 #define LIB_DEBUG 128
 #define LIB_PRINT 129
