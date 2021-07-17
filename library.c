@@ -504,7 +504,7 @@ int lib_var_push(int r0, int r1, int r2){
 			on=get_permanent_block_number();
 			kmbasic_variables[on]=kmbasic_variables[vn];
 			kmbasic_var_size[on]=kmbasic_var_size[vn];
-			stack[i*2+1]|=on<<16;
+			stack[i*2]|=on<<16;
 		}
 		// Clear the variable
 		kmbasic_variables[vn]=0;
@@ -527,6 +527,7 @@ int lib_var_pop(int r0, int r1, int r2){
 			// This is object
 			kmbasic_variables[vn]=kmbasic_variables[on];
 			kmbasic_var_size[vn]=kmbasic_var_size[on];
+			// Delete stored object
 			kmbasic_var_size[on]=0;
 		} else {
 			// This is simple value
