@@ -44,6 +44,7 @@
 #define ERROR_COMPILE_CLASS (-14)
 #define ERROR_NOT_FIELD  _throw_error(-15)
 #define ERROR_NOT_PUBLIC  _throw_error(-16)
+#define ERROR_STATEMENT_NOT_DETECTED (-17)
 
 /*
 	Libraries
@@ -95,6 +96,7 @@
 #define LIB_DISPLAY 137
 #define LIB_WAIT 138
 #define LIB_SET_DRAWCOUNT 139
+#define LIB_STR_TO_OBJECT 140
 
 /*
 	LIB MATH options
@@ -368,6 +370,7 @@ int register_class_field(int var_number, int fieldinfo);
 int register_class_static_field(int var_number);
 int new_function(void);
 int lib_new(int r0, int r1, int r2);
+int let_object(int vn);
 
 // file.c
 void init_file_system(void);

@@ -66,6 +66,10 @@
 		data[n-1]: private/public field value
 */
 
+/*
+	Inilialize compiler
+*/
+
 int init_class_compiling(void){
 	int e,i,num;
 	// Let's open the class file
@@ -91,6 +95,10 @@ int init_class_compiling(void){
 	return ERROR_COMPILE_CLASS;
 }
 
+/*
+	General functions follow
+*/
+
 int length_of_field(void){
 	int num;
 	if ('0'<=source[0] && source[0]<='9') return 0;
@@ -110,11 +118,18 @@ int get_class_number(void){
 	return data[0]&0xffff;
 }
 
+/*
+	Method calling routine
+*/
+
 int class_method(int method_address, int static_flag){
-	// R0 is the address of method
 	// static_flag is set when static method will be called
 	return ERROR_SYNTAX;
 }
+
+/*
+	Static method/field
+*/
 
 int static_method_or_property(int cn, char stringorfloat){
 	// This function returns variable number for static property
@@ -164,7 +179,7 @@ int static_method_or_property(int cn, char stringorfloat){
 		if (i) return i;
 		if (')'!=source[0]) return ERROR_SYNTAX;
 		source++;
-		g_class_mode=CLASS_PUBLIC | CLASS_METHOD;
+		g_class_mode=CLASS_PUBLIC | CLASS_STATIC | CLASS_METHOD;
 		return 0;
 	}
 	// Check if static field
@@ -190,11 +205,15 @@ int static_property_var_num(int cn){
 	return g_scratch_int[0]; // See above
 }
 
+/*
+	Calling method/field
+*/
+
 int method_or_property(char stringorfloat){
 	// '.' has been detected before comming this line
 	// stringorfloat is either 0, '$', or '#' for integer, string, or float
 	// Pointer to object is in r0 register
-	int num,len,i,fid;
+	int num,len,i,j,fid;
 	int* data;
 	int* class;
 	// Get field name
@@ -207,6 +226,7 @@ int method_or_property(char stringorfloat){
 	// Check if multiple field/method names
 	if (cmpdata_nsearch_string(CMPDATA_FIELDNAME,source,num)) {
 		// There are the same filed/method name more than once
+		// TODO: use library in this case
 		return ERROR_SYNTAX;
 	}
 	// There is only one field/method with this name
@@ -239,16 +259,17 @@ int method_or_property(char stringorfloat){
 		if (i) return i;
 		if (')'!=source[0]) return ERROR_SYNTAX;
 		source++;
+		g_class_mode=CLASS_PUBLIC | CLASS_METHOD;
 		return 0;
 	}
 	// Check if not static field
 	if (class[i]&CLASS_STATIC) return ERROR_SYNTAX;
 	if (!(class[i]&CLASS_FIELD)) return ERROR_NOT_FIELD;
 	// This is a public field. Count the position of field in object
-	num=0;
-	for(i=1;i<len;i++){
-		if (class[i]&CLASS_STATIC) continue;
-		if (class[i]&CLASS_FIELD) num++;
+	num=1;
+	for(j=1;j<i;j++){
+		if (class[j]&CLASS_STATIC) continue;
+		if (class[j]&CLASS_FIELD) num++;
 	}
 	if (num<32) {
 		check_object(1);
@@ -259,8 +280,15 @@ int method_or_property(char stringorfloat){
 		check_object(1);
 		(object++)[0]=0x5840;            // ldr	r0, [r0, r1]
 	}
+	g_class_mode=CLASS_PUBLIC | CLASS_FIELD;
+	g_scratch_int[0]=num; // Store number of position in object to scratch int
 	return 0;
 }
+
+/*
+	Preparations of class and object information follow
+	Note that these will be called in the class file
+*/
 
 int update_cmpdata_class(int data){
 	int* olddata;
@@ -315,6 +343,10 @@ int register_class_static_field(int var_number){
 	return update_cmpdata_class(CLASS_PUBLIC | CLASS_STATIC | CLASS_FIELD | var_number);
 }
 
+/*
+	New function to return pointer to object
+*/
+
 int new_function(void){
 	int cn,e;
 	// Get class number
@@ -346,12 +378,80 @@ int lib_new(int r0, int r1, int r2){
 	// Count the number of fields
 	num=1;
 	for(i=1;i<((data[0]>>16)&0xff);i++){
+		// It must not be static
+		if (data[i]&CLASS_STATIC) continue;
+		// It must be field
 		if (data[i]&CLASS_FIELD) num++;
 	}
 	// Create the object
 	i=get_permanent_block_number();
-	if (i<0) stop_with_error(ERROR_OBJ_TOO_MANY);
 	data=calloc_memory(num,i);
 	data[0]=num<<16|r0;
 	return (int)data;
 }
+
+int let_object(int vn){
+	// '.' has been detected before reaching here
+	int e,pos;
+	char* sbefore;
+	unsigned short* obefore;
+	// R0 will be pointer to object;
+	e=variable_to_r0(vn);
+	if (e) return e;
+	while(1){
+		sbefore=source;
+		obefore=object;
+		// Now, R0 is the pointer to object. Let's check object field
+		e=method_or_property(0);
+		if (e) return e;
+		object=obefore;
+		if (g_class_mode==(CLASS_PUBLIC | CLASS_FIELD)) {
+			// position in object is determined
+			pos=4*g_scratch_int[0]; // See last lines of method_or_property()
+			if (pos<0 || 255<pos) return ERROR_UNKNOWN;
+			check_object(1);
+			(object++)[0]=0x3000 | pos; // adds	r0, #xx
+		} else {
+			source=sbefore;
+			return ERROR_SYNTAX;
+		}
+		// Now, R0 is the pointer to object field
+		check_object(1);
+		(object++)[0]=0xb401;       // push	{r0}
+		switch(source[0]){
+			case '.': // object
+				source++;
+				object--;
+				continue;
+			case '$': // string
+				source++;
+				skip_blank();
+				if ('='!=source[0]) return ERROR_SYNTAX;
+				e=get_string();
+				if (e) return e;
+				e=call_lib_code(LIB_STR_TO_OBJECT);
+				if (e) return e;
+				break;
+			case '#': // float
+				source++;
+				skip_blank();
+				if ('='!=source[0]) return ERROR_SYNTAX;
+				source++;
+				e=get_float();
+				if (e) return e;
+				break;
+			default: // integer
+				skip_blank();
+				if ('='!=source[0]) return ERROR_SYNTAX;
+				source++;
+				e=get_integer();
+				if (e) return e;
+				break;
+		}
+		check_object(2);
+		(object++)[0]=0xbc02; // pop	{r1}
+		(object++)[0]=0x6008; // str	r0, [r1, #0]
+		return 0;
+	}
+}
+

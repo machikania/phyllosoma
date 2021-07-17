@@ -610,10 +610,26 @@ int lib_input(int r0, int r1, int r2){
 	return (int)str;
 }
 
+int lib_str2obj(int r0, int r1, int r2){
+	int i,j;
+	char* str2;
+	char* str=(char*)r0;
+	// Count character number
+	for(i=0;str[i];i++);
+	// Get permanent block number
+	j=get_permanent_block_number();
+	// Get object area
+	str2=alloc_memory((i+4)/4,j);
+	memcpy(str2,str,i+1);
+	// Garbage collection
+	garbage_collection(str);
+	return (int)str2;
+}
+
 int debug(int r0, int r1, int r2){
 #ifdef DEBUG_MODE
-	asm("ldr	r0, [r0, r1]");
-	return r0;
+	//asm("ldr	r0, [r0, r1]");
+	return r0+4;
 #else
 	return r0;
 #endif
@@ -662,6 +678,7 @@ static const void* lib_list2[]={
 	lib_display,    // #define LIB_DISPLAY 137
 	lib_wait,       // #define LIB_WAIT 138
 	lib_drawcount,  // #define LIB_SET_DRAWCOUNT 139
+	lib_str2obj,    // #define LIB_STR_TO_OBJECT 140
 };
 
 int statement_library(int r0, int r1, int r2, int r3){

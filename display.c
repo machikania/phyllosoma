@@ -505,7 +505,7 @@ int display_statements(void){
 	if (instruction_is("USEGRAPHIC")) return usegraphic_statement();
 	if (instruction_is("USEPCG")) return usepcg_statement();
 	if (instruction_is("WIDTH")) return width_statement();
-	return ERROR_SYNTAX;
+	return ERROR_STATEMENT_NOT_DETECTED;
 }
 
 int display_functions(void){

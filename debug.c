@@ -19,14 +19,17 @@ void debug_dummy(void){}
 static const char* debug_files[]={
 	"main.bas",
 "USECLASS CLASS1" CR
-"CLASS1::TEST#=123.456" CR
-"PRINT CLASS1::TEST#" CR
-"CLASS1::TEST$=HEX$(0xABC)" CR
-"PRINT CLASS1::TEST$" CR
 "O=NEW(CLASS1)" CR
 "FOR I=0 TO (O(0)>>16)-1" CR
 "  PRINT HEX$(O(I))," CR
 "NEXT" CR
+"PRINT" CR
+"O.TEST2=123" CR
+"FOR I=0 TO (O(0)>>16)-1" CR
+"  PRINT HEX$(O(I))," CR
+"NEXT" CR
+"PRINT" CR
+"PRINT O.TEST2" CR
 "END" CR
 	,"CLASS1.BAS",
 "STATIC TEST" CR

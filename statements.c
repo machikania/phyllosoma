@@ -1171,8 +1171,9 @@ int let_statement(void){
 			source++;
 			skip_blank();
 			return let_float(i);
-		case '.': // TODO: object
-			return ERROR_SYNTAX;
+		case '.': // object
+			source++;
+			return let_object(i);
 		case '(': // integer array
 		default: // integer
 			skip_blank();
@@ -1341,18 +1342,9 @@ int end_of_statement(void){
 int compile_statement(void){
 	int (*f)(void) = g_multiple_statement;
 	int e;
-	// Initialize
-	unsigned short* bobj=object;
-	unsigned char* bsrc=source;
-	// Check if multiple statement
+	// Check if multiple statement, first
 	if (g_multiple_statement) return f();
-	// Check LET statement, first
-	if (instruction_is("LET")) return let_statement();
-	// "LET" may be omitted.
-	e=let_statement();
-	if (!e) return 0;
-	rewind_object(bobj);
-	source=bsrc;
+	// Search statements
 	// It's not LET statement. Let's continue for possibilities of the other statements.
 	if (instruction_is("BREAK")) return break_statement();
 	if (instruction_is("CDATA")) return cdata_statement();
@@ -1372,6 +1364,7 @@ int compile_statement(void){
 	if (instruction_is("GOTO")) return goto_statement();
 	if (instruction_is("IF")) return if_statement();
 	if (instruction_is("LABEL")) return label_statement();
+	if (instruction_is("LET")) return let_statement();
 	if (instruction_is("LOOP")) return loop_statement();
 	if (instruction_is("NEXT")) return next_statement();
 	if (instruction_is("POKE")) return poke_statement();
@@ -1389,7 +1382,8 @@ int compile_statement(void){
 	if (instruction_is("WEND")) return wend_statement();
 	if (instruction_is("WHILE")) return while_statement();
 	// Environment statements
-	return display_statements();
-	// Finally, try let statement again as syntax error may be in LET statement.
-	//return let_statement();
+	e=display_statements();
+	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;
+	// Finally, try let statement as "LET" may be omitted.
+	return let_statement();
 }
