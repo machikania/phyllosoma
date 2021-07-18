@@ -123,8 +123,25 @@ int get_class_number(void){
 */
 
 int class_method(int method_address, int static_flag){
+	unsigned short* opos1;
+	unsigned short* opos2;
+	unsigned short* opos3;
 	// static_flag is set when static method will be called
-	return ERROR_SYNTAX;
+	// TODO: prepare arguments
+	check_object(6);
+	(object++)[0]=0xe002; // b.n    <lbl2>
+	                      // lbl1:
+	(object++)[0]=0xb500; // push	{lr}
+	opos2=object;
+	object++;             // bl
+	object++;             // bl
+	                      // lbl2:
+	opos3=object;
+	(object++)[0]=0xF7FF; // bl <lbl1>
+	(object++)[0]=0xFFFB; // bl (continued)
+	update_bl(opos2,(unsigned short*)method_address);
+	// TODO: post gosub
+	return 0;
 }
 
 /*
@@ -175,7 +192,7 @@ int static_method_or_property(int cn, char stringorfloat){
 		data=cmpdata_findfirst_with_id(CMPDATA_METHOD,class[i]&0xffff);
 		if (!data) return ERROR_UNKNOWN;
 		// Compile method
-		i=class_method(data[1],0);
+		i=class_method(data[1],1);
 		if (i) return i;
 		if (')'!=source[0]) return ERROR_SYNTAX;
 		source++;
@@ -231,10 +248,6 @@ int method_or_property(char stringorfloat){
 	}
 	// There is only one field/method with this name
 	source+=num;
-	if (stringorfloat) {
-		if (stringorfloat!=source[0]) return ERROR_SYNTAX;
-		source++;
-	}
 	// Find the class
 	cmpdata_reset();
 	while(class=cmpdata_find(CMPDATA_CLASS)){
@@ -251,6 +264,10 @@ int method_or_property(char stringorfloat){
 	// Check if method
 	if (class[i]&CLASS_METHOD) {
 		// This is public class method.
+		if (stringorfloat) {
+			if (stringorfloat!=source[0]) return ERROR_SYNTAX;
+			source++;
+		}
 		if ('('!=source[0]) return ERROR_SYNTAX;
 		source++;
 		data=cmpdata_findfirst_with_id(CMPDATA_METHOD,class[i]&0xffff);
@@ -282,6 +299,16 @@ int method_or_property(char stringorfloat){
 	}
 	g_class_mode=CLASS_PUBLIC | CLASS_FIELD;
 	g_scratch_int[0]=num; // Store number of position in object to scratch int
+	// Check if object continues
+	if ('.'==source[0]) {
+		source++;
+		return method_or_property(stringorfloat);
+	}
+	// Field expression ended here
+	if (stringorfloat) {
+		if (stringorfloat!=source[0]) return ERROR_SYNTAX;
+		source++;
+	}
 	return 0;
 }
 
