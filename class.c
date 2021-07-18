@@ -123,11 +123,15 @@ int get_class_number(void){
 */
 
 int class_method(int method_address, int static_flag){
-	unsigned short* opos1;
-	unsigned short* opos2;
-	unsigned short* opos3;
+	// Note that '(' remains at the source position
 	// static_flag is set when static method will be called
-	// TODO: prepare arguments
+	int e,argnum;
+	unsigned short* opos2;
+	// TODO: Store fields to static variables here
+	// Prepare arguments
+	argnum=gosub_arguments();
+	if (argnum<0) return argnum;
+	// Call the method
 	check_object(6);
 	(object++)[0]=0xe002; // b.n    <lbl2>
 	                      // lbl1:
@@ -136,12 +140,12 @@ int class_method(int method_address, int static_flag){
 	object++;             // bl
 	object++;             // bl
 	                      // lbl2:
-	opos3=object;
 	(object++)[0]=0xF7FF; // bl <lbl1>
 	(object++)[0]=0xFFFB; // bl (continued)
 	update_bl(opos2,(unsigned short*)method_address);
-	// TODO: post gosub
-	return 0;
+	// TODO restore fields here
+	// Post gosub and return
+	return post_gosub_statement(argnum);
 }
 
 /*
@@ -188,7 +192,6 @@ int static_method_or_property(int cn, char stringorfloat){
 	if (class[i]&CLASS_METHOD) {
 		// This is public class method.
 		if ('('!=source[0]) return ERROR_SYNTAX;
-		source++;
 		data=cmpdata_findfirst_with_id(CMPDATA_METHOD,class[i]&0xffff);
 		if (!data) return ERROR_UNKNOWN;
 		// Compile method
@@ -269,7 +272,6 @@ int method_or_property(char stringorfloat){
 			source++;
 		}
 		if ('('!=source[0]) return ERROR_SYNTAX;
-		source++;
 		data=cmpdata_findfirst_with_id(CMPDATA_METHOD,class[i]&0xffff);
 		if (!data) return ERROR_UNKNOWN;
 		i=class_method(data[1],0);

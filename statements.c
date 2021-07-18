@@ -501,6 +501,32 @@ int gosub_statement_main(void){
 	return 0;
 }
 
+int gosub_arguments(void){
+	// Prepare argument array (R6 as the pointer)
+	int e,i;
+	short* obefore=object;
+	// Prepare argument array (R6 as the pointer)
+	// R0 may be the pointer to object
+	check_object(4);
+	(object++)[0]=0xb080; //      	sub	sp, #xx (this will be updated; see below)
+	(object++)[0]=0x9601; //      	str	r6, [sp, #4]
+	(object++)[0]=0x466e; //      	mov	r6, sp
+	(object++)[0]=0x6030; //        str	r0, [r6, #0]
+	for(i=3;','==source[0] || '('==source[0] ;i++){
+		source++;
+		e=get_string_int_or_float();
+		if (e) return e;
+		check_object(1);
+		(object++)[0]=0x6030 | (i<<6); // str	r0, [r6, #xx]
+	}
+	obefore[0]|=i; // Update sub sp,#xx assembly
+	// Set number of variables
+	set_value_in_register(0,i-3);
+	check_object(1);
+	(object++)[0]=0x6030 | (2<<6); // str	r0, [r6, #xx]
+	return i;
+}
+
 int gosub_statement(void){
 	char* safter;
 	char* sbefore=source;
@@ -514,28 +540,20 @@ int gosub_statement(void){
 	// Rewind object
 	rewind_object(obefore);
 	// Prepare argument array (R6 as the pointer)
-	check_object(3);
-	(object++)[0]=0xb080; //      	sub	sp, #xx (this will be updated; see below)
-	(object++)[0]=0x9601; //      	str	r6, [sp, #4]
-	(object++)[0]=0x466e; //      	mov	r6, sp
-	for(i=3;','==source[0];i++){
-		source++;
-		e=get_string_int_or_float();
-		if (e) return e;
-		check_object(1);
-		(object++)[0]=0x6030 | (i<<6); // str	r0, [r6, #xx]
-	}
-	obefore[0]|=i; // Update sub sp,#xx assembly
-	// Set number of variables
-	set_value_in_register(0,i-3);
-	check_object(1);
-	(object++)[0]=0x6030 | (2<<6); // str	r0, [r6, #xx]
+	i=gosub_arguments();
+	if (i<0) return i;
 	// GOSUB again
 	safter=source;
 	source=sbefore;
 	e=gosub_statement_main();
 	if (e) return e;
 	source=safter;
+	// Delete argeuement array
+	return post_gosub_statement(i);
+}
+
+int post_gosub_statement(int i){
+	int e;
 	// Garbage collection
 	check_object(1);
 	(object++)[0]=0x0031;   // movs	r1, r6
@@ -545,7 +563,6 @@ int gosub_statement(void){
 	check_object(2);
 	(object++)[0]=0x6876;   // ldr	r6, [r6, #4]
 	(object++)[0]=0xb000|i; // add	sp, #xx
-	// All done
 	return 0;
 }
 

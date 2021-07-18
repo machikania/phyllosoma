@@ -290,7 +290,9 @@ int kmbasic_library(int r0, int r1, int r2, int r3);
 
 // statement.c
 int goto_label(void);
+int gosub_arguments(void);
 int gosub_statement(void);
+int post_gosub_statement(int i);
 int compile_statement(void);
 int end_of_statement(void);
 
