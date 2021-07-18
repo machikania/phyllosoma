@@ -427,7 +427,7 @@ int lib_read_str(int r0, int r1, int r2){
 	i=(i+2)/2;
 	// Go forward
 	g_read_point+=i;
-	g_read_valid_len-=2;
+	g_read_valid_len-=i;
 	// Return
 	return (int)str;
 }
