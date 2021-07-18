@@ -77,8 +77,7 @@ int line_number_from_address(int addr){
 		return data[0]&0xffff;
 	}
 	// Not found
-	stop_with_error(ERROR_OBJ_TOO_MANY);
-	return 0;
+	return -1;
 }
 
 void stop_with_error(int e){

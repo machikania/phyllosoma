@@ -32,7 +32,7 @@ int compile_file(unsigned char* fname){
 	unsigned short* bl;
 	// Initialize
 	char showfilename=1;
-	init_file_compiler();
+	begin_file_compiler();
 	// Open file
 	if (f_open(fp,fname,FA_READ)) {
 		// Mount and open again
@@ -62,7 +62,7 @@ int compile_file(unsigned char* fname){
 			cmpdata_delete_string_stack(classfile);
 			// Open current file again, and continue from the beginning
 			if (f_open(fp,fname,FA_READ)) return show_error(ERROR_FILE,0);
-			init_file_compiler();
+			begin_file_compiler();
 			continue;
 		}
 		if (showfilename) {
@@ -77,5 +77,5 @@ int compile_file(unsigned char* fname){
 		}
 	}
 	f_close(fp);
-	return 0;
+	return end_file_compiler();
 }

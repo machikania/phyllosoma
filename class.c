@@ -455,3 +455,43 @@ int let_object(int vn){
 	}
 }
 
+/*
+	DELETE statement
+*/
+
+int lib_delete(int r0, int r1, int r2){
+	cmpdata_delete((int*)r0);
+	return r0;
+}
+
+int delete_statement(void){
+	int e;
+	do {
+		e=get_integer();
+		if (e) return e;
+		e=call_lib_code(LIB_DELETE);
+		if (e) return e;
+	} while(','==(source++)[0]);
+	source--;
+	return 0;
+}
+
+/*
+	METHOD statement
+*/
+
+int method_statement_main(void){
+	int e,num,id;
+	num=length_of_field();
+	if (!num) return ERROR_SYNTAX;
+	id=cmpdata_get_id();
+	// Update CMPDATA_FIELDNAME
+	e=cmpdata_insert_string(CMPDATA_FIELDNAME,id,source,num);
+	if (e) return e;
+	// Update CMPDATA_METHOD
+	g_scratch_int[0]=(int)object;
+	e=cmpdata_insert(CMPDATA_METHOD,id,(int*)g_scratch_int,1);
+	if (e) return e;
+	// Update CMPDATA_CLASS
+	return update_cmpdata_class(CLASS_PUBLIC | CLASS_METHOD | id);
+}

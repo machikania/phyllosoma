@@ -1236,13 +1236,6 @@ int print_statement(void) {
 /*
 	Class related
 
-FIELD [PUBLIC] x[,y[,z[, ... ]]]
-	クラスファイル中で、パブリックフィールドを宣言する。"PUBLIC"は省略可。
-	x,y,z等はフィールド名を6文字以内の英数字で指定。
-FIELD PRIVATE x[,y[,z[, ... ]]]
-	クラスファイル中で、プライベートフィールドを宣言する。x,y,z等はフィールド
-	名を6文字以内の英数字で指定。
-
 */
 
 int field_statement(void){
@@ -1258,6 +1251,27 @@ int static_statement(void){
 	// "STATIC PUBLIC" is the same as "STATIC"
 	instruction_is("PUBLIC");
 	return usevar_statement_main(CLASS_STATIC);
+}
+
+int call_statement(void){
+	// This routine also checks the end of statement
+	// If error occurs, rewind and return error
+	char* sbefore=source;
+	unsigned short* obefore=object;
+	int e;
+	e=get_integer();
+	if (end_of_statement() && !e) return 0;
+	source=sbefore;
+	rewind_object(obefore);
+	if (!e) return ERROR_SYNTAX;
+	return e;
+}
+
+int method_statement(void){
+	int e;
+	e=method_statement_main();
+	if (e) return e;
+	return label_statement();
 }
 
 /*
@@ -1342,15 +1356,26 @@ int end_of_statement(void){
 int compile_statement(void){
 	int (*f)(void) = g_multiple_statement;
 	int e;
+	// Initialize
+	unsigned short* bobj=object;
+	unsigned char* bsrc=source;
 	// Check if multiple statement, first
 	if (g_multiple_statement) return f();
-	// Search statements
+	// Check LET statement, first
+	if (instruction_is("LET")) return let_statement();
+	// "LET" may be omitted.
+	e=let_statement();
+	if (!e) return 0;
+	rewind_object(bobj);
+	source=bsrc;
 	// It's not LET statement. Let's continue for possibilities of the other statements.
 	if (instruction_is("BREAK")) return break_statement();
+	if (instruction_is("CALL")) return call_statement();
 	if (instruction_is("CDATA")) return cdata_statement();
 	if (instruction_is("CONTINUE")) return continue_statement();
 	if (instruction_is("DATA")) return data_statement();
 	if (instruction_is("DEBUG")) return debug_statement();
+	if (instruction_is("DELETE")) return delete_statement();
 	if (instruction_is("DIM")) return dim_statement();
 	if (instruction_is("DO")) return do_statement();
 	if (instruction_is("DRAWCOUNT")) return drawcount_statement();
@@ -1364,8 +1389,8 @@ int compile_statement(void){
 	if (instruction_is("GOTO")) return goto_statement();
 	if (instruction_is("IF")) return if_statement();
 	if (instruction_is("LABEL")) return label_statement();
-	if (instruction_is("LET")) return let_statement();
 	if (instruction_is("LOOP")) return loop_statement();
+	if (instruction_is("METHOD")) return method_statement();
 	if (instruction_is("NEXT")) return next_statement();
 	if (instruction_is("POKE")) return poke_statement();
 	if (instruction_is("POKE16")) return poke16_statement();
@@ -1384,6 +1409,8 @@ int compile_statement(void){
 	// Environment statements
 	e=display_statements();
 	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;
-	// Finally, try let statement as "LET" may be omitted.
+	// Try call statement
+	if (!call_statement()) return 0;
+	// Finally, try let statement as error may occur in LET statement.
 	return let_statement();
 }

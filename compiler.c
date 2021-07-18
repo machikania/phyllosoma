@@ -45,12 +45,57 @@ void init_compiler(void){
 	variable_init();
 }
 
-void init_file_compiler(void){
+void begin_file_compiler(void){
 	// Initialize followings every file
 	g_ifdepth=0;
 	g_fordepth=0;
 	g_linenum=0;
 	g_multiple_statement=0;
+}
+
+int end_file_compiler(void){
+	int* data;
+	int i;
+	do {
+		// Check errors
+		if (data=cmpdata_findfirst(CMPDATA_GOTO_NUM_BL)) {
+			printstr("Line number not found");
+			break;
+		}
+		if (data=cmpdata_findfirst(CMPDATA_GOTO_LABEL_BL)) {
+			printstr("Label not found");
+			break;
+		}
+		if (data=cmpdata_findfirst(CMPDATA_BREAK_BL)) {
+			printstr("FOR/WHILE/DO loop not terminated");
+			break;
+		}
+		if (data=cmpdata_findfirst(CMPDATA_CONTINUE)) {
+			printstr("FOR/WHILE/DO loop not terminated");
+			break;
+		}
+		if (data=cmpdata_findfirst(CMPDATA_IF_BL)) {
+			printstr("IF not terminated");
+			break;
+		}
+		if (data=cmpdata_findfirst(CMPDATA_ENDIF_BL)) {
+			printstr("IF not terminated");
+			break;
+		}
+		// No error found. Remove some CMPDATAs
+		cmpdata_delete_all(CMPDATA_VARNAME);
+		cmpdata_delete_all(CMPDATA_LABEL);
+		// All done
+		return 0;
+	} while(0);
+	// Error occured
+	i=line_number_from_address(data[1]);
+	if (0<i) {
+		printstr(" at line ");
+		printint(i);
+	}
+	printchar('\n');
+	return ERROR_OTHERS;
 }
 
 void rewind_object(unsigned short* objpos){

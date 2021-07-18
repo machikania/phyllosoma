@@ -107,6 +107,11 @@ int drawcount_function(void){
 	return call_lib_code(LIB_DRAWCOUNT);
 }
 
+int keys_function(void){
+	g_default_args[1]=63;
+	return argn_function(LIB_KEYS,ARG_INTEGER_OPTIONAL<<ARG1);
+}
+
 int integer_functions(void){
 	if (instruction_is("ABS(")) return abs_function();
 	if (instruction_is("ARGS(")) return args_function();
@@ -117,6 +122,7 @@ int integer_functions(void){
 	if (instruction_is("GOSUB(")) return gosub_function();
 	if (instruction_is("INKEY(")) return inkey_function();
 	if (instruction_is("INT(")) return int_function();
+	if (instruction_is("KEYS(")) return keys_function();
 	if (instruction_is("LEN(")) return len_function();
 	if (instruction_is("NEW(")) return new_function();
 	if (instruction_is("NOT(")) return not_function();

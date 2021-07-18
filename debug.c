@@ -20,21 +20,14 @@ static const char* debug_files[]={
 	"main.bas",
 "USECLASS CLASS1" CR
 "O=NEW(CLASS1)" CR
-"FOR I=0 TO (O(0)>>16)-1" CR
-"  PRINT HEX$(O(I))," CR
-"NEXT" CR
-"PRINT" CR
 "O.TEST2=123" CR
-"FOR I=0 TO (O(0)>>16)-1" CR
-"  PRINT HEX$(O(I))," CR
-"NEXT" CR
-"PRINT" CR
 "PRINT O.TEST2" CR
 "END" CR
 	,"CLASS1.BAS",
 "STATIC TEST" CR
 "FIELD  TEST2" CR
 "FIELD PRIVATE TEST3" CR
+"METHOD TEST4" CR
 "END" CR
 	,0
 };

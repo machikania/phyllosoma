@@ -504,7 +504,7 @@ int lib_var_push(int r0, int r1, int r2){
 			on=get_permanent_block_number();
 			kmbasic_variables[on]=kmbasic_variables[vn];
 			kmbasic_var_size[on]=kmbasic_var_size[vn];
-			stack[i*2+1]|=on<<16;
+			stack[i*2]|=on<<16;
 		}
 		// Clear the variable
 		kmbasic_variables[vn]=0;
@@ -527,6 +527,7 @@ int lib_var_pop(int r0, int r1, int r2){
 			// This is object
 			kmbasic_variables[vn]=kmbasic_variables[on];
 			kmbasic_var_size[vn]=kmbasic_var_size[on];
+			// Delete stored object
 			kmbasic_var_size[on]=0;
 		} else {
 			// This is simple value
@@ -626,6 +627,43 @@ int lib_str2obj(int r0, int r1, int r2){
 	return (int)str2;
 }
 
+#define GPIO_KEYUP 0
+#define GPIO_KEYLEFT 1
+#define GPIO_KEYRIGHT 2
+#define GPIO_KEYDOWN 3
+#define GPIO_KEYSTART 4
+#define GPIO_KEYFIRE 5
+#define KEYUP (1<<GPIO_KEYUP)
+#define KEYLEFT (1<<GPIO_KEYLEFT)
+#define KEYRIGHT (1<<GPIO_KEYRIGHT)
+#define KEYDOWN (1<<GPIO_KEYDOWN)
+#define KEYSTART (1<<GPIO_KEYSTART)
+#define KEYFIRE (1<<GPIO_KEYFIRE)
+#define KEYSMASK (KEYUP|KEYLEFT|KEYRIGHT|KEYDOWN|KEYSTART|KEYFIRE)
+int lib_keys(int r0, int r1, int r2){
+	static char init=0;
+	int res,k;
+	if (!init) {
+		init=1;
+		gpio_init_mask(KEYSMASK);
+		gpio_set_dir_in_masked(KEYSMASK);
+		gpio_pull_up(GPIO_KEYUP);
+		gpio_pull_up(GPIO_KEYLEFT);
+		gpio_pull_up(GPIO_KEYRIGHT);
+		gpio_pull_up(GPIO_KEYDOWN);
+		gpio_pull_up(GPIO_KEYSTART);
+		gpio_pull_up(GPIO_KEYFIRE);
+	}
+	k=~gpio_get_all() & KEYSMASK;
+	res =(k&KEYUP)    ?  1:0;
+	res|=(k&KEYDOWN)  ?  2:0;
+	res|=(k&KEYLEFT)  ?  4:0;
+	res|=(k&KEYRIGHT) ?  8:0;
+	res|=(k&KEYSTART) ? 16:0;
+	res|=(k&KEYFIRE)  ? 32:0;
+	return res&r0;
+}
+
 int debug(int r0, int r1, int r2){
 #ifdef DEBUG_MODE
 	//asm("ldr	r0, [r0, r1]");
@@ -662,7 +700,8 @@ static const void* lib_list1[]={
 	lib_inkey,      // #define LIB_INKEY 23
 	lib_input,      // #define LIB_INPUT 24
 	lib_drawcount,  // #define LIB_DRAWCOUNT 25
-	lib_new,        // #define LIB_NEW 26
+	lib_keys,       // #define LIB_KEYS 26
+	lib_new,        // #define LIB_NEW 27
 };
 
 static const void* lib_list2[]={
@@ -679,6 +718,7 @@ static const void* lib_list2[]={
 	lib_wait,       // #define LIB_WAIT 138
 	lib_drawcount,  // #define LIB_SET_DRAWCOUNT 139
 	lib_str2obj,    // #define LIB_STR_TO_OBJECT 140
+	lib_delete,     // #define LIB_DELETE 141
 };
 
 int statement_library(int r0, int r1, int r2, int r3){

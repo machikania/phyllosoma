@@ -45,6 +45,7 @@
 #define ERROR_NOT_FIELD  _throw_error(-15)
 #define ERROR_NOT_PUBLIC  _throw_error(-16)
 #define ERROR_STATEMENT_NOT_DETECTED (-17)
+#define ERROR_OTHERS (-18)
 
 /*
 	Libraries
@@ -82,7 +83,8 @@
 #define LIB_INKEY 23
 #define LIB_INPUT 24
 #define LIB_DRAWCOUNT 25
-#define LIB_NEW 26
+#define LIB_KEYS 26
+#define LIB_NEW 27
 
 #define LIB_DEBUG 128
 #define LIB_PRINT 129
@@ -97,6 +99,7 @@
 #define LIB_WAIT 138
 #define LIB_SET_DRAWCOUNT 139
 #define LIB_STR_TO_OBJECT 140
+#define LIB_DELETE 141
 
 /*
 	LIB MATH options
@@ -146,23 +149,23 @@
 /*
 	CMPDATA
 */
-#define CMPDATA_TEMP 0
-#define CMPDATA_VARNAME 1
-#define CMPDATA_LINENUM 2
-#define CMPDATA_LABEL 3
-#define CMPDATA_LABELNAME 4
-#define CMPDATA_GOTO_NUM_BL 5
-#define CMPDATA_GOTO_LABEL_BL 6
-#define CMPDATA_CONTINUE 7
-#define CMPDATA_BREAK_BL 8
-#define CMPDATA_IF_BL 9
-#define CMPDATA_ENDIF_BL 10
-#define CMPDATA_CLASSNAME 11
-#define CMPDATA_FIELDNAME 12
-#define CMPDATA_CLASS 13
-#define CMPDATA_METHOD 14
-#define CMPDATA_STRSTACK 15
-#define CMPDATA_ALL 255
+#define CMPDATA_TEMP          0x00
+#define CMPDATA_VARNAME       0x01
+#define CMPDATA_LINENUM       0x02
+#define CMPDATA_LABEL         0x03
+#define CMPDATA_LABELNAME     0x04
+#define CMPDATA_GOTO_NUM_BL   0x05
+#define CMPDATA_GOTO_LABEL_BL 0x06
+#define CMPDATA_CONTINUE      0x07
+#define CMPDATA_BREAK_BL      0x08
+#define CMPDATA_IF_BL         0x09
+#define CMPDATA_ENDIF_BL      0x0A
+#define CMPDATA_CLASSNAME     0x0B
+#define CMPDATA_FIELDNAME     0x0C
+#define CMPDATA_CLASS         0x0D
+#define CMPDATA_METHOD        0x0E
+#define CMPDATA_STRSTACK      0x0F
+#define CMPDATA_ALL           0xFF
 
 /*
 	Class
@@ -264,7 +267,8 @@ int variable_to_r0(int vn);
 
 // compiler.c
 void init_compiler(void);
-void init_file_compiler(void);
+void begin_file_compiler(void);
+int end_file_compiler(void);
 void rewind_object(unsigned short* objpos);
 int check_if_reserved(char* str, int num);
 void update_bl(short* bl,short* destination);
@@ -371,6 +375,9 @@ int register_class_static_field(int var_number);
 int new_function(void);
 int lib_new(int r0, int r1, int r2);
 int let_object(int vn);
+int lib_delete(int r0, int r1, int r2);
+int delete_statement(void);
+int method_statement_main(void);
 
 // file.c
 void init_file_system(void);
