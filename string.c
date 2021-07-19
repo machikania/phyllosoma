@@ -95,6 +95,7 @@ int string_char(void){
 		case '0':
 			return '\0';
 		case 'x':
+		case 'X':
 			return get_byte();
 		default:
 			return (int)c;
