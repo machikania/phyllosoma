@@ -16,15 +16,8 @@ void debug_dummy(void){}
 #define CR "\n"
 static const char* debug_files[]={
 	"main.bas",
-"RESTORE DAT" CR
-"L#=VAL#(READ$())" CR
-"PRINT L#" CR
-"N=READ()" CR
-"PRINT N" CR
+"PRINT \"\\x48\\x65\\x6c\\x6C\\x6f\\x21\"" CR
 "END" CR
-"LABEL DAT" CR
-"DATA \"-0.57735\"" CR
-"DATA 4" CR
 	,0
 };
 

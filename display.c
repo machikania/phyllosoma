@@ -176,6 +176,7 @@ int lib_display(int r0, int r1, int r2){
 			prevx1=x1;
 			prevy1=y1;
 			g_printstr(x1,y1,x2,(y2<0 ? y2:palette[y2]),(unsigned char*)r0);
+			garbage_collection((unsigned char*)r0);
 			break;
 		case DISPLAY_LINE:
 			//void g_gline(int x1,int y1,int x2,int y2,unsigned char c);
