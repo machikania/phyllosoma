@@ -206,14 +206,14 @@ int get_value(int vmode){
 	g_constant_value_flag=1;
 	// Get value
 	e=get_value_sub(priority(OP_VOID),vmode);
-	if (e) return e;
-	// End stack if used
-	e=value_end_stack();
-	if (e) return e;
+	if (!e) {
+		// End stack if used
+		e=value_end_stack();
+	}
 	// Recall stack variables
 	g_sdepth=prev_sdepth;
 	g_maxsdepth=prev_maxsdepth;
 	g_scodeaddr=prev_scodeaddr;
 	// Everything done
-	return 0;
+	return e;
 }
