@@ -151,7 +151,7 @@ int get_simple_integer(void){
 		source++;
 	} else if ('-'==source[0]){
 		source++;
-		i=get_simple_integer();
+		i=get_simple_value(VAR_MODE_INTEGER);
 		if (i) return i;
 		check_object(1);
 		(object++)[0]=0x4240; // negs	r0, r0

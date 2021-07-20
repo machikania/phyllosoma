@@ -16,8 +16,16 @@ void debug_dummy(void){}
 #define CR "\n"
 static const char* debug_files[]={
 	"main.bas",
-"PRINT \"\\X48\\x65\\x6c\\x6C\\x6f\\x21\"" CR
+//"DIM A#(1)" CR
+//"A#(I)=A#(I)+GOSUB#(FUNC,0)" CR
+//"PRINT A#(I)" CR
+//"B#=0+GOSUB#(FUNC)" CR
+//"PRINT B#" CR
+"PRINT HEX$(GOSUB(FUNC,255,3))" CR
 "END" CR
+"LABEL FUNC" CR
+//"RETURN 123.456" CR
+"RETURN -(-ARGS(1)>>ARGS(2))" CR
 	,0
 };
 

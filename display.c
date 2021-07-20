@@ -173,7 +173,7 @@ int lib_display(int r0, int r1, int r2){
 		case DISPLAY_GPRINT:
 			//void g_printstr(int x,int y,unsigned char c,int bc,unsigned char *s);
 			for(i=0;((unsigned char*)r0)[i];i++);
-			prevx1=x1+i;
+			prevx1=x1+i*8;
 			prevy1=y1;
 			g_printstr(x1,y1,x2,(y2<0 ? y2:palette[y2]),(unsigned char*)r0);
 			garbage_collection((unsigned char*)r0);

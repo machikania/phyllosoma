@@ -68,7 +68,7 @@ int get_simple_float(void){
 		source++;
 	} else if ('-'==source[0]){
 		source++;
-		i=get_simple_float();
+		i=get_simple_value(VAR_MODE_FLOAT);
 		if (i) return i;
 		g_constant_float=0-g_constant_float;
 		check_object(2);

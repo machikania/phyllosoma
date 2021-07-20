@@ -287,6 +287,7 @@ int get_dim_value(void);
 int get_int_or_float(void);
 int get_string_int_or_float(void);
 int get_value(int vmode);
+int get_simple_value(int vmode);
 int end_of_value(void);
 
 // operators.c
