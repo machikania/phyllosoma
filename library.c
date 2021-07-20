@@ -340,7 +340,7 @@ int lib_dec(int r0, int r1, int r2){
 	return (int)res;
 }
 
-int lib_float_str(int r0, int r1, int r2){
+int lib_float_str_main(int r0, int r1, int r2){
 	char* res;
 	int i;
 	g_scratch_int[0]=r0;
@@ -349,6 +349,10 @@ int lib_float_str(int r0, int r1, int r2){
 	// Adjust the size of memory
 	kmbasic_var_size[g_last_var_num]=(i+4)/4;
 	return (int)res;
+}
+
+void lib_float_str(){
+	use_lib_stack("lib_float_str_main");
 }
 
 int lib_sprintf(int r0, int r1, int r2){
@@ -650,7 +654,7 @@ int lib_keys(int r0, int r1, int r2){
 
 int debug(int r0, int r1, int r2){
 #ifdef DEBUG_MODE
-	return r2+r1+r0+1;
+	return ((unsigned int)r1)>>r0;
 #else
 	return r0;
 #endif

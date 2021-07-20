@@ -49,7 +49,6 @@ int lib_display(int r0, int r1, int r2){
 	static int prevx1=0,prevy1=0;
 	int* sp=(int*)r1;
 	int i,j,gc;
-	unsigned char* bmp;
 	unsigned int x1,y1,x2,y2;
 	// Set x1,y1,x2,y2 for graphic
 	if (r1&0xfff0000) {
@@ -173,7 +172,8 @@ int lib_display(int r0, int r1, int r2){
 			break;
 		case DISPLAY_GPRINT:
 			//void g_printstr(int x,int y,unsigned char c,int bc,unsigned char *s);
-			prevx1=x1;
+			for(i=0;((unsigned char*)r0)[i];i++);
+			prevx1=x1+i;
 			prevy1=y1;
 			g_printstr(x1,y1,x2,(y2<0 ? y2:palette[y2]),(unsigned char*)r0);
 			garbage_collection((unsigned char*)r0);
@@ -210,6 +210,7 @@ int lib_display(int r0, int r1, int r2){
 		case DISPLAY_USEGRAPHIC:
 			switch(r0&3){
 				case 0:
+					g_clearscreen();
 					set_graphmode(0);
 					break;
 				case 2:
@@ -217,6 +218,7 @@ int lib_display(int r0, int r1, int r2){
 					// TODO: clear graphic display
 				case 1:
 				default:
+					cls();
 					set_graphmode(1);
 					break;
 			}
