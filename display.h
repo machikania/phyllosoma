@@ -29,6 +29,18 @@
 #define DISPLAY_PUTBMP2 22
 #define DISPLAY_USEGRAPHIC 23
 #define DISPLAY_GCOLOR_FUNC 24
+#define DISPLAY_USE_STACK (\
+	(1<<DISPLAY_BGCOLOR) |\
+	(1<<DISPLAY_PALETTE) |\
+	(1<<DISPLAY_PCG) |\
+	(1<<DISPLAY_BOXFILL) |\
+	(1<<DISPLAY_CIRCLE) |\
+	(1<<DISPLAY_CIRCLEFILL) |\
+	(1<<DISPLAY_GPALETTE) |\
+	(1<<DISPLAY_GPRINT) |\
+	(1<<DISPLAY_LINE) |\
+	(1<<DISPLAY_PSET) )
+
 
 void display_init(void);
 int display_statements(void);

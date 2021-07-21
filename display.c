@@ -51,7 +51,7 @@ int lib_display(int r0, int r1, int r2){
 	int i,j,gc;
 	unsigned int x1,y1,x2,y2;
 	// Set x1,y1,x2,y2 for graphic
-	if (r1&0xfff0000) {
+	if (DISPLAY_USE_STACK & (1<<r2)) {
 		// r1 is a pointer to stack
 		x1=sp[0];
 		y1=sp[1];
