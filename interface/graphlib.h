@@ -79,6 +79,8 @@ void g_clearscreen(void);
 void init_graphic(void);
 //グラフィックLCD使用開始
 
+unsigned int g_color(int x,int y);
+
 extern unsigned short palette[];
 //パレット用配列
 

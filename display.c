@@ -225,8 +225,12 @@ int lib_display(int r0, int r1, int r2){
 			break;
 		case DISPLAY_GCOLOR_FUNC:
 			//GCOLOR(x,y)
-			// TODO: here
-			break;
+			// TODO: OPTION RGB565/GPALETTE
+			j=g_color(r1,r0);
+			for(i=0;i<256;i++){
+				if (j==palette[i]) return i;
+			}
+			return 0-j;
 		default:
 			break;
 	}
