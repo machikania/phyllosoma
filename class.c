@@ -118,17 +118,106 @@ int get_class_number(void){
 	return data[0]&0xffff;
 }
 
+int embed_field_info(char* field_name, int len){
+	int i,j,fid,pos;
+	int* field;
+	int* class;
+	unsigned short* branch=object;
+	(object++)[0]=0xe000; // b.n    <skip>
+	field=cmpdata_nsearch_string_first(CMPDATA_FIELDNAME,field_name,len);
+	if (!field) return ERROR_UNKNOWN;
+	while(1){
+		fid=field[0]&0xffff;
+		pos=0;
+		cmpdata_reset();
+		while(class=cmpdata_find(CMPDATA_CLASS)){
+			j=(class[0]>>24)&0xff;
+			for(i=1;i<j;i++){
+				if (class[i]&CLASS_STATIC) continue;
+				if (class[i]&CLASS_FIELD) pos++;
+				else continue;
+				if (!(class[i]&CLASS_PUBLIC)) continue;
+				if ((class[i]&0xffff)==fid) break;
+			}
+			if (i<j) break;
+		}
+		if (!class) return ERROR_UNKNOWN;
+		check_object(2);
+		(object++)[0]=class[0]&0xffff; // Class id
+		(object++)[0]=pos;             // Position in class object
+		// Check the next field
+		cmpdata_findfirst_with_id(CMPDATA_FIELDNAME,fid);
+		field=cmpdata_nsearch_string(CMPDATA_FIELDNAME,field_name,len);
+		if (!field) break;
+	}
+	// End of data
+	check_object(1);
+	(object++)[0]=0;
+	// Update B instruction
+	branch[0]|=((int)(&object[0]-&branch[2]))>>1;
+	return 0;
+}
+
+int embed_method_info(char* field_name, int len){
+	int i,j,fid,pos;
+	int* field;
+	int* class;
+	int* method;
+	unsigned short* branch=object;
+	(object++)[0]=0xe000; // b.n    <skip>
+	field=cmpdata_nsearch_string_first(CMPDATA_FIELDNAME,field_name,len);
+	if (!field) return ERROR_UNKNOWN;
+	while(1){
+		fid=field[0]&0xffff;
+		pos=1;
+		cmpdata_reset();
+		while(class=cmpdata_find(CMPDATA_CLASS)){
+			j=(class[0]>>24)&0xff;
+			for(i=1;i<j;i++){
+				if (class[i]&CLASS_STATIC) continue;
+				if (!(class[i]&CLASS_PUBLIC)) continue;
+				if (!(class[i]&CLASS_METHOD)) continue;
+				if ((class[i]&0xffff)==fid) break;
+			}
+			if (i<j) break;
+		}
+		if (!class) return ERROR_UNKNOWN;
+		method=cmpdata_findfirst_with_id(CMPDATA_METHOD,fid);
+		if (!method) return ERROR_UNKNOWN;
+		check_object(2);
+		(object++)[0]=class[0]&0xffff;                 // Class id
+		update_bl(object,(unsigned short*)method[1]);  // bl instruction
+		object+=2;                                     // bl instruction, continued
+		// Check the next field
+		cmpdata_findfirst_with_id(CMPDATA_FIELDNAME,fid);
+		field=cmpdata_nsearch_string(CMPDATA_FIELDNAME,field_name,len);
+		if (!field) break;
+	}
+	// End of data
+	check_object(1);
+	(object++)[0]=0;
+	// Update B instruction
+	branch[0]|=((int)(&object[0]-&branch[2]))>>1;
+	return 0;
+}
+
 /*
 	Method calling routine
 */
 
-int class_method(int method_address, int static_flag){
+int class_method(int method_address, int mode){
 	// Note that '(' remains at the source position
 	// static_flag is set when static method will be called
+	// R0 contains the pointer to object
 	int e,argnum;
 	unsigned short* opos2;
 	// TODO: Store fields to static variables here
 	// Prepare arguments
+	if (CLASS_STATIC==mode){
+		// No object
+		check_object(1);
+		(object++)[0]=0x2000; // movs	rx, #0
+	}
 	argnum=gosub_arguments();
 	if (argnum<0) return argnum;
 	// Call the method
@@ -145,7 +234,22 @@ int class_method(int method_address, int static_flag){
 	update_bl(opos2,(unsigned short*)method_address);
 	// TODO restore fields here
 	// Post gosub and return
+	g_class_mode=CLASS_PUBLIC | CLASS_METHOD | mode;
 	return post_gosub_statement(argnum);
+}
+
+int dynamic_class_method(char* method_name, int len){
+	// 1. Skip to 9.
+	// 2. Embed method information, embed_method_info()
+	// 3. Remember current assmbly address to jump here later
+	// 4. [r6, #0] contains pointer to class object
+	// 5. R1 is address of 2.
+	// 6. R0 is [r6,#0]
+	// 7. Call library to get pointer to method routine
+	// 8. bx r0
+	// 9. class_method(address of 3., 0)
+	g_class_mode=CLASS_PUBLIC | CLASS_METHOD | CLASS_FLEXIBLE;
+	return 0;
 }
 
 /*
@@ -195,7 +299,7 @@ int static_method_or_property(int cn, char stringorfloat){
 		data=cmpdata_findfirst_with_id(CMPDATA_METHOD,class[i]&0xffff);
 		if (!data) return ERROR_UNKNOWN;
 		// Compile method
-		i=class_method(data[1],1);
+		i=class_method(data[1],CLASS_STATIC);
 		if (i) return i;
 		if (')'!=source[0]) return ERROR_SYNTAX;
 		source++;
@@ -229,6 +333,17 @@ int static_property_var_num(int cn){
 	Calling method/field
 */
 
+int dynamic_field(char* field_name, int len){
+	// Pointer to object is in r0 register
+	// 1. Skip to 3.
+	// 2. Embed field information, embed_field_info()
+	// 4. call library
+	// 5. Now, r0 is pointer to field
+	// 6. r0=[r0,#0]
+	g_class_mode=CLASS_PUBLIC | CLASS_FIELD | CLASS_FLEXIBLE;
+
+}
+
 int method_or_property(char stringorfloat){
 	// '.' has been detected before comming this line
 	// stringorfloat is either 0, '$', or '#' for integer, string, or float
@@ -246,8 +361,34 @@ int method_or_property(char stringorfloat){
 	// Check if multiple field/method names
 	if (cmpdata_nsearch_string(CMPDATA_FIELDNAME,source,num)) {
 		// There are the same filed/method name more than once
-		// TODO: use library in this case
-		return ERROR_SYNTAX;
+		// Use library in this case
+		if (0==stringorfloat && '('==source[num]) {
+			// Integer method
+			source+=num;
+			return dynamic_class_method(source-num,num);
+		} else if (stringorfloat && stringorfloat==source[num] && '('==source[num+1]) {
+			// String or float method
+			source+=num+1;
+			return dynamic_class_method(source-num-1,num);
+		}
+		// This is a field
+		if ('.'==source[num]) {
+			// Object continues
+			source+=num+1;
+			i=dynamic_field(source-num-1,num);
+			if (i) return i;
+			return method_or_property(stringorfloat);
+		}
+		if (stringorfloat) {
+			// String or float field
+			if (stringorfloat!=source[num]) return ERROR_SYNTAX;
+			source+=num+1;
+			return dynamic_field(source-num-1,num);
+		} else {
+			// Integer field
+			source+=num;
+			return dynamic_field(source-num,num);
+		}
 	}
 	// There is only one field/method with this name
 	source+=num;
@@ -434,13 +575,13 @@ int let_object(int vn){
 		e=method_or_property(0);
 		if (e) return e;
 		object=obefore;
-		if (g_class_mode==(CLASS_PUBLIC | CLASS_FIELD)) {
+		if ((CLASS_PUBLIC | CLASS_FIELD)==g_class_mode) {
 			// position in object is determined
 			pos=4*g_scratch_int[0]; // See last lines of method_or_property()
 			if (pos<0 || 255<pos) return ERROR_UNKNOWN;
 			check_object(1);
 			(object++)[0]=0x3000 | pos; // adds	r0, #xx
-		} else {
+		} else {// TODO: support dynamic mode
 			source=sbefore;
 			return ERROR_SYNTAX;
 		}

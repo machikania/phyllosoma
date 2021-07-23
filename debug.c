@@ -18,12 +18,17 @@ void debug_dummy(void){}
 #define CR "\n"
 static const char* debug_files[]={
 	"main.bas",
-"USECLASS CLASS1" CR
-"O=NEW(CLASS1)" CR
-"O.TEST2=123" CR
-"PRINT O.TEST2" CR
-"PRINT O.TEST4(789)" CR
+"B=0+GOSUB(FUNC)" CR
+"PRINT B" CR
 "END" CR
+"LABEL FUNC" CR
+"RETURN 123" CR
+//"USECLASS CLASS1" CR
+//"O=NEW(CLASS1)" CR
+//"O.TEST2=123" CR
+//"PRINT O.TEST2" CR
+//"PRINT O.TEST4(789)" CR
+//"END" CR
 	,"CLASS1.BAS",
 "STATIC TEST" CR
 "FIELD  TEST2" CR

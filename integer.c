@@ -152,7 +152,7 @@ int get_simple_integer(void){
 		source++;
 	} else if ('-'==source[0]){
 		source++;
-		i=get_simple_integer();
+		i=get_simple_value(VAR_MODE_INTEGER);
 		if (i) return i;
 		check_object(1);
 		(object++)[0]=0x4240; // negs	r0, r0
@@ -209,13 +209,17 @@ int get_simple_integer(void){
 			// Check if an object
 			if ('.'==source[0]) {
 				source++;
-				return method_or_property(0);
+				i=method_or_property(0);
+				g_constant_value_flag=0;
+				return i;
 			}
+			g_constant_value_flag=0;
 			return 0;
 		} else {
 			// This must be a function
 			i=integer_functions();
 			if (i) return i;
+			g_constant_value_flag=0;
 			if (')'==(source++)[0]) return 0;
 			source--;
 			return ERROR_SYNTAX;
@@ -229,6 +233,7 @@ int get_simple_integer(void){
 		(object++)[0]=0x2000 | vn; // movs	r0, #xx
 		(object++)[0]=0x0080;      // lsls	r0, r0, #2
 		(object++)[0]=0x1940;      // adds	r0, r0, r5
+		g_constant_value_flag=0;
 		return 0;
 	}
 	return ERROR_SYNTAX;

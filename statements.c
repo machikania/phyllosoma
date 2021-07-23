@@ -363,8 +363,9 @@ int get_label_id(void){
 	if (check_if_reserved(source,num)) return ERROR_RESERVED_WORD;
 	// It must not be variable
 	if (1==num) return ERROR_SYNTAX;
+	// Check if var name or class name
 	if (cmpdata_nsearch_string_first(CMPDATA_VARNAME,source,num)) return ERROR_SYNTAX;
-	// TODO: Check if class name
+	if (cmpdata_nsearch_string_first(CMPDATA_CLASSNAME,source,num)) return ERROR_SYNTAX;
 	// Check if registered
 	data=cmpdata_nsearch_string_first(CMPDATA_LABELNAME,source,num);
 	if (!data) {
@@ -540,6 +541,8 @@ int gosub_statement(void){
 	// Rewind object
 	rewind_object(obefore);
 	// Prepare argument array (R6 as the pointer)
+	check_object(1);      // Copy previous object
+	(object++)[0]=0x6830; // ldr	r0, [r6, #0]
 	i=gosub_arguments();
 	if (i<0) return i;
 	// GOSUB again
@@ -626,7 +629,7 @@ int continue_statement(void){
 	DO/LOOP/WHILE/WEND statements
 */
 
-int do_statement(void){// TODO: debug "DO" statement without WHILE/LOOP
+int do_statement(void){
 	int e;
 	g_fordepth++;
 	unsigned short* obefore=object;

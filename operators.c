@@ -179,7 +179,7 @@ int integer_calculation(int op){
 			return 0;
 		case OP_SHR:
 			check_object(2);
-			(object++)[0]=0x4101; // asrs	r1, r0
+			(object++)[0]=0x40c1; // lsrs	r1, r0
 			(object++)[0]=0x0008; // movs	r0, r1
 			return 0;
 		case OP_ADD:

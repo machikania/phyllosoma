@@ -170,10 +170,11 @@
 /*
 	Class
 */
-#define CLASS_METHOD 0x00010000
-#define CLASS_FIELD  0x00020000
-#define CLASS_PUBLIC 0x00100000
-#define CLASS_STATIC 0x00200000
+#define CLASS_METHOD   0x00010000
+#define CLASS_FIELD    0x00020000
+#define CLASS_PUBLIC   0x00100000
+#define CLASS_STATIC   0x00200000
+#define CLASS_FLEXIBLE 0x10000000
 
 /*
 	Misc
@@ -317,6 +318,7 @@ int get_dim_value(void);
 int get_int_or_float(void);
 int get_string_int_or_float(void);
 int get_value(int vmode);
+int get_simple_value(int vmode);
 int end_of_value(void);
 
 // operators.c

@@ -68,7 +68,7 @@ int get_simple_float(void){
 		source++;
 	} else if ('-'==source[0]){
 		source++;
-		i=get_simple_float();
+		i=get_simple_value(VAR_MODE_FLOAT);
 		if (i) return i;
 		g_constant_float=0-g_constant_float;
 		check_object(2);
@@ -104,7 +104,9 @@ int get_simple_float(void){
 			// Check if an object
 			if ('.'==source[0]) {
 				source++;
-				return method_or_property('#');
+				i=method_or_property('#');
+				g_constant_value_flag=0;
+				return i;
 			}
 			if ('#'!=source[0]) return ERROR_SYNTAX;
 			source++;
@@ -116,6 +118,7 @@ int get_simple_float(void){
 				if (')'!=source[0]) return ERROR_SYNTAX;
 				source++;
 			}
+			g_constant_value_flag=0;
 			return 0;
 		} else if ('P'==source[0] && 'I'==source[1] && '#'==source[2]) {
 			// PI#
@@ -125,6 +128,7 @@ int get_simple_float(void){
 			// This must be a function
 			i=float_functions();
 			if (i) return i;
+			g_constant_value_flag=0;
 			if (')'==(source++)[0]) return 0;
 			source--;
 			return ERROR_SYNTAX;
