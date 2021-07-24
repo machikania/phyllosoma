@@ -16,17 +16,16 @@ int main() {
 	int e,i,s;
 	char* str;
 	// Initializations
+	sleep_ms(500);
 	stdio_init_all();
 	display_init();
 	init_buttons();
+	init_file_system();
 	fileselect_init();
 	// Get filename to compile
 	str=fileselect();
 	// Start
-	cls();
 	printstr("KM-BASIC for ARM\n");
-	// Initialize file system
-	init_file_system();
 	// Compile the code
 	s=time_us_32();
 	init_compiler();

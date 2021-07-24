@@ -14,8 +14,8 @@ void debug_dummy(void){}
 #else // DEBUG_MODE
 
 unsigned char* debug_fileselect(void){
-	// Wait for three seconds
-	sleep_ms(3000);
+	// Wait for total three seconds
+	sleep_ms(2500);
 	// Return file name to compile
 	return "main.bas";
 }
