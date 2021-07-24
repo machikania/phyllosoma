@@ -30,9 +30,12 @@ void g_putbmpmn(int x,int y,unsigned char m,unsigned char n,const unsigned char 
 // カラー番号が0の部分は透明色として扱う
 {
 	int i,j;
-	int skip;
+	int skip,outflag;
 	const unsigned char *p;
 	if(x<=-m || x>X_RES || y<=-n || y>=Y_RES) return; //画面外
+	outflag=0;
+
+#if LCD_ALIGNMENT == VERTICAL
 	if(y<0){ //画面上部に切れる場合
 		i=0;
 		p=bmp-y*m;
@@ -58,36 +61,93 @@ void g_putbmpmn(int x,int y,unsigned char m,unsigned char n,const unsigned char 
 			}
 			if(*p!=0){ //カラー番号が0の場合、透明として処理
 				if(skip){
-					LCD_SetCursor(j,i);
+					if(outflag) checkSPIfinish();
+					LCD_setAddrWindow(j,i,m,n);
 					skip=0;
 				}
-				LCD_WriteData2(palette[*p]);
+				LCD_WriteData2_notfinish(palette[*p]);
+				outflag=1;
 			}
 			else skip=1;
 			p++;
 		}
 	}
+	if(outflag) checkSPIfinish();
+
+#else
+	if(x<0){ //画面左部に切れる場合
+		j=0;
+		p=bmp-x;
+	}
+	else{
+		j=x;
+		p=bmp;
+	}
+	for(;j<x+m;j++){
+		if(j>=X_RES) return; //画面右部に切れる場合
+		if(y<0){ //画面上に切れる場合は残る部分のみ描画
+			i=0;
+			p+=-y*m;
+		}
+		else{
+			i=y;
+		}
+		skip=1;
+		for(;i<y+n;i++){
+			if(i>=Y_RES){ //画面下に切れる場合
+				p+=(y+n-i)*m;
+				break;
+			}
+			if(*p!=0){ //カラー番号が0の場合、透明として処理
+				if(skip){
+					if(outflag) checkSPIfinish();
+					LCD_setAddrWindow(j,i,m,n);
+					skip=0;
+				}
+				LCD_WriteData2_notfinish(palette[*p]);
+				outflag=1;
+			}
+			else skip=1;
+			p+=m;
+		}
+		p-=m*n-1;
+	}
+	if(outflag) checkSPIfinish();
+#endif
 }
-
-
-void LCD_continuous_output(unsigned short x,unsigned short y,unsigned short color,int n);
 
 // 縦m*横nドットのキャラクター消去
 // カラー0で塗りつぶし
 void g_clrbmpmn(int x,int y,unsigned char m,unsigned char n)
 {
-	int i,j,k;
+	int i,j,k,dx,dy;
 	if(x<=-m || x>X_RES || y<=-n || y>=Y_RES) return; //画面外
-	if(y<0) i=0; //画面上部に切れる場合
-	else i=y;
-	if(x<0) j=0; //画面左に切れる場合は残る部分のみ描画
-	else j=x;
-	if(x+m>=X_RES) k=X_RES-j; //画面右に切れる場合
-	else k=x+m-j;
-	for(;i<y+n;i++){
-		if(i>=Y_RES) return; //画面下部に切れる場合
-		LCD_continuous_output(j,i,0,k);
+	if(y<0){ //画面上部に切れる場合
+		i=0;
+		dy=n+y;
 	}
+	else{
+ 		i=y;
+		dy=n;
+	}
+	if(x<0) { //画面左に切れる場合は残る部分のみ描画
+		j=0;
+		dx=m+x;
+	}
+	else {
+		j=x;
+		dx=m;
+	}
+	if(x+m>X_RES) { //画面右に切れる場合
+		dx-=(x+m)-X_RES;
+	}
+	if(y+n>Y_RES) { //画面下に切れる場合
+		dy-=(y+n)-Y_RES;
+	}
+	LCD_setAddrWindow(j,i,dx,dy);
+	dx*=dy;
+	for(i=0;i<dx;i++) LCD_WriteData2_notfinish(0);
+	checkSPIfinish();
 }
 
 void g_gline(int x1,int y1,int x2,int y2,unsigned char c)
@@ -220,32 +280,43 @@ void g_circlefill(int x0,int y0,unsigned int r,unsigned char c)
 		f+=y*4+2;
 	}
 }
-
 void g_putfont(int x,int y,unsigned char c,int bc,unsigned char n)
 //8*8ドットのアルファベットフォント表示
 //座標(x,y)、カラーパレット番号c
 //bc:バックグランドカラー、負数の場合無視
 //n:文字番号
 {
-	int i,j;
+	int i,j,dx,dy;
 	unsigned char d;
-	int skip;
+	int skip,outflag;
 	unsigned short c1;
 	const unsigned char *p;
-	static unsigned char lcddatabuf[16];
-	unsigned char *lcdbufp;
 	if(x<=-8 || x>=X_RES || y<=-8 || y>=Y_RES) return; //画面外
+	c1=palette[c];
+#if LCD_ALIGNMENT == VERTICAL
 	if(y<0){ //画面上部に切れる場合
 		i=0;
 		p=fontp+n*8-y;
+		dy=8+y;
 	}
 	else{
 		i=y;
 		p=fontp+n*8;
+		if(y+8<=Y_RES) dy=8;
+		else dy=Y_RES-y;
 	}
-	c1=palette[c];
+	if(x<0){ //画面左に切れる場合
+		j=0;
+		dx=8+x;
+	}
+	else{
+		j=x;
+		if(x+8<=X_RES) dx=8;
+		else dx=X_RES-x;
+	}
+	if(bc>=0) LCD_setAddrWindow(j,i,dx,dy);
 	for(;i<y+8;i++){
-		if(i>=Y_RES) return; //画面下部に切れる場合
+		if(i>=Y_RES) break; //画面下部に切れる場合
 		d=*p++;
 		if(x<0){ //画面左に切れる場合は残る部分のみ描画
 			j=0;
@@ -256,41 +327,111 @@ void g_putfont(int x,int y,unsigned char c,int bc,unsigned char n)
 		}
 		if(bc<0){
 			skip=1;
+			outflag=0;
 			for(;j<x+8;j++){
 				if(j>=X_RES){ //画面右に切れる場合
 					break;
 				}
 				if(d&0x80){
 					if(skip){
-						LCD_SetCursor(j,i);
+						if(outflag) checkSPIfinish();
+						LCD_setAddrWindow(j,i,8,8);
 						skip=0;
 					}
-					LCD_WriteData2(c1);
+					LCD_WriteData2_notfinish(c1);
+					outflag=1;
 				}
 				else skip=1;
 				d<<=1;
 			}
+			if(outflag) checkSPIfinish();
 		}
 		else{
-			LCD_SetCursor(j,i);
-			lcdbufp=lcddatabuf;
 			for(;j<x+8;j++){
 				if(j>=X_RES){ //画面右に切れる場合
 					break;
 				}
 				if(d&0x80){
-					*lcdbufp++=c1>>8;
-					*lcdbufp++=(unsigned char)c1;
+					LCD_WriteData2_notfinish(c1);
 				}
 				else{
-					*lcdbufp++=bc>>8;
-					*lcdbufp++=(unsigned char)bc;
+					LCD_WriteData2_notfinish(bc);
 				}
 				d<<=1;
 			}
-			if(lcdbufp!=lcddatabuf) LCD_WriteDataN(lcddatabuf,lcdbufp-lcddatabuf);
+			checkSPIfinish();
 		}
 	}
+#elif LCD_ALIGNMENT == HORIZONTAL
+	unsigned char b;
+	if(x<0){ //画面左に切れる場合
+		j=0;
+		b=0x80>>(-x);
+		dx=8+x;
+	}
+	else{
+		j=x;
+		b=0x80;
+		if(x+8<=X_RES) dx=8;
+		else dx=X_RES-x;
+	}
+	if(y<0){
+		i=0;
+		dy=8+y;
+	}
+	else{
+		i=y;
+		if(y+8<=Y_RES) dy=8;
+		else dy=Y_RES-y;
+	}
+	if(bc>=0) LCD_setAddrWindow(j,i,dx,dy);
+	for(;j<x+8;j++){
+		if(j>=X_RES) break; //画面右に切れる場合
+		if(y<0){ //画面上部に切れる場合
+			i=0;
+			p=fontp+n*8-y;
+		}
+		else{
+			i=y;
+			p=fontp+n*8;
+		}
+		if(bc<0){
+			skip=1;
+			outflag=0;
+			for(;i<y+8;i++){
+				if(i>=Y_RES){ //画面下に切れる場合
+					break;
+				}
+				if(*p++ & b){
+					if(skip){
+						if(outflag) checkSPIfinish();
+						LCD_setAddrWindow(j,i,8,8);
+						skip=0;
+					}
+					LCD_WriteData2_notfinish(c1);
+					outflag=1;
+				}
+				else skip=1;
+			}
+			if(outflag) checkSPIfinish();
+		}
+		else{
+			for(;i<y+8;i++){
+				if(i>=Y_RES){ //画面下に切れる場合
+					break;
+				}
+				if(*p++ & b){
+					LCD_WriteData2_notfinish(c1);
+				}
+				else{
+					LCD_WriteData2_notfinish(bc);
+				}
+			}
+		}
+		b>>=1;
+	}
+	if(bc>=0) checkSPIfinish();
+#endif
 }
 
 void g_printstr(int x,int y,unsigned char c,int bc,unsigned char *s){
@@ -358,6 +499,7 @@ void g_clearscreen(void)
 	LCD_Clear(0);
 }
 
+/*
 void textredraw(void){
 // テキスト画面再描画
 // テキストVRAMの内容にしたがって液晶に出力
@@ -380,6 +522,58 @@ void textredraw(void){
 		}
 	}
 }
+*/
+
+void textredraw(void){
+// テキスト画面再描画
+// テキストVRAMの内容にしたがって液晶に出力
+	int i,j,x,y;
+	unsigned short c;
+	unsigned char d,b,*p,*p2;
+
+	LCD_setAddrWindow(0,0,X_RES,Y_RES);
+	p=TVRAM;
+
+#if LCD_ALIGNMENT == VERTICAL
+	for(y=0;y<WIDTH_Y;y++){
+		for(i=0;i<8;i++){
+			for(x=0;x<WIDTH_X1;x++){
+				c=palette[*(p+ATTROFFSET1)];
+				d=*(fontp+(*p++)*8+i);
+				for(j=0;j<8;j++){
+					if(d & 0x80) LCD_WriteData2_notfinish(c);
+					else LCD_WriteData2_notfinish(bgcolor);
+					d<<=1;
+				}
+			}
+			p-=WIDTH_X1;
+		}
+		p+=WIDTH_X1;
+	}
+
+#elif LCD_ALIGNMENT == HORIZONTAL
+	for(x=0;x<WIDTH_X1;x++){
+		b=0x80;
+		for(j=0;j<8;j++){
+			for(y=0;y<WIDTH_Y;y++){
+				p2=fontp+(*p)*8;
+				c=palette[*(p+ATTROFFSET1)];
+				for(i=0;i<8;i++){
+					if(*p2++ & b) LCD_WriteData2_notfinish(c);
+					else LCD_WriteData2_notfinish(bgcolor);
+				}
+				p+=WIDTH_X1;
+			}
+			p-=WIDTH_X1*WIDTH_Y;
+			b>>=1;
+		}
+		p++;
+	}
+
+#endif
+	checkSPIfinish();
+}
+
 void vramscroll(void){
 	unsigned short *p1,*p2;
 
@@ -547,7 +741,7 @@ void init_textgraph(void){
 	graphmode=0;//テキストモード
 	fontp=(unsigned char *)FontData;
 	twidth=WIDTH_X1;//8ドットフォントモード
-	set_bgcolor(0,0,0); //バックグランドカラーは黒
+	bgcolor=0; //バックグランドカラーは黒
 	//カラーパレット初期化
 	for(i=0;i<8;i++){
 		set_palette(i,255*(i&1),255*((i>>1)&1),255*(i>>2));

@@ -37,6 +37,34 @@ static inline void lcd_reset_hi() {
     asm volatile("nop \n nop \n nop");
 }
 
+int __not_in_flash_func(spi_write_blocking_notfinish)(spi_inst_t *spi, const uint8_t *src, size_t len) {
+    invalid_params_if(SPI, 0 > (int)len);
+    // Write to TX FIFO whilst ignoring RX, then clean up afterward. When RX
+    // is full, PL022 inhibits RX pushes, and sets a sticky flag on
+    // push-on-full, but continues shifting. Safe if SSPIMSC_RORIM is not set.
+    for (size_t i = 0; i < len; ++i) {
+        while (!spi_is_writable(spi))
+            tight_loop_contents();
+        spi_get_hw(spi)->dr = (uint32_t)src[i];
+    }
+    return (int)len;
+}
+
+void __not_in_flash_func(checkSPIfinish)(void) {
+	// Drain RX FIFO, then wait for shifting to finish (which may be *after*
+	// TX FIFO drains), then drain RX FIFO again
+	while (spi_is_readable(LCD_SPICH))
+		(void)spi_get_hw(LCD_SPICH)->dr;
+	while (spi_get_hw(LCD_SPICH)->sr & SPI_SSPSR_BSY_BITS)
+		tight_loop_contents();
+	while (spi_is_readable(LCD_SPICH))
+		(void)spi_get_hw(LCD_SPICH)->dr;
+
+	// Don't leave overrun flag set
+	spi_get_hw(LCD_SPICH)->icr = SPI_SSPICR_RORIC_BITS;
+	lcd_cs_hi();
+}
+
 void LCD_WriteComm(unsigned char comm){
 // Write Command
 	lcd_dc_lo();
@@ -72,6 +100,35 @@ void LCD_WriteDataN(unsigned char *b,int n)
 	lcd_cs_lo();
 	spi_write_blocking(LCD_SPICH, b,n);
 	lcd_cs_hi();
+}
+
+void LCD_WriteData_notfinish(unsigned char data)
+{
+// Write Data, without SPI transfer finished check
+// After final data write, you should call checkSPIfinish()
+	lcd_dc_hi();
+	lcd_cs_lo();
+	spi_write_blocking_notfinish(LCD_SPICH, &data , 1);
+}
+
+void LCD_WriteData2_notfinish(unsigned short data)
+{
+// Write Data 2 bytes, without SPI transfer finished check
+// After final data write, you should call checkSPIfinish()
+    unsigned short d;
+	lcd_dc_hi();
+	lcd_cs_lo();
+    d=(data>>8) | (data<<8);
+	spi_write_blocking_notfinish(LCD_SPICH, (unsigned char *)&d, 2);
+}
+
+void LCD_WriteDataN_notfinish(unsigned char *b,int n)
+{
+// Write Data N bytes, without SPI transfer finished check
+// After final data write, you should call checkSPIfinish()
+	lcd_dc_hi();
+	lcd_cs_lo();
+	spi_write_blocking_notfinish(LCD_SPICH, b,n);
 }
 
 void LCD_Read(unsigned char com,unsigned char *b,int n){
@@ -228,9 +285,9 @@ void LCD_continuous_output(unsigned short x,unsigned short y,unsigned short colo
 	lcd_cs_lo();
 	d=(color>>8) | (color<<8);
 	for (i=0; i < n ; i++){
-		spi_write_blocking(LCD_SPICH, (unsigned char *)&d, 2);
+		spi_write_blocking_notfinish(LCD_SPICH, (unsigned char *)&d, 2);
 	}
-	lcd_cs_hi();
+	checkSPIfinish();
 }
 void LCD_Clear(unsigned short color)
 {
@@ -241,9 +298,9 @@ void LCD_Clear(unsigned short color)
 	lcd_cs_lo();
 	d=(color>>8) | (color<<8);
 	for (i=0; i < X_RES*Y_RES ; i++){
-		spi_write_blocking(LCD_SPICH, (unsigned char *)&d, 2);
+		spi_write_blocking_notfinish(LCD_SPICH, (unsigned char *)&d, 2);
 	}
-	lcd_cs_hi();
+	checkSPIfinish();
 }
 
 void drawPixel(unsigned short x, unsigned short y, unsigned short color)

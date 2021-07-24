@@ -16,9 +16,12 @@ void debug_dummy(void){}
 #define CR "\n"
 static const char* debug_files[]={
 	"main.bas",
-"USEGRAPHIC" CR
-"H#=1.0/512.0" CR
-"GCOLOR 2" CR
+"USEVAR BALLX,BALLY,BALLVX,BALLVY,BALLR" CR
+"USEVAR WALLX1,WALLX2,WALLY1,WALLY2" CR
+"USEVAR L1X1,L1Y1,L1X2,L1Y2,L1DX,L1DY,L1D" CR
+"PRINT L1X1" CR
+"L1X1=10*256" CR
+"PRINT L1X1" CR
 "END" CR
 	,0
 };
