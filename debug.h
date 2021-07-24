@@ -27,6 +27,9 @@ TCHAR* debug_f_gets (TCHAR* buff, int len, FIL* fp);
 #define f_close debug_f_close
 #define f_gets debug_f_gets
 
+unsigned char* debug_fileselect(void);
+#define fileselect debug_fileselect
+
 #endif // FF_DEFINED
 #endif // DEBUG_MODE
 

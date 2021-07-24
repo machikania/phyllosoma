@@ -15,6 +15,14 @@
 #error "compiler.h" must be included before "api.h"
 #endif
 
+// fileselect.c
+extern unsigned char path[];
+void init_buttons(void);
+unsigned char *fileselect(void);
+
+// api.c
+void fileselect_init(void);
+
 // Prototypings follow
 void printint(int i);
 void printhex4(unsigned char c);
@@ -45,3 +53,5 @@ void cls(void);
 void _setcursor(unsigned char x,unsigned char y,unsigned char c);
 void setcursor(unsigned char x,unsigned char y,unsigned char c);
 #define setcursor(a,b,c) _setcursor(a,b,c)
+
+

@@ -13,6 +13,13 @@
 void debug_dummy(void){}
 #else // DEBUG_MODE
 
+unsigned char* debug_fileselect(void){
+	// Wait for three seconds
+	sleep_ms(3000);
+	// Return file name to compile
+	return "main.bas";
+}
+
 #define CR "\n"
 static const char* debug_files[]={
 	"main.bas",

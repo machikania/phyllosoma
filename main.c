@@ -18,16 +18,19 @@ int main() {
 	// Initializations
 	stdio_init_all();
 	display_init();
-	// Wait for three seconds
-	sleep_ms(3000);
+	init_buttons();
+	fileselect_init();
+	// Get filename to compile
+	str=fileselect();
 	// Start
+	cls();
 	printstr("KM-BASIC for ARM\n");
 	// Initialize file system
 	init_file_system();
 	// Compile the code
 	s=time_us_32();
 	init_compiler();
-	e=compile_file("main.bas");
+	e=compile_file(str);
 	printint(time_us_32()-s);
 	printstr(" micro seconds spent for compiling\n");
 	// Show dump
