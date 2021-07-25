@@ -143,8 +143,8 @@ unsigned char *fileselect(void){
 		}
 		f_closedir(&dj);
 
-		fr = f_findfirst(&dj, &fno, path, "*.*"); // 全てのファイル
-//		fr = f_findfirst(&dj, &fno, path, "*.BAS"); // BASICソースファイル
+//		fr = f_findfirst(&dj, &fno, path, "*.*"); // 全てのファイル
+		fr = f_findfirst(&dj, &fno, path, "*.BAS"); // BASICソースファイル
 		if (fr) disperror("Findfirst Error.", fr);
 		while (fr == FR_OK && fno.fname[0]){ // Repeat while an item is found
 			strcpy(filenames[filenum], fno.fname);

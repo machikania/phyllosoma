@@ -49,6 +49,7 @@ void dump_variables(void);
 void debug_dummy(void);
 #define dump() debug_dummy()
 #define dump_cmpdata() debug_dummy()
+#define dump_variables() debug_dummy()
 
 #endif // DEBUG_MODE
 
