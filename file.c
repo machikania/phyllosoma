@@ -34,6 +34,7 @@ int compile_file(unsigned char* fname){
 		e=compile_line(g_file_buffer);
 		if (e<0) {
 			f_close(fp);
+			printstr(g_file_buffer);
 			return e;
 		}
 	}
