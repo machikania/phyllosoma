@@ -81,11 +81,14 @@ void disperror(unsigned char *s, FRESULT fr){
 // filenames配列のn番目のファイルから一覧表示
 void dispfiles(int n){
 	int i, j;
-	//    cls();
+	int mx,my;
+
+	mx=WIDTH_X/13;
+	my=WIDTH_Y-1;
 	setcursor(0, 0, 4);
-	printstr("Select file & Push FIRE Button\n");
-	for (i = 0; i < 29 * 3; i++){
-		if (i % 3 == 0) printchar(' ');
+	printstr("Select file & Push FIRE\n");
+	for (i = 0; i < my * mx; i++){
+		if (i % mx == 0) printchar(' ');
 		if (i + n < dirnum){
 			// ディレクトリ
 			setcursorcolor(6);
@@ -105,6 +108,7 @@ void dispfiles(int n){
 				printchar(' ');
 		}
 		else for (j = 0; j < 13; j++) printchar(' '); //画面最後まで空白で埋める
+		if((i+1)%mx==0 && 13*mx+1<WIDTH_X) printchar('\n');
 	}
 }
 
@@ -119,7 +123,11 @@ unsigned char *fileselect(void){
 	int x, y;
 	unsigned char *p, *p2;
 	unsigned short key;
+	int mx,my;
 
+	mx=WIDTH_X/13;
+	my=WIDTH_Y-1;
+	cls();
 	while (1){
 		filenum = 0;
 		dirnum = 0;
@@ -143,8 +151,8 @@ unsigned char *fileselect(void){
 		}
 		f_closedir(&dj);
 
-//		fr = f_findfirst(&dj, &fno, path, "*.*"); // 全てのファイル
-		fr = f_findfirst(&dj, &fno, path, "*.BAS"); // BASICソースファイル
+		fr = f_findfirst(&dj, &fno, path, "*.*"); // 全てのファイル
+//		fr = f_findfirst(&dj, &fno, path, "*.BAS"); // BASICソースファイル
 		if (fr) disperror("Findfirst Error.", fr);
 		while (fr == FR_OK && fno.fname[0]){ // Repeat while an item is found
 			strcpy(filenames[filenum], fno.fname);
@@ -176,27 +184,27 @@ unsigned char *fileselect(void){
 			switch (key){
 			case KEYUP:
 				if (y > 0){
-					n -= 3;
+					n -= mx;
 					y--;
 				}
-				else if (top >= 3){
-					n -= 3;
-					top -= 3;
+				else if (top >= mx){
+					n -= mx;
+					top -= mx;
 					dispfiles(top);
 				}
 				break;
 			case KEYDOWN:
-				if (n - x + 3 < filenum){
-					n += 3;
+				if (n - x + mx < filenum){
+					n += mx;
 					if (n >= filenum){
 						n -= x;
 						x = 0;
 					}
-					if (y < 28){
+					if (y < my-1){
 						y++;
 					}
 					else{
-						top += 3;
+						top += mx;
 						dispfiles(top);
 					}
 				}
@@ -208,10 +216,20 @@ unsigned char *fileselect(void){
 				}
 				break;
 			case KEYRIGHT:
-				if (x < 2 && n + 1 < filenum){
+				if (x < mx-1 && n + 1 < filenum){
 					n++;
 					x++;
 				}
+				break;
+			case KEYSTART:
+				set_lcdalign(!LCD_ALIGNMENT);
+				mx=WIDTH_X/13;
+				my=WIDTH_Y-1;
+				n = 0;
+				top = 0;
+				x = 0;
+				y = 0;
+				dispfiles(top); //ファイル番号topから一覧を画面表示
 				break;
 			}
 		} while (keystatus2 != KEYFIRE);
