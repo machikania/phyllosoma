@@ -29,6 +29,11 @@
 				#define CLASS_PUBLIC 0x00100000
 				#define CLASS_STATIC 0x00200000
 	
+	CMPDATA_CLASS_ADDRESS: Address of class structure
+		data16 : class id
+		data[1]: address of class structure
+		data[2]: address of empty object
+	
 	CMPDATA_METHOD     : class method address and id
 		data16 : method id
 		data[1]: method address to call
@@ -56,6 +61,10 @@
 		5. Check if id of 4 matches to id of 3
 	
 */
+
+#define CLASS_INFO_PUBLIC 0x01
+#define CLASS_INFO_FIELD  0x10
+#define CLASS_INFO_METHOD 0x20
 
 /*
 	Structure of object
@@ -96,6 +105,194 @@ int init_class_compiling(void){
 }
 
 /*
+	Post compiling a class and classes
+
+*/
+
+int post_compilling_class(void){
+	int* data;
+	int* class_structure;
+	int* empty_object;
+	int i,num;
+	// Construct the class structure
+	data=cmpdata_findfirst_with_id(CMPDATA_CLASS,g_class_id);
+	num=(data[0]>>16)&0xff;
+	if (((int)object)&0x02) {
+		// Class structure is 32 bit array though object is 16 bit array
+		check_object(1);
+		object++;
+	}
+	class_structure=(int*)object;
+	check_object(num*2);
+	object+=num*2;
+	class_structure[0]=num-1;
+	for(i=1;i<num;i++) class_structure[i]=data[i];
+	// Note: CMPDATA_CLASS record will be needed in new function
+	// Construct an empty object
+	empty_object=(int*)object;
+	check_object(num*2);
+	object+=num*2;
+	empty_object[0]=(int)class_structure;
+	for(i=1;i<num;i++){
+		if (class_structure[i]&(CLASS_INFO_FIELD<<16)) {
+			// Initialize field value of 0
+			empty_object[i]=0;
+		} else if (class_structure[i]&(CLASS_INFO_METHOD<<16)) {
+			// Initialize method pointer
+			data=cmpdata_findfirst_with_id(CMPDATA_METHOD,class_structure[i]&0xffff);
+			if (!data) return ERROR_UNKNOWN;
+			empty_object[i]=data[1];
+			cmpdata_delete(data); // This CMPDATA_METHOD record won't be needed any more
+		}
+	}
+	// Construct CMPDATA_CLASS_ADDRESS
+	i=cmpdata_insert(CMPDATA_CLASS_ADDRESS,g_class_id,0,3);
+	if (i) return i;
+	data=cmpdata_current_record();
+	data[1]=(int)class_structure;
+	data[2]=(int)empty_object;
+	// All done
+	return 0;
+}
+
+int post_compilling_classes(void){
+	int* data;
+	int i,num;
+	// Construct g_class_id_list array
+	g_class_id_list=object;
+	cmpdata_reset();
+	num=0;
+	for(num=0;data=cmpdata_find(CMPDATA_CLASSNAME);num++){
+		check_object(1);
+		(object++)[0]=data[0]&0xffff;
+	}
+	check_object(1);
+	(object++)[0]=0;
+	if (((int)object)&0x02) {
+		// Following structures are 32 bit arrays though object is 16 bit array
+		check_object(1);
+		object++;
+	}
+	// Construct g_class_list array and g_empty_object_list array
+	check_object(num*4);
+	g_class_list=(int*)object;
+	object+=num*2;
+	g_empty_object_list=(int*)object;
+	object+=num*2;
+	for(i=0;i<num;i++){
+		data=cmpdata_findfirst_with_id(CMPDATA_CLASS_ADDRESS,g_class_id_list[i]);
+		if (!data) return ERROR_UNKNOWN;
+		g_class_list[i]=data[1];
+		g_empty_object_list[i]=data[2];
+	}
+	// All done
+	return 0;
+}
+/*
+	Library functions
+*/
+
+int lib_resolve_field_address(int r0, int r1, int r2){
+	// This function resolves the address of public field or method address
+	// r0: address of object
+	// r1: field id
+	unsigned int* object=(unsigned int*)r0;
+	unsigned short field_id=r1;
+	unsigned int* class_structure=(unsigned int*)object[0];
+	int num=class_structure[0];
+	int i;
+	for(i=1;1<=num;i++){
+		if (field_id==(class_structure[i]&0xffff)) break;
+	}
+	if (num<i) stop_with_error(ERROR_NOT_FIELD);
+	if (!(class_structure[i]&(CLASS_INFO_PUBLIC<<16))) stop_with_error(ERROR_NOT_PUBLIC);
+	return (int)(&object[i]);
+}
+
+int lib_resolve_method_address(int r0, int r1, int r2){
+	r0=lib_resolve_field_address(r0,r1,r2);
+	return ((int*)r0)[0];
+}
+
+int lib_new(int r0, int r1, int r2){
+	unsigned short class_id=r0;
+	int* data;
+	int* object;
+	int i,num;
+	// Get class structure
+	for(i=0;g_class_id_list[i];i++){
+		if (g_class_id_list[i]==class_id) break;
+	}
+	if (!g_class_id_list[i]) stop_with_error(ERROR_NOT_OBJECT);
+	data=(int*)g_class_list[i];
+	num=data[0];
+	// Get empty object
+	data=(int*)g_empty_object_list[i];
+	// Create the object
+	i=get_permanent_block_number();
+	object=calloc_memory(num+1,i);
+	// Update the object
+	for(i=0;i<=num;i++) object[i]=data[i];
+	return (int)object;
+}
+
+void obj2var(int* obj){
+	// Update variables by object fields
+	int i;
+ 	unsigned char var_num;
+	int* class=(int*)obj[0];
+	int num=class[0];
+	for(i=1;i<=num;i++){
+		// Must be field
+		if (class[i]&(CLASS_INFO_FIELD<<16)) {
+			// Get variable number
+			var_num=class[i]>>24;
+			// Update variable
+			kmbasic_variables[var_num]=obj[i];
+		}
+	}
+}
+
+void var2obj(int* obj){
+	// Update object fields by variables
+	int i;
+	unsigned char var_num;
+	int* class=(int*)obj[0];
+	int num=class[0];
+	for(i=1;i<=num;i++){
+		// Must be field
+		if (class[i]&(CLASS_INFO_FIELD<<16)) {
+			// Get variable number
+			var_num=class[i]>>24;
+			// Update object field
+			obj[i]=kmbasic_variables[var_num];
+		}
+	}
+}
+
+int lib_pre_method(int r0, int r1, int r2){
+	int* r6=(int*)r0;
+	int* obj=(int*)r6[0];
+	int* caller=(int*)(((int*)r6[1])[0]);
+	// If method calling in an object method, store variables to object
+	if (caller) var2obj(caller);
+	// Get variables from object
+	if (obj) obj2var(obj);
+	return r0;
+}
+
+int lib_post_method(int r0, int r1, int r2){
+	int* r6=(int*)r0;
+	int* obj=(int*)r6[0];
+	int* caller=(int*)(((int*)r6[1])[0]);
+	// Store variables to object
+	if (obj) var2obj(obj);
+	// If medthod calling in an object method, get variables from object
+	if (caller) obj2var(caller);
+	return r0;
+}
+
+/*
 	General functions follow
 */
 
@@ -118,106 +315,20 @@ int get_class_number(void){
 	return data[0]&0xffff;
 }
 
-int embed_field_info(char* field_name, int len){
-	int i,j,fid,pos;
-	int* field;
-	int* class;
-	unsigned short* branch=object;
-	(object++)[0]=0xe000; // b.n    <skip>
-	field=cmpdata_nsearch_string_first(CMPDATA_FIELDNAME,field_name,len);
-	if (!field) return ERROR_UNKNOWN;
-	while(1){
-		fid=field[0]&0xffff;
-		pos=0;
-		cmpdata_reset();
-		while(class=cmpdata_find(CMPDATA_CLASS)){
-			j=(class[0]>>24)&0xff;
-			for(i=1;i<j;i++){
-				if (class[i]&CLASS_STATIC) continue;
-				if (class[i]&CLASS_FIELD) pos++;
-				else continue;
-				if (!(class[i]&CLASS_PUBLIC)) continue;
-				if ((class[i]&0xffff)==fid) break;
-			}
-			if (i<j) break;
-		}
-		if (!class) return ERROR_UNKNOWN;
-		check_object(2);
-		(object++)[0]=class[0]&0xffff; // Class id
-		(object++)[0]=pos;             // Position in class object
-		// Check the next field
-		cmpdata_findfirst_with_id(CMPDATA_FIELDNAME,fid);
-		field=cmpdata_nsearch_string(CMPDATA_FIELDNAME,field_name,len);
-		if (!field) break;
-	}
-	// End of data
-	check_object(1);
-	(object++)[0]=0;
-	// Update B instruction
-	branch[0]|=((int)(&object[0]-&branch[2]))>>1;
-	return 0;
-}
-
-int embed_method_info(char* field_name, int len){
-	int i,j,fid,pos;
-	int* field;
-	int* class;
-	int* method;
-	unsigned short* branch=object;
-	(object++)[0]=0xe000; // b.n    <skip>
-	field=cmpdata_nsearch_string_first(CMPDATA_FIELDNAME,field_name,len);
-	if (!field) return ERROR_UNKNOWN;
-	while(1){
-		fid=field[0]&0xffff;
-		pos=1;
-		cmpdata_reset();
-		while(class=cmpdata_find(CMPDATA_CLASS)){
-			j=(class[0]>>24)&0xff;
-			for(i=1;i<j;i++){
-				if (class[i]&CLASS_STATIC) continue;
-				if (!(class[i]&CLASS_PUBLIC)) continue;
-				if (!(class[i]&CLASS_METHOD)) continue;
-				if ((class[i]&0xffff)==fid) break;
-			}
-			if (i<j) break;
-		}
-		if (!class) return ERROR_UNKNOWN;
-		method=cmpdata_findfirst_with_id(CMPDATA_METHOD,fid);
-		if (!method) return ERROR_UNKNOWN;
-		check_object(2);
-		(object++)[0]=class[0]&0xffff;                 // Class id
-		update_bl(object,(unsigned short*)method[1]);  // bl instruction
-		object+=2;                                     // bl instruction, continued
-		// Check the next field
-		cmpdata_findfirst_with_id(CMPDATA_FIELDNAME,fid);
-		field=cmpdata_nsearch_string(CMPDATA_FIELDNAME,field_name,len);
-		if (!field) break;
-	}
-	// End of data
-	check_object(1);
-	(object++)[0]=0;
-	// Update B instruction
-	branch[0]|=((int)(&object[0]-&branch[2]))>>1;
-	return 0;
-}
-
 /*
 	Method calling routine
 */
 
-int class_method(int method_address, int mode){
+int static_method(int method_address){
 	// Note that '(' remains at the source position
 	// static_flag is set when static method will be called
 	// R0 contains the pointer to object
 	int e,argnum;
 	unsigned short* opos2;
-	// TODO: Store fields to static variables here
+	// No object
+	check_object(1);
+	(object++)[0]=0x2000; // movs	rx, #0
 	// Prepare arguments
-	if (CLASS_STATIC==mode){
-		// No object
-		check_object(1);
-		(object++)[0]=0x2000; // movs	rx, #0
-	}
 	argnum=gosub_arguments();
 	if (argnum<0) return argnum;
 	// Call the method
@@ -232,24 +343,9 @@ int class_method(int method_address, int mode){
 	(object++)[0]=0xF7FF; // bl <lbl1>
 	(object++)[0]=0xFFFB; // bl (continued)
 	update_bl(opos2,(unsigned short*)method_address);
-	// TODO restore fields here
 	// Post gosub and return
-	g_class_mode=CLASS_PUBLIC | CLASS_METHOD | mode;
+	g_class_mode=CLASS_PUBLIC | CLASS_METHOD | CLASS_STATIC;
 	return post_gosub_statement(argnum);
-}
-
-int dynamic_class_method(char* method_name, int len){
-	// 1. Skip to 9.
-	// 2. Embed method information, embed_method_info()
-	// 3. Remember current assmbly address to jump here later
-	// 4. [r6, #0] contains pointer to class object
-	// 5. R1 is address of 2.
-	// 6. R0 is [r6,#0]
-	// 7. Call library to get pointer to method routine
-	// 8. bx r0
-	// 9. class_method(address of 3., 0)
-	g_class_mode=CLASS_PUBLIC | CLASS_METHOD | CLASS_FLEXIBLE;
-	return 0;
 }
 
 /*
@@ -299,7 +395,7 @@ int static_method_or_property(int cn, char stringorfloat){
 		data=cmpdata_findfirst_with_id(CMPDATA_METHOD,class[i]&0xffff);
 		if (!data) return ERROR_UNKNOWN;
 		// Compile method
-		i=class_method(data[1],CLASS_STATIC);
+		i=static_method(data[1]);
 		if (i) return i;
 		if (')'!=source[0]) return ERROR_SYNTAX;
 		source++;
@@ -333,126 +429,100 @@ int static_property_var_num(int cn){
 	Calling method/field
 */
 
-int dynamic_field(char* field_name, int len){
-	// Pointer to object is in r0 register
-	// 1. Skip to 3.
-	// 2. Embed field information, embed_field_info()
-	// 4. call library
-	// 5. Now, r0 is pointer to field
-	// 6. r0=[r0,#0]
-	g_class_mode=CLASS_PUBLIC | CLASS_FIELD | CLASS_FLEXIBLE;
-
-}
-
-int method_or_property(char stringorfloat){
+int field_id(void){
+	// This function will return field id if valid filed
 	// '.' has been detected before comming this line
-	// stringorfloat is either 0, '$', or '#' for integer, string, or float
-	// Pointer to object is in r0 register
-	int num,len,i,j,fid;
+	int num;
 	int* data;
-	int* class;
 	// Get field name
 	num=length_of_field();
 	if (!num) return ERROR_NOT_OBJECT;
 	// Get field/method name
 	data=cmpdata_nsearch_string_first(CMPDATA_FIELDNAME,source,num);
 	if (!data) return ERROR_NOT_FIELD;
-	fid=data[0]&0xffff;
-	// Check if multiple field/method names
-	if (cmpdata_nsearch_string(CMPDATA_FIELDNAME,source,num)) {
-		// There are the same filed/method name more than once
-		// Use library in this case
-		if (0==stringorfloat && '('==source[num]) {
-			// Integer method
-			source+=num;
-			return dynamic_class_method(source-num,num);
-		} else if (stringorfloat && stringorfloat==source[num] && '('==source[num+1]) {
-			// String or float method
-			source+=num+1;
-			return dynamic_class_method(source-num-1,num);
-		}
-		// This is a field
-		if ('.'==source[num]) {
-			// Object continues
-			source+=num+1;
-			i=dynamic_field(source-num-1,num);
-			if (i) return i;
-			return method_or_property(stringorfloat);
-		}
-		if (stringorfloat) {
-			// String or float field
-			if (stringorfloat!=source[num]) return ERROR_SYNTAX;
-			source+=num+1;
-			return dynamic_field(source-num-1,num);
-		} else {
-			// Integer field
-			source+=num;
-			return dynamic_field(source-num,num);
-		}
-	}
-	// There is only one field/method with this name
+	// Found an field id
 	source+=num;
-	// Find the class
-	cmpdata_reset();
-	while(class=cmpdata_find(CMPDATA_CLASS)){
-		len=(class[0]>>16)&0xff;
-		// Check out class fields/methods
-		for(i=1;i<len;i++){
-			if ((class[i]&0xffff)==fid) break;
-		}
-		if (i<len) break;
-	}
-	if (!class) return ERROR_NOT_FIELD;
-	// Check if public
-	if (!(class[i]&CLASS_PUBLIC)) return ERROR_NOT_PUBLIC;
-	// Check if method
-	if (class[i]&CLASS_METHOD) {
-		// This is public class method.
-		if (stringorfloat) {
-			if (stringorfloat!=source[0]) return ERROR_SYNTAX;
-			source++;
-		}
-		if ('('!=source[0]) return ERROR_SYNTAX;
-		data=cmpdata_findfirst_with_id(CMPDATA_METHOD,class[i]&0xffff);
-		if (!data) return ERROR_UNKNOWN;
-		i=class_method(data[1],0);
-		if (i) return i;
-		if (')'!=source[0]) return ERROR_SYNTAX;
-		source++;
-		g_class_mode=CLASS_PUBLIC | CLASS_METHOD;
-		return 0;
-	}
-	// Check if not static field
-	if (class[i]&CLASS_STATIC) return ERROR_SYNTAX;
-	if (!(class[i]&CLASS_FIELD)) return ERROR_NOT_FIELD;
-	// This is a public field. Count the position of field in object
-	num=1;
-	for(j=1;j<i;j++){
-		if (class[j]&CLASS_STATIC) continue;
-		if (class[j]&CLASS_FIELD) num++;
-	}
-	if (num<32) {
-		check_object(1);
-		(object++)[0]=0x6800 | (num<<6); // ldr	r0, [r0, #xx]
-	} else {
-		i=set_value_in_register(1,num<<2);
-		if (i) return i;
-		check_object(1);
-		(object++)[0]=0x5840;            // ldr	r0, [r0, r1]
-	}
-	g_class_mode=CLASS_PUBLIC | CLASS_FIELD;
-	g_scratch_int[0]=num; // Store number of position in object to scratch int
-	// Check if object continues
+	return data[0]&0xffff;
+}
+
+int get_pointer_to_field(void){
+	// After calling this function, R0 will be the pointer to field
+	// R0 must be pointer to object before calling this function
+	// '.' has been detected before comming this line
+	int e,fid;
+	// Get the field id
+	fid=field_id();
+	if (fid<0) return fid; // ERROR
+	// R1 will be field id
+	e=set_value_in_register(1,fid);
+	if (e) return e;
+	// Now, R0 is the pointer to object, R1 is field id. Let's call the library
+	return call_lib_code(LIB_OBJ_FIELD);
+}
+
+int call_method_r0(void){
+	int argnum;
+	// Prepare to call the sub routine as method
+	argnum=gosub_arguments();
+	if (argnum<0) return argnum;
+	// Call the method
+	check_object(6);
+	(object++)[0]=0xe002; // b.n    <lbl2>
+	                      // lbl1:
+	(object++)[0]=0xb500; // push	{lr}
+	(object++)[0]=0x4780; // blx	r0
+	(object++)[0]=0x46c0; // nop
+	                      // lbl2:
+	(object++)[0]=0xF7FF; // bl <lbl1>
+	(object++)[0]=0xFFFB; // bl (continued)
+	// Post gosub and return
+	return post_gosub_statement(argnum);
+}
+
+int method_or_property(char stringorfloat){
+	// '.' has been detected before comming this line
+	// stringorfloat is either 0, '$', or '#' for integer, string, or float
+	// Pointer to object is in r0 register
+	int e,argnum,fid;
+	// Get field/method id
+	fid=field_id();
+	if (fid<0) return fid; // ERROR
+	// Check if "." exists
 	if ('.'==source[0]) {
+		// "." found. The field must be an object
 		source++;
 		return method_or_property(stringorfloat);
 	}
-	// Field expression ended here
+	// Check if "$", "#" etc
 	if (stringorfloat) {
 		if (stringorfloat!=source[0]) return ERROR_SYNTAX;
 		source++;
 	}
-	return 0;
+	skip_blank();
+	// Check which method or field
+	if ('('==source[0]) { // This is a method
+		// R1 will be field id
+		e=set_value_in_register(1,fid);
+		if (e) return e;
+		// Now, R0 is the pointer to object, R1 is field id. Let's call the library
+		e=call_lib_code(LIB_OBJ_METHOD);
+		if (e) return e;
+		// Now, R0 is the address of method. Call it
+		return call_method_r0();
+	} else { // This is a field
+		// R1 will be field id
+		e=set_value_in_register(1,fid);
+		if (e) return e;
+		// Now, R0 is the pointer to object, R1 is field id. Let's call the library
+		e=call_lib_code(LIB_OBJ_FIELD);
+		if (e) return e;
+		// Now, R0 is the pointer to field
+		// Let's read from the address
+		check_object(1);
+		(object++)[0]=0x6800; //      	ldr	r0, [r0, #0]
+		// Now R0 is the field value
+		return 0;
+	}
 }
 
 /*
@@ -518,7 +588,8 @@ int register_class_static_field(int var_number){
 */
 
 int new_function(void){
-	int cn,e;
+	int cn,e,i,fid,num;
+	int* data;
 	// Get class number
 	cn=get_class_number();
 	if (cn<0) return cn;
@@ -530,61 +601,49 @@ int new_function(void){
 	if (e) return e;
 	// Prepare arguments for constructor
 	skip_blank();
+	// Call the constructor (INIT method) if exists
+	data=cmpdata_search_string(CMPDATA_FIELDNAME,"INIT");
+	if (!data) return 0; // No INIT method exists
+	fid=data[0]&0xffff; // Field/method id
+	// Gel class information
+	data=cmpdata_findfirst_with_id(CMPDATA_CLASS,cn);
+	if (!data) return ERROR_UNKNOWN;
+	for(i=1;i<num;i++){
+		if ((CLASS_METHOD|CLASS_PUBLIC|fid)==data[i]) break; // INIT method found
+	}
+	if (num<=i) return 0; // INIT method not found
+	// push r0
+	check_object(1);
+	(object++)[0]=0xb401; // push {r0}
 	if (','==source[0]) {
+		// There is/are argument(s)
 		source++;
-		// TODO: prepare arguments
-		return ERROR_SYNTAX;
 	}
-	// TODO call constructor here
+	// R1 will be field id
+	e=set_value_in_register(1,fid);
+	if (e) return e;
+	// Now, R0 is the pointer to object, R1 is field id (INIT). Let's call the library
+	e=call_lib_code(LIB_OBJ_METHOD);
+	if (e) return e;
+	// Now, R0 is the address of INIT method. Call it
+	e=call_method_r0();
+	if (e) return e;
+	// Get the pointer to object back to r0
+	check_object(1);
+	(object++)[0]=0xbc01; // pop {r0}
 	return 0;
-}
-
-int lib_new(int r0, int r1, int r2){
-	int num,i;
-	int* data;
-	// Get class structure
-	data=cmpdata_findfirst_with_id(CMPDATA_CLASS,r0);
-	if (!data) stop_with_error(ERROR_NOT_OBJECT);
-	// Count the number of fields
-	num=1;
-	for(i=1;i<((data[0]>>16)&0xff);i++){
-		// It must not be static
-		if (data[i]&CLASS_STATIC) continue;
-		// It must be field
-		if (data[i]&CLASS_FIELD) num++;
-	}
-	// Create the object
-	i=get_permanent_block_number();
-	data=calloc_memory(num,i);
-	data[0]=num<<16|r0;
-	return (int)data;
 }
 
 int let_object(int vn){
 	// '.' has been detected before reaching here
-	int e,pos;
-	char* sbefore;
-	unsigned short* obefore;
+	int e;
 	// R0 will be pointer to object;
 	e=variable_to_r0(vn);
 	if (e) return e;
 	while(1){
-		sbefore=source;
-		obefore=object;
-		// Now, R0 is the pointer to object. Let's check object field
-		e=method_or_property(0);
+		// Now, R0 is the pointer to object. Let's get pointer to object field
+		e=get_pointer_to_field();
 		if (e) return e;
-		object=obefore;
-		if ((CLASS_PUBLIC | CLASS_FIELD)==g_class_mode) {
-			// position in object is determined
-			pos=4*g_scratch_int[0]; // See last lines of method_or_property()
-			if (pos<0 || 255<pos) return ERROR_UNKNOWN;
-			check_object(1);
-			(object++)[0]=0x3000 | pos; // adds	r0, #xx
-		} else {// TODO: support dynamic mode
-			source=sbefore;
-			return ERROR_SYNTAX;
-		}
 		// Now, R0 is the pointer to object field
 		check_object(1);
 		(object++)[0]=0xb401;       // push	{r0}
@@ -652,6 +711,16 @@ int delete_statement(void){
 
 int method_statement_main(void){
 	int e,num,id;
+	// Pre and post method functions
+	check_object(8);
+	call_lib_code(LIB_PRE_METHOD);  // 2 words
+	(object++)[0]=0xf000;           // bl <lbl1>
+	(object++)[0]=0xf803;           // bl (continued)
+	call_lib_code(LIB_POST_METHOD); // 2 words
+	(object++)[0]=0xbd00;           // pop {pc}
+	                                // lbl1:
+	(object++)[0]=0xb500;           // push {lr}
+	// Update CMPDATAs below
 	num=length_of_field();
 	if (!num) return ERROR_SYNTAX;
 	id=cmpdata_get_id();

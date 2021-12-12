@@ -79,13 +79,6 @@ int get_var_number(void){
 	return (source++)[0]-'A';
 }
 
-int var_num_to_r1(int vn){
-	if (vn<256) {
-		check_object(1);
-		(object++)[0]=0x2100 | vn;      // movs	r1, #xx
-		return 0;
-	} else return ERROR_UNKNOWN;
-}
 int r0_to_variable(int vn){
 	int e;
 	if (vn<32) {
@@ -96,7 +89,7 @@ int r0_to_variable(int vn){
 		(object++)[0]=0x8013 | (vn<<6); // strh	r3, [r2, #xx]
 		return 0;
 	} else if (vn<256) {
-		e=var_num_to_r1(vn);
+		e=set_value_in_register(1,vn*4);
 		if (e) return e;
 		check_object(6);
 		(object++)[0]=0x0089;           // lsls	r1, r1, #2
@@ -115,7 +108,7 @@ int variable_to_r0(int vn){
 		(object++)[0]=0x6828 | (vn<<6); // ldr	r0, [r5, #xx]
 		return 0;
 	} else if (vn<256) {
-		e=var_num_to_r1(vn);
+		e=set_value_in_register(1,vn*4);
 		if (e) return e;
 		check_object(2);
 		(object++)[0]=0x0089;           // lsls	r1, r1, #2

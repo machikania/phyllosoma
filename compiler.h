@@ -85,6 +85,10 @@
 #define LIB_DRAWCOUNT 25
 #define LIB_KEYS 26
 #define LIB_NEW 27
+#define LIB_OBJ_FIELD 28
+#define LIB_OBJ_METHOD 29
+#define LIB_PRE_METHOD 30
+#define LIB_POST_METHOD 31
 
 #define LIB_DEBUG 128
 #define LIB_PRINT 129
@@ -165,6 +169,7 @@
 #define CMPDATA_CLASS         0x0D
 #define CMPDATA_METHOD        0x0E
 #define CMPDATA_STRSTACK      0x0F
+#define CMPDATA_CLASS_ADDRESS 0x10
 #define CMPDATA_ALL           0xFF
 
 /*
@@ -253,6 +258,9 @@ extern unsigned short g_read_mode;
 extern char* g_class_file;
 extern unsigned short g_class_id;
 extern int g_class_mode;
+extern unsigned short* g_class_id_list;
+extern int* g_class_list;
+extern int* g_empty_object_list;
 
 /*
 	Prototypes
@@ -262,12 +270,12 @@ extern int g_class_mode;
 void variable_init(void);
 short get_new_varnum(void);
 int get_var_number(void);
-int var_num_to_r1(int vn);
 int r0_to_variable(int vn);
 int variable_to_r0(int vn);
 
 // compiler.c
 void init_compiler(void);
+int post_compile(void);
 void begin_file_compiler(void);
 int end_file_compiler(void);
 void rewind_object(unsigned short* objpos);
@@ -369,6 +377,8 @@ int get_permanent_block_number(void);
 
 // class.c
 int init_class_compiling(void);
+int post_compilling_class(void);
+int post_compilling_classes(void);
 int length_of_field(void);
 int get_class_number(void);
 int static_method_or_property(int cn, char stringorfloat);
@@ -382,6 +392,10 @@ int let_object(int vn);
 int lib_delete(int r0, int r1, int r2);
 int delete_statement(void);
 int method_statement_main(void);
+int lib_resolve_field_address(int r0, int r1, int r2);
+int lib_resolve_method_address(int r0, int r1, int r2);
+int lib_pre_method(int r0, int r1, int r2);
+int lib_post_method(int r0, int r1, int r2);
 
 // file.c
 void init_file_system(void);

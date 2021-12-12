@@ -56,6 +56,8 @@ int compile_file(unsigned char* fname){
 			classfile=g_class_file;
 			e=compile_file(classfile);
 			if (e) return e;
+			e=post_compilling_class();
+			if (e) return e;
 			// BL jump destination is here
 			update_bl(bl,object);
 			// Delete the string stack stored for file name
@@ -73,6 +75,7 @@ int compile_file(unsigned char* fname){
 		}
 		if (e<0) {
 			f_close(fp);
+			printstr(g_file_buffer);
 			return e;
 		}
 	}

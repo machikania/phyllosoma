@@ -80,6 +80,9 @@ unsigned short g_read_mode;
 char* g_class_file;
 unsigned short g_class_id;
 int g_class_mode;
+unsigned short* g_class_id_list;
+int* g_class_list;
+int* g_empty_object_list;
 
 // Reserved words
 

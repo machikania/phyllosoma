@@ -1,8 +1,8 @@
-# kmbasic4arm
-KM-BASIC for ARM
+# phyllosoma
+MachiKania Phyllosoma
 
-## KM-BASIC for ARM
-KM-BASIC for ARM is a BASIC compiler for ARMv6-M, especially for Raspberry Pi Pico.
+## MachiKania Phyllosoma
+MachiKania Phyllosoma is a BASIC compiler for ARMv6-M, especially for Raspberry Pi Pico.
 
 ## how to compile
 cmake and make.

@@ -11,7 +11,7 @@ set(CMAKE_CXX_STANDARD 17)
 pico_sdk_init()
 
 if (TARGET tinyusb_device)
-	add_executable(kmbasic
+	add_executable(phyllosoma
 			main.c
 			api.c
 			library.c
@@ -38,17 +38,18 @@ if (TARGET tinyusb_device)
 			interface/ili9341_spi.c
 			interface/ff.c
 			interface/pico-sdmm.c
+			interface/fileselect.c
 		)
 
 	# Pull in our pico_stdlib which aggregates commonly used features
-	target_link_libraries(kmbasic pico_stdlib hardware_spi)
+	target_link_libraries(phyllosoma pico_stdlib hardware_spi)
 
 	# enable usb output, disable uart output
-	pico_enable_stdio_usb(kmbasic 1)
-	pico_enable_stdio_uart(kmbasic 0)
+	pico_enable_stdio_usb(phyllosoma 1)
+	pico_enable_stdio_uart(phyllosoma 0)
 
 	# create map/bin/hex/uf2 file etc.
-	pico_add_extra_outputs(kmbasic)
+	pico_add_extra_outputs(phyllosoma)
 
 elseif(PICO_ON_DEVICE)
 	message(WARNING "not building kmbasic because TinyUSB submodule is not initialized in the SDK")

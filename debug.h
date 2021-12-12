@@ -27,6 +27,9 @@ TCHAR* debug_f_gets (TCHAR* buff, int len, FIL* fp);
 #define f_close debug_f_close
 #define f_gets debug_f_gets
 
+unsigned char* debug_fileselect(void);
+#define fileselect debug_fileselect
+
 #endif // FF_DEFINED
 #endif // DEBUG_MODE
 
@@ -46,6 +49,7 @@ void dump_variables(void);
 void debug_dummy(void);
 #define dump() debug_dummy()
 #define dump_cmpdata() debug_dummy()
+#define dump_variables() debug_dummy()
 
 #endif // DEBUG_MODE
 

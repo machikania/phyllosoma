@@ -1122,7 +1122,7 @@ int let_string(int vn){
 		case '=': // simple string
 			e=get_string();
 			if (e) return e;
-			e=var_num_to_r1(vn);
+			e=set_value_in_register(1,vn);
 			if (e) return e;
 			return call_lib_code(LIB_LET_STR);
 		case '(': // string array (not supported)
@@ -1347,7 +1347,7 @@ int dim_statement(void){
 		if (')'!=source[0]) return ERROR_SYNTAX;
 		source++;
 		// R1 is var number
-		e=var_num_to_r1(vn);
+		e=set_value_in_register(1,vn);
 		if (e) return e;
 		// R0 is number of integer values
 		set_value_in_register(0,i);

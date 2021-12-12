@@ -21,6 +21,11 @@ extern unsigned char *cursor;
 
 static int g_cursor=0;
 
+void fileselect_init(void){
+	path[0] = '/';
+	path[1] = 0;
+}
+
 void _putchar(unsigned char c){
 	switch(c){
 		case 0x08: // BS

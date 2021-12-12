@@ -45,6 +45,13 @@ void init_compiler(void){
 	variable_init();
 }
 
+int post_compile(void){
+	int e;
+	e=post_compilling_classes();
+	if (e) return e;
+	return 0;
+}
+
 void begin_file_compiler(void){
 	// Initialize followings every file
 	g_ifdepth=0;

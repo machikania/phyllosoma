@@ -16,18 +16,21 @@ int main() {
 	int e,i,s;
 	char* str;
 	// Initializations
+	sleep_ms(500);
 	stdio_init_all();
 	display_init();
-	// Wait for three seconds
-	sleep_ms(3000);
+	init_buttons();
+	init_file_system();
+	fileselect_init();
+	// Get filename to compile
+	str=fileselect();
 	// Start
 	printstr("KM-BASIC for ARM\n");
-	// Initialize file system
-	init_file_system();
 	// Compile the code
 	s=time_us_32();
 	init_compiler();
-	e=compile_file("main.bas");
+	e=compile_file(str);
+	if (!e) e=post_compile();
 	printint(time_us_32()-s);
 	printstr(" micro seconds spent for compiling\n");
 	// Show dump

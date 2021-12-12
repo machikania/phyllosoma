@@ -15,6 +15,13 @@ void debug_dummy(void){}
 
 #warning DEBOG_MODE is active
 
+unsigned char* debug_fileselect(void){
+	// Wait for total three seconds
+	sleep_ms(2500);
+	// Return file name to compile
+	return "main.bas";
+}
+
 #define CR "\n"
 static const char* debug_files[]={
 	"main.bas",
