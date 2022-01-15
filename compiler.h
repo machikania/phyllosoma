@@ -179,7 +179,6 @@
 #define CLASS_FIELD    0x00020000
 #define CLASS_PUBLIC   0x00100000
 #define CLASS_STATIC   0x00200000
-#define CLASS_FLEXIBLE 0x10000000
 
 /*
 	Misc
@@ -377,7 +376,7 @@ int get_permanent_block_number(void);
 
 // class.c
 int init_class_compiling(void);
-int post_compilling_class(void);
+int post_compilling_a_class(void);
 int post_compilling_classes(void);
 int length_of_field(void);
 int get_class_number(void);

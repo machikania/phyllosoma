@@ -56,7 +56,7 @@ int compile_file(unsigned char* fname){
 			classfile=g_class_file;
 			e=compile_file(classfile);
 			if (e) return e;
-			e=post_compilling_class();
+			e=post_compilling_a_class();
 			if (e) return e;
 			// BL jump destination is here
 			update_bl(bl,object);

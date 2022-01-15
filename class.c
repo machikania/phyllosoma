@@ -10,11 +10,13 @@
 /*
 	CMPDATA_CLASSNAME  : class name and id
 		data16   : class id
-		data[1]- : class name string
+		data[1]  : hash
+		data[2]- : class name string
 	
 	CMPDATA_FIELDNAME  : class field and method names and id
 		data16   : variable number/method id
-		data[1]- : field name string
+		data[1]  : hash
+		data[2]- : field name string
 	
 	CMPDATA_CLASS      : class structure and id
 		data16 :   class id
@@ -62,10 +64,6 @@
 	
 */
 
-#define CLASS_INFO_PUBLIC 0x01
-#define CLASS_INFO_FIELD  0x10
-#define CLASS_INFO_METHOD 0x20
-
 /*
 	Structure of object
 		data[0]:   upper half: length of object (n), lower half: class id
@@ -74,6 +72,8 @@
 		...
 		data[n-1]: private/public field value
 */
+
+// TODO: Use only a CMPDATA_FIELDNAME field for a field name
 
 /*
 	Inilialize compiler
@@ -109,11 +109,11 @@ int init_class_compiling(void){
 
 */
 
-int post_compilling_class(void){
+int post_compilling_a_class(void){
 	int* data;
 	int* class_structure;
 	int* empty_object;
-	int i,num;
+	int i,j,num;
 	// Construct the class structure
 	data=cmpdata_findfirst_with_id(CMPDATA_CLASS,g_class_id);
 	num=(data[0]>>16)&0xff;
@@ -124,9 +124,15 @@ int post_compilling_class(void){
 	}
 	class_structure=(int*)object;
 	check_object(num*2);
+	for(i=j=1;i<num;i++) {
+		// Check if not static field
+		if (data[i]&CLASS_STATIC) continue;
+		// This is not the static field, so it must be either normal field or method
+		class_structure[j++]=data[i];
+	}
+	num=j;
 	object+=num*2;
 	class_structure[0]=num-1;
-	for(i=1;i<num;i++) class_structure[i]=data[i];
 	// Note: CMPDATA_CLASS record will be needed in new function
 	// Construct an empty object
 	empty_object=(int*)object;
@@ -134,10 +140,10 @@ int post_compilling_class(void){
 	object+=num*2;
 	empty_object[0]=(int)class_structure;
 	for(i=1;i<num;i++){
-		if (class_structure[i]&(CLASS_INFO_FIELD<<16)) {
+		if (class_structure[i]&CLASS_FIELD) {
 			// Initialize field value of 0
 			empty_object[i]=0;
-		} else if (class_structure[i]&(CLASS_INFO_METHOD<<16)) {
+		} else if (class_structure[i]&CLASS_METHOD) {
 			// Initialize method pointer
 			data=cmpdata_findfirst_with_id(CMPDATA_METHOD,class_structure[i]&0xffff);
 			if (!data) return ERROR_UNKNOWN;
@@ -205,7 +211,7 @@ int lib_resolve_field_address(int r0, int r1, int r2){
 		if (field_id==(class_structure[i]&0xffff)) break;
 	}
 	if (num<i) stop_with_error(ERROR_NOT_FIELD);
-	if (!(class_structure[i]&(CLASS_INFO_PUBLIC<<16))) stop_with_error(ERROR_NOT_PUBLIC);
+	if (!(class_structure[i]&CLASS_PUBLIC)) stop_with_error(ERROR_NOT_PUBLIC);
 	return (int)(&object[i]);
 }
 
@@ -244,7 +250,7 @@ void obj2var(int* obj){
 	int num=class[0];
 	for(i=1;i<=num;i++){
 		// Must be field
-		if (class[i]&(CLASS_INFO_FIELD<<16)) {
+		if (class[i]&CLASS_FIELD) {
 			// Get variable number
 			var_num=class[i]>>24;
 			// Update variable
@@ -261,7 +267,7 @@ void var2obj(int* obj){
 	int num=class[0];
 	for(i=1;i<=num;i++){
 		// Must be field
-		if (class[i]&(CLASS_INFO_FIELD<<16)) {
+		if (class[i]&CLASS_FIELD) {
 			// Get variable number
 			var_num=class[i]>>24;
 			// Update object field
@@ -550,15 +556,21 @@ int update_cmpdata_class(int data){
 
 int create_fieldname(int var_number){
 	int* data;
+	int* data2;
 	unsigned short fid;
-	int e;
 	// Get the var name
 	data=cmpdata_findfirst_with_id(CMPDATA_VARNAME,var_number);
 	if (!data) return ERROR_UNKNOWN;
+	// If field name already exists, return (only a CMPDATA_FIELDNAME exists for a field name)
+	data2=cmpdata_search_string_first(CMPDATA_FIELDNAME,(unsigned char*)&data[2]);
+	if (data2){
+		// g_scratch_int[0] is used as registered field id
+		g_scratch_int[0]=data2[0]&0xffff;
+		return 0;
+	}
 	// Add CMPDATA_FIELDNAME (copy from CMPDATA_VARNAME)
-	e=cmpdata_insert(CMPDATA_FIELDNAME,var_number,(int*)&data[1],((data[0]>>16)&0xff)-1);
-	if (e) return e;
-	return 0;
+	g_scratch_int[0]=var_number;
+	return cmpdata_insert(CMPDATA_FIELDNAME,var_number,(int*)&data[1],((data[0]>>16)&0xff)-1);
 }
 
 int register_class_field(int var_number, int fieldinfo){
@@ -571,7 +583,8 @@ int register_class_field(int var_number, int fieldinfo){
 	e=create_fieldname(var_number);
 	if (e) return e;
 	// Update CMPDATA_CLASS
-	return update_cmpdata_class(fieldinfo | var_number);
+	// g_scratch_int[0] is used as registered field id
+	return update_cmpdata_class(fieldinfo | g_scratch_int[0]);
 }
 
 int register_class_static_field(int var_number){
@@ -580,7 +593,8 @@ int register_class_static_field(int var_number){
 	e=create_fieldname(var_number);
 	if (e) return e;
 	// Update CMPDATA_CLASS
-	return update_cmpdata_class(CLASS_PUBLIC | CLASS_STATIC | CLASS_FIELD | var_number);
+	// g_scratch_int[0] is used as registered field id
+	return update_cmpdata_class(CLASS_PUBLIC | CLASS_STATIC | CLASS_FIELD | g_scratch_int[0]);
 }
 
 /*

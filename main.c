@@ -35,7 +35,6 @@ int main() {
 	printstr(" micro seconds spent for compiling\n");
 	// Show dump
 	dump();
-	//dump_cmpdata();
 	// Run the code if error didn't occur
 	if (!e) {
 		pre_run();
@@ -45,7 +44,7 @@ int main() {
 	// Show dump
 	//dump_variables();
 	// Infinite loop
-	for(i=0;true;i++){
+	for(i=0;i<16;i++){
 		sleep_ms(1000);
 		//run_code();
 		printchar("-/|\\"[i&0x03]); printchar(0x08);
