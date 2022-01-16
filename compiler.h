@@ -170,6 +170,7 @@
 #define CMPDATA_METHOD        0x0E
 #define CMPDATA_STRSTACK      0x0F
 #define CMPDATA_CLASS_ADDRESS 0x10
+#define CMPDATA_STATIC        0x11
 #define CMPDATA_ALL           0xFF
 
 /*

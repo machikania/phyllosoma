@@ -40,6 +40,10 @@
 		data16 : method id
 		data[1]: method address to call
 	
+	CMPDATA_STATIC     : class static field var number
+		data16 : class id
+		data[1]: upper half: field id, lower half: var number
+	
 	To get a class structure from class name,
 		1. CMPDATA_CLASSNAME to get class id
 		2. CMPDATA_CLASS
@@ -358,6 +362,19 @@ int static_method(int method_address){
 	Static method/field
 */
 
+int resolve_var_number_from_id(unsigned short cn, unsigned short id){
+	int* data;
+	cmpdata_reset();
+	while(data=cmpdata_find(CMPDATA_STATIC)){
+		if ((data[0]&0xffff)!=cn) continue;
+		if (((data[1]>>16)&0xffff)!=id) continue;
+		// Found the CMPDATA
+		break;
+	}
+	if (!data) return ERROR_UNKNOWN;
+	return data[1]&0xffff;
+}
+
 int static_method_or_property(int cn, char stringorfloat){
 	// This function returns variable number for static property
 	// or returns zero when method is compiled
@@ -412,9 +429,13 @@ int static_method_or_property(int cn, char stringorfloat){
 	if (!(class[i]&CLASS_STATIC)) return ERROR_SYNTAX;
 	if (!(class[i]&CLASS_FIELD)) return ERROR_NOT_FIELD;
 	// This is a public static field
+	// Resolve var number from field ID
+	num=resolve_var_number_from_id(cn,class[i]&0xffff);
+	if (num<0) return num; // Error
+	// All done. Let's finish.
 	g_class_mode=CLASS_PUBLIC | CLASS_STATIC | CLASS_FIELD;
-	g_scratch_int[0]=class[1]&0xffff; // Store variable name to scratch int
-	return variable_to_r0(class[1]&0xffff);
+	g_scratch_int[0]=num; // Store variable name to scratch int
+	return variable_to_r0(num);
 }
 
 int static_property_var_num(int cn){
@@ -555,22 +576,21 @@ int update_cmpdata_class(int data){
 }
 
 int create_fieldname(int var_number){
+	// This function returns Field ID
+	// If error occured, return error number as negative value
 	int* data;
 	int* data2;
-	unsigned short fid;
+	int e;
 	// Get the var name
 	data=cmpdata_findfirst_with_id(CMPDATA_VARNAME,var_number);
 	if (!data) return ERROR_UNKNOWN;
 	// If field name already exists, return (only a CMPDATA_FIELDNAME exists for a field name)
 	data2=cmpdata_search_string_first(CMPDATA_FIELDNAME,(unsigned char*)&data[2]);
-	if (data2){
-		// g_scratch_int[0] is used as registered field id
-		g_scratch_int[0]=data2[0]&0xffff;
-		return 0;
-	}
+	if (data2) return data2[0]&0xffff;
 	// Add CMPDATA_FIELDNAME (copy from CMPDATA_VARNAME)
-	g_scratch_int[0]=var_number;
-	return cmpdata_insert(CMPDATA_FIELDNAME,var_number,(int*)&data[1],((data[0]>>16)&0xff)-1);
+	e=cmpdata_insert(CMPDATA_FIELDNAME,var_number,(int*)&data[1],((data[0]>>16)&0xff)-1);
+	if (e) return e;
+	return var_number;
 }
 
 int register_class_field(int var_number, int fieldinfo){
@@ -578,23 +598,25 @@ int register_class_field(int var_number, int fieldinfo){
 	//   CLASS_FIELD | CLASS_PUBLIC
 	// or
 	//   CLASS_FIELD:
-	int e;
+	int id;
 	// Update CMPDATA_FIELDNAME
-	e=create_fieldname(var_number);
-	if (e) return e;
+	id=create_fieldname(var_number);
+	if (id<0) return id; // Error
 	// Update CMPDATA_CLASS
-	// g_scratch_int[0] is used as registered field id
-	return update_cmpdata_class(fieldinfo | g_scratch_int[0]);
+	return update_cmpdata_class(fieldinfo | id);
 }
 
 int register_class_static_field(int var_number){
-	int e;
+	int id,e;
 	// Update CMPDATA_FIELDNAME
-	e=create_fieldname(var_number);
-	if (e) return e;
+	id=create_fieldname(var_number);
+	if (id<0) return id; // Error
 	// Update CMPDATA_CLASS
-	// g_scratch_int[0] is used as registered field id
-	return update_cmpdata_class(CLASS_PUBLIC | CLASS_STATIC | CLASS_FIELD | g_scratch_int[0]);
+	e=update_cmpdata_class(CLASS_PUBLIC | CLASS_STATIC | CLASS_FIELD | id);
+	if (e) return e;
+	// Insert CMPDATA_STATIC
+	g_scratch_int[0]=(id<<16) | var_number;
+	return cmpdata_insert(CMPDATA_STATIC,g_class_id,(int*)&g_scratch_int[0],1);
 }
 
 /*
