@@ -515,6 +515,8 @@ int gosub_arguments(void){
 	(object++)[0]=0x6030; //        str	r0, [r6, #0]
 	for(i=3;','==source[0] || '('==source[0] ;i++){
 		source++;
+		skip_blank();
+		if (3==i && ')'==source[0]) break;
 		e=get_string_int_or_float();
 		if (e) return e;
 		check_object(1);
@@ -522,7 +524,8 @@ int gosub_arguments(void){
 	}
 	obefore[0]|=i; // Update sub sp,#xx assembly
 	// Set number of variables
-	set_value_in_register(0,i-3);
+	e=set_value_in_register(0,i-3);
+	if (e) return e;
 	check_object(1);
 	(object++)[0]=0x6030 | (2<<6); // str	r0, [r6, #xx]
 	return i;

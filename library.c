@@ -669,10 +669,14 @@ int lib_keys(int r0, int r1, int r2){
 	return res&r0;
 }
 
-int debug(int r0, int r1, int r2){
+int lib_debug(int r0, int r1, int r2){
 #ifdef DEBUG_MODE
-	asm("push {r0}");
-	asm("pop {r0}");
+	//asm("push {r0}");
+	//asm("pop {r0}");
+	asm volatile("mov r1,r6");
+	//asm("adds	r0, r6, #0");
+	printhex32(r0);
+	lib_wait(60,0,0);
 	return r0;
 #else
 	return r0;
@@ -716,7 +720,7 @@ static const void* lib_list1[]={
 };
 
 static const void* lib_list2[]={
-	debug,          // #define LIB_DEBUG 128
+	lib_debug,      // #define LIB_DEBUG 128
 	lib_print,      // #define LIB_PRINT 129
 	lib_let_str,    // #define LIB_LET_STR 130
 	lib_end,        // #define LIB_END 131

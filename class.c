@@ -6,6 +6,7 @@
 
 #include <string.h>
 #include "./compiler.h"
+#include "./api.h"
 
 /*
 	CMPDATA_CLASSNAME  : class name and id
@@ -61,10 +62,11 @@
 	
 	To get a static field information
 		1. CMPDATA_CLASSNAME to get class id
-		2. CMPDATA_CLASS
+		2. Get class information from CMPDATA_CLASS
 		3. Pick up variable numbers of static field from class structure
-		4. CMPDATA_FIELDNAME to get variable number
+		4. CMPDATA_FIELDNAME to get field id
 		5. Check if id of 4 matches to id of 3
+		6. Resolve var number by using CMPDATA_STATIC
 	
 */
 
@@ -280,10 +282,11 @@ void var2obj(int* obj){
 	}
 }
 
-int lib_pre_method(int r0, int r1, int r2){
-	int* r6=(int*)r0;
+int lib_pre_method(int r0, int r1, int r2){// TODO: debug here
+	int* r6=(int*)r1;
 	int* obj=(int*)r6[0];
-	int* caller=(int*)(((int*)r6[1])[0]);
+	int* prev_r6=(int*)r6[1];
+	int* caller=(int*)prev_r6[0];
 	// If method calling in an object method, store variables to object
 	if (caller) var2obj(caller);
 	// Get variables from object
@@ -292,9 +295,10 @@ int lib_pre_method(int r0, int r1, int r2){
 }
 
 int lib_post_method(int r0, int r1, int r2){
-	int* r6=(int*)r0;
+	int* r6=(int*)r1;
 	int* obj=(int*)r6[0];
-	int* caller=(int*)(((int*)r6[1])[0]);
+	int* prev_r6=(int*)r6[1];
+	int* caller=(int*)prev_r6[0];
 	// Store variables to object
 	if (obj) var2obj(obj);
 	// If medthod calling in an object method, get variables from object
@@ -487,17 +491,60 @@ int get_pointer_to_field(void){
 	return call_lib_code(LIB_OBJ_FIELD);
 }
 
-int call_method_r0(void){
-	int argnum;
+int call_method_r0(void){// Debug around here. R6 value may be strange
+	// R0 contains the address to call when arrived this line
+	// R0 must be stored before calling "gosub_arguments()" as it will be destroyed
+	int argnum,e;
+	// Decrement SP and store R0 to stack
+	check_object(2);
+	(object++)[0]=0xb081;          // sub sp, #4
+	(object++)[0]=0x9000;          // str r0, [sp, #0]
 	// Prepare to call the sub routine as method
 	argnum=gosub_arguments();
 	if (argnum<0) return argnum;
+	// Load R0 from SP here
+	(object++)[0]=0x9800|(argnum); // ldr r0, [sp, #xx]
 	// Call the method
 	check_object(6);
 	(object++)[0]=0xe002; // b.n    <lbl2>
 	                      // lbl1:
 	(object++)[0]=0xb500; // push	{lr}
-	(object++)[0]=0x4780; // blx	r0
+	(object++)[0]=0x4700; // bx 	r0
+	(object++)[0]=0x46c0; // nop
+	                      // lbl2:
+	(object++)[0]=0xF7FF; // bl <lbl1>
+	(object++)[0]=0xFFFB; // bl (continued)
+	// Post gosub and return
+	e=post_gosub_statement(argnum);
+	if (e) return e;
+	// Increment SP
+	check_object(1);
+	(object++)[0]=0xb001;          // add sp, #4
+	return 0;
+}
+
+int call_object_method(int fid){
+	int argnum,e;
+	// R0 is the pointer to object, now
+	// Prepare the arguments in R6
+	argnum=gosub_arguments();
+	if (argnum<0) return argnum; // error
+	// Get the pointer to object back in R0
+	check_object(1);
+	(object++)[0]=0x6830; // ldr	r0, [r6, #0]
+	// R1 will be field/method id
+	e=set_value_in_register(1,fid);
+	if (e) return e;
+	// Now, R0 is the pointer to object, R1 is field/method id. Let's call the library
+	// to get the address to method in R0
+	e=call_lib_code(LIB_OBJ_METHOD);
+	if (e) return e;
+	// Now, R0 is the address of method. Call it
+	check_object(6);
+	(object++)[0]=0xe002; // b.n    <lbl2>
+	                      // lbl1:
+	(object++)[0]=0xb500; // push	{lr}
+	(object++)[0]=0x4700; // bx 	r0
 	(object++)[0]=0x46c0; // nop
 	                      // lbl2:
 	(object++)[0]=0xF7FF; // bl <lbl1>
@@ -528,14 +575,11 @@ int method_or_property(char stringorfloat){
 	skip_blank();
 	// Check which method or field
 	if ('('==source[0]) { // This is a method
-		// R1 will be field id
-		e=set_value_in_register(1,fid);
+		e=call_object_method(fid);
 		if (e) return e;
-		// Now, R0 is the pointer to object, R1 is field id. Let's call the library
-		e=call_lib_code(LIB_OBJ_METHOD);
-		if (e) return e;
-		// Now, R0 is the address of method. Call it
-		return call_method_r0();
+		if (')'!=source[0]) return ERROR_SYNTAX;
+		source++;
+		return 0;
 	} else { // This is a field
 		// R1 will be field id
 		e=set_value_in_register(1,fid);
@@ -603,7 +647,7 @@ int register_class_field(int var_number, int fieldinfo){
 	id=create_fieldname(var_number);
 	if (id<0) return id; // Error
 	// Update CMPDATA_CLASS
-	return update_cmpdata_class(fieldinfo | id);
+	return update_cmpdata_class((var_number<<24) | fieldinfo | id);
 }
 
 int register_class_static_field(int var_number){
@@ -747,11 +791,16 @@ int delete_statement(void){
 
 int method_statement_main(void){
 	int e,num,id;
+	int* data;
+	// Get the address of method routine
+	unsigned short* obefore=object;
 	// Pre and post method functions
-	check_object(8);
+	check_object(10);
+	(object++)[0]=0x1c31;           // adds r1, r6, #0
 	call_lib_code(LIB_PRE_METHOD);  // 2 words
 	(object++)[0]=0xf000;           // bl <lbl1>
-	(object++)[0]=0xf803;           // bl (continued)
+	(object++)[0]=0xf804;           // bl (continued)
+	(object++)[0]=0x1c31;           // adds	r1, r6, #0
 	call_lib_code(LIB_POST_METHOD); // 2 words
 	(object++)[0]=0xbd00;           // pop {pc}
 	                                // lbl1:
@@ -759,12 +808,19 @@ int method_statement_main(void){
 	// Update CMPDATAs below
 	num=length_of_field();
 	if (!num) return ERROR_SYNTAX;
-	id=cmpdata_get_id();
 	// Update CMPDATA_FIELDNAME
-	e=cmpdata_insert_string(CMPDATA_FIELDNAME,id,source,num);
-	if (e) return e;
+	data=cmpdata_nsearch_string_first(CMPDATA_FIELDNAME,source,num);
+	if (data) {
+		// Field id already exists for this field name
+		id=data[0]&0xffff;
+	} else {
+		// Create the field id for this field name
+		id=cmpdata_get_id();
+		e=cmpdata_insert_string(CMPDATA_FIELDNAME,id,source,num);
+		if (e) return e;
+	}
 	// Update CMPDATA_METHOD
-	g_scratch_int[0]=(int)object;
+	g_scratch_int[0]=1+(int)obefore;
 	e=cmpdata_insert(CMPDATA_METHOD,id,(int*)g_scratch_int,1);
 	if (e) return e;
 	// Update CMPDATA_CLASS
