@@ -341,7 +341,7 @@ int static_method(int method_address){
 	unsigned short* opos2;
 	// No object
 	check_object(1);
-	(object++)[0]=0x2000; // movs	rx, #0
+	(object++)[0]=0x2000; // movs	r0, #0
 	// Prepare arguments
 	argnum=gosub_arguments();
 	if (argnum<0) return argnum;
@@ -489,38 +489,6 @@ int get_pointer_to_field(void){
 	if (e) return e;
 	// Now, R0 is the pointer to object, R1 is field id. Let's call the library
 	return call_lib_code(LIB_OBJ_FIELD);
-}
-
-int call_method_r0(void){// Debug around here. R6 value may be strange
-	// R0 contains the address to call when arrived this line
-	// R0 must be stored before calling "gosub_arguments()" as it will be destroyed
-	int argnum,e;
-	// Decrement SP and store R0 to stack
-	check_object(2);
-	(object++)[0]=0xb081;          // sub sp, #4
-	(object++)[0]=0x9000;          // str r0, [sp, #0]
-	// Prepare to call the sub routine as method
-	argnum=gosub_arguments();
-	if (argnum<0) return argnum;
-	// Load R0 from SP here
-	(object++)[0]=0x9800|(argnum); // ldr r0, [sp, #xx]
-	// Call the method
-	check_object(6);
-	(object++)[0]=0xe002; // b.n    <lbl2>
-	                      // lbl1:
-	(object++)[0]=0xb500; // push	{lr}
-	(object++)[0]=0x4700; // bx 	r0
-	(object++)[0]=0x46c0; // nop
-	                      // lbl2:
-	(object++)[0]=0xF7FF; // bl <lbl1>
-	(object++)[0]=0xFFFB; // bl (continued)
-	// Post gosub and return
-	e=post_gosub_statement(argnum);
-	if (e) return e;
-	// Increment SP
-	check_object(1);
-	(object++)[0]=0xb001;          // add sp, #4
-	return 0;
 }
 
 int call_object_method(int fid){
@@ -682,12 +650,13 @@ int new_function(void){
 	// Prepare arguments for constructor
 	skip_blank();
 	// Call the constructor (INIT method) if exists
-	data=cmpdata_search_string(CMPDATA_FIELDNAME,"INIT");
+	data=cmpdata_search_string_first(CMPDATA_FIELDNAME,"INIT");
 	if (!data) return 0; // No INIT method exists
 	fid=data[0]&0xffff; // Field/method id
-	// Gel class information
+	// Get class information
 	data=cmpdata_findfirst_with_id(CMPDATA_CLASS,cn);
 	if (!data) return ERROR_UNKNOWN;
+	num=(data[0]>>16)&0xff;
 	for(i=1;i<num;i++){
 		if ((CLASS_METHOD|CLASS_PUBLIC|fid)==data[i]) break; // INIT method found
 	}
@@ -695,18 +664,7 @@ int new_function(void){
 	// push r0
 	check_object(1);
 	(object++)[0]=0xb401; // push {r0}
-	if (','==source[0]) {
-		// There is/are argument(s)
-		source++;
-	}
-	// R1 will be field id
-	e=set_value_in_register(1,fid);
-	if (e) return e;
-	// Now, R0 is the pointer to object, R1 is field id (INIT). Let's call the library
-	e=call_lib_code(LIB_OBJ_METHOD);
-	if (e) return e;
-	// Now, R0 is the address of INIT method. Call it
-	e=call_method_r0();
+	e=call_object_method(fid);
 	if (e) return e;
 	// Get the pointer to object back to r0
 	check_object(1);
