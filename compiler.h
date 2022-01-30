@@ -9,7 +9,7 @@
 	Configration
 */
 
-#define DEBUG_MODE
+//#define DEBUG_MODE
 #define TEMPVAR_NUMBER 10
 #define ALLOC_BLOCK_NUM 256
 
@@ -45,7 +45,8 @@
 #define ERROR_NOT_FIELD  _throw_error(-15)
 #define ERROR_NOT_PUBLIC  _throw_error(-16)
 #define ERROR_STATEMENT_NOT_DETECTED (-17)
-#define ERROR_OTHERS (-18)
+#define ERROR_NO_CLASS_FILE _throw_error(-18)
+#define ERROR_OTHERS (-19)
 
 /*
 	Libraries
@@ -399,7 +400,7 @@ int lib_post_method(int r0, int r1, int r2);
 
 // file.c
 void init_file_system(void);
-int compile_file(unsigned char* fname);
+int compile_file(unsigned char* fname, char isclass);
 
 // For debugging
 void dump_cmpdata(void);

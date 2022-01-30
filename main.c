@@ -29,7 +29,7 @@ int main() {
 	// Compile the code
 	s=time_us_32();
 	init_compiler();
-	e=compile_file(str);
+	e=compile_file(str,0);
 	if (!e) e=post_compile();
 	printint(time_us_32()-s);
 	printstr(" micro seconds spent for compiling\n");

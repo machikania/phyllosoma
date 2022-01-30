@@ -10,7 +10,7 @@
 static char* g_error_file;
 static int g_error_line;
 
-static const char* g_error_text[19]={
+static const char* g_error_text[20]={
 	"No error",
 	"Syntax error",                  // #define ERROR_SYNTAX _throw_error(-1)
 	"Unknown error",                 // #define ERROR_UNKNOWN _throw_error(-2)
@@ -29,7 +29,8 @@ static const char* g_error_text[19]={
 	"Not class field/method",        // #define ERROR_NOT_FIELD  _throw_error(-15)
 	"Not public field/method",       // #define ERROR_NOT_PUBLIC  _throw_error(-16)
 	"",                              // #define ERROR_STATEMENT_NOT_DETECTED (-17)
-	"",                              // #define ERROR_OTHERS (-18)
+	"Class file not found",          // #define ERROR_NO_CLASS_FILE _throw_error(-18)
+	"",                              // #define ERROR_OTHERS (-19)
 };
 
 int show_error(int e, int pos){
