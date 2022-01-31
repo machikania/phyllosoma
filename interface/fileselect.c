@@ -8,7 +8,7 @@
 
 #define MAXFILE 256
 
-// 入力�Eタンのビット定義
+// 入力ボタンのビット定義
 #define GPIO_KEYUP 0
 #define GPIO_KEYLEFT 1
 #define GPIO_KEYRIGHT 2
@@ -25,17 +25,17 @@
 
 unsigned char path[256];
 unsigned char filenames[MAXFILE][13];
-unsigned short keystatus, keystatus2, keystatus3, oldkey; //最新のボタン状態と前回のボタン状慁E
+unsigned short keystatus, keystatus2, keystatus3, oldkey; //最新のボタン状態と前回のボタン状態
 int keycountUP, keycountLEFT, keycountRIGHT, keycountDOWN, keycountSTART, keycountFIRE;
 int filenum, dirnum;
 
 void wait60thsec(unsigned short n){
-	// 60刁E�En秒ウェイチE
+	// 60分のn秒ウェイト
 	uint64_t t = to_us_since_boot(get_absolute_time()) % 16667;
 	sleep_us(16667 * n - t);
 }
 void init_buttons(void){
-	// ボタン用GPIO設宁E
+	// ボタン用GPIO設定
 	gpio_init_mask(KEYSMASK);
 	gpio_set_dir_in_masked(KEYSMASK);
 	gpio_pull_up(GPIO_KEYUP);
@@ -44,18 +44,18 @@ void init_buttons(void){
 	gpio_pull_up(GPIO_KEYDOWN);
 	gpio_pull_up(GPIO_KEYSTART);
 	gpio_pull_up(GPIO_KEYFIRE);
-	keystatus = KEYUP | KEYDOWN | KEYLEFT | KEYRIGHT | KEYSTART | KEYFIRE; //初期匁E
+	keystatus = KEYUP | KEYDOWN | KEYLEFT | KEYRIGHT | KEYSTART | KEYFIRE; //初期化
 }
 void keycheck(void){
 	//ボタン状態読み取り
-	//keystatus :現在押されてぁE��ボタンに対応するビチE��めEにする
-	//keystatus2:前回押されてぁE��くて、今回押された�Eタンに対応するビチE��めEにする
-	//keystatus3:前回押されてぁE��、今回離された�Eタンに対応するビチE��めEにする
+	//keystatus :現在押されているボタンに対応するビットを1にする
+	//keystatus2:前回押されていなくて、今回押されたボタンに対応するビットを1にする
+	//keystatus3:前回押されていて、今回離されたボタンに対応するビットを1にする
 	//keycountXX:XXボタンが押された状態で連続して読み込まれた回数
 	oldkey = keystatus;
 	keystatus = ~gpio_get_all() & KEYSMASK;
-	keystatus2 = keystatus & ~oldkey; //前回ボタンを離してぁE��かチェチE��
-	keystatus3 = ~keystatus & oldkey; //前回ボタンを押してぁE��かチェチE��
+	keystatus2 = keystatus & ~oldkey; //前回ボタンを離していたかチェック
+	keystatus3 = ~keystatus & oldkey; //前回ボタンを押していたかチェック
 	if (keystatus & KEYUP) keycountUP++;
 	else keycountUP = 0;
 	if (keystatus & KEYLEFT) keycountLEFT++;
@@ -70,7 +70,7 @@ void keycheck(void){
 	else keycountFIRE = 0;
 }
 
-// エラー番号を表示してぁE��止
+// エラー番号を表示してい停止
 void disperror(unsigned char *s, FRESULT fr){
 	printstr(s);
 	printstr(" FRESULT:");
@@ -78,7 +78,7 @@ void disperror(unsigned char *s, FRESULT fr){
 	while (1) ;
 }
 
-// filenames配�Eのn番目のファイルから一覧表示
+// filenames配列のn番目のファイルから一覧表示
 void dispfiles(int n){
 	int i, j;
 	int mx,my;
@@ -90,12 +90,12 @@ void dispfiles(int n){
 	for (i = 0; i < my * mx; i++){
 		if (i % mx == 0) printchar(' ');
 		if (i + n < dirnum){
-			// チE��レクトリ
+			// ディレクトリ
 			setcursorcolor(6);
 			printchar('[');
 			printstr(filenames[i + n]);
 			printchar(']');
-			//13斁E��まで空白で埋めめE
+			//13文字まで空白で埋める
 			for (j = 11 - strlen(filenames[i + n]); j > 0; j--)
 				printchar(' ');
 		}
@@ -103,16 +103,16 @@ void dispfiles(int n){
 			// ファイル
 			setcursorcolor(7);
 			printstr(filenames[i + n]);
-			//13斁E��まで空白で埋めめE
+			//13文字まで空白で埋める
 			for (j = 13 - strlen(filenames[i + n]); j > 0; j--)
 				printchar(' ');
 		}
-		else for (j = 0; j < 13; j++) printchar(' '); //画面最後まで空白で埋めめE
+		else for (j = 0; j < 13; j++) printchar(' '); //画面最後まで空白で埋める
 		if((i+1)%mx==0 && 13*mx+1<WIDTH_X) printchar('\n');
 	}
 }
 
-// SDカード�EのBASICソースプログラム一覧を表示、E��択し
+// SDカード内のBASICソースプログラム一覧を表示、選択し
 // ファイル名を返す
 unsigned char *fileselect(void){
 	FRESULT fr;
@@ -134,7 +134,7 @@ unsigned char *fileselect(void){
 		fr = f_opendir(&dj, path);
 		if (fr) disperror("Open directory Error.", fr);
 		if (path[1]){ // not root directory
-			// 親チE��レクトリ
+			// 親ディレクトリ
 			strcpy(filenames[filenum], "..");
 			filenum++;
 			dirnum++;
@@ -176,7 +176,7 @@ unsigned char *fileselect(void){
 			printchar(' ');
 			keycheck();
 			key = keystatus2;
-			// 30回以上同じ�Eタンを押し続けてぁE��ばリピ�Eトさせる
+			// 30回以上同じボタンを押し続けていればリピートさせる
 			if (keycountUP > 30) key |= KEYUP;
 			if (keycountLEFT > 30) key |= KEYLEFT;
 			if (keycountRIGHT > 30) key |= KEYRIGHT;
@@ -234,15 +234,15 @@ unsigned char *fileselect(void){
 			}
 		} while (keystatus2 != KEYFIRE);
 		if (n < dirnum){
-			// チE��レクトリの場吁E
+			// ディレクトリの場合
 			if (filenames[n][0] == '.'){
-				// 親チE��レクトリの場合、pathから現チE��レクトリを削除
+				// 親ディレクトリの場合、pathから現ディレクトリを削除
 				for (p = path; *p; p++) ;
 				for (p -= 2; *p != '/'; p--) ;
 				*(p + 1) = 0;
 			}
 			else{
-				// pathにチE��レクトリ名を結合して最後に'/'を付加
+				// pathにディレクトリ名を結合して最後に'/'を付加
 				for (p = path; *p; p++) ;
 				for (p2 = filenames[n]; *p2;) *p++ = *p2++;
 				*p++ = '/';
@@ -251,7 +251,7 @@ unsigned char *fileselect(void){
 			fr = f_chdir(path); //Change Directory
 			if (fr) disperror("Change directory Error.", fr);
 		}
-		else break; // ファイル選抁E
+		else break; // ファイル選択
 	}
 	cls();
 	setcursorcolor(7);

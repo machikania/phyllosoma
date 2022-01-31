@@ -1,12 +1,12 @@
-//LCDチE��スト�EグラフィチE��ライブラリ
+//LCDテキスト・グラフィックライブラリ
 
 #include "graphlib.h"
 #include "LCDdriver.h"
 
 unsigned char TVRAM[ATTROFFSET*2+1] __attribute__ ((aligned (4)));
-unsigned char *fontp; //フォント格納アドレス、�E期化時�EFontData、RAM持E��することでPCGを実現
+unsigned char *fontp; //フォント格納アドレス、初期化時はFontData、RAM指定することでPCGを実現
 unsigned int bgcolor; // バックグランドカラー
-unsigned char twidth; //チE��スチE行文字数
+unsigned char twidth; //テキスト1行文字数
 unsigned char *cursor;
 unsigned char cursorcolor;
 unsigned short palette[256];
@@ -14,30 +14,30 @@ int WIDTH_X; // 横方向文字数
 int WIDTH_Y; // 縦方向文字数
 
 void set_palette(unsigned char n,unsigned char b,unsigned char r,unsigned char g){
-//チE��スト／グラフィチE��共用カラーパレチE��設宁E
+//テキスト／グラフィック共用カラーパレット設定
 	palette[n]=((r>>3)<<11)+((g>>2)<<5)+(b>>3);
 }
 
 void g_pset(int x,int y,unsigned char c)
-// (x,y)の位置にカラーパレチE��番号cで点を描画
+// (x,y)の位置にカラーパレット番号cで点を描画
 {
 	if(x>=0 && x<X_RES && y>=0 && y<Y_RES)
 		drawPixel(x,y,palette[c]);
 }
 
 void g_putbmpmn(int x,int y,unsigned char m,unsigned char n,const unsigned char bmp[])
-// 横m*縦nドット�Eキャラクターを座標x,yに表示
-// unsigned char bmp[m*n]配�Eに、単純にカラー番号を並べめE
-// カラー番号ぁEの部刁E�E透�E色として扱ぁE
+// 横m*縦nドットのキャラクターを座標x,yに表示
+// unsigned char bmp[m*n]配列に、単純にカラー番号を並べる
+// カラー番号が0の部分は透明色として扱う
 {
 	int i,j;
 	int skip,outflag;
 	const unsigned char *p;
-	if(x<=-m || x>X_RES || y<=-n || y>=Y_RES) return; //画面夁E
+	if(x<=-m || x>X_RES || y<=-n || y>=Y_RES) return; //画面外
 	outflag=0;
 
 	if(LCD_ALIGNMENT == VERTICAL){
-		if(y<0){ //画面上部に刁E��る場吁E
+		if(y<0){ //画面上部に切れる場合
 			i=0;
 			p=bmp-y*m;
 		}
@@ -46,8 +46,8 @@ void g_putbmpmn(int x,int y,unsigned char m,unsigned char n,const unsigned char 
 			p=bmp;
 		}
 		for(;i<y+n;i++){
-			if(i>=Y_RES) return; //画面下部に刁E��る場吁E
-			if(x<0){ //画面左に刁E��る場合�E残る部刁E�Eみ描画
+			if(i>=Y_RES) return; //画面下部に切れる場合
+			if(x<0){ //画面左に切れる場合は残る部分のみ描画
 				j=0;
 				p+=-x;
 			}
@@ -56,11 +56,11 @@ void g_putbmpmn(int x,int y,unsigned char m,unsigned char n,const unsigned char 
 			}
 			skip=1;
 			for(;j<x+m;j++){
-				if(j>=X_RES){ //画面右に刁E��る場吁E
+				if(j>=X_RES){ //画面右に切れる場合
 					p+=x+m-j;
 					break;
 				}
-				if(*p!=0){ //カラー番号ぁEの場合、E���Eとして処琁E
+				if(*p!=0){ //カラー番号が0の場合、透明として処理
 					if(skip){
 						if(outflag) checkSPIfinish();
 						LCD_setAddrWindow(j,i,m,n);
@@ -78,7 +78,7 @@ void g_putbmpmn(int x,int y,unsigned char m,unsigned char n,const unsigned char 
 	}
 	else{
 		// horizontal case
-		if(x<0){ //画面左部に刁E��る場吁E
+		if(x<0){ //画面左部に切れる場合
 			j=0;
 			p=bmp-x;
 		}
@@ -87,8 +87,8 @@ void g_putbmpmn(int x,int y,unsigned char m,unsigned char n,const unsigned char 
 			p=bmp;
 		}
 		for(;j<x+m;j++){
-			if(j>=X_RES) return; //画面右部に刁E��る場吁E
-			if(y<0){ //画面上に刁E��る場合�E残る部刁E�Eみ描画
+			if(j>=X_RES) return; //画面右部に切れる場合
+			if(y<0){ //画面上に切れる場合は残る部分のみ描画
 				i=0;
 				p+=-y*m;
 			}
@@ -97,11 +97,11 @@ void g_putbmpmn(int x,int y,unsigned char m,unsigned char n,const unsigned char 
 			}
 			skip=1;
 			for(;i<y+n;i++){
-				if(i>=Y_RES){ //画面下に刁E��る場吁E
+				if(i>=Y_RES){ //画面下に切れる場合
 					p+=(y+n-i)*m;
 					break;
 				}
-				if(*p!=0){ //カラー番号ぁEの場合、E���Eとして処琁E
+				if(*p!=0){ //カラー番号が0の場合、透明として処理
 					if(skip){
 						if(outflag) checkSPIfinish();
 						LCD_setAddrWindow(j,i,m,n);
@@ -119,13 +119,13 @@ void g_putbmpmn(int x,int y,unsigned char m,unsigned char n,const unsigned char 
 	}
 }
 
-// 縦m*横nドット�Eキャラクター消去
-// カラー0で塗りつぶぁE
+// 縦m*横nドットのキャラクター消去
+// カラー0で塗りつぶし
 void g_clrbmpmn(int x,int y,unsigned char m,unsigned char n)
 {
 	int i,j,k,dx,dy;
-	if(x<=-m || x>X_RES || y<=-n || y>=Y_RES) return; //画面夁E
-	if(y<0){ //画面上部に刁E��る場吁E
+	if(x<=-m || x>X_RES || y<=-n || y>=Y_RES) return; //画面外
+	if(y<0){ //画面上部に切れる場合
 		i=0;
 		dy=n+y;
 	}
@@ -133,7 +133,7 @@ void g_clrbmpmn(int x,int y,unsigned char m,unsigned char n)
  		i=y;
 		dy=n;
 	}
-	if(x<0) { //画面左に刁E��る場合�E残る部刁E�Eみ描画
+	if(x<0) { //画面左に切れる場合は残る部分のみ描画
 		j=0;
 		dx=m+x;
 	}
@@ -141,10 +141,10 @@ void g_clrbmpmn(int x,int y,unsigned char m,unsigned char n)
 		j=x;
 		dx=m;
 	}
-	if(x+m>X_RES) { //画面右に刁E��る場吁E
+	if(x+m>X_RES) { //画面右に切れる場合
 		dx-=(x+m)-X_RES;
 	}
-	if(y+n>Y_RES) { //画面下に刁E��る場吁E
+	if(y+n>Y_RES) { //画面下に切れる場合
 		dy-=(y+n)-Y_RES;
 	}
 	LCD_setAddrWindow(j,i,dx,dy);
@@ -154,7 +154,7 @@ void g_clrbmpmn(int x,int y,unsigned char m,unsigned char n)
 }
 
 void g_gline(int x1,int y1,int x2,int y2,unsigned char c)
-// (x1,y1)-(x2,y2)にカラーパレチE��番号cで線�Eを描画
+// (x1,y1)-(x2,y2)にカラーパレット番号cで線分を描画
 {
 	int sx,sy,dx,dy,i;
 	int e;
@@ -218,7 +218,7 @@ void g_hline(int x1,int x2,int y,unsigned char c)
 }
 
 void g_circle(int x0,int y0,unsigned int r,unsigned char c)
-// (x0,y0)を中忁E��、半径r、カラーパレチE��番号cの冁E��描画
+// (x0,y0)を中心に、半径r、カラーパレット番号cの円を描画
 {
 	int x,y,f;
 	x=r;
@@ -242,7 +242,7 @@ void g_circle(int x0,int y0,unsigned int r,unsigned char c)
 	}
 }
 void g_boxfill(int x1,int y1,int x2,int y2,unsigned char c)
-// (x1,y1),(x2,y2)を対角線とするカラーパレチE��番号cで塗られた長方形を描画
+// (x1,y1),(x2,y2)を対角線とするカラーパレット番号cで塗られた長方形を描画
 {
 	int temp;
 	if(x1>x2){
@@ -264,7 +264,7 @@ void g_boxfill(int x1,int y1,int x2,int y2,unsigned char c)
 	}
 }
 void g_circlefill(int x0,int y0,unsigned int r,unsigned char c)
-// (x0,y0)を中忁E��、半径r、カラーパレチE��番号cで塗られた冁E��描画
+// (x0,y0)を中心に、半径r、カラーパレット番号cで塗られた円を描画
 {
 	int x,y,f;
 	x=r;
@@ -284,20 +284,20 @@ void g_circlefill(int x0,int y0,unsigned int r,unsigned char c)
 	}
 }
 void g_putfont(int x,int y,unsigned char c,int bc,unsigned char n)
-//8*8ドット�Eアルファベットフォント表示
-//座樁Ex,y)、カラーパレチE��番号c
-//bc:バックグランドカラー、負数の場合無要E
-//n:斁E��番号
+//8*8ドットのアルファベットフォント表示
+//座標(x,y)、カラーパレット番号c
+//bc:バックグランドカラー、負数の場合無視
+//n:文字番号
 {
 	int i,j,dx,dy;
 	unsigned char d,b;
 	int skip,outflag;
 	unsigned short c1;
 	const unsigned char *p;
-	if(x<=-8 || x>=X_RES || y<=-8 || y>=Y_RES) return; //画面夁E
+	if(x<=-8 || x>=X_RES || y<=-8 || y>=Y_RES) return; //画面外
 	c1=palette[c];
 	if(LCD_ALIGNMENT == VERTICAL){
-		if(y<0){ //画面上部に刁E��る場吁E
+		if(y<0){ //画面上部に切れる場合
 			i=0;
 			p=fontp+n*8-y;
 			dy=8+y;
@@ -308,7 +308,7 @@ void g_putfont(int x,int y,unsigned char c,int bc,unsigned char n)
 			if(y+8<=Y_RES) dy=8;
 			else dy=Y_RES-y;
 		}
-		if(x<0){ //画面左に刁E��る場吁E
+		if(x<0){ //画面左に切れる場合
 			j=0;
 			dx=8+x;
 		}
@@ -319,9 +319,9 @@ void g_putfont(int x,int y,unsigned char c,int bc,unsigned char n)
 		}
 		if(bc>=0) LCD_setAddrWindow(j,i,dx,dy);
 		for(;i<y+8;i++){
-			if(i>=Y_RES) break; //画面下部に刁E��る場吁E
+			if(i>=Y_RES) break; //画面下部に切れる場合
 			d=*p++;
-			if(x<0){ //画面左に刁E��る場合�E残る部刁E�Eみ描画
+			if(x<0){ //画面左に切れる場合は残る部分のみ描画
 				j=0;
 				d<<=-x;
 			}
@@ -332,7 +332,7 @@ void g_putfont(int x,int y,unsigned char c,int bc,unsigned char n)
 				skip=1;
 				outflag=0;
 				for(;j<x+8;j++){
-					if(j>=X_RES){ //画面右に刁E��る場吁E
+					if(j>=X_RES){ //画面右に切れる場合
 						break;
 					}
 					if(d&0x80){
@@ -351,7 +351,7 @@ void g_putfont(int x,int y,unsigned char c,int bc,unsigned char n)
 			}
 			else{
 				for(;j<x+8;j++){
-					if(j>=X_RES){ //画面右に刁E��る場吁E
+					if(j>=X_RES){ //画面右に切れる場合
 						break;
 					}
 					if(d&0x80){
@@ -368,7 +368,7 @@ void g_putfont(int x,int y,unsigned char c,int bc,unsigned char n)
 	}
 	else{
 		// horizontal case
-		if(x<0){ //画面左に刁E��る場吁E
+		if(x<0){ //画面左に切れる場合
 			j=0;
 			b=0x80>>(-x);
 			dx=8+x;
@@ -390,8 +390,8 @@ void g_putfont(int x,int y,unsigned char c,int bc,unsigned char n)
 		}
 		if(bc>=0) LCD_setAddrWindow(j,i,dx,dy);
 		for(;j<x+8;j++){
-			if(j>=X_RES) break; //画面右に刁E��る場吁E
-			if(y<0){ //画面上部に刁E��る場吁E
+			if(j>=X_RES) break; //画面右に切れる場合
+			if(y<0){ //画面上部に切れる場合
 				i=0;
 				p=fontp+n*8-y;
 			}
@@ -403,7 +403,7 @@ void g_putfont(int x,int y,unsigned char c,int bc,unsigned char n)
 				skip=1;
 				outflag=0;
 				for(;i<y+8;i++){
-					if(i>=Y_RES){ //画面下に刁E��る場吁E
+					if(i>=Y_RES){ //画面下に切れる場合
 						break;
 					}
 					if(*p++ & b){
@@ -421,7 +421,7 @@ void g_putfont(int x,int y,unsigned char c,int bc,unsigned char n)
 			}
 			else{
 				for(;i<y+8;i++){
-					if(i>=Y_RES){ //画面下に刁E��る場吁E
+					if(i>=Y_RES){ //画面下に切れる場合
 						break;
 					}
 					if(*p++ & b){
@@ -439,15 +439,15 @@ void g_putfont(int x,int y,unsigned char c,int bc,unsigned char n)
 }
 
 void g_printstr(int x,int y,unsigned char c,int bc,unsigned char *s){
-	//座樁Ex,y)からカラーパレチE��番号cで斁E���Esを表示、bc:バックグランドカラー
-	//bcが負の場合�E無要E
+	//座標(x,y)からカラーパレット番号cで文字列sを表示、bc:バックグランドカラー
+	//bcが負の場合は無視
 	while(*s){
 		g_putfont(x,y,c,bc,*s++);
 		x+=8;
 	}
 }
 void g_printnum(int x,int y,unsigned char c,int bc,unsigned int n){
-	//座樁Ex,y)にカラー番号cで数値nを表示、bc:バックグランドカラー
+	//座標(x,y)にカラー番号cで数値nを表示、bc:バックグランドカラー
 	unsigned int d,e;
 	d=10;
 	e=0;
@@ -464,7 +464,7 @@ void g_printnum(int x,int y,unsigned char c,int bc,unsigned int n){
 	}while(n!=0);
 }
 void g_printnum2(int x,int y,unsigned char c,int bc,unsigned int n,unsigned char e){
-	//座樁Ex,y)にカラー番号cで数値nを表示、bc:バックグランドカラー、e桁で表示
+	//座標(x,y)にカラー番号cで数値nを表示、bc:バックグランドカラー、e桁で表示
 	if(e==0) return;
 	x+=(e-1)*8;
 	do{
@@ -480,13 +480,13 @@ void g_printnum2(int x,int y,unsigned char c,int bc,unsigned int n,unsigned char
 	}
 }
 unsigned int g_color(int x,int y){
-//座樁Ex,y)の色惁E��を返す、画面外�E0を返す
-//パレチE��番号ではなぁE��とに注愁E
+//座標(x,y)の色情報を返す、画面外は0を返す
+//パレット番号ではないことに注意
 	if(x<0 || x>=X_RES || y<0 || y>=Y_RES) return 0;
 	return getColor(x,y);
 }
 
-// チE��スト画面クリア
+// テキスト画面クリア
 void clearscreen(void)
 {
 	unsigned int *vp;
@@ -497,15 +497,15 @@ void clearscreen(void)
 	LCD_Clear(bgcolor);
 }
 
-// グラフィチE��画面クリア
+// グラフィック画面クリア
 void g_clearscreen(void)
 {
 	LCD_Clear(0);
 }
 
 void textredraw(void){
-// チE��スト画面再描画
-// チE��スチERAMの冁E��にしたがって液晶に出劁E
+// テキスト画面再描画
+// テキストVRAMの内容にしたがって液晶に出力
 	int i,j,x,y;
 	unsigned short c;
 	unsigned char d,b,*p,*p2;
@@ -584,25 +584,25 @@ void vramscrolldown(void){
 	textredraw();
 }
 void setcursor(unsigned char x,unsigned char y,unsigned char c){
-	//カーソルを座樁Ex,y)にカラー番号cに設宁E
+	//カーソルを座標(x,y)にカラー番号cに設定
 	if(x>=WIDTH_X || y>=WIDTH_Y) return;
 	cursor=TVRAM+y*WIDTH_X+x;
 	cursorcolor=c;
 }
 void setcursorcolor(unsigned char c){
-	//カーソル位置そ�Eままでカラー番号をcに設宁E
+	//カーソル位置そのままでカラー番号をcに設定
 	cursorcolor=c;
 }
 void printchar(unsigned char n){
-	//カーソル位置にチE��ストコードnめE斁E��表示し、カーソルめE斁E��進める
-	//画面最終文字表示してもスクロールせず、次の斁E��表示時にスクロールする
+	//カーソル位置にテキストコードnを1文字表示し、カーソルを1文字進める
+	//画面最終文字表示してもスクロールせず、次の文字表示時にスクロールする
 	if(cursor<TVRAM || cursor>TVRAM+ATTROFFSET) return;
 	if(cursor==TVRAM+ATTROFFSET){
 		vramscroll();
 		cursor-=WIDTH_X;
 	}
 	if(n=='\n'){
-		//改衁E
+		//改行
 		cursor+=WIDTH_X-((cursor-TVRAM)%WIDTH_X);
 	} else{
 		*cursor=n;
@@ -612,13 +612,13 @@ void printchar(unsigned char n){
 	}
 }
 void printstr(unsigned char *s){
-	//カーソル位置に斁E���Esを表示
+	//カーソル位置に文字列sを表示
 	while(*s){
 		printchar(*s++);
 	}
 }
 void printnum(unsigned int n){
-	//カーソル位置に符号なし整数nめE0進数表示
+	//カーソル位置に符号なし整数nを10進数表示
 	unsigned int d,n1;
 	n1=n/10;
 	d=1;
@@ -632,7 +632,7 @@ void printnum(unsigned int n){
 	}
 }
 void printnum2(unsigned int n,unsigned char e){
-	//カーソル位置に符号なし整数nをe桁�E10進数表示�E�前の空き桁E��刁E�Eスペ�Eスで埋める！E
+	//カーソル位置に符号なし整数nをe桁の10進数表示（前の空き桁部分はスペースで埋める）
 	unsigned int d,n1;
 	if(e==0) return;
 	n1=n/10;
@@ -651,13 +651,13 @@ void printnum2(unsigned int n,unsigned char e){
 	}
 }
 void cls(void){
-	//画面消去しカーソルを�E頭に移勁E
+	//画面消去しカーソルを先頭に移動
 	clearscreen();
 }
 void startPCG(unsigned char *p,int a){
-// RAMフォント！ECG�E��E利用開姁E
-// p�E�RAMフォント�E格納アドレス�E�E*256�E�E048バイト！E
-// a�E�EシスチE��フォントから�Eコピ�E持E��、Eの場合コピ�Eなし、E以外でコピ�E
+// RAMフォント（PCG）の利用開始
+// p：RAMフォントの格納アドレス（8*256＝2048バイト）
+// a： システムフォントからのコピー指定。0の場合コピーなし、0以外でコピー
 	int i;
 	if(a){
 		for(i=0;i<8*256;i++) *p++=FontData[i];
@@ -666,7 +666,7 @@ void startPCG(unsigned char *p,int a){
 	else fontp=p;
 }
 void stopPCG(void){
-// RAMフォント！ECG�E��E利用停止
+// RAMフォント（PCG）の利用停止
 	fontp=(unsigned char *)FontData;
 }
 void set_bgcolor(unsigned char b,unsigned char r,unsigned char g)
@@ -675,14 +675,14 @@ void set_bgcolor(unsigned char b,unsigned char r,unsigned char g)
 	textredraw();
 }
 void init_textgraph(unsigned char align){
-	//チE��スト�EグラフィチE��LCDライブラリの使用開姁E
-	//パレチE��設宁E
-	//LCD縦横設宁E
+	//テキスト・グラフィックLCDライブラリの使用開始
+	//パレット設定
+	//LCD縦横設定
 
 	int i;
 	fontp=(unsigned char *)FontData;
-	bgcolor=0; //バックグランドカラーは黁E
-	//カラーパレチE��初期匁E
+	bgcolor=0; //バックグランドカラーは黒
+	//カラーパレット初期化
 	for(i=0;i<8;i++){
 		set_palette(i,255*(i&1),255*((i>>1)&1),255*(i>>2));
 	}
@@ -697,7 +697,7 @@ void init_textgraph(unsigned char align){
 	set_lcdalign(align);
 }
 void set_lcdalign(unsigned char align){
-	// 液晶の縦横設宁E
+	// 液晶の縦横設定
 	LCD_ALIGNMENT=align;
 	LCD_WriteComm(0x36);
 	if(align==VERTICAL){
