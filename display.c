@@ -18,8 +18,8 @@ int lib_cread(int r0, int r1, int r2);
 /*
 
 CLEAR
-	すべての文字列型変数と整数型配列を破棄し、整数値を０とする。また、
-	PCGの使用をやめ、表示キャラクターをリセットする。
+	すべての斁E���E型変数と整数型�E列を破棁E��、整数値を０とする。また、E
+	PCGの使用をやめ、表示キャラクターをリセチE��する、E
 */
 
 void display_init(void){
@@ -131,14 +131,14 @@ int lib_display(int r0, int r1, int r2){
 			break;
 		case DISPLAY_SCROLL:
 			//SCROLL x,y
-			//	画面を横方向、もしくは縦方向(斜めも可)に動かす。動かす方向と大きさ
-			//	は、x, yでそれぞれ、横方向の移動度、縦方向の移動度として指定する。
+			//	画面を横方向、もしくは縦方吁E斜めも可)に動かす。動かす方向と大きさ
+			//	は、x, yでそれぞれ、横方向�E移動度、縦方向�E移動度として持E��する、E
 			// TODO: here
 			break;
 		case DISPLAY_WIDTH:
 			//WIDTH x
-			//	キャラクターディスプレイの横幅を文字数で指定。xは30、36、40、48、
-			//	もしくは80。
+			//	キャラクターチE��スプレイの横幁E��斁E��数で持E��。xは30、E6、E0、E8、E
+			//	もしく�E80、E
 			break;
 		case DISPLAY_TVRAM:
 			if (r0<0) return (int)&TVRAM[0];
