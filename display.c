@@ -39,7 +39,7 @@ void display_init(void){
 	gpio_put(LCD_RESET, 1);
 	gpio_set_dir(LCD_RESET, GPIO_OUT);
 	
-	init_textgraph();
+	init_textgraph(HORIZONTAL);
 }
 
 int lib_display(int r0, int r1, int r2){
@@ -211,7 +211,7 @@ int lib_display(int r0, int r1, int r2){
 			switch(r0&3){
 				case 0:
 					g_clearscreen();
-					set_graphmode(0);
+//					set_graphmode(0);
 					break;
 				case 2:
 					// TODO: clear palette
@@ -219,7 +219,7 @@ int lib_display(int r0, int r1, int r2){
 				case 1:
 				default:
 					cls();
-					set_graphmode(1);
+//					set_graphmode(1);
 					break;
 			}
 			break;

@@ -1,9 +1,7 @@
 void clearscreen(void); //テキスト画面クリア
 void set_palette(unsigned char n,unsigned char b,unsigned char r,unsigned char g); //テキストパレット設定
 void set_bgcolor(unsigned char b,unsigned char r,unsigned char g); //バックグランドカラー設定
-void set_graphmode(unsigned char m); //グラフィックモード変更
-void init_textgraph(void); //テキスト機能利用準備
-void set_width(unsigned char m); //8ドットフォントと6ドットフォントモードの切り替え
+void init_textgraph(unsigned char align); //LCDテキスト・グラフィック機能利用準備
 
 void textredraw(void);
 	// テキスト画面再描画、テキストVRAMの内容にしたがって液晶に出力
@@ -79,8 +77,8 @@ unsigned int g_color(int x,int y);
 void g_clearscreen(void);
 // グラフィック画面クリア
 
-void init_graphic(void);
-//グラフィックLCD使用開始
+void set_lcdalign(unsigned char align);
+// 液晶の縦横設定
 
 extern unsigned short palette[];
 //パレット用配列
@@ -90,3 +88,7 @@ extern const unsigned char FontData[];
 
 extern unsigned char TVRAM[];
 //テキストVRAM
+
+extern int WIDTH_X; // 横方向文字数
+extern int WIDTH_Y; // 縦方向文字数
+#define ATTROFFSET (LCD_COLUMN_RES*LCD_ROW_RES/64) // VRAM上のカラーパレット格納位置

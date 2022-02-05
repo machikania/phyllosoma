@@ -3,6 +3,10 @@
 #include "hardware/spi.h"
 #include "LCDdriver.h"
 
+int LCD_ALIGNMENT; // VERTICAL or HORIZONTAL
+int X_RES; // 横方向解像度
+int Y_RES; // 縦方向解像度
+
 static inline void lcd_cs_lo() {
     asm volatile("nop \n nop \n nop");
     gpio_put(LCD_CS, 0);
@@ -38,7 +42,7 @@ static inline void lcd_reset_hi() {
 }
 
 int __not_in_flash_func(spi_write_blocking_notfinish)(spi_inst_t *spi, const uint8_t *src, size_t len) {
-    invalid_params_if(SPI, 0 > (int)len);
+//    invalid_params_if(SPI, 0 > (int)len);
     // Write to TX FIFO whilst ignoring RX, then clean up afterward. When RX
     // is full, PL022 inhibits RX pushes, and sets a sticky flag on
     // push-on-full, but continues shifting. Safe if SSPIMSC_RORIM is not set.
@@ -118,7 +122,7 @@ void LCD_WriteData2_notfinish(unsigned short data)
     unsigned short d;
 	lcd_dc_hi();
 	lcd_cs_lo();
-    d=(data>>8) | (data<<8);
+	d=(data>>8) | (data<<8);
 	spi_write_blocking_notfinish(LCD_SPICH, (unsigned char *)&d, 2);
 }
 
@@ -191,11 +195,7 @@ void LCD_Init()
 	LCD_WriteComm(0xC7);
 	LCD_WriteData(0x86);
 	LCD_WriteComm(0x36);
-#if LCD_ALIGNMENT == VERTICAL
-	LCD_WriteData(0x48);
-#elif LCD_ALIGNMENT == HORIZONTAL
-	LCD_WriteData(0x0C);
-#endif
+	LCD_WriteData(0x48); //Vertical
 	LCD_WriteComm(0x37);
 	LCD_WriteData(0x00);
 	LCD_WriteData(0x00);
@@ -248,25 +248,28 @@ void LCD_Init()
 	LCD_WriteComm(0x11);
 	sleep_ms(120);
 	LCD_WriteComm(0x29);
+	X_RES=LCD_COLUMN_RES;
+	Y_RES=LCD_ROW_RES;
 }
 
 void LCD_setAddrWindow(unsigned short x,unsigned short y,unsigned short w,unsigned short h)
 {
-#if LCD_ALIGNMENT == VERTICAL
-	LCD_WriteComm(0x2a);
-	LCD_WriteData2(x);
-	LCD_WriteData2(x+w-1);
-	LCD_WriteComm(0x2b);
-	LCD_WriteData2(y);
-	LCD_WriteData2(y+h-1);
-#elif LCD_ALIGNMENT == HORIZONTAL
-	LCD_WriteComm(0x2a);
-	LCD_WriteData2(y);
-	LCD_WriteData2(y+h-1);
-	LCD_WriteComm(0x2b);
-	LCD_WriteData2(x);
-	LCD_WriteData2(x+w-1);
-#endif
+	if(LCD_ALIGNMENT == VERTICAL){
+		LCD_WriteComm(0x2a);
+		LCD_WriteData2(x);
+		LCD_WriteData2(x+w-1);
+		LCD_WriteComm(0x2b);
+		LCD_WriteData2(y);
+		LCD_WriteData2(y+h-1);
+	}
+	else{
+		LCD_WriteComm(0x2a);
+		LCD_WriteData2(y);
+		LCD_WriteData2(y+h-1);
+		LCD_WriteComm(0x2b);
+		LCD_WriteData2(x);
+		LCD_WriteData2(x+w-1);
+	}
 	LCD_WriteComm(0x2c);
 }
 
