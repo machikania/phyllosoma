@@ -90,9 +90,13 @@ int get_simple_float(void){
 		g_constant_value_flag=0;
 		// Class static property or method
 		vn=get_class_number();
-		if (0<=vn) return static_method_or_property(vn,'#');
-		// Variable or function
-		vn=get_var_number();
+		if (0<=vn) {
+			vn=static_method_or_property(vn,'#');
+			if (vn<=0) return vn; // Error (vn==0) or method (vn<0)
+		} else {
+			// Variable or function
+			vn=get_var_number();
+		}
 		if (0<=vn) {
 			// Get variable value
 			i=variable_to_r0(vn);
@@ -100,7 +104,9 @@ int get_simple_float(void){
 			// Check if an object
 			if ('.'==source[0]) {
 				source++;
-				return method_or_property('#');
+				i=method_or_property('#');
+				g_constant_value_flag=0;
+				return i;
 			}
 			if ('#'!=source[0]) return ERROR_SYNTAX;
 			source++;
@@ -112,6 +118,7 @@ int get_simple_float(void){
 				if (')'!=source[0]) return ERROR_SYNTAX;
 				source++;
 			}
+			g_constant_value_flag=0;
 			return 0;
 		} else if ('P'==source[0] && 'I'==source[1] && '#'==source[2]) {
 			// PI#
@@ -121,6 +128,7 @@ int get_simple_float(void){
 			// This must be a function
 			i=float_functions();
 			if (i) return i;
+			g_constant_value_flag=0;
 			if (')'==(source++)[0]) return 0;
 			source--;
 			return ERROR_SYNTAX;

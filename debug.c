@@ -13,6 +13,14 @@
 void debug_dummy(void){}
 #else // DEBUG_MODE
 
+#warning DEBOG_MODE is active
+
+// Local protptypes
+void dump_class_list(void);
+void dump_fieldnames(void);
+void dump_cmpdata(void);
+void dump_variables(void);
+
 unsigned char* debug_fileselect(void){
 	// Wait for total three seconds
 	sleep_ms(2500);
@@ -23,12 +31,40 @@ unsigned char* debug_fileselect(void){
 #define CR "\n"
 static const char* debug_files[]={
 	"main.bas",
-"USEVAR BALLX,BALLY,BALLVX,BALLVY,BALLR" CR
-"USEVAR WALLX1,WALLX2,WALLY1,WALLY2" CR
-"USEVAR L1X1,L1Y1,L1X2,L1Y2,L1DX,L1DY,L1D" CR
-"PRINT L1X1" CR
-"L1X1=10*256" CR
-"PRINT L1X1" CR
+"USECLASS CLASS1,CLASS2" CR
+"O=NEW(CLASS1)" CR
+"P=NEW(CLASS2,3)" CR
+"GOSUB SUB" CR
+"PRINT O.TEST4(),P.TEST4()" CR
+"O.TEST2=123" CR
+"P.TEST2=456" CR
+"PRINT O.TEST4(),P.TEST4()" CR
+"GOSUB SUB" CR
+"END" CR
+"LABEL SUB" CR
+"FOR I=0 TO 3:PRINT HEX$(O(I)),:NEXT" CR
+"PRINT" CR
+"FOR I=0 TO 3:PRINT HEX$(P(I)),:NEXT" CR
+"PRINT" CR
+"RETURN" CR
+	,"CLASS1.BAS",
+"STATIC TEST" CR
+"FIELD  TEST2" CR
+"FIELD PRIVATE TEST3" CR
+"METHOD TEST4" CR
+"  TEST3=TEST3+1" CR
+"RETURN TEST3" CR
+"END" CR
+	,"CLASS2.BAS",
+"STATIC TEST" CR
+"FIELD PRIVATE TEST3" CR
+"FIELD  TEST2" CR
+"METHOD TEST4" CR
+"  TEST3=TEST3+2" CR
+"RETURN TEST3" CR
+"METHOD INIT" CR
+"  TEST3=ARGS(1)" CR
+"RETURN" CR
 "END" CR
 	,0
 };
@@ -39,12 +75,64 @@ void dump(void){
 	printhex32((int)&kmbasic_object[0]);
 	printstr("\n");
 	for(i=0;i<256;i++) {
+		if (object<=&kmbasic_object[i]) break;
 		printhex16(kmbasic_object[i]);
 		printchar(' ');
-		if (0x0000==kmbasic_object[i] && 0x0000==kmbasic_object[i+1] && 0x0000==kmbasic_object[i+2]) break;
+		
 	}
 	printstr("\n\n");
+	printstr("END: 2383 47C0\n");
+	printstr("call_lib_code(LIB_OBJ_FIELD): ");
+	printhex16(0x2300 | LIB_OBJ_FIELD);
+	printstr(" 47C0\n");
+	//dump_cmpdata();
+	//dump_variables();
+	dump_class_list();
+	dump_fieldnames();
 	sleep_ms(1);
+	printstr("Program will start.\n");
+}
+
+void dump_class_list(void){
+	int i,j,num;
+	int* class_structure;
+	printstr("\nClass ID list\n");
+	for(i=0;g_class_id_list[i];i++){
+		printhex16(g_class_id_list[i]);
+		printchar(' ');
+	}
+	num=i;
+	printstr("\nClass list\n");
+	for(i=0;i<num;i++){
+		printhex32(g_class_list[i]);
+		printchar(' ');
+		printchar(' ');
+	}
+	printstr("\nClass structures\n");
+	for(i=0;i<num;i++){
+		printhex32(g_class_list[i]);
+		printchar(':');
+		printchar(' ');
+		class_structure=(int*)g_class_list[i];
+		for(j=1;j<=class_structure[0];j++){
+			printhex32(class_structure[j]);
+			printchar(' ');
+			printchar(' ');
+		}
+		printstr("\n");
+	}
+}
+
+void dump_fieldnames(void){
+	int* data;
+	printstr("\nField/method name list\n");
+	cmpdata_reset();
+	while(data=cmpdata_find(CMPDATA_FIELDNAME)){
+		printhex16(data[0]);
+		printchar(' ');
+		printstr((char*)(&data[2]));
+		printchar('\n');
+	}
 }
 
 void dump_cmpdata(void){
@@ -64,8 +152,8 @@ void dump_cmpdata(void){
 
 void dump_variables(void){
 	int i;
-	printstr("dump variables\n");
-	for(i=0;i<26;i++){
+	printstr("\ndump variables\n");
+	for(i=0;i<30;i++){
 		printchar('A'+i);
 		printchar(' ');
 		printhex32(kmbasic_variables[i]);

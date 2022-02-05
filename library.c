@@ -355,6 +355,7 @@ void lib_float_str(){
 	use_lib_stack("lib_float_str_main");
 }
 
+
 int lib_sprintf(int r0, int r1, int r2){
 	char* res;
 	int i;
@@ -615,6 +616,22 @@ int lib_input(int r0, int r1, int r2){
 	return (int)str;
 }
 
+int lib_str2obj(int r0, int r1, int r2){
+	int i,j;
+	char* str2;
+	char* str=(char*)r0;
+	// Count character number
+	for(i=0;str[i];i++);
+	// Get permanent block number
+	j=get_permanent_block_number();
+	// Get object area
+	str2=alloc_memory((i+4)/4,j);
+	memcpy(str2,str,i+1);
+	// Garbage collection
+	garbage_collection(str);
+	return (int)str2;
+}
+
 #define GPIO_KEYUP 0
 #define GPIO_KEYLEFT 1
 #define GPIO_KEYRIGHT 2
@@ -652,46 +669,58 @@ int lib_keys(int r0, int r1, int r2){
 	return res&r0;
 }
 
-int debug(int r0, int r1, int r2){
+int lib_debug(int r0, int r1, int r2){
 #ifdef DEBUG_MODE
-	return ((unsigned int)r1)>>r0;
+	//asm("push {r0}");
+	//asm("pop {r0}");
+	asm volatile("mov r1,r6");
+	//asm("adds	r0, r6, #0");
+	printhex32(r0);
+	lib_wait(60,0,0);
+	return r0;
 #else
 	return r0;
 #endif
 }
 
 static const void* lib_list1[]={
-	lib_calc,       // #define LIB_CALC 0
-	lib_calc_float, // #define LIB_CALC_FLOAT 1
-	lib_hex,        // #define LIB_HEX 2
-	lib_add_string, // #define LIB_ADD_STRING 3
-	lib_strncmp,    // #define LIB_STRNCMP 4
-	lib_val,        // #define LIB_VAL 5
-	lib_len,        // #define LIB_LEN 6
-	lib_int,        // #define LIB_INT 7
-	lib_rnd,        // #define LIB_RND 8
-	lib_float,      // #define LIB_FLOAT 9
-	lib_val_float,  // #define LIB_VAL_FLOAT 10
-	lib_math,       // #define LIB_MATH 11
-	lib_mid,        // #define LIB_MID 12
-	lib_chr,        // #define LIB_CHR 13
-	lib_dec,        // #define LIB_DEC 14
-	lib_float_str,  // #define LIB_FLOAT_STRING 15
-	lib_sprintf,    // #define LIB_SPRINTF 16
-	lib_read,       // #define LIB_READ 17
-	lib_cread,      // #define LIB_CREAD 18
-	lib_read_str,   // #define LIB_READ_STR 19
-	lib_asc,        // #define LIB_ASC 20
-	lib_post_gosub, // #define LIB_POST_GOSUB 21
-	lib_display,    // #define LIB_DISPLAY_FUNCTION 22
-	lib_inkey,      // #define LIB_INKEY 23
-	lib_input,      // #define LIB_INPUT 24
-	lib_drawcount,  // #define LIB_DRAWCOUNT 25
-	lib_keys,       // #define LIB_KEYS 26
+	lib_calc,                   // #define LIB_CALC 0
+	lib_calc_float,             // #define LIB_CALC_FLOAT 1
+	lib_hex,                    // #define LIB_HEX 2
+	lib_add_string,             // #define LIB_ADD_STRING 3
+	lib_strncmp,                // #define LIB_STRNCMP 4
+	lib_val,                    // #define LIB_VAL 5
+	lib_len,                    // #define LIB_LEN 6
+	lib_int,                    // #define LIB_INT 7
+	lib_rnd,                    // #define LIB_RND 8
+	lib_float,                  // #define LIB_FLOAT 9
+	lib_val_float,              // #define LIB_VAL_FLOAT 10
+	lib_math,                   // #define LIB_MATH 11
+	lib_mid,                    // #define LIB_MID 12
+	lib_chr,                    // #define LIB_CHR 13
+	lib_dec,                    // #define LIB_DEC 14
+	lib_float_str,              // #define LIB_FLOAT_STRING 15
+	lib_sprintf,                // #define LIB_SPRINTF 16
+	lib_read,                   // #define LIB_READ 17
+	lib_cread,                  // #define LIB_CREAD 18
+	lib_read_str,               // #define LIB_READ_STR 19
+	lib_asc,                    // #define LIB_ASC 20
+	lib_post_gosub,             // #define LIB_POST_GOSUB 21
+	lib_display,                // #define LIB_DISPLAY_FUNCTION 22
+	lib_inkey,                  // #define LIB_INKEY 23
+	lib_input,                  // #define LIB_INPUT 24
+	lib_drawcount,              // #define LIB_DRAWCOUNT 25
+	lib_keys,                   // #define LIB_KEYS 26
+	lib_new,                    // #define LIB_NEW 27
+	lib_resolve_field_address,  // #define LIB_OBJ_FIELD 28
+	lib_resolve_method_address, // #define LIB_OBJ_METHOD 29
+	lib_pre_method,             // #define LIB_PRE_METHOD 30
+	lib_post_method,            // #define LIB_POST_METHOD 31
+
 };
 
 static const void* lib_list2[]={
-	debug,          // #define LIB_DEBUG 128
+	lib_debug,      // #define LIB_DEBUG 128
 	lib_print,      // #define LIB_PRINT 129
 	lib_let_str,    // #define LIB_LET_STR 130
 	lib_end,        // #define LIB_END 131
@@ -703,6 +732,8 @@ static const void* lib_list2[]={
 	lib_display,    // #define LIB_DISPLAY 137
 	lib_wait,       // #define LIB_WAIT 138
 	lib_drawcount,  // #define LIB_SET_DRAWCOUNT 139
+	lib_str2obj,    // #define LIB_STR_TO_OBJECT 140
+	lib_delete,     // #define LIB_DELETE 141
 };
 
 int statement_library(int r0, int r1, int r2, int r3){

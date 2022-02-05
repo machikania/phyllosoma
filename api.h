@@ -53,5 +53,3 @@ void cls(void);
 void _setcursor(unsigned char x,unsigned char y,unsigned char c);
 void setcursor(unsigned char x,unsigned char y,unsigned char c);
 #define setcursor(a,b,c) _setcursor(a,b,c)
-
-

@@ -41,8 +41,6 @@ unsigned char* debug_fileselect(void);
 #ifdef DEBUG_MODE
 
 void dump(void);
-void dump_cmpdata(void);
-void dump_variables(void);
 
 #else // DEBUG_MODE
 

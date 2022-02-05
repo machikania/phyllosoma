@@ -18,12 +18,12 @@ int lib_cread(int r0, int r1, int r2);
 /*
 
 CLEAR
-	すべての斁E���E型変数と整数型�E列を破棁E��、整数値を０とする。また、E
-	PCGの使用をやめ、表示キャラクターをリセチE��する、E
+	すべての文字列型変数と整数型配列を破棄し、整数値を０とする。また、
+	PCGの使用をやめ、表示キャラクターをリセットする。
 */
 
 void display_init(void){
-    // Enable SPI at 32 MHz and connect to GPIOs
+	// Enable SPI at 32 MHz and connect to GPIOs
 	spi_init(LCD_SPICH, 32000 * 1000);
 	gpio_set_function(LCD_SPI_RX, GPIO_FUNC_SPI);
 	gpio_set_function(LCD_SPI_TX, GPIO_FUNC_SPI);
@@ -131,14 +131,14 @@ int lib_display(int r0, int r1, int r2){
 			break;
 		case DISPLAY_SCROLL:
 			//SCROLL x,y
-			//	画面を横方向、もしくは縦方吁E斜めも可)に動かす。動かす方向と大きさ
-			//	は、x, yでそれぞれ、横方向�E移動度、縦方向�E移動度として持E��する、E
+			//	画面を横方向、もしくは縦方向(斜めも可)に動かす。動かす方向と大きさ
+			//	は、x, yでそれぞれ、横方向の移動度、縦方向の移動度として指定する。
 			// TODO: here
 			break;
 		case DISPLAY_WIDTH:
 			//WIDTH x
-			//	キャラクターチE��スプレイの横幁E��斁E��数で持E��。xは30、E6、E0、E8、E
-			//	もしく�E80、E
+			//	キャラクターディスプレイの横幅を文字数で指定。xは30、36、40、48、
+			//	もしくは80。
 			break;
 		case DISPLAY_TVRAM:
 			if (r0<0) return (int)&TVRAM[0];
@@ -512,7 +512,7 @@ int display_statements(void){
 	if (instruction_is("USEGRAPHIC")) return usegraphic_statement();
 	if (instruction_is("USEPCG")) return usepcg_statement();
 	if (instruction_is("WIDTH")) return width_statement();
-	return ERROR_SYNTAX;
+	return ERROR_STATEMENT_NOT_DETECTED;
 }
 
 int display_functions(void){

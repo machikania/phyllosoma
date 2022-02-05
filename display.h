@@ -43,7 +43,6 @@
 	(1<<DISPLAY_PUTBMP2) |\
 	(1<<DISPLAY_PSET) )
 
-
 void display_init(void);
 int display_statements(void);
 int display_functions(void);

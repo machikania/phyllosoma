@@ -9,6 +9,25 @@
 #include "./display.h"
 
 /*
+	Class
+*/
+
+int useclass_statement(void){
+	int i,e;
+	do {
+		e=get_class_number();
+		if (e<0) {
+			// Class not found.
+			// Compile it
+			return init_class_compiling();
+		}
+		skip_blank();
+	} while (','==(source++)[0]);
+	source--;
+	return 0;
+}
+
+/*
 	POKE statements
 */
 
@@ -344,8 +363,9 @@ int get_label_id(void){
 	if (check_if_reserved(source,num)) return ERROR_RESERVED_WORD;
 	// It must not be variable
 	if (1==num) return ERROR_SYNTAX;
+	// Check if var name or class name
 	if (cmpdata_nsearch_string_first(CMPDATA_VARNAME,source,num)) return ERROR_SYNTAX;
-	// TODO: Check if class name
+	if (cmpdata_nsearch_string_first(CMPDATA_CLASSNAME,source,num)) return ERROR_SYNTAX;
 	// Check if registered
 	data=cmpdata_nsearch_string_first(CMPDATA_LABELNAME,source,num);
 	if (!data) {
@@ -482,6 +502,35 @@ int gosub_statement_main(void){
 	return 0;
 }
 
+int gosub_arguments(void){
+	// Prepare argument array (R6 as the pointer)
+	int e,i;
+	short* obefore=object;
+	// Prepare argument array (R6 as the pointer)
+	// R0 may be the pointer to object
+	check_object(4);
+	(object++)[0]=0xb080; //      	sub	sp, #xx (this will be updated; see below)
+	(object++)[0]=0x9601; //      	str	r6, [sp, #4]
+	(object++)[0]=0x466e; //      	mov	r6, sp
+	(object++)[0]=0x6030; //        str	r0, [r6, #0]
+	for(i=3;','==source[0] || '('==source[0] ;i++){
+		source++;
+		skip_blank();
+		if (3==i && ')'==source[0]) break;
+		e=get_string_int_or_float();
+		if (e) return e;
+		check_object(1);
+		(object++)[0]=0x6030 | (i<<6); // str	r0, [r6, #xx]
+	}
+	obefore[0]|=i; // Update sub sp,#xx assembly
+	// Set number of variables
+	e=set_value_in_register(0,i-3);
+	if (e) return e;
+	check_object(1);
+	(object++)[0]=0x6030 | (2<<6); // str	r0, [r6, #xx]
+	return i;
+}
+
 int gosub_statement(void){
 	char* safter;
 	char* sbefore=source;
@@ -495,28 +544,22 @@ int gosub_statement(void){
 	// Rewind object
 	rewind_object(obefore);
 	// Prepare argument array (R6 as the pointer)
-	check_object(3);
-	(object++)[0]=0xb080; //      	sub	sp, #xx (this will be updated; see below)
-	(object++)[0]=0x9601; //      	str	r6, [sp, #4]
-	(object++)[0]=0x466e; //      	mov	r6, sp
-	for(i=3;','==source[0];i++){
-		source++;
-		e=get_string_int_or_float();
-		if (e) return e;
-		check_object(1);
-		(object++)[0]=0x6030 | (i<<6); // str	r0, [r6, #xx]
-	}
-	obefore[0]|=i; // Update sub sp,#xx assembly
-	// Set number of variables
-	set_value_in_register(0,i-3);
-	check_object(1);
-	(object++)[0]=0x6030 | (2<<6); // str	r0, [r6, #xx]
+	check_object(1);      // Copy previous object
+	(object++)[0]=0x6830; // ldr	r0, [r6, #0]
+	i=gosub_arguments();
+	if (i<0) return i;
 	// GOSUB again
 	safter=source;
 	source=sbefore;
 	e=gosub_statement_main();
 	if (e) return e;
 	source=safter;
+	// Delete argeuement array
+	return post_gosub_statement(i);
+}
+
+int post_gosub_statement(int i){
+	int e;
 	// Garbage collection
 	check_object(1);
 	(object++)[0]=0x0031;   // movs	r1, r6
@@ -526,7 +569,6 @@ int gosub_statement(void){
 	check_object(2);
 	(object++)[0]=0x6876;   // ldr	r6, [r6, #4]
 	(object++)[0]=0xb000|i; // add	sp, #xx
-	// All done
 	return 0;
 }
 
@@ -590,7 +632,7 @@ int continue_statement(void){
 	DO/LOOP/WHILE/WEND statements
 */
 
-int do_statement(void){// TODO: debug "DO" statement without WHILE/LOOP
+int do_statement(void){
 	int e;
 	g_fordepth++;
 	unsigned short* obefore=object;
@@ -998,7 +1040,7 @@ int elseif_statement(void){
 	return if_statement();
 }
 
-int usevar_statement(void){
+int usevar_statement_main(int for_class){
 	int e,num;
 	short data16;
 	int* data;
@@ -1019,6 +1061,20 @@ int usevar_statement(void){
 		// Insert a new cmpdata
 		e=cmpdata_insert_string(CMPDATA_VARNAME,data16,source,num);
 		if (e) return e;
+		// Class related
+		switch(for_class){
+			case CLASS_STATIC:
+				e=register_class_static_field(data16);
+				if (e) return e;
+				break;
+			case CLASS_FIELD | CLASS_PUBLIC:
+			case CLASS_FIELD:
+				e=register_class_field(data16,for_class);
+				if (e) return e;
+				break;
+			default:
+				break;
+		}
 		// Done. Check next
 		source+=num;
 		if ('$'==source[0] || '#'==source[0]) source++;
@@ -1027,6 +1083,10 @@ int usevar_statement(void){
 		source++;
 	}
 	return 0;
+}
+
+int usevar_statement(void){
+	return usevar_statement_main(0);
 }
 
 int let_integer(int vn){
@@ -1065,7 +1125,7 @@ int let_string(int vn){
 		case '=': // simple string
 			e=get_string();
 			if (e) return e;
-			e=var_num_to_r1(vn);
+			e=set_value_in_register(1,vn);
 			if (e) return e;
 			return call_lib_code(LIB_LET_STR);
 		case '(': // string array (not supported)
@@ -1108,10 +1168,23 @@ int let_statement(void){
 	int i;
 	// Check if there is '='
 	for(i=0;source[i]!='=';i++){
-		if (0x00==source[i] || ':'==source[i] || '"'==source[i]) return ERROR_SYNTAX;
+		if (0x00==source[i] || '"'==source[i]) return ERROR_SYNTAX;
+		if (':'==source[i]) {
+			if (':'!=source[i]) return ERROR_SYNTAX;
+			i++;
+		}
 	}
 	i=get_var_number();
-	if (i<0) return i;
+	if (i<0) {
+		// Try class
+		i=get_class_number();
+		if (i<0) return i;
+		// Try class static property
+		i=static_property_var_num(i);
+		if (i<0) return i;
+		// It's a class static property
+		// i is the var number of this
+	}
 	switch(source[0]){
 		case '$': // string
 			source++;
@@ -1121,6 +1194,9 @@ int let_statement(void){
 			source++;
 			skip_blank();
 			return let_float(i);
+		case '.': // object
+			source++;
+			return let_object(i);
 		case '(': // integer array
 		default: // integer
 			skip_blank();
@@ -1181,6 +1257,47 @@ int print_statement(void) {
 }
 
 /*
+	Class related
+
+*/
+
+int field_statement(void){
+	if (instruction_is("PRIVATE")) return usevar_statement_main(CLASS_FIELD);
+	// "FIELD PUBLIC" is the same as "FIELD"
+	instruction_is("PUBLIC");
+	return usevar_statement_main(CLASS_FIELD | CLASS_PUBLIC);
+}
+
+int static_statement(void){
+	// "STATIC PRIVATE" is the same as "USEVAR"
+	if (instruction_is("PRIVATE")) return usevar_statement_main(0);
+	// "STATIC PUBLIC" is the same as "STATIC"
+	instruction_is("PUBLIC");
+	return usevar_statement_main(CLASS_STATIC);
+}
+
+int call_statement(void){
+	// This routine also checks the end of statement
+	// If error occurs, rewind and return error
+	char* sbefore=source;
+	unsigned short* obefore=object;
+	int e;
+	e=get_integer();
+	if (end_of_statement() && !e) return 0;
+	source=sbefore;
+	rewind_object(obefore);
+	if (!e) return ERROR_SYNTAX;
+	return e;
+}
+
+int method_statement(void){
+	int e;
+	e=method_statement_main();
+	if (e) return e;
+	return label_statement();
+}
+
+/*
 	Misc
 */
 
@@ -1233,7 +1350,7 @@ int dim_statement(void){
 		if (')'!=source[0]) return ERROR_SYNTAX;
 		source++;
 		// R1 is var number
-		e=var_num_to_r1(vn);
+		e=set_value_in_register(1,vn);
 		if (e) return e;
 		// R0 is number of integer values
 		set_value_in_register(0,i);
@@ -1253,7 +1370,7 @@ int end_of_statement(void){
 	if (0x00==source[0]) return 1;
 	if (':'==source[0] && ':'!=source[1]) return 1;
 	if ('E'==source[0] && 'L'==source[1] && 'S'==source[2] && 'E'==source[3] && ' '==source[4]) return 1;
-	if ('T'==source[0] && 'H'==source[1] && 'E'==source[2] && 'N'==source[3] && ' '==source[4]) return 1;
+	if ('T'==source[0] && 'H'==source[1] && 'E'==source[2] && 'N'==source[3] && (' '==source[4] || 0x00==source[4])) return 1;
 	if ('S'==source[0] && 'T'==source[1] && 'E'==source[2] && 'P'==source[3] && ' '==source[4]) return 1;
 	if ('T'==source[0] && 'O'==source[1] && ' '==source[2]) return 1;
 	return 0;
@@ -1265,7 +1382,7 @@ int compile_statement(void){
 	// Initialize
 	unsigned short* bobj=object;
 	unsigned char* bsrc=source;
-	// Check if multiple statement
+	// Check if multiple statement, first
 	if (g_multiple_statement) return f();
 	// Check LET statement, first
 	if (instruction_is("LET")) return let_statement();
@@ -1276,10 +1393,12 @@ int compile_statement(void){
 	source=bsrc;
 	// It's not LET statement. Let's continue for possibilities of the other statements.
 	if (instruction_is("BREAK")) return break_statement();
+	if (instruction_is("CALL")) return call_statement();
 	if (instruction_is("CDATA")) return cdata_statement();
 	if (instruction_is("CONTINUE")) return continue_statement();
 	if (instruction_is("DATA")) return data_statement();
 	if (instruction_is("DEBUG")) return debug_statement();
+	if (instruction_is("DELETE")) return delete_statement();
 	if (instruction_is("DIM")) return dim_statement();
 	if (instruction_is("DO")) return do_statement();
 	if (instruction_is("DRAWCOUNT")) return drawcount_statement();
@@ -1287,12 +1406,14 @@ int compile_statement(void){
 	if (instruction_is("ELSEIF")) return elseif_statement();
 	if (instruction_is("END")) return end_statement();
 	if (instruction_is("ENDIF")) return endif_statement();
+	if (instruction_is("FIELD")) return field_statement();
 	if (instruction_is("FOR")) return for_statement();
 	if (instruction_is("GOSUB")) return gosub_statement();
 	if (instruction_is("GOTO")) return goto_statement();
 	if (instruction_is("IF")) return if_statement();
 	if (instruction_is("LABEL")) return label_statement();
 	if (instruction_is("LOOP")) return loop_statement();
+	if (instruction_is("METHOD")) return method_statement();
 	if (instruction_is("NEXT")) return next_statement();
 	if (instruction_is("POKE")) return poke_statement();
 	if (instruction_is("POKE16")) return poke16_statement();
@@ -1301,13 +1422,18 @@ int compile_statement(void){
 	if (instruction_is("REM")) return rem_statement();
 	if (instruction_is("RESTORE")) return restore_statement();
 	if (instruction_is("RETURN")) return return_statement();
+	if (instruction_is("STATIC")) return static_statement();
+	if (instruction_is("USECLASS")) return useclass_statement();
 	if (instruction_is("USEVAR")) return usevar_statement();
 	if (instruction_is("VAR")) return var_statement();
 	if (instruction_is("WAIT")) return wait_statement();
 	if (instruction_is("WEND")) return wend_statement();
 	if (instruction_is("WHILE")) return while_statement();
 	// Environment statements
-	return display_statements();
-	// Finally, try let statement again as syntax error may be in LET statement.
-	//return let_statement();
+	e=display_statements();
+	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;
+	// Try call statement
+	if (!call_statement()) return 0;
+	// Finally, try let statement as error may occur in LET statement.
+	return let_statement();
 }

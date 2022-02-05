@@ -124,6 +124,7 @@ int integer_functions(void){
 	if (instruction_is("INT(")) return int_function();
 	if (instruction_is("KEYS(")) return keys_function();
 	if (instruction_is("LEN(")) return len_function();
+	if (instruction_is("NEW(")) return new_function();
 	if (instruction_is("NOT(")) return not_function();
 	if (instruction_is("PEEK(")) return peek_function();
 	if (instruction_is("PEEK16(")) return peek16_function();
@@ -186,9 +187,13 @@ int get_simple_integer(void){
 		g_constant_value_flag=0;
 		// Class static property or method
 		vn=get_class_number();
-		if (0<=vn) return static_method_or_property(vn,0);
-		// Variable or function
-		vn=get_var_number();
+		if (0<=vn) {
+			vn=static_method_or_property(vn,0);
+			if (vn<=0) return vn; // Error (vn==0) or method (vn<0)
+		} else {
+			// Variable or function
+			vn=get_var_number();
+		}
 		if (0<=vn) {
 			// Get variable value
 			i=variable_to_r0(vn);
@@ -204,14 +209,17 @@ int get_simple_integer(void){
 			// Check if an object
 			if ('.'==source[0]) {
 				source++;
-				return method_or_property(0);
+				i=method_or_property(0);
+				g_constant_value_flag=0;
+				return i;
 			}
+			g_constant_value_flag=0;
 			return 0;
 		} else {
-			// TODO: support class static property
 			// This must be a function
 			i=integer_functions();
 			if (i) return i;
+			g_constant_value_flag=0;
 			if (')'==(source++)[0]) return 0;
 			source--;
 			return ERROR_SYNTAX;
@@ -225,6 +233,7 @@ int get_simple_integer(void){
 		(object++)[0]=0x2000 | vn; // movs	r0, #xx
 		(object++)[0]=0x0080;      // lsls	r0, r0, #2
 		(object++)[0]=0x1940;      // adds	r0, r0, r5
+		g_constant_value_flag=0;
 		return 0;
 	}
 	return ERROR_SYNTAX;

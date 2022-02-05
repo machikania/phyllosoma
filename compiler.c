@@ -43,11 +43,66 @@ void init_compiler(void){
 	cmpdata_init();
 	// Initialize variable
 	variable_init();
+}
+
+int post_compile(void){
+	int e;
+	e=post_compilling_classes();
+	if (e) return e;
+	return 0;
+}
+
+void begin_file_compiler(void){
 	// Initialize followings every file
 	g_ifdepth=0;
 	g_fordepth=0;
 	g_linenum=0;
 	g_multiple_statement=0;
+}
+
+int end_file_compiler(void){
+	int* data;
+	int i;
+	do {
+		// Check errors
+		if (data=cmpdata_findfirst(CMPDATA_GOTO_NUM_BL)) {
+			printstr("Line number not found");
+			break;
+		}
+		if (data=cmpdata_findfirst(CMPDATA_GOTO_LABEL_BL)) {
+			printstr("Label not found");
+			break;
+		}
+		if (data=cmpdata_findfirst(CMPDATA_BREAK_BL)) {
+			printstr("FOR/WHILE/DO loop not terminated");
+			break;
+		}
+		if (data=cmpdata_findfirst(CMPDATA_CONTINUE)) {
+			printstr("FOR/WHILE/DO loop not terminated");
+			break;
+		}
+		if (data=cmpdata_findfirst(CMPDATA_IF_BL)) {
+			printstr("IF not terminated");
+			break;
+		}
+		if (data=cmpdata_findfirst(CMPDATA_ENDIF_BL)) {
+			printstr("IF not terminated");
+			break;
+		}
+		// No error found. Remove some CMPDATAs
+		cmpdata_delete_all(CMPDATA_VARNAME);
+		cmpdata_delete_all(CMPDATA_LABEL);
+		// All done
+		return 0;
+	} while(0);
+	// Error occured
+	i=line_number_from_address(data[1]);
+	if (0<i) {
+		printstr(" at line ");
+		printint(i);
+	}
+	printchar('\n');
+	return ERROR_OTHERS;
 }
 
 void rewind_object(unsigned short* objpos){
@@ -156,8 +211,7 @@ unsigned char* code2upper(unsigned char* code){
 int register_line_number(int id){
 	int* data;
 	short* bl;
-	// Check if this is the first time
-	if (cmpdata_findfirst_with_id(CMPDATA_LINENUM,id)) return ERROR_LABEL_DUPLICATED;
+	// Note that line number can be duplicated as multiple files are compiled when using classes
 	// Register new CMPDATA_LINENUM record
 	g_scratch_int[0]=(int)object;
 	return cmpdata_insert(CMPDATA_LINENUM,id,(int*)g_scratch_int,1);
@@ -227,10 +281,16 @@ int compile_line(unsigned char* code){
 		// Continue this  line
 		source++;
 	}
-	if (e) {
-		// Error happened
-		show_error(e,source-before);
-		return e;
+	switch(e){
+		case 0:
+			// No error
+			break;
+		case ERROR_COMPILE_CLASS:
+			return e;
+		default:
+			// Error happened
+			show_error(e,source-before);
+			return e;
 	}
 	// Error didn't happen
 	e=source-before;

@@ -10,7 +10,7 @@
 static char* g_error_file;
 static int g_error_line;
 
-static const char* g_error_text[14]={
+static const char* g_error_text[20]={
 	"No error",
 	"Syntax error",                  // #define ERROR_SYNTAX _throw_error(-1)
 	"Unknown error",                 // #define ERROR_UNKNOWN _throw_error(-2)
@@ -25,9 +25,15 @@ static const char* g_error_text[14]={
 	"DATA not found",                // #define ERROR_DATA_NOT_FOUND  _throw_error(-11)
 	"Too many objects",              // #define ERROR_OBJ_TOO_MANY  _throw_error(-12)
 	"File error",                    // #define ERROR_FILE  _throw_error(-13)
+	"",                              // #define ERROR_COMPILE_CLASS (-14)
+	"Not class field/method",        // #define ERROR_NOT_FIELD  _throw_error(-15)
+	"Not public field/method",       // #define ERROR_NOT_PUBLIC  _throw_error(-16)
+	"",                              // #define ERROR_STATEMENT_NOT_DETECTED (-17)
+	"Class file not found",          // #define ERROR_NO_CLASS_FILE _throw_error(-18)
+	"",                              // #define ERROR_OTHERS (-19)
 };
 
-void show_error(int e, int pos){
+int show_error(int e, int pos){
 	e=-e;
 	printstr("\n");
 #ifdef DEBUG_MODE
@@ -42,11 +48,14 @@ void show_error(int e, int pos){
 		printstr("Error #");
 		printint(e);
 	}
-	printstr(" in line ");
-	printint(g_linenum);
-	printstr(" at ");
-	printint(pos);
+	if (g_linenum) {
+		printstr(" in line ");
+		printint(g_linenum);
+		printstr(" at ");
+		printint(pos);
+	}
 	printstr("\n");
+	return e;
 }
 
 int throw_error(int e,int line, char* file){
@@ -71,8 +80,7 @@ int line_number_from_address(int addr){
 		return data[0]&0xffff;
 	}
 	// Not found
-	stop_with_error(ERROR_OBJ_TOO_MANY);
-	return 0;
+	return -1;
 }
 
 void stop_with_error(int e){

@@ -75,11 +75,18 @@ unsigned short* g_read_point;
 int g_read_valid_len;
 unsigned short g_read_mode;
 
+// Class related
+
+char* g_class_file;
+unsigned short g_class_id;
+int g_class_mode;
+unsigned short* g_class_id_list;
+int* g_class_list;
+int* g_empty_object_list;
+
 // Reserved words
 
-
-
-const char* const g_reserved_words[129]={
+const char* const g_reserved_words[132]={
 	"ABS",
 	"ACOS",
 	"ARGS",
@@ -174,6 +181,7 @@ const char* const g_reserved_words[129]={
 	"POKE32",
 	"POW",
 	"PRINT",
+	"PRIVATE",
 	"PSET",
 	"PUBLIC",
 	"PUTBMP",
@@ -190,6 +198,7 @@ const char* const g_reserved_words[129]={
 	"SOUND",
 	"SPRINTF",
 	"SQRT",
+	"STATIC",
 	"STEP",
 	"STRNCMP",
 	"SYSTEM",
@@ -200,6 +209,7 @@ const char* const g_reserved_words[129]={
 	"TO",
 	"TVRAM",
 	"UNTIL",
+	"USECLASS",
 	"USEGRAPHIC",
 	"USEPCG",
 	"USEVAR",
@@ -210,7 +220,7 @@ const char* const g_reserved_words[129]={
 	"WHILE",
 	"WIDTH",
 };
-const int const g_hash_resereved_words[129]={
+const int const g_hash_resereved_words[132]={
 	0x000400d3, //ABS
 	0x01002393, //ACOS
 	0x01013193, //ARGS
@@ -305,6 +315,7 @@ const int const g_hash_resereved_words[129]={
 	0x4e285ce6, //POKE32
 	0x00051397, //POW
 	0x514c83d4, //PRINT
+	0xc85c0051, //PRIVATE
 	0x01452114, //PSET
 	0x540cd217, //PUBLIC
 	0x54543304, //PUTBMP
@@ -321,6 +332,7 @@ const int const g_hash_resereved_words[129]={
 	0x523943c4, //SOUND
 	0xacdf0fa2, //SPRINTF
 	0x014904d4, //SQRT
+	0x95015217, //STATIC
 	0x01495110, //STEP
 	0xacc3d9f5, //STRNCMP
 	0x98495119, //SYSTEM
@@ -331,6 +343,7 @@ const int const g_hash_resereved_words[129]={
 	0x0000154f, //TO
 	0x555d300d, //TVRAM
 	0x543d520c, //UNTIL
+	0xfdcaaa72, //USECLASS
 	0x2aaa8267, //USEGRAPHIC
 	0x12111092, //USEPCG
 	0x12117007, //USEVAR

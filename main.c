@@ -29,12 +29,12 @@ int main() {
 	// Compile the code
 	s=time_us_32();
 	init_compiler();
-	e=compile_file(str);
+	e=compile_file(str,0);
+	if (!e) e=post_compile();
 	printint(time_us_32()-s);
 	printstr(" micro seconds spent for compiling\n");
 	// Show dump
 	dump();
-	//dump_cmpdata();
 	// Run the code if error didn't occur
 	if (!e) {
 		pre_run();
@@ -42,9 +42,9 @@ int main() {
 		post_run();
 	}
 	// Show dump
-	dump_variables();
+	//dump_variables();
 	// Infinite loop
-	for(i=0;true;i++){
+	for(i=0;i<16;i++){
 		sleep_ms(1000);
 		//run_code();
 		printchar("-/|\\"[i&0x03]); printchar(0x08);

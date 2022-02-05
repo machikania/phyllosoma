@@ -9,7 +9,7 @@
 	Configration
 */
 
-#define DEBUG_MODE
+//#define DEBUG_MODE
 #define TEMPVAR_NUMBER 10
 #define ALLOC_BLOCK_NUM 256
 
@@ -41,6 +41,12 @@
 #define ERROR_DATA_NOT_FOUND  _throw_error(-11)
 #define ERROR_OBJ_TOO_MANY  _throw_error(-12)
 #define ERROR_FILE  _throw_error(-13)
+#define ERROR_COMPILE_CLASS (-14)
+#define ERROR_NOT_FIELD  _throw_error(-15)
+#define ERROR_NOT_PUBLIC  _throw_error(-16)
+#define ERROR_STATEMENT_NOT_DETECTED (-17)
+#define ERROR_NO_CLASS_FILE _throw_error(-18)
+#define ERROR_OTHERS (-19)
 
 /*
 	Libraries
@@ -79,6 +85,11 @@
 #define LIB_INPUT 24
 #define LIB_DRAWCOUNT 25
 #define LIB_KEYS 26
+#define LIB_NEW 27
+#define LIB_OBJ_FIELD 28
+#define LIB_OBJ_METHOD 29
+#define LIB_PRE_METHOD 30
+#define LIB_POST_METHOD 31
 
 #define LIB_DEBUG 128
 #define LIB_PRINT 129
@@ -92,6 +103,8 @@
 #define LIB_DISPLAY 137
 #define LIB_WAIT 138
 #define LIB_SET_DRAWCOUNT 139
+#define LIB_STR_TO_OBJECT 140
+#define LIB_DELETE 141
 
 /*
 	LIB MATH options
@@ -141,22 +154,37 @@
 /*
 	CMPDATA
 */
-#define CMPDATA_TEMP 0
-#define CMPDATA_VARNAME 1
-#define CMPDATA_LINENUM 2
-#define CMPDATA_LABEL 3
-#define CMPDATA_LABELNAME 4
-#define CMPDATA_GOTO_NUM_BL 5
-#define CMPDATA_GOTO_LABEL_BL 6
-#define CMPDATA_CONTINUE 7
-#define CMPDATA_BREAK_BL 8
-#define CMPDATA_IF_BL 9
-#define CMPDATA_ENDIF_BL 10
-#define CMPDATA_ALL 255
+#define CMPDATA_TEMP          0x00
+#define CMPDATA_VARNAME       0x01
+#define CMPDATA_LINENUM       0x02
+#define CMPDATA_LABEL         0x03
+#define CMPDATA_LABELNAME     0x04
+#define CMPDATA_GOTO_NUM_BL   0x05
+#define CMPDATA_GOTO_LABEL_BL 0x06
+#define CMPDATA_CONTINUE      0x07
+#define CMPDATA_BREAK_BL      0x08
+#define CMPDATA_IF_BL         0x09
+#define CMPDATA_ENDIF_BL      0x0A
+#define CMPDATA_CLASSNAME     0x0B
+#define CMPDATA_FIELDNAME     0x0C
+#define CMPDATA_CLASS         0x0D
+#define CMPDATA_METHOD        0x0E
+#define CMPDATA_STRSTACK      0x0F
+#define CMPDATA_CLASS_ADDRESS 0x10
+#define CMPDATA_STATIC        0x11
+#define CMPDATA_ALL           0xFF
+
+/*
+	Class
+*/
+#define CLASS_METHOD   0x00010000
+#define CLASS_FIELD    0x00020000
+#define CLASS_PUBLIC   0x00100000
+#define CLASS_STATIC   0x00200000
+
 /*
 	Misc
 */
-
 #define VAR_MODE_INTEGER 0
 #define VAR_MODE_STRING  1
 #define VAR_MODE_FLOAT   2
@@ -181,6 +209,7 @@
 /*
 	Variables
 */
+
 extern unsigned short kmbasic_object[512*192];
 extern int kmbasic_data[32];
 extern int kmbasic_variables[ALLOC_BLOCK_NUM];
@@ -210,8 +239,8 @@ extern volatile int* g_scratch_int;
 extern volatile float* g_scratch_float;
 extern volatile char* g_scratch_char;
 
-extern const char* const g_reserved_words[129];
-extern const int const g_hash_resereved_words[129];
+extern const char* const g_reserved_words[132];
+extern const int const g_hash_resereved_words[132];
 
 extern char g_constant_value_flag;
 extern int g_constant_int;
@@ -227,6 +256,13 @@ extern unsigned short* g_read_point;
 extern int g_read_valid_len;
 extern unsigned short g_read_mode;
 
+extern char* g_class_file;
+extern unsigned short g_class_id;
+extern int g_class_mode;
+extern unsigned short* g_class_id_list;
+extern int* g_class_list;
+extern int* g_empty_object_list;
+
 /*
 	Prototypes
 */
@@ -235,12 +271,14 @@ extern unsigned short g_read_mode;
 void variable_init(void);
 short get_new_varnum(void);
 int get_var_number(void);
-int var_num_to_r1(int vn);
 int r0_to_variable(int vn);
 int variable_to_r0(int vn);
 
 // compiler.c
 void init_compiler(void);
+int post_compile(void);
+void begin_file_compiler(void);
+int end_file_compiler(void);
 void rewind_object(unsigned short* objpos);
 int check_if_reserved(char* str, int num);
 void update_bl(short* bl,short* destination);
@@ -262,7 +300,9 @@ int kmbasic_library(int r0, int r1, int r2, int r3);
 
 // statement.c
 int goto_label(void);
+int gosub_arguments(void);
 int gosub_statement(void);
+int post_gosub_statement(int i);
 int compile_statement(void);
 int end_of_statement(void);
 
@@ -302,6 +342,7 @@ int debug_function(void);
 
 // cmpdata.c
 void cmpdata_init(void);
+int* cmpdata_current_record(void);
 unsigned short cmpdata_get_id(void);
 void cmpdata_reset(void);
 int cmpdata_insert(unsigned char type, short data16, int* data, unsigned char num);
@@ -310,6 +351,7 @@ int* cmpdata_find(unsigned char type);
 int* cmpdata_findfirst(unsigned char type);
 int* cmpdata_findfirst_with_id(unsigned char type, unsigned short id);
 void cmpdata_delete(int* record);
+void cmpdata_delete_all(unsigned char type);
 void cmpdata_delete_invalid(void);
 int* cmpdata_nsearch_string(unsigned int type,unsigned char* str,int num);
 int* cmpdata_search_string(unsigned int type,unsigned char* str);
@@ -317,9 +359,11 @@ int* cmpdata_nsearch_string_first(unsigned int type,unsigned char* str,int num);
 int* cmpdata_search_string_first(unsigned int type,unsigned char* str);
 int cmpdata_nhash(unsigned char* str, int num);
 int cmpdata_hash(unsigned char* str);
+unsigned char* cmpdata_insert_string_stack(int num);
+void cmpdata_delete_string_stack(unsigned char* str);
 
 // error.c
-void show_error(int e, int pos);
+int show_error(int e, int pos);
 int line_number_from_address(int addr);
 void stop_with_error(int e);
 
@@ -333,13 +377,30 @@ void garbage_collection(void* data);
 int get_permanent_block_number(void);
 
 // class.c
+int init_class_compiling(void);
+int post_compilling_a_class(void);
+int post_compilling_classes(void);
+int length_of_field(void);
 int get_class_number(void);
 int static_method_or_property(int cn, char stringorfloat);
+int static_property_var_num(int cn);
 int method_or_property(char stringorfloat);
+int register_class_field(int var_number, int fieldinfo);
+int register_class_static_field(int var_number);
+int new_function(void);
+int lib_new(int r0, int r1, int r2);
+int let_object(int vn);
+int lib_delete(int r0, int r1, int r2);
+int delete_statement(void);
+int method_statement_main(void);
+int lib_resolve_field_address(int r0, int r1, int r2);
+int lib_resolve_method_address(int r0, int r1, int r2);
+int lib_pre_method(int r0, int r1, int r2);
+int lib_post_method(int r0, int r1, int r2);
 
 // file.c
 void init_file_system(void);
-int compile_file(unsigned char* fname);
+int compile_file(unsigned char* fname, char isclass);
 
 // For debugging
 void dump_cmpdata(void);
@@ -348,6 +409,7 @@ void dump(void);
 /*
 	Macros
 */
+
 // Skip blank
 #define skip_blank() \
 	do {\
@@ -362,4 +424,4 @@ void dump(void);
 
 // Operator priority
 extern const unsigned char g_priority[];
-#define priority(x) (int)g_priority[(int)(x)]
+#define priority(x) ((int)g_priority[(int)(x)])
