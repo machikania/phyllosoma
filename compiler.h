@@ -105,6 +105,27 @@
 #define LIB_SET_DRAWCOUNT 139
 #define LIB_STR_TO_OBJECT 140
 #define LIB_DELETE 141
+#define LIB_FILE 142
+#define LIB_FOPEN 143
+#define LIB_FPRINT 144
+
+/*
+	LIB FILE options
+*/
+#define FILE_FCLOSE 1
+#define FILE_FGET 2
+#define FILE_FILE 3
+#define FILE_FPUT 4
+#define FILE_FPUTC 5
+#define FILE_FREMOVE 6
+#define FILE_FSEEK 7
+#define FILE_SETDIR 8
+#define FILE_FEOF 9
+#define FILE_FGETC 10
+#define FILE_FLEN 11
+#define FILE_FSEEKFUNC 12
+#define FILE_FINPUT 13
+#define FILE_GETDIR 14
 
 /*
 	LIB MATH options
@@ -401,6 +422,25 @@ int lib_post_method(int r0, int r1, int r2);
 // file.c
 void init_file_system(void);
 int compile_file(unsigned char* fname, char isclass);
+int lib_file(int r0, int r1, int r2);
+int lib_fopen(int r0, int r1, int r2);
+int lib_fprint(int r0, int r1, int r2);
+int fclose_statement(void);
+int fget_function(void);
+int file_statement(void);
+int fopen_function(void);
+int fprint_statement(void);
+int fput_function(void);
+int fputc_function(void);
+int fremove_function(void);
+int fseek_statement(void);
+int setdir_function(void);
+int feof_function(void);
+int fgetc_function(void);
+int flen_function(void);
+int fseek_function(void);
+int finput_function(void);
+int getdir_function(void);
 
 // For debugging
 void dump_cmpdata(void);

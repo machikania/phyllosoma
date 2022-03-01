@@ -134,6 +134,16 @@ int integer_functions(void){
 	if (instruction_is("SGN(")) return sgn_function();
 	if (instruction_is("STRNCMP(")) return strncmp_function();
 	if (instruction_is("VAL(")) return val_function();
+	// File functions
+	if (instruction_is("FEOF(")) return feof_function();
+	if (instruction_is("FGET(")) return fget_function();
+	if (instruction_is("FGETC(")) return fgetc_function();
+	if (instruction_is("FLEN(")) return flen_function();
+	if (instruction_is("FPUT(")) return fput_function();
+	if (instruction_is("FPUTC(")) return fputc_function();
+	if (instruction_is("FREMOVE(")) return fremove_function();
+	if (instruction_is("FSEEK(")) return fseek_function();
+	if (instruction_is("SETDIR(")) return setdir_function();
 	// Environment
 	return display_functions();
 }

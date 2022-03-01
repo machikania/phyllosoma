@@ -734,6 +734,10 @@ static const void* lib_list2[]={
 	lib_drawcount,  // #define LIB_SET_DRAWCOUNT 139
 	lib_str2obj,    // #define LIB_STR_TO_OBJECT 140
 	lib_delete,     // #define LIB_DELETE 141
+	lib_file,       // #define LIB_FILE 142
+	lib_fopen,      // #define LIB_FOPEN 143
+	lib_fprint,     // #define LIB_FPRINT 144
+
 };
 
 int statement_library(int r0, int r1, int r2, int r3){

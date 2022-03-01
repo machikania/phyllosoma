@@ -1429,6 +1429,17 @@ int compile_statement(void){
 	if (instruction_is("WAIT")) return wait_statement();
 	if (instruction_is("WEND")) return wend_statement();
 	if (instruction_is("WHILE")) return while_statement();
+	// File statements
+	if (instruction_is("FCLOSE")) return fclose_statement();
+	if (instruction_is("FGET")) return fget_function();
+	if (instruction_is("FILE")) return file_statement();
+	if (instruction_is("FOPEN")) return fopen_function();
+	if (instruction_is("FPRINT")) return fprint_statement();
+	if (instruction_is("FPUT")) return fput_function();
+	if (instruction_is("FPUTC")) return fputc_function();
+	if (instruction_is("FREMOVE")) return fremove_function();
+	if (instruction_is("FSEEK")) return fseek_statement();
+	if (instruction_is("SETDIR")) return setdir_function();
 	// Environment statements
 	e=display_statements();
 	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;
