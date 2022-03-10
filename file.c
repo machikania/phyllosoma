@@ -277,6 +277,7 @@ int lib_file(int r0, int r1, int r2){
 	printint(r0);
 	printstr(" r1: ");
 	printint(r1);
+	printchar('\n');
 	return 0;
 }
 
@@ -297,12 +298,13 @@ int lib_fopen(int r0, int r1, int r2){
 	//合、１が指定される。
 	
 	// TODO: here
-	printstr(" FOPEN r0: ");
+	printstr("FILE_FOPEN r0: ");
 	printint(r0);
 	printstr(" r1: ");
 	printint(r1);
 	printstr(" r2: ");
 	printint(r2);
+	printchar('\n');
 	return 0;
 	//FRESULT f_open (
 	//  FIL* FileObject,       // 空のファイル・オブジェクト構造体へのポインタ 
@@ -319,6 +321,7 @@ int lib_fprint(int r0, int r1, int r2){
 	printint(r1);
 	printstr(" r2: ");
 	printint(r2);
+	printchar('\n');
 	return 0;
 }
 

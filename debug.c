@@ -31,22 +31,26 @@ unsigned char* debug_fileselect(void){
 #define CR "\n"
 static const char* debug_files[]={
 	"main.bas",
-"USECLASS CLASS1,CLASS2" CR
-"O=NEW(CLASS1)" CR
-"P=NEW(CLASS2,3)" CR
-"GOSUB SUB" CR
-"PRINT O.TEST4(),P.TEST4()" CR
-"O.TEST2=123" CR
-"P.TEST2=456" CR
-"PRINT O.TEST4(),P.TEST4()" CR
-"GOSUB SUB" CR
+"FCLOSE" CR
+"FCLOSE 1" CR
+"FCLOSE 2" CR
+"FGET 123,456" CR
+"FILE 2" CR
+"FOPEN \"test.txt\",\"r\"" CR
+"FOPEN \"test.txt\",\"r\",2" CR
+"FPUT 234,567" CR
+"FPUTC 123" CR
+"FREMOVE \"test.txt\"" CR
+"FSEEK 456" CR
+"SETDIR \"test\"" CR
+"A=FEOF()" CR
+"A=FGETC()" CR
+"A=FLEN()" CR
+"A=FSEEK()" CR
+"A$=FINPUT$()" CR
+"A$=FINPUT$(63)" CR
+"A$=GETDIR$()" CR
 "END" CR
-"LABEL SUB" CR
-"FOR I=0 TO 3:PRINT HEX$(O(I)),:NEXT" CR
-"PRINT" CR
-"FOR I=0 TO 3:PRINT HEX$(P(I)),:NEXT" CR
-"PRINT" CR
-"RETURN" CR
 	,"CLASS1.BAS",
 "STATIC TEST" CR
 "FIELD  TEST2" CR
@@ -207,6 +211,17 @@ TCHAR* debug_f_gets (TCHAR* buff, int len, FIL* fp){
 	}
 	buff[i]=0;
 	return buff;
+}
+
+FRESULT debug_f_getcwd (TCHAR* buff, UINT len){
+	if (len<2) return FR_NOT_ENOUGH_CORE;
+	buff[0]='/';
+	buff[1]=0x00;
+	return FR_OK;
+}
+
+FRESULT debug_f_chdir (const TCHAR* path){
+	return FR_OK;
 }
 
 #endif // DEBUG_MODE
