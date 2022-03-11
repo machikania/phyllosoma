@@ -112,6 +112,10 @@ void lib_print(){
 	use_lib_stack("lib_print_main");
 }
 
+void lib_fprint(){
+	use_lib_stack("lib_fprint_main");
+}
+
 int lib_let_str(int r0, int r1, int r2){
 	int i;
 	char* str=(char*)r0;

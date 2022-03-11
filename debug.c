@@ -50,6 +50,8 @@ static const char* debug_files[]={
 "A$=FINPUT$()" CR
 "A$=FINPUT$(63)" CR
 "A$=GETDIR$()" CR
+"FPRINT 1,2;\"test\";" CR
+"FPRINT 3;" CR
 "END" CR
 	,"CLASS1.BAS",
 "STATIC TEST" CR

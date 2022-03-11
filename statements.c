@@ -1204,7 +1204,7 @@ int let_statement(void){
 	}
 }
 
-int print_statement(void) {
+int print_statement(int lib) {
 	// Mode; 0x00: ingeger, 0x01: string, 0x02: float
 	// Mode; 0x00: CR, 0x10: ';', 0x20: ','
 	int e;
@@ -1218,7 +1218,7 @@ int print_statement(void) {
 		if (e) return e;
 		e=set_value_in_register(1,1);
 		if (e) return e;
-		return call_lib_code(LIB_PRINT);
+		return call_lib_code(lib);
 	}
 	while(1){
 		sb=source;
@@ -1248,7 +1248,7 @@ int print_statement(void) {
 		}
 		check_object(1);
 		(object++)[0]=0x2100|mode; // movs	r1, #xxxx
-		e=call_lib_code(LIB_PRINT);
+		e=call_lib_code(lib);
 		if (e) return e;
 		if (0x00==mode&0xf0) break;
 		if (end_of_statement()) break;
@@ -1418,7 +1418,7 @@ int compile_statement(void){
 	if (instruction_is("POKE")) return poke_statement();
 	if (instruction_is("POKE16")) return poke16_statement();
 	if (instruction_is("POKE32")) return poke32_statement();
-	if (instruction_is("PRINT")) return print_statement();
+	if (instruction_is("PRINT")) return print_statement(LIB_PRINT);
 	if (instruction_is("REM")) return rem_statement();
 	if (instruction_is("RESTORE")) return restore_statement();
 	if (instruction_is("RETURN")) return return_statement();
@@ -1434,7 +1434,7 @@ int compile_statement(void){
 	if (instruction_is("FGET")) return fget_function();
 	if (instruction_is("FILE")) return file_statement();
 	if (instruction_is("FOPEN")) return fopen_function();
-	if (instruction_is("FPRINT")) return fprint_statement();
+	if (instruction_is("FPRINT")) return print_statement(LIB_FPRINT);
 	if (instruction_is("FPUT")) return fput_function();
 	if (instruction_is("FPUTC")) return fputc_function();
 	if (instruction_is("FREMOVE")) return fremove_function();

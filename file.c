@@ -313,9 +313,9 @@ int lib_fopen(int r0, int r1, int r2){
 	//);
 
 }
-int lib_fprint(int r0, int r1, int r2){
+int lib_fprint_main(int r0, int r1, int r2){
 	// TODO: here
-	printstr(" FPRINT r0: ");
+	printstr("FILE_FPRINT r0: ");
 	printint(r0);
 	printstr(" r1: ");
 	printint(r1);
@@ -348,11 +348,6 @@ int fopen_function(void){
 		ARG_STRING<<ARG1 | 
 		ARG_STRING<<ARG2 | 
 		ARG_INTEGER_OPTIONAL<<ARG3);
-}
-int fprint_statement(void){
-	//FPRINT [ xまたはx$またはx# [ ,または; [ yまたはy$またはy# [ ... ]]]]
-	//PRINT命令と同じだが、画面ではなくファイルに情報が書き込まれる。
-	// TODO: here
 }
 int fput_function(void){
 	return argn_function(LIB_FILE,
