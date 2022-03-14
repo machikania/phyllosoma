@@ -50,6 +50,15 @@ int lib_display(int r0, int r1, int r2){
 	int* sp=(int*)r1;
 	int i,j,gc;
 	unsigned int x1,y1,x2,y2;
+	if (0==r2) {
+		// Fetch the static data
+		g_scratch[0]=cursorcolor;
+		g_scratch[1]=gcolor;
+		g_scratch_int[1]=(int)ppcg;
+		g_scratch_int[2]=prevx1;
+		g_scratch_int[3]=prevx1;
+		return 0;
+	}
 	// Set x1,y1,x2,y2 for graphic
 	if (DISPLAY_USE_STACK & (1<<r2)) {
 		// r1 is a pointer to stack

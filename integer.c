@@ -112,6 +112,13 @@ int keys_function(void){
 	return argn_function(LIB_KEYS,ARG_INTEGER_OPTIONAL<<ARG1);
 }
 
+int system_function(void){
+	int e;
+	e=get_integer();
+	if (e) return e;
+	return call_lib_code(LIB_SYSTEM);
+}
+
 int integer_functions(void){
 	if (instruction_is("ABS(")) return abs_function();
 	if (instruction_is("ARGS(")) return args_function();
@@ -133,8 +140,10 @@ int integer_functions(void){
 	if (instruction_is("RND(")) return rnd_function();
 	if (instruction_is("SGN(")) return sgn_function();
 	if (instruction_is("STRNCMP(")) return strncmp_function();
+	if (instruction_is("SYSTEM(")) return system_function();
 	if (instruction_is("VAL(")) return val_function();
 	// File functions
+	if (instruction_is("FOPEN(")) return fopen_function();
 	if (instruction_is("FEOF(")) return feof_function();
 	if (instruction_is("FGET(")) return fget_function();
 	if (instruction_is("FGETC(")) return fgetc_function();

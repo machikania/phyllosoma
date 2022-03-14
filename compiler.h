@@ -9,7 +9,7 @@
 	Configration
 */
 
-#define DEBUG_MODE
+//#define DEBUG_MODE
 #define TEMPVAR_NUMBER 10
 #define ALLOC_BLOCK_NUM 256
 
@@ -108,6 +108,7 @@
 #define LIB_FILE 142
 #define LIB_FOPEN 143
 #define LIB_FPRINT 144
+#define LIB_SYSTEM 145
 
 /*
 	LIB FILE options
@@ -332,6 +333,7 @@ int string_char(void);
 int get_string(void);
 
 // integer.c
+int system_function(void);
 int get_positive_decimal_value(void);
 int get_simple_integer(void);
 int get_integer(void);
@@ -422,6 +424,7 @@ int lib_post_method(int r0, int r1, int r2);
 // file.c
 void init_file_system(void);
 int compile_file(unsigned char* fname, char isclass);
+void close_all_files(void);
 int lib_file(int r0, int r1, int r2);
 int lib_fopen(int r0, int r1, int r2);
 int lib_fprint_main(int r0, int r1, int r2);

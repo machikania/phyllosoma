@@ -66,8 +66,11 @@ void pre_run(void){
 	g_rnd_seed=0x92D68CA2; //2463534242
 	// Inilialize kmbasic_data[] (see also run_code() )
 	kmbasic_data[2]=(int)&kmbasic_var_size[0];
+	// Close all files
+	close_all_files();
 }
 
 void post_run(void){
-
+	// Close all files
+	close_all_files();
 }

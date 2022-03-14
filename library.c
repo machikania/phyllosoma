@@ -687,6 +687,97 @@ int lib_debug(int r0, int r1, int r2){
 #endif
 }
 
+extern unsigned char TVRAM[];
+extern unsigned char *cursor;
+extern unsigned char cursorcolor;
+extern unsigned char *fontp;
+extern const unsigned char FontData[256*8];
+
+int lib_system(int r0, int r1, int r2){
+	switch(r0){
+		case 0:
+		//	MachiKania バージョン文字列、"Zoea"等を返す。
+			return (int)"Phyllosoma";
+		case 1:
+		//	MachiKania バージョン文字列、"1.2"等を返す。
+			return (int)"0.1";
+		case 2:
+		//	BASIC バージョン文字列、"KM-1208"等を返す。
+			return (int)"KM-2000";
+		case 3:
+		//	現在実行中のHEXファイル名、"ZOEA.HEX"等を返す。
+		case 4:
+		//	現在実行中のCPUのクロック周波数を返す。
+			return 125000000;
+		case 20:
+		//	キャラクターディスプレイ横幅を返す。
+			return WIDTH_X;
+		case 21:
+		//	キャラクターディスプレイ縦幅を返す。
+			return WIDTH_Y;
+		case 22:
+		//	グラフィックディスプレイ横幅を返す。
+			return WIDTH_X*8;
+		case 23:
+		//	グラフィックディスプレイ横幅を返す。
+			return WIDTH_Y*8;
+		case 24:
+		//	キャラクターディスプレイ用の指定色を返す。
+			lib_display(0,0,0);
+			return (unsigned char)g_scratch[0];
+		case 25:
+		//	グラフィックディスプレイ用の指定色を返す。
+			lib_display(0,0,0);
+			return (unsigned char)g_scratch[1];
+		case 26:
+		//	キャラクターディスプレイの、現在のX位置を返す。
+			return ((int)cursor-(int)&TVRAM[0])%WIDTH_X;
+		case 27:
+		//	キャラクターディスプレイの、現在のY位置を返す。
+			return ((int)cursor-(int)&TVRAM[0])/WIDTH_X;
+		case 28:
+		//	グラフィックディスプレイの、現在のX位置を返す。
+			lib_display(0,0,0);
+			return g_scratch[2];
+		case 29:
+		//	グラフィックディスプレイの、現在のY位置を返す。
+			lib_display(0,0,0);
+			return g_scratch[2];
+		case 40:
+		//	PS/2キーボードを使用中かどうかを返す。
+			return 0;
+		case 41:
+		//	PS/2キーボード情報、vkeyを返す。
+			return 0;
+		case 42:
+		//	PS/2キーボード情報、lockkeyを返す。
+			return 0;
+		case 43:
+		//	PS/2キーボード情報、keytypeを返す。
+			return 0;
+		case 100:
+		//	変数格納領域(g_var_mem)へのポインターを返す。
+		case 101:
+		//	乱数シードへのポインターを返す。
+		case 102:
+		//	キャラクターディスプレイ領域(TVRAM)へのポインターを返す。
+			return (int)&TVRAM[0];
+		case 103:
+		//	フォント領域へのポインターを返す。
+			return (int)&FontData[0];
+		case 104:
+		//	PCGフォント領域へのポインターを返す。
+			return (int)fontp;
+		case 105:
+		//	グラフィックディスプレイ領域へのポインターを返す。
+		case 200:
+		//	ディスプレイの表示を停止(xが0のとき)、もしくは開始(xが0以外の時)する。
+		default:
+			break;
+	}
+	return 0;
+}
+
 static const void* lib_list1[]={
 	lib_calc,                   // #define LIB_CALC 0
 	lib_calc_float,             // #define LIB_CALC_FLOAT 1
@@ -741,7 +832,7 @@ static const void* lib_list2[]={
 	lib_file,       // #define LIB_FILE 142
 	lib_fopen,      // #define LIB_FOPEN 143
 	lib_fprint,     // #define LIB_FPRINT 144
-
+	lib_system,     // #define LIB_SYSTEM 145
 };
 
 int statement_library(int r0, int r1, int r2, int r3){
