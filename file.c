@@ -270,13 +270,14 @@ int lib_fopen(int r0, int r1, int r2){
 	return r0;
 }
 
+#define printstr fprintstr
 void fprintstr(char* str){
 	FIL* fhandle=g_pFileHandles[g_active_handle-1];
 	if (f_puts(str,fhandle)<0) stop_with_error(ERROR_FILE);
 }
 
 int lib_fprint_main(int r0, int r1, int r2){
-	// See also lib_print_main
+	// Copy the code from lib_print_main
 	int i;
 	float f;
 	char* buff=(char*)&g_scratch[0];
@@ -284,29 +285,29 @@ int lib_fprint_main(int r0, int r1, int r2){
 		case 0x01: // string
 			if (r0) {
 				for(i=0;((unsigned char*)r0)[i];i++);
-				fprintstr((unsigned char*)r0);
+				printstr((unsigned char*)r0);
 				garbage_collection((char*)r0);
 			} else {
 				i=0;
 			}
-			if (0x00 == (r1&0xf0)) fprintstr("\n");
+			if (0x00 == (r1&0xf0)) printstr("\n");
 			break;
 		case 0x02: // float
 			g_scratch_int[0]=r0;
 			f=g_scratch_float[0];
 			if (0x00 == (r1&0xf0)) i=snprintf(buff,sizeof g_scratch,"%g\n",f);
 			else i=snprintf(buff,sizeof g_scratch,"%g",f);
-			fprintstr(buff);
+			printstr(buff);
 			break;
 		default:   // integer
 			if (0x00 == (r1&0xf0)) i=snprintf(buff,sizeof g_scratch,"%d\n",(int)r0);
 			else i=snprintf(buff,sizeof g_scratch,"%d",(int)r0);
-			fprintstr(buff);
+			printstr(buff);
 			break;
 	}
 	if (0x20==(r1&0xf0)) {
 		// ","
-		fprintstr(&("                "[i&0xf]));
+		printstr(&("                "[i&0xf]));
 	}
 	return r0;
 }
