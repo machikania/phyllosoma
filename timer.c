@@ -9,9 +9,25 @@
 #include "./compiler.h"
 
 int coretimer_function(){
-	return call_lib_code(LIB_CORETIMERFUNC);
+	return argn_function(LIB_TIMER,
+		ARG_NONE | 
+		TIMER_CORETIMERFUNC<<LIBOPTION);
 }
 
-int lib_coretimerfunc(int r0, int r1, int r2){
-	return time_us_32();
+int lib_timer(int r0, int r1, int r2){
+	switch(r2){
+		case TIMER_CORETIMER:
+			break;
+		case TIMER_USETIMER:
+			break;
+		case TIMER_TIMER:
+			break;
+		case TIMER_CORETIMERFUNC:
+			return time_us_32();
+		case TIMER_TIMERFUNC:
+			break;
+		default:
+			stop_with_error(ERROR_UNKNOWN);
+	}
+	return r0;
 }

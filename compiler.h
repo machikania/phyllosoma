@@ -90,7 +90,7 @@
 #define LIB_OBJ_METHOD 29
 #define LIB_PRE_METHOD 30
 #define LIB_POST_METHOD 31
-#define LIB_CORETIMERFUNC 32
+#define LIB_TIMER 32
 
 #define LIB_DEBUG 128
 #define LIB_PRINT 129
@@ -128,6 +128,15 @@
 #define FILE_FSEEKFUNC 12
 #define FILE_FINPUT 13
 #define FILE_GETDIR 14
+
+/*
+	LIB TIMER options
+*/
+#define TIMER_CORETIMER 1
+#define TIMER_USETIMER 2
+#define TIMER_TIMER 3
+#define TIMER_CORETIMERFUNC 4
+#define TIMER_TIMERFUNC 5
 
 /*
 	LIB MATH options
@@ -447,7 +456,7 @@ int getdir_function(void);
 
 // timer.c
 int coretimer_function();
-int lib_coretimerfunc(int r0, int r1, int r2);
+int lib_timer(int r0, int r1, int r2);
 
 // For debugging
 void dump_cmpdata(void);
