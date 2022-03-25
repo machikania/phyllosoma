@@ -723,12 +723,10 @@ int lib_system(int r0, int r1, int r2){
 			return WIDTH_Y*8;
 		case 24:
 		//	キャラクターディスプレイ用の指定色を返す。
-			lib_display(0,0,0);
-			return (unsigned char)g_scratch[0];
+			return (unsigned char)lib_display(0,0,0);
 		case 25:
 		//	グラフィックディスプレイ用の指定色を返す。
-			lib_display(0,0,0);
-			return (unsigned char)g_scratch[1];
+			return (unsigned char)lib_display(1,0,0);
 		case 26:
 		//	キャラクターディスプレイの、現在のX位置を返す。
 			return ((int)cursor-(int)&TVRAM[0])%WIDTH_X;
@@ -737,12 +735,10 @@ int lib_system(int r0, int r1, int r2){
 			return ((int)cursor-(int)&TVRAM[0])/WIDTH_X;
 		case 28:
 		//	グラフィックディスプレイの、現在のX位置を返す。
-			lib_display(0,0,0);
-			return g_scratch[2];
+			return lib_display(3,0,0);
 		case 29:
 		//	グラフィックディスプレイの、現在のY位置を返す。
-			lib_display(0,0,0);
-			return g_scratch[2];
+			return lib_display(4,0,0);
 		case 40:
 		//	PS/2キーボードを使用中かどうかを返す。
 			return 0;
