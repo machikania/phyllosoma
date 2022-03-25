@@ -807,7 +807,7 @@ static const void* lib_list1[]={
 	lib_resolve_method_address, // #define LIB_OBJ_METHOD 29
 	lib_pre_method,             // #define LIB_PRE_METHOD 30
 	lib_post_method,            // #define LIB_POST_METHOD 31
-
+	lib_coretimerfunc,          // #define LIB_CORETIMERFUNC 32
 };
 
 static const void* lib_list2[]={

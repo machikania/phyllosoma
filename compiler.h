@@ -90,6 +90,7 @@
 #define LIB_OBJ_METHOD 29
 #define LIB_PRE_METHOD 30
 #define LIB_POST_METHOD 31
+#define LIB_CORETIMERFUNC 32
 
 #define LIB_DEBUG 128
 #define LIB_PRINT 129
@@ -443,6 +444,10 @@ int flen_function(void);
 int fseek_function(void);
 int finput_function(void);
 int getdir_function(void);
+
+// timer.c
+int coretimer_function();
+int lib_coretimerfunc(int r0, int r1, int r2);
 
 // For debugging
 void dump_cmpdata(void);

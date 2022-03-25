@@ -153,6 +153,8 @@ int integer_functions(void){
 	if (instruction_is("FREMOVE(")) return fremove_function();
 	if (instruction_is("FSEEK(")) return fseek_function();
 	if (instruction_is("SETDIR(")) return setdir_function();
+	// Timer functions
+	if (instruction_is("CORETIMER(")) return coretimer_function();
 	// Environment
 	return display_functions();
 }

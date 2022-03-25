@@ -270,7 +270,10 @@ int lib_fopen(int r0, int r1, int r2){
 	return r0;
 }
 
-#define printstr fprintstr
+#ifdef printstr
+	#undef printstr
+#endif
+#define printstr(a) fprintstr(a)
 void fprintstr(char* str){
 	FIL* fhandle=g_pFileHandles[g_active_handle-1];
 	if (f_puts(str,fhandle)<0) stop_with_error(ERROR_FILE);
