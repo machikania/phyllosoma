@@ -511,8 +511,7 @@ int gosub_arguments(void){
 	check_object(4);
 	(object++)[0]=0xb080; //      	sub	sp, #xx (this will be updated; see below)
 	(object++)[0]=0x9601; //      	str	r6, [sp, #4]
-	(object++)[0]=0x466e; //      	mov	r6, sp
-	(object++)[0]=0x6030; //        str	r0, [r6, #0]
+	(object++)[0]=0x9000; //        str	r0, [sp, #0]
 	for(i=3;','==source[0] || '('==source[0] ;i++){
 		source++;
 		skip_blank();
@@ -520,13 +519,14 @@ int gosub_arguments(void){
 		e=get_string_int_or_float();
 		if (e) return e;
 		check_object(1);
-		(object++)[0]=0x6030 | (i<<6); // str	r0, [r6, #xx]
+		(object++)[0]=0x9000 | i; // str	r0, [sp, #xx]
 	}
 	obefore[0]|=i; // Update sub sp,#xx assembly
 	// Set number of variables
 	e=set_value_in_register(0,i-3);
 	if (e) return e;
-	check_object(1);
+	check_object(2);
+	(object++)[0]=0x466e; //      	mov	r6, sp
 	(object++)[0]=0x6030 | (2<<6); // str	r0, [r6, #xx]
 	return i;
 }
