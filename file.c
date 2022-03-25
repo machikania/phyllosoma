@@ -149,7 +149,6 @@ void close_all_files(void){
 int lib_file(int r0, int r1, int r2){
 	FIL* fhandle=g_pFileHandles[g_active_handle-1];
 	unsigned char* str;
-	// TODO: here
 	switch(r2){
 		case FILE_FCLOSE:
 			if (1==r0 || 2==r0) {
@@ -233,43 +232,6 @@ int lib_file(int r0, int r1, int r2){
 }
 
 int lib_fopen(int r0, int r1, int r2){
-	//FOPEN x$,y$[,z]
-	//x$で示される名前のファイルを、y$で示されたモードで開く。同時に開けるファイ
-	//ルの数は、２つまで。関数として呼ばれた場合は、ファイルハンドルを返す。y$と
-	//しては、次のものが有効。
-	//	"r"  ：ファイルを読み込みモードで開く。
-	//	"r+" ："r"と同じだが書き込みも可能。
-	//	"w"  ：ファイルを書き込みモードで開く。同名のファイルが在る場合は、
-	//	       以前のファイルは消去される。
-	//	"w+" ："w"と同じだが、読み込みも可能。
-	//	"a"  ：ファイルを書き込みモードで開く。同名のファイルが在る場合は、
-	//	       ファイルは消去されず、ファイルの最後尾から書き込まれる。
-	//	"a+" ："a"と同じだが、読み込みも可能。
-	//zには、割り当てたいファイルハンドル（１もしくは２）を指定する。省略した場
-	//合、１が指定される。
-	
-	// TODO: here
-	/*printstr("FILE_FOPEN r0: ");
-	printint(r0);
-	printstr(" r1: ");
-	printint(r1);
-	printstr(" r2: ");
-	printint(r2);
-	printchar('\n');
-	return 0;//*/
-	//FRESULT f_open (
-	//  FIL* FileObject,       // 空のファイル・オブジェクト構造体へのポインタ 
-	//  const TCHAR* FileName, // ファイルのフルパス名へのポインタ 
-	//  BYTE ModeFlags         // モードフラグ 
-	//);
-	//#define	FA_READ				0x01
-	//#define	FA_WRITE			0x02
-	//#define	FA_OPEN_EXISTING	0x00
-	//#define	FA_CREATE_NEW		0x04
-	//#define	FA_CREATE_ALWAYS	0x08
-	//#define	FA_OPEN_ALWAYS		0x10
-	//#define	FA_OPEN_APPEND		0x30
-
 	char* filename=(char*)r2;
 	char* modestr=(char*)r1;
 	char mode;
@@ -307,16 +269,46 @@ int lib_fopen(int r0, int r1, int r2){
 	g_pFileHandles[r0-1]=&g_FileHandles[r0-1];
 	return r0;
 }
+
+void fprintstr(char* str){
+	FIL* fhandle=g_pFileHandles[g_active_handle-1];
+	if (f_puts(str,fhandle)<0) stop_with_error(ERROR_FILE);
+}
+
 int lib_fprint_main(int r0, int r1, int r2){
-	// TODO: here
-	printstr("FILE_FPRINT r0: ");
-	printint(r0);
-	printstr(" r1: ");
-	printint(r1);
-	printstr(" r2: ");
-	printint(r2);
-	printchar('\n');
-	return 0;
+	// See also lib_print_main
+	int i;
+	float f;
+	char* buff=(char*)&g_scratch[0];
+	switch(r1&0x0f){
+		case 0x01: // string
+			if (r0) {
+				for(i=0;((unsigned char*)r0)[i];i++);
+				fprintstr((unsigned char*)r0);
+				garbage_collection((char*)r0);
+			} else {
+				i=0;
+			}
+			if (0x00 == (r1&0xf0)) fprintstr("\n");
+			break;
+		case 0x02: // float
+			g_scratch_int[0]=r0;
+			f=g_scratch_float[0];
+			if (0x00 == (r1&0xf0)) i=snprintf(buff,sizeof g_scratch,"%g\n",f);
+			else i=snprintf(buff,sizeof g_scratch,"%g",f);
+			fprintstr(buff);
+			break;
+		default:   // integer
+			if (0x00 == (r1&0xf0)) i=snprintf(buff,sizeof g_scratch,"%d\n",(int)r0);
+			else i=snprintf(buff,sizeof g_scratch,"%d",(int)r0);
+			fprintstr(buff);
+			break;
+	}
+	if (0x20==(r1&0xf0)) {
+		// ","
+		fprintstr(&("                "[i&0xf]));
+	}
+	return r0;
 }
 
 int fclose_statement(void){

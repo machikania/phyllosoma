@@ -86,7 +86,7 @@ int lib_print_main(int r0, int r1, int r2){
 			} else {
 				i=0;
 			}
-			if (0x00 == (r1&0xf0)) printchar('\n');
+			if (0x00 == (r1&0xf0)) printstr("\n");
 			break;
 		case 0x02: // float
 			g_scratch_int[0]=r0;
