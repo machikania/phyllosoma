@@ -83,14 +83,13 @@
 #define LIB_DISPLAY_FUNCTION 22
 #define LIB_INKEY 23
 #define LIB_INPUT 24
-#define LIB_DRAWCOUNT 25
+#define LIB_TIMER 25
 #define LIB_KEYS 26
 #define LIB_NEW 27
 #define LIB_OBJ_FIELD 28
 #define LIB_OBJ_METHOD 29
 #define LIB_PRE_METHOD 30
 #define LIB_POST_METHOD 31
-#define LIB_TIMER 32
 
 #define LIB_DEBUG 128
 #define LIB_PRINT 129
@@ -103,13 +102,12 @@
 #define LIB_VAR_POP 136
 #define LIB_DISPLAY 137
 #define LIB_WAIT 138
-#define LIB_SET_DRAWCOUNT 139
+#define LIB_SYSTEM 139
 #define LIB_STR_TO_OBJECT 140
 #define LIB_DELETE 141
 #define LIB_FILE 142
 #define LIB_FOPEN 143
 #define LIB_FPRINT 144
-#define LIB_SYSTEM 145
 
 /*
 	LIB FILE options
@@ -137,6 +135,8 @@
 #define TIMER_TIMER 3
 #define TIMER_CORETIMERFUNC 4
 #define TIMER_TIMERFUNC 5
+#define TIMER_DRAWCOUNT 6
+#define TIMER_DRAWCOUNTFUNC 7
 
 /*
 	LIB MATH options
@@ -455,10 +455,13 @@ int finput_function(void);
 int getdir_function(void);
 
 // timer.c
+int drawcount_statement(void);
+int drawcount_function(void);
 int coretimer_function(void);
 int usetimer_statement(void);
 int timer_statement(void);
 int timer_function(void);
+void timer_init(void);
 int lib_timer(int r0, int r1, int r2);
 
 // For debugging

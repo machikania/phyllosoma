@@ -102,11 +102,6 @@ int inkey_function(void){
 	return argn_function(LIB_INKEY,ARG_INTEGER_OPTIONAL<<ARG1);
 }
 
-int drawcount_function(void){
-	set_value_in_register(0,-1);
-	return call_lib_code(LIB_DRAWCOUNT);
-}
-
 int keys_function(void){
 	g_default_args[1]=63;
 	return argn_function(LIB_KEYS,ARG_INTEGER_OPTIONAL<<ARG1);

@@ -554,19 +554,6 @@ int lib_wait(int r0, int r1, int r2){
 	return r0;
 }
 
-int lib_drawcount(int r0, int r1, int r2){
-	static unsigned short drawcount=0;
-	unsigned short res;
-	uint64_t t=to_us_since_boot(get_absolute_time())/16667;
-	if (0<=r0 && r0<=65535) {
-		drawcount=t;
-		drawcount-=r0;
-	}
-	res=t;
-	res-=drawcount;
-	return res;
-}
-
 int lib_inkey(int r0, int r1, int r2){
 	int i=getchar_timeout_us(0);
 	if (i<0 || 255<i) i=0;
@@ -800,14 +787,13 @@ static const void* lib_list1[]={
 	lib_display,                // #define LIB_DISPLAY_FUNCTION 22
 	lib_inkey,                  // #define LIB_INKEY 23
 	lib_input,                  // #define LIB_INPUT 24
-	lib_drawcount,              // #define LIB_DRAWCOUNT 25
+	lib_timer,                  // #define LIB_TIMER 32
 	lib_keys,                   // #define LIB_KEYS 26
 	lib_new,                    // #define LIB_NEW 27
 	lib_resolve_field_address,  // #define LIB_OBJ_FIELD 28
 	lib_resolve_method_address, // #define LIB_OBJ_METHOD 29
 	lib_pre_method,             // #define LIB_PRE_METHOD 30
 	lib_post_method,            // #define LIB_POST_METHOD 31
-	lib_timer,                  // #define LIB_TIMER 32
 };
 
 static const void* lib_list2[]={
@@ -822,13 +808,12 @@ static const void* lib_list2[]={
 	lib_var_pop,    // #define LIB_VAR_POP 136
 	lib_display,    // #define LIB_DISPLAY 137
 	lib_wait,       // #define LIB_WAIT 138
-	lib_drawcount,  // #define LIB_SET_DRAWCOUNT 139
+	lib_system,     // #define LIB_SYSTEM 139
 	lib_str2obj,    // #define LIB_STR_TO_OBJECT 140
 	lib_delete,     // #define LIB_DELETE 141
 	lib_file,       // #define LIB_FILE 142
 	lib_fopen,      // #define LIB_FOPEN 143
 	lib_fprint,     // #define LIB_FPRINT 144
-	lib_system,     // #define LIB_SYSTEM 145
 };
 
 int statement_library(int r0, int r1, int r2, int r3){
