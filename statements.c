@@ -1457,6 +1457,9 @@ int compile_statement(void){
 	if (instruction_is("FREMOVE")) return fremove_function();
 	if (instruction_is("FSEEK")) return fseek_statement();
 	if (instruction_is("SETDIR")) return setdir_function();
+	// Timer statements
+	if (instruction_is("USETIMER")) return usetimer_statement();
+	if (instruction_is("TIMER")) return timer_statement();
 	// Environment statements
 	e=display_statements();
 	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;

@@ -155,6 +155,7 @@ int integer_functions(void){
 	if (instruction_is("SETDIR(")) return setdir_function();
 	// Timer functions
 	if (instruction_is("CORETIMER(")) return coretimer_function();
+	if (instruction_is("TIMER(")) return timer_function();
 	// Environment
 	return display_functions();
 }

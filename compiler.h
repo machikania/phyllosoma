@@ -455,7 +455,10 @@ int finput_function(void);
 int getdir_function(void);
 
 // timer.c
-int coretimer_function();
+int coretimer_function(void);
+int usetimer_statement(void);
+int timer_statement(void);
+int timer_function(void);
 int lib_timer(int r0, int r1, int r2);
 
 // For debugging
