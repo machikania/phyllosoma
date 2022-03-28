@@ -108,6 +108,7 @@
 #define LIB_FILE 142
 #define LIB_FOPEN 143
 #define LIB_FPRINT 144
+#define LIB_INTERRUPT 145
 
 /*
 	LIB FILE options
@@ -455,6 +456,7 @@ int finput_function(void);
 int getdir_function(void);
 
 // timer.c
+int interrupt_statement(void);
 int drawcount_statement(void);
 int drawcount_function(void);
 int coretimer_function(void);
@@ -463,6 +465,8 @@ int timer_statement(void);
 int timer_function(void);
 void timer_init(void);
 int lib_timer(int r0, int r1, int r2);
+int lib_interrupt(int r0, int r1, int r2);
+void call_interrupt_function(void* r0);
 
 // For debugging
 void dump_cmpdata(void);

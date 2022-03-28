@@ -161,6 +161,7 @@ int instruction_is(unsigned char* instruction){
 		case 0x20:
 		case 0x00:
 		case ':':
+		case ',':
 			source+=n;
 			skip_blank();
 			return 1;

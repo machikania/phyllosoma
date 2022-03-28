@@ -662,12 +662,25 @@ int lib_keys(int r0, int r1, int r2){
 
 int lib_debug(int r0, int r1, int r2){
 #ifdef DEBUG_MODE
-	//asm("push {r0}");
-	//asm("pop {r0}");
-	asm volatile("mov r1,r6");
-	//asm("adds	r0, r6, #0");
-	printhex32(r0);
-	lib_wait(60,0,0);
+	asm("push {r0,r1,r2,r3,r4,r5,r6,r7}");
+	asm("movs r1,r8");
+	asm("movs r2,r9");
+	asm("movs r3,r10");
+	asm("movs r4,r11");
+	asm("movs r5,r12");
+	asm("movs r6,lr");
+	asm("push {r1,r2,r3,r4,r5,r6}");
+	asm("blx r0");
+	asm("pop {r1,r2,r3,r4,r5,r6}");
+	asm("movs r8,r1");
+	asm("movs r9,r2");
+	asm("movs r10,r3");
+	asm("movs r11,r4");
+	asm("movs r12,r5");
+	asm("movs lr,r6");
+	asm("pop {r0,r1,r2,r3,r4,r5,r6,r7}");
+	//printhex32(r0);
+	//lib_wait(60,0,0);
 	return r0;
 #else
 	return r0;
@@ -814,6 +827,7 @@ static const void* lib_list2[]={
 	lib_file,       // #define LIB_FILE 142
 	lib_fopen,      // #define LIB_FOPEN 143
 	lib_fprint,     // #define LIB_FPRINT 144
+	lib_interrupt,  // #define LIB_INTERRUPT 145
 };
 
 int statement_library(int r0, int r1, int r2, int r3){
