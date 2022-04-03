@@ -71,7 +71,6 @@ int interrupt_statement(void){
 		if (e) return e;
 	}
 	return call_lib_code(LIB_INTERRUPT);
-	// TODO: check this function
 }
 
 int drawcount_statement(void){

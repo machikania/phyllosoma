@@ -1329,6 +1329,12 @@ int debug_statement(void){
 #endif
 }
 
+int idle_statement(void){
+	check_object(1);
+	(object++)[0]=0xbf30; // wfi
+	return 0;
+}
+
 int wait_statement(void){
 	return argn_function(LIB_WAIT,ARG_INTEGER<<ARG1);
 }
@@ -1423,6 +1429,7 @@ int compile_statement(void){
 	if (instruction_is("FOR")) return for_statement();
 	if (instruction_is("GOSUB")) return gosub_statement();
 	if (instruction_is("GOTO")) return goto_statement();
+	if (instruction_is("IDLE")) return idle_statement();
 	if (instruction_is("IF")) return if_statement();
 	if (instruction_is("LABEL")) return label_statement();
 	if (instruction_is("LOOP")) return loop_statement();
