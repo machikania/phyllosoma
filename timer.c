@@ -116,8 +116,15 @@ bool repeating_timer_callback(struct repeating_timer *t) {
 }
 
 bool repeating_drawcount_callback(struct repeating_timer *t) {
+	static char s_keys=-1;
+	char keys;
 	g_drawcount++;
 	if (g_interrupt_vector[INTERRUPT_DRAWCOUNT]) call_interrupt_function(g_interrupt_vector[INTERRUPT_DRAWCOUNT]);
+	if (g_interrupt_vector[INTERRUPT_KEYS]) {
+		keys=lib_keys(63,0,0);
+		if (0<=s_keys && s_keys!=keys) call_interrupt_function(g_interrupt_vector[INTERRUPT_KEYS]);
+		s_keys=keys;
+	}
 	return true;
 }
 

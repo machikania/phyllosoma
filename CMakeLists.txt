@@ -33,6 +33,7 @@ if (TARGET tinyusb_device)
 			file.c
 			display.c
 			timer.c
+			io.c
 			debug.c
 			interface/fontdata.c
 			interface/graphlib.c

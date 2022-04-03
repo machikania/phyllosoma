@@ -468,6 +468,9 @@ int lib_timer(int r0, int r1, int r2);
 int lib_interrupt(int r0, int r1, int r2);
 void call_interrupt_function(void* r0);
 
+// io.c
+int lib_keys(int r0, int r1, int r2);
+
 // For debugging
 void dump_cmpdata(void);
 void dump(void);
