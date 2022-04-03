@@ -1464,6 +1464,7 @@ int compile_statement(void){
 	if (instruction_is("USETIMER")) return usetimer_statement();
 	if (instruction_is("TIMER")) return timer_statement();
 	if (instruction_is("INTERRUPT")) return interrupt_statement();
+	if (instruction_is("CORETIMER")) return coretimertimer_statement();
 	// Environment statements
 	e=display_statements();
 	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;

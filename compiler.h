@@ -461,6 +461,7 @@ int drawcount_statement(void);
 int drawcount_function(void);
 int coretimer_function(void);
 int usetimer_statement(void);
+int coretimertimer_statement(void);
 int timer_statement(void);
 int timer_function(void);
 void timer_init(void);

@@ -14,6 +14,7 @@ static int g_timer_counter;
 static struct repeating_timer g_drawcount_timer;
 static unsigned short g_drawcount;
 static void* g_interrupt_vector[7];
+static struct repeating_timer g_coretimer_timer;
 
 #define INTERRUPT_TIMER     0
 #define INTERRUPT_DRAWCOUNT 1
@@ -97,6 +98,12 @@ int usetimer_statement(void){
 		TIMER_USETIMER<<LIBOPTION);
 }
 
+int coretimertimer_statement(void){
+	return argn_function(LIB_TIMER,
+		ARG_INTEGER<<ARG1 |
+		TIMER_CORETIMER<<LIBOPTION);
+}
+
 int timer_statement(void){
 	return argn_function(LIB_TIMER,
 		ARG_INTEGER<<ARG1 |
@@ -128,10 +135,16 @@ bool repeating_drawcount_callback(struct repeating_timer *t) {
 	return true;
 }
 
+int64_t alarm_coretimer_callback(alarm_id_t id, void *user_data) {
+	if (g_interrupt_vector[INTERRUPT_CORETIMER]) call_interrupt_function(g_interrupt_vector[INTERRUPT_CORETIMER]);
+	return 0;
+}
+
 void timer_init(void){
 	// Cancel all timers, first
 	cancel_repeating_timer(&g_timer);
 	cancel_repeating_timer(&g_drawcount_timer);
+	cancel_repeating_timer(&g_coretimer_timer);
 	// Start drawcount interrupt (every 1/60 sec)
 	add_repeating_timer_us(16667, repeating_drawcount_callback, NULL, &g_drawcount_timer);
 }
@@ -139,6 +152,8 @@ void timer_init(void){
 int lib_timer(int r0, int r1, int r2){
 	switch(r2){
 		case TIMER_CORETIMER:
+			cancel_repeating_timer(&g_coretimer_timer);
+			add_alarm_at(r0,alarm_coretimer_callback,NULL,&g_coretimer_timer);
 			break;
 		case TIMER_USETIMER:
 			cancel_repeating_timer(&g_timer);
