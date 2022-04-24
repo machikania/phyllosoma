@@ -51,8 +51,8 @@ int lib_keys(int r0, int r1, int r2){
 */
 
 int pwm_statement(void){
-	g_default_args[2]=1;
-	g_default_args[3]=1000;
+	g_default_args[2]=1000;
+	g_default_args[3]=1;
 	return argn_function(LIB_PWM,
 		ARG_INTEGER<<ARG1 |
 		ARG_INTEGER_OPTIONAL<<ARG2 |
