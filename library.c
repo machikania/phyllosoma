@@ -791,6 +791,12 @@ static const void* lib_list2[]={
 	lib_fopen,      // #define LIB_FOPEN 143
 	lib_fprint,     // #define LIB_FPRINT 144
 	lib_interrupt,  // #define LIB_INTERRUPT 145
+	lib_pwm,        // #define LIB_PWM 146
+	lib_analog,     // #define LIB_ANALOG 147
+	lib_spi,        // #define LIB_SPI 148
+	lib_i2c,        // #define LIB_I2C 149
+	lib_serial,     // #define LIB_SERIAL 150
+	lib_gpio,       // #define LIB_GPIO 151
 };
 
 int statement_library(int r0, int r1, int r2, int r3){

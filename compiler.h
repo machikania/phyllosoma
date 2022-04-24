@@ -109,6 +109,40 @@
 #define LIB_FOPEN 143
 #define LIB_FPRINT 144
 #define LIB_INTERRUPT 145
+#define LIB_PWM 146
+#define LIB_ANALOG 147
+#define LIB_SPI 148
+#define LIB_I2C 149
+#define LIB_SERIAL 150
+#define LIB_GPIO 151
+
+/*
+	LIB IO options
+*/
+
+#define LIB_SPI_SPI 1
+#define LIB_SPI_SPIREAD 2
+#define LIB_SPI_SPIWRITE 3
+#define LIB_SPI_SPIREADDATA 4
+#define LIB_SPI_SPIWRITEDATA 5
+#define LIB_SPI_SPISWAPDATA 6
+#define LIB_I2C_I2C 1
+#define LIB_I2C_I2CREAD 2
+#define LIB_I2C_I2CWRITE 3
+#define LIB_I2C_I2CERROR 4
+#define LIB_I2C_I2CREADDATA 5
+#define LIB_I2C_I2CWRITEDATA 6
+#define LIB_SERIAL_SERIAL 1
+#define LIB_SERIAL_SERIALIN 2
+#define LIB_SERIAL_SERIALOUT 3
+#define LIB_GPIO_IN 1
+#define LIB_GPIO_IN8H 2
+#define LIB_GPIO_IN8L 3
+#define LIB_GPIO_IN16 4
+#define LIB_GPIO_OUT 5
+#define LIB_GPIO_OUT8H 6
+#define LIB_GPIO_OUT8L 7
+#define LIB_GPIO_OUT16 8
 
 /*
 	LIB FILE options
@@ -461,7 +495,7 @@ int drawcount_statement(void);
 int drawcount_function(void);
 int coretimer_function(void);
 int usetimer_statement(void);
-int coretimertimer_statement(void);
+int coretimer_statement(void);
 int timer_statement(void);
 int timer_function(void);
 void timer_init(void);
@@ -471,6 +505,14 @@ void call_interrupt_function(void* r0);
 
 // io.c
 int lib_keys(int r0, int r1, int r2);
+int lib_pwm(int r0, int r1, int r2);
+int lib_analog(int r0, int r1, int r2);
+int lib_spi(int r0, int r1, int r2);
+int lib_i2c(int r0, int r1, int r2);
+int lib_serial(int r0, int r1, int r2);
+int lib_gpio(int r0, int r1, int r2);
+int io_statements(void);
+int io_functions(void);
 
 // For debugging
 void dump_cmpdata(void);

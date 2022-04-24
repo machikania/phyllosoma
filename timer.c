@@ -98,7 +98,7 @@ int usetimer_statement(void){
 		TIMER_USETIMER<<LIBOPTION);
 }
 
-int coretimertimer_statement(void){
+int coretimer_statement(void){
 	return argn_function(LIB_TIMER,
 		ARG_INTEGER<<ARG1 |
 		TIMER_CORETIMER<<LIBOPTION);
@@ -141,10 +141,13 @@ int64_t alarm_coretimer_callback(alarm_id_t id, void *user_data) {
 }
 
 void timer_init(void){
+	int i;
 	// Cancel all timers, first
 	cancel_repeating_timer(&g_timer);
 	cancel_repeating_timer(&g_drawcount_timer);
 	cancel_repeating_timer(&g_coretimer_timer);
+	// Cancel all interrupts
+	for(i=0;i<(sizeof g_interrupt_vector)/(sizeof g_interrupt_vector[0]);i++) g_interrupt_vector[i]=0;
 	// Start drawcount interrupt (every 1/60 sec)
 	add_repeating_timer_us(16667, repeating_drawcount_callback, NULL, &g_drawcount_timer);
 }

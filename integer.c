@@ -115,6 +115,7 @@ int system_function(void){
 }
 
 int integer_functions(void){
+	int e;
 	if (instruction_is("ABS(")) return abs_function();
 	if (instruction_is("ARGS(")) return args_function();
 	if (instruction_is("ASC(")) return asc_function();
@@ -151,6 +152,9 @@ int integer_functions(void){
 	// Timer functions
 	if (instruction_is("CORETIMER(")) return coretimer_function();
 	if (instruction_is("TIMER(")) return timer_function();
+	// IO functions
+	e=io_functions();
+	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;
 	// Environment
 	return display_functions();
 }
