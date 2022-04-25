@@ -15,6 +15,7 @@ Most of codes (written in C) are provided with LGPL 2.1 license, but some codes 
 
 ## Connection
 
+```console
 GP0 I/O bit0 / PWM3
 GP1 I/O bit1 / PWM2
 GP2 I/O bit2 / PWM1
@@ -41,3 +42,4 @@ GP22 I/O bit12 / button5 (START)
 GP26 I/O bit13 / button6 (FIRE) / ADC0
 GP27 I/O bit14 / ADC1
 GP28 I/O bit15 / SOUND OUT / ADC2
+```
