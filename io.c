@@ -128,7 +128,7 @@ int lib_analog(int r0, int r1, int r2){
 		case 28:
 			// ADC2
 			port=28;
-			input=1;
+			input=2;
 			break;
 		default:
 			// Invalid
@@ -356,14 +356,14 @@ int io_statements(void){
 }
 
 int io_functions(void){
-	if (instruction_is("ANALOG")) return analog_function();
-	if (instruction_is("SPIREAD")) return spiread_function();
-	if (instruction_is("I2CREAD")) return i2cread_function();
-	if (instruction_is("I2CERROR")) return i2cerror_function();
-	if (instruction_is("SERIALIN")) return serialin_function();
-	if (instruction_is("IN")) return in_function();
-	if (instruction_is("IN8H")) return in8h_function();
-	if (instruction_is("IN8L")) return in8l_function();
-	if (instruction_is("IN16")) return in16_function();
+	if (instruction_is("ANALOG(")) return analog_function();
+	if (instruction_is("SPIREAD(")) return spiread_function();
+	if (instruction_is("I2CREAD(")) return i2cread_function();
+	if (instruction_is("I2CERROR(")) return i2cerror_function();
+	if (instruction_is("SERIALIN(")) return serialin_function();
+	if (instruction_is("IN(")) return in_function();
+	if (instruction_is("IN8H(")) return in8h_function();
+	if (instruction_is("IN8L(")) return in8l_function();
+	if (instruction_is("IN16(")) return in16_function();
 	return ERROR_STATEMENT_NOT_DETECTED;
 }
