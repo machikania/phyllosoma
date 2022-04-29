@@ -35,7 +35,7 @@ int main() {
 	printint(time_us_32()-s);
 	printstr(" micro seconds spent for compiling\n");
 	// Show dump
-	dump();
+	// dump();
 	// Run the code if error didn't occur
 	if (!e) {
 		pre_run();

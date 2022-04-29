@@ -9,7 +9,7 @@
 	Configration
 */
 
-//#define DEBUG_MODE
+#define DEBUG_MODE
 #define TEMPVAR_NUMBER 10
 #define ALLOC_BLOCK_NUM 256
 
@@ -504,6 +504,7 @@ int lib_interrupt(int r0, int r1, int r2);
 void call_interrupt_function(void* r0);
 
 // io.c
+void io_init(void);
 int lib_keys(int r0, int r1, int r2);
 int lib_pwm(int r0, int r1, int r2);
 int lib_analog(int r0, int r1, int r2);

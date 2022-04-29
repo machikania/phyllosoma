@@ -31,28 +31,31 @@ unsigned char* debug_fileselect(void){
 #define CR "\n"
 static const char* debug_files[]={
 	"main.bas",
-"FCLOSE" CR
-"FCLOSE 1" CR
-"FCLOSE 2" CR
-"FGET 123,456" CR
-"FILE 2" CR
-"FOPEN \"test.txt\",\"r\"" CR
-"FOPEN \"test.txt\",\"r\",2" CR
-"FPUT 234,567" CR
-"FPUTC 123" CR
-"FREMOVE \"test.txt\"" CR
-"FSEEK 456" CR
-"SETDIR \"test\"" CR
-"A=FEOF()" CR
-"A=FGETC()" CR
-"A=FLEN()" CR
-"A=FSEEK()" CR
-"A$=FINPUT$()" CR
-"A$=FINPUT$(63)" CR
-"A$=GETDIR$()" CR
-"FPRINT 1,2;\"test\";" CR
-"FPRINT 3;" CR
-"END" CR
+"USEVAR CA,CB,CT" CR
+"CT=CORETIMER()" CR
+"FOR Y=-12 to 12" CR
+" FOR X=-39 to 39" CR
+"  CA#=FLOAT#(X)*0.0458" CR
+"  CB#=FLOAT#(Y)*0.08333" CR
+"  A#=CA#" CR
+"  B#=CB#" CR
+"  FOR I=0 TO 15" CR
+"   T#=A#*A#-B#*B#+CA#" CR
+"   B#=2*A#*B#+CB#" CR
+"   A#=T#" CR
+"   IF INT(A#*A#+B#*B#-4)>=0 THEN BREAK" CR
+"  NEXT" CR
+"  IF INT(A#*A#+B#*B#-4)>=0 THEN" CR
+"   IF I>9 THEN I=I+7" CR
+"   PRINT CHR$(48+I);" CR
+"  ELSE" CR
+"   PRINT \" \";" CR
+"  ENDIF" CR
+" NEXT" CR
+" PRINT" CR
+"NEXT" CR
+"PRINT CORETIMER()-CT" CR
+"DO:LOOP" CR
 	,"CLASS1.BAS",
 "STATIC TEST" CR
 "FIELD  TEST2" CR
