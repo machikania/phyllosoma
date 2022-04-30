@@ -32,7 +32,8 @@ unsigned char* debug_fileselect(void){
 static const char* debug_files[]={
 	"main.bas",
 "USEVAR CA,CB,CT" CR
-"CT=CORETIMER()" CR
+"WIDTH 80" CR
+"DRAWCOUNT 0" CR
 "FOR Y=-12 to 12" CR
 " FOR X=-39 to 39" CR
 "  CA#=FLOAT#(X)*0.0458" CR
@@ -43,18 +44,18 @@ static const char* debug_files[]={
 "   T#=A#*A#-B#*B#+CA#" CR
 "   B#=2*A#*B#+CB#" CR
 "   A#=T#" CR
-"   IF INT(A#*A#+B#*B#-4)>=0 THEN BREAK" CR
+"   IF INT(A#*A#+B#*B#)>=4 THEN" CR
+"    IF I>9 THEN I=I+7" CR
+"    PRINT CHR$(48+I);" CR
+"    BREAK" CR
+"   ELSEIF I=15 THEN" CR
+"    PRINT \" \";" CR
+"   ENDIF" CR
 "  NEXT" CR
-"  IF INT(A#*A#+B#*B#-4)>=0 THEN" CR
-"   IF I>9 THEN I=I+7" CR
-"   PRINT CHR$(48+I);" CR
-"  ELSE" CR
-"   PRINT \" \";" CR
-"  ENDIF" CR
 " NEXT" CR
 " PRINT" CR
 "NEXT" CR
-"PRINT CORETIMER()-CT" CR
+"PRINT FLOAT#(DRAWCOUNT())/60" CR
 "DO:LOOP" CR
 	,"CLASS1.BAS",
 "STATIC TEST" CR
