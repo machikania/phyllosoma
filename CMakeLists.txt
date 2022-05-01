@@ -47,6 +47,7 @@ if (TARGET tinyusb_device)
 	target_link_libraries(phyllosoma pico_stdlib hardware_spi)
 	target_link_libraries(phyllosoma pico_stdlib hardware_pwm)
 	target_link_libraries(phyllosoma pico_stdlib hardware_adc)
+	target_link_libraries(phyllosoma pico_stdlib hardware_i2c)
 
 	# enable usb output, disable uart output
 	pico_enable_stdio_usb(phyllosoma 1)

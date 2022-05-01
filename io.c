@@ -9,6 +9,7 @@
 #include "hardware/pwm.h"
 #include "hardware/gpio.h"
 #include "hardware/adc.h"
+#include "hardware/i2c.h"
 #include "./compiler.h"
 #include "./api.h"
 #include "./io.h"
@@ -16,6 +17,65 @@
 void io_init(void){
 	// Clear all GPIO settings and let all ports to be input
 	gpio_init_mask(GPIO_ALL_MASK);
+	// Disable PWMs
+	pwm_set_enabled(IO_PWM1_SLICE, false);
+	pwm_set_enabled(IO_PWM2_SLICE, false);
+	pwm_set_enabled(IO_PWM3_SLICE, false);
+	// Disable I2C
+	i2c_deinit(IO_I2C_CH);
+}
+
+int io_prepare_stack(int min_args){
+	// Stack is set as r1
+	// Number of argument(s) is r0
+	// This function will return the number of arguments. If error, return error code (<0).
+	int e,n;
+	short* sub_sp=object;
+	skip_blank();
+	if (')'==source[0] && 0==min_args) return 0;
+	// Prepare stack
+	check_object(1);
+	(object++)[0]=0xb080;         // sub	sp, #xx (this will be updated; see below)
+	n=0;
+	do {
+		e=get_integer();
+		if (e) return e;
+		check_object(1);
+		(object++)[0]=0x9000 | n; // str	r0, [sp, #xx]
+		n++;
+		skip_blank();
+	} while (','==(source++)[0]);
+	source --;
+	if (n<min_args) return ERROR_SYNTAX;
+	sub_sp[0]|=n;                 // Update sub sp,#xx assembly
+	// Prepare r1 as pointer to the stack
+	check_object(1);
+	(object++)[0]=0x4669;         // mov	r1, sp
+	// R0 is the number of arguments
+	e=set_value_in_register(0,n);
+	if (e) return e;
+	// All done. Return number of arguments	
+	return n;
+}
+
+int io_call_lib_with_stack(int lib, int option, int min_args){
+	int n,e;
+	n=io_prepare_stack(min_args);
+	if (n<0) return n; // Error
+	if (option) {
+		// If there is option, set to r2
+		e=set_value_in_register(2,option);
+		if (e) return e;
+	}
+	// Call library
+	e=call_lib_code(lib);
+	if (e) return e;
+	// Delete stack
+	if (n) {
+		check_object(1);
+		(object++)[0]=0xb000 | n; // add	sp, #xx
+	}
+	return 0;
 }
 
 /*
@@ -196,44 +256,131 @@ int lib_spi(int r0, int r1, int r2){
 */
 
 int i2c_statement(void){
-	// LIB_I2C_I2C 1
-	return 0;
+	g_default_args[1]=100;
+	return argn_function(LIB_I2C,
+		ARG_INTEGER_OPTIONAL<<ARG1 |
+		LIB_I2C_I2C<<LIBOPTION);
 }
 
 int i2cwrite_statement(void){
-	// LIB_I2C_I2CWRITE 3
-	return 0;
+	return io_call_lib_with_stack(LIB_I2C,LIB_I2C_I2CWRITE,1);
 }
 
 int i2cread_function(void){
-	// LIB_I2C_I2CREAD 2
-	return 0;
+	return io_call_lib_with_stack(LIB_I2C,LIB_I2C_I2CREAD,1);
 }
 
 int i2creaddata_statement(void){
-	// LIB_I2C_I2CREADDATA 5
-	return 0;
+	return io_call_lib_with_stack(LIB_I2C,LIB_I2C_I2CREADDATA,3);
 }
 
 int i2cwritedata_statement(void){
-	// LIB_I2C_I2CWRITEDATA 6
-	return 0;
+	return io_call_lib_with_stack(LIB_I2C,LIB_I2C_I2CWRITEDATA,3);
 }
 
 int i2cerror_function(void){
-	// LIB_I2C_I2CERROR 4
-	return 0;
+	return argn_function(LIB_I2C,
+		ARG_NONE |
+		LIB_I2C_I2CERROR<<LIBOPTION);
 }
 
 int lib_i2c(int r0, int r1, int r2){
+	int i;
+	static int s_err=0;
+	int* sp;
+	unsigned char* i2cdat;
+	unsigned char* i2cdat2;
+	int num,numdat2;
+	unsigned char addr;
+	// Preparations
 	switch(r2){
-		case LIB_I2C_I2C:
-		case LIB_I2C_I2CREAD:
 		case LIB_I2C_I2CWRITE:
+		case LIB_I2C_I2CREAD:
+			// Prepare values
+			sp=(int*)r1;
+			i2cdat=(unsigned char*)&sp[1];  // i2cdat starts at argument 2
+			num=r0-1;                       // exclude address for number of I2C data
+			addr=(unsigned char)sp[0]&0x7f; // address is 7 bits data
+			// Construct byte array
+			for(i=0;i<num;i++) i2cdat[i]=(unsigned char)sp[i+1];
+			break;
+		case LIB_I2C_I2CWRITEDATA:
+		case LIB_I2C_I2CREADDATA:
+			// Prepare values
+			sp=(int*)r1;
+			i2cdat=(unsigned char*)&sp[3];  // i2cdat (used for optional writing) starts at argument 4
+			i2cdat2=(unsigned char*)sp[1];  // i2cdat2 (used for main writing/reading) is argument 2
+			numdat2=sp[2];                  // size of i2cdat2 is argument 3
+			num=r0-3;                       // exclude arguments 1, 2 and 3 for number of I2C data
+			addr=(unsigned char)sp[0]&0x7f; // address is 7 bits data
+			// Construct byte array
+			for(i=0;i<num;i++) i2cdat[i]=(unsigned char)sp[i+3];
+			break;
+		case LIB_I2C_I2C:
 		case LIB_I2C_I2CERROR:
 		default:
+			break;
+	}
+	// Main jobs
+	switch(r2){
+		case LIB_I2C_I2C:
+			i2c_init(IO_I2C_CH, r0 * 1000);
+			gpio_set_function(IO_I2C_SDA, GPIO_FUNC_I2C);
+			gpio_set_function(IO_I2C_SCL, GPIO_FUNC_I2C);
+			gpio_pull_up(IO_I2C_SDA);
+			gpio_pull_up(IO_I2C_SCL);
+			return r0;
+		case LIB_I2C_I2CERROR:
+			// PICO_OK = 0,
+			// PICO_ERROR_NONE = 0,
+			// PICO_ERROR_TIMEOUT = -1,
+			// PICO_ERROR_GENERIC = -2,
+			// PICO_ERROR_NO_DATA = -3,
+			return s_err;
+		case LIB_I2C_I2CWRITE:
+			// Write
+			num=i2c_write_blocking(IO_I2C_CH,addr,i2cdat,num,false);
+			if (num<0) return s_err=num;
+			else return s_err=0;
+		case LIB_I2C_I2CREAD:
+			if (num) {
+				// Optional writing before reading
+				num=i2c_write_blocking(IO_I2C_CH,addr,i2cdat,num,true);
+				if (num<0) return s_err=num;
+				else s_err=0;
+			}
+			// Read a byte
+			num=i2c_read_blocking(IO_I2C_CH,addr,&i2cdat[-1],1,false);
+			if (num<0) {
+				s_err=num;
+				return -1;
+			} else s_err=0;
+			return (unsigned int)i2cdat[-1];
+		case LIB_I2C_I2CWRITEDATA:
+			if (num) {
+				// Optional writing 
+				num=i2c_write_blocking(IO_I2C_CH,addr,i2cdat,num,true);
+				if (num<0) return s_err=num;
+				else s_err=0;
+			}
+			// Write
+			num=i2c_write_blocking(IO_I2C_CH,addr,i2cdat2,numdat2,false);
+			if (num<0) return s_err=num;
+			else return s_err=0;
+		case LIB_I2C_I2CREADDATA:
+			if (num) {
+				// Optional writing 
+				num=i2c_write_blocking(IO_I2C_CH,addr,i2cdat,num,true);
+				if (num<0) return s_err=num;
+				else s_err=0;
+			}
+			// Read
+			num=i2c_read_blocking(IO_I2C_CH,addr,i2cdat2,numdat2,false);
+			if (num<0) return s_err=num;
+			else return s_err=0;
+		default:
 			// Invalid
-			return 0;
+			return -1;
 	}
 }
 
@@ -321,15 +468,50 @@ int out16_statement(void){
 }
 
 int lib_gpio(int r0, int r1, int r2){
+	int i;
 	switch(r2){
 		case LIB_GPIO_IN:
-		case LIB_GPIO_IN8H:
+			if (r0<0 || 15<r0) return -1;
+			gpio_init(r0);
+			gpio_set_dir(r0,GPIO_IN);
+			gpio_pull_up(r0);
+			return gpio_get(r0) ? 1:0;
+		case LIB_GPIO_IN8H: // TODO: revise positions of bits 8-15
+			gpio_init_mask(0xff00);
+			gpio_set_dir_in_masked(0xff00);
+			for(i=8;i<16;i++) gpio_pull_up(i);
+			return (gpio_get_all()>>8) & 0xff;
 		case LIB_GPIO_IN8L:
-		case LIB_GPIO_IN16:
+			gpio_init_mask(0xff);
+			gpio_set_dir_in_masked(0xff);
+			for(i=0;i<8;i++) gpio_pull_up(i);
+			return gpio_get_all() & 0xff;
+		case LIB_GPIO_IN16: // TODO: revise positions of bits 8-15
+			gpio_init_mask(0xff);
+			gpio_set_dir_in_masked(0xff);
+			for(i=0;i<16;i++) gpio_pull_up(i);
+			return gpio_get_all() & 0xffff;
 		case LIB_GPIO_OUT:
-		case LIB_GPIO_OUT8H:
+			if (r1<0 || 15<r1) return r0;
+		    gpio_init(r1);
+		    gpio_set_dir(r1, GPIO_OUT);
+	        gpio_put(r1, r0 ? 1:0);
+	        return r0;
+		case LIB_GPIO_OUT8H: // TODO: revise positions of bits 8-15
+			gpio_init_mask(0xff00);
+			gpio_set_dir_out_masked(0xff00);
+			gpio_put_masked(0xff00,(r0&0xff)<<8);
+			return r0;
 		case LIB_GPIO_OUT8L:
-		case LIB_GPIO_OUT16:
+			gpio_init_mask(0xff);
+			gpio_set_dir_out_masked(0xff);
+			gpio_put_masked(0xff,r0&0xff);
+			return r0;
+		case LIB_GPIO_OUT16: // TODO: revise positions of bits 8-15
+			gpio_init_mask(0xffff);
+			gpio_set_dir_out_masked(0xffff);
+			gpio_put_masked(0xffff,r0&0xffff);
+			return r0;
 		default:
 			// Invalid
 			return -1;

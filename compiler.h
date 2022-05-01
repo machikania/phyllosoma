@@ -9,7 +9,7 @@
 	Configration
 */
 
-#define DEBUG_MODE
+//#define DEBUG_MODE
 #define TEMPVAR_NUMBER 10
 #define ALLOC_BLOCK_NUM 256
 
@@ -306,8 +306,8 @@ extern volatile int* g_scratch_int;
 extern volatile float* g_scratch_float;
 extern volatile char* g_scratch_char;
 
-extern const char* const g_reserved_words[132];
-extern const int const g_hash_resereved_words[132];
+extern const char* const g_reserved_words[157];
+extern const int const g_hash_resereved_words[157];
 
 extern char g_constant_value_flag;
 extern int g_constant_int;

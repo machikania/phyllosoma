@@ -59,7 +59,7 @@
 // I2C settings
 #define IO_I2C_SDA 4
 #define IO_I2C_SCL 5
-#define IO_I2C_CH 1
+#define IO_I2C_CH i2c0
 
 // PWM settings
 #define IO_PWM1 2

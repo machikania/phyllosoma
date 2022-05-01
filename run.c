@@ -103,9 +103,14 @@ void pre_run(void){
 	kmbasic_data[2]=(int)&kmbasic_var_size[0];
 	// Close all files
 	close_all_files();
+	// Init I/O
+	io_init();
 }
 
 void post_run(void){
 	// Close all files
 	close_all_files();
+	// Reset I/O and activate buttons
+	io_init();
+	lib_keys(63,0,0);	
 }

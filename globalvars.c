@@ -86,7 +86,7 @@ int* g_empty_object_list;
 
 // Reserved words
 
-const char* const g_reserved_words[132]={
+const char* const g_reserved_words[157]={
 	"ABS",
 	"ACOS",
 	"ARGS",
@@ -219,8 +219,33 @@ const char* const g_reserved_words[132]={
 	"WEND",
 	"WHILE",
 	"WIDTH",
+	"OUT",
+	"OUT8H",
+	"OUT8L",
+	"OUT16",
+	"PWM",
+	"SERIAL",
+	"SERIALOUT",
+	"I2CWRITE",
+	"I2CWRITEDATA",
+	"I2CREADDATA",
+	"I2C",
+	"SPI",
+	"SPIWRITE",
+	"SPIWRITEDATA",
+	"SPIREADDATA",
+	"SPISWAPDATA",
+	"IN",
+	"IN8H",
+	"IN8L",
+	"IN16",
+	"ANALOG",
+	"SERIALIN",
+	"I2CREAD",
+	"I2CERROR",
+	"SPIREAD",
 };
-const int const g_hash_resereved_words[132]={
+const int const g_hash_resereved_words[157]={
 	0x000400d3, //ABS
 	0x01002393, //ACOS
 	0x01013193, //ARGS
@@ -353,5 +378,29 @@ const int const g_hash_resereved_words[132]={
 	0x015843c4, //WEND
 	0x56248345, //WHILE
 	0x56205548, //WIDTH
+	0x0004e514, //OUT
+	0x4e514e48, //OUT8H
+	0x4e514e4c, //OUT8L
+	0x4e514c76, //OUT16
+	0x0005158d, //PWM
+	0x844c8018, //SERIAL
+	0xff9af426, //SERIALOUT
+	0x69b25db5, //I2CWRITE
+	0xb47db71c, //I2CWRITEDATA
+	0x992a493a, //I2CREADDATA
+	0x00049cc3, //I2C
+	0x00052449, //SPI
+	0x164dc3a8, //SPIWRITE
+	0xa901b8bd, //SPIWRITEDATA
+	0x1ea046fb, //SPIREADDATA
+	0xf55fbc1b, //SPISWAPDATA
+	0x0000120e, //IN
+	0x0120ee48, //IN8H
+	0x0120ee4c, //IN8L
+	0x0120ec76, //IN16
+	0x0f00d397, //ANALOG
+	0xc80195b5, //SERIALIN
+	0xc24c4498, //I2CREAD
+	0x7bb3eb62, //I2CERROR
+	0xb7b3bae0, //SPIREAD
 };
-
