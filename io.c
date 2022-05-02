@@ -467,50 +467,74 @@ int out16_statement(void){
 		LIB_GPIO_OUT16<<LIBOPTION);
 }
 
+static unsigned char gpio_table[16]={
+	IO_GPIO0,
+	IO_GPIO1,
+	IO_GPIO2,
+	IO_GPIO3,
+	IO_GPIO4,
+	IO_GPIO5,
+	IO_GPIO6,
+	IO_GPIO7,
+	IO_GPIO8,
+	IO_GPIO9,
+	IO_GPIO10,
+	IO_GPIO11,
+	IO_GPIO12,
+	IO_GPIO13,
+	IO_GPIO14,
+	IO_GPIO15
+};
+
 int lib_gpio(int r0, int r1, int r2){
 	int i;
 	switch(r2){
 		case LIB_GPIO_IN:
 			if (r0<0 || 15<r0) return -1;
-			gpio_init(r0);
-			gpio_set_dir(r0,GPIO_IN);
-			gpio_pull_up(r0);
-			return gpio_get(r0) ? 1:0;
-		case LIB_GPIO_IN8H: // TODO: revise positions of bits 8-15
-			gpio_init_mask(0xff00);
-			gpio_set_dir_in_masked(0xff00);
-			for(i=8;i<16;i++) gpio_pull_up(i);
-			return (gpio_get_all()>>8) & 0xff;
+			i=gpio_table[r0];
+			gpio_init(i);
+			gpio_set_dir(i,GPIO_IN);
+			gpio_pull_up(i);
+			return gpio_get(i) ? 1:0;
+		case LIB_GPIO_IN8H:
+			gpio_init_mask(IO_GPIO_8H_MASK);
+			gpio_set_dir_in_masked(IO_GPIO_8H_MASK);
+			for(i=8;i<16;i++) gpio_pull_up(gpio_table[i]);
+			r0=gpio_get_all() & IO_GPIO_8H_MASK;
+			return io_gpio_inh_conversion(r0);
 		case LIB_GPIO_IN8L:
-			gpio_init_mask(0xff);
-			gpio_set_dir_in_masked(0xff);
-			for(i=0;i<8;i++) gpio_pull_up(i);
-			return gpio_get_all() & 0xff;
-		case LIB_GPIO_IN16: // TODO: revise positions of bits 8-15
-			gpio_init_mask(0xff);
-			gpio_set_dir_in_masked(0xff);
-			for(i=0;i<16;i++) gpio_pull_up(i);
-			return gpio_get_all() & 0xffff;
+			gpio_init_mask(IO_GPIO_8L_MASK);
+			gpio_set_dir_in_masked(IO_GPIO_8L_MASK);
+			for(i=0;i<8;i++) gpio_pull_up(gpio_table[i]);
+			r0=gpio_get_all() & IO_GPIO_8L_MASK;
+			return io_gpio_inl_conversion(r0);
+		case LIB_GPIO_IN16:
+			gpio_init_mask(IO_GPIO_16_MASK);
+			gpio_set_dir_in_masked(IO_GPIO_16_MASK);
+			for(i=0;i<16;i++) gpio_pull_up(gpio_table[i]);
+			r0=gpio_get_all() & IO_GPIO_16_MASK;
+			return io_gpio_in16_conversion(r0);
 		case LIB_GPIO_OUT:
 			if (r1<0 || 15<r1) return r0;
-		    gpio_init(r1);
-		    gpio_set_dir(r1, GPIO_OUT);
-	        gpio_put(r1, r0 ? 1:0);
+			i=gpio_table[r1];
+		    gpio_init(i);
+		    gpio_set_dir(i, GPIO_OUT);
+	        gpio_put(i, r0 ? 1:0);
 	        return r0;
-		case LIB_GPIO_OUT8H: // TODO: revise positions of bits 8-15
-			gpio_init_mask(0xff00);
-			gpio_set_dir_out_masked(0xff00);
-			gpio_put_masked(0xff00,(r0&0xff)<<8);
+		case LIB_GPIO_OUT8H:
+			gpio_init_mask(IO_GPIO_8H_MASK);
+			gpio_set_dir_out_masked(IO_GPIO_8H_MASK);
+			gpio_put_masked(IO_GPIO_8H_MASK,io_gpio_outh_conversion(r0));
 			return r0;
 		case LIB_GPIO_OUT8L:
-			gpio_init_mask(0xff);
-			gpio_set_dir_out_masked(0xff);
-			gpio_put_masked(0xff,r0&0xff);
+			gpio_init_mask(IO_GPIO_8L_MASK);
+			gpio_set_dir_out_masked(IO_GPIO_8L_MASK);
+			gpio_put_masked(IO_GPIO_8L_MASK,io_gpio_outl_conversion(r0));
 			return r0;
-		case LIB_GPIO_OUT16: // TODO: revise positions of bits 8-15
-			gpio_init_mask(0xffff);
-			gpio_set_dir_out_masked(0xffff);
-			gpio_put_masked(0xffff,r0&0xffff);
+		case LIB_GPIO_OUT16:
+			gpio_init_mask(IO_GPIO_16_MASK);
+			gpio_set_dir_out_masked(IO_GPIO_16_MASK);
+			gpio_put_masked(IO_GPIO_16_MASK,io_gpio_out16_conversion(r0));
 			return r0;
 		default:
 			// Invalid

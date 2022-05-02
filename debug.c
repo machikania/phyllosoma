@@ -31,32 +31,14 @@ unsigned char* debug_fileselect(void){
 #define CR "\n"
 static const char* debug_files[]={
 	"main.bas",
-"USEVAR CA,CB,CT" CR
-"WIDTH 80" CR
-"DRAWCOUNT 0" CR
-"FOR Y=-12 to 12" CR
-" FOR X=-39 to 39" CR
-"  CA#=FLOAT#(X)*0.0458" CR
-"  CB#=FLOAT#(Y)*0.08333" CR
-"  A#=CA#" CR
-"  B#=CB#" CR
-"  FOR I=0 TO 15" CR
-"   T#=A#*A#-B#*B#+CA#" CR
-"   B#=2*A#*B#+CB#" CR
-"   A#=T#" CR
-"   IF INT(A#*A#+B#*B#)>=4 THEN" CR
-"    IF I>9 THEN I=I+7" CR
-"    PRINT CHR$(48+I);" CR
-"    BREAK" CR
-"   ELSEIF I=15 THEN" CR
-"    PRINT \" \";" CR
-"   ENDIF" CR
-"  NEXT" CR
+"" CR
+"DO" CR
+" FOR I=15 TO 0 STEP -1" CR
+"  PRINT IN(I);" CR
 " NEXT" CR
-" PRINT" CR
-"NEXT" CR
-"PRINT FLOAT#(DRAWCOUNT())/60" CR
-"DO:LOOP" CR
+" PRINT \" \";HEX$(IN8H());\" \";HEX$(IN8L());\" \";HEX$(IN16())" CR
+" WAIT 30" CR
+"LOOP" CR
 	,"CLASS1.BAS",
 "STATIC TEST" CR
 "FIELD  TEST2" CR
