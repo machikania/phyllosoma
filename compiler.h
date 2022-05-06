@@ -9,7 +9,7 @@
 	Configration
 */
 
-//#define DEBUG_MODE
+#define DEBUG_MODE
 #define TEMPVAR_NUMBER 10
 #define ALLOC_BLOCK_NUM 256
 

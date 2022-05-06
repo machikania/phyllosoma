@@ -25,39 +25,78 @@ unsigned char* debug_fileselect(void){
 	// Wait for total three seconds
 	sleep_ms(2500);
 	// Return file name to compile
-	return "main.bas";
+	return "AUTOEXEC.BAS";
 }
+
+#define rem_repeat16k(a) \
+	rem_repeat2(a "0") \
+	rem_repeat2(a "1") \
+	rem_repeat2(a "2") \
+	rem_repeat2(a "3")
+#define rem_repeat64k(a) \
+	rem_repeat2(a "0") \
+	rem_repeat2(a "1") \
+	rem_repeat2(a "2") \
+	rem_repeat2(a "3") \
+	rem_repeat2(a "4") \
+	rem_repeat2(a "5") \
+	rem_repeat2(a "6") \
+	rem_repeat2(a "7") \
+	rem_repeat2(a "8") \
+	rem_repeat2(a "9") \
+	rem_repeat2(a "A") \
+	rem_repeat2(a "B") \
+	rem_repeat2(a "C") \
+	rem_repeat2(a "D") \
+	rem_repeat2(a "E") \
+	rem_repeat2(a "F") 
+#define rem_repeat2(a) \
+	rem_repeat3(a "0") \
+	rem_repeat3(a "1") \
+	rem_repeat3(a "2") \
+	rem_repeat3(a "3") \
+	rem_repeat3(a "4") \
+	rem_repeat3(a "5") \
+	rem_repeat3(a "6") \
+	rem_repeat3(a "7") \
+	rem_repeat3(a "8") \
+	rem_repeat3(a "9") \
+	rem_repeat3(a "A") \
+	rem_repeat3(a "B") \
+	rem_repeat3(a "C") \
+	rem_repeat3(a "D") \
+	rem_repeat3(a "E") \
+	rem_repeat3(a "F") 
+#define rem_repeat3(a) \
+	"REM " a "0" CR \
+	"REM " a "1" CR \
+	"REM " a "2" CR \
+	"REM " a "3" CR \
+	"REM " a "4" CR \
+	"REM " a "5" CR \
+	"REM " a "6" CR \
+	"REM " a "7" CR \
+	"REM " a "8" CR \
+	"REM " a "9" CR \
+	"REM " a "A" CR \
+	"REM " a "B" CR \
+	"REM " a "C" CR \
+	"REM " a "D" CR \
+	"REM " a "E" CR \
+	"REM " a "F" CR
 
 #define CR "\n"
 static const char* debug_files[]={
-	"main.bas",
-"" CR
-"DO" CR
-" FOR I=15 TO 0 STEP -1" CR
-"  PRINT IN(I);" CR
-" NEXT" CR
-" PRINT \" \";HEX$(IN8H());\" \";HEX$(IN8L());\" \";HEX$(IN16())" CR
-" WAIT 30" CR
-"LOOP" CR
-	,"CLASS1.BAS",
-"STATIC TEST" CR
-"FIELD  TEST2" CR
-"FIELD PRIVATE TEST3" CR
-"METHOD TEST4" CR
-"  TEST3=TEST3+1" CR
-"RETURN TEST3" CR
-"END" CR
-	,"CLASS2.BAS",
-"STATIC TEST" CR
-"FIELD PRIVATE TEST3" CR
-"FIELD  TEST2" CR
-"METHOD TEST4" CR
-"  TEST3=TEST3+2" CR
-"RETURN TEST3" CR
-"METHOD INIT" CR
-"  TEST3=ARGS(1)" CR
-"RETURN" CR
-"END" CR
+	"AUTOEXEC.BAS",
+	rem_repeat64k("AUTOEXEC")
+	,"CLASS001.BAS",
+	rem_repeat16k("CLASS001")
+	,"CLASS002.BAS",
+	rem_repeat16k("CLASS002")
+	,"CLASS003.BAS",
+	rem_repeat16k("CLASS003")
+	,"CLASS004.BAS",
+	rem_repeat16k("CLASS004")
 	,0
 };
 
