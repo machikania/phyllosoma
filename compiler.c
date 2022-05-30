@@ -27,8 +27,8 @@
 			kmbasic_data[0]: stack pointer value for ending program
 			kmbasic_data[1]: address to return for ending program
 			kmbasic_data[2]: &kmbasic_var_size[0]
-			kmbasic_data[3]: 
-			kmbasic_data[4]: 
+			kmbasic_data[3]: return address from executing library function
+			kmbasic_data[4]: used for error-handling
 */
 
 #include <string.h>

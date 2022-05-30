@@ -10,11 +10,11 @@
 static char* g_error_file;
 static int g_error_line;
 
-static const char* g_error_text[20]={
+static const char* g_error_text[21]={
 	"No error",
 	"Syntax error",                  // #define ERROR_SYNTAX _throw_error(-1)
 	"Unknown error",                 // #define ERROR_UNKNOWN _throw_error(-2)
-	"Compile object too large",      // #define ERROR_OBJ_TOO_LARGE _throw_error(-3)
+	"",                              // #define ERROR_OTHERS (-3)
 	"Same variable name used twice", // #define ERROR_VARNAME_USED _throw_error(-4)
 	"Too many variables",            // #define ERROR_TOO_MANY_VARS _throw_error(-5)
 	"Reserved word",                 // #define ERROR_RESERVED_WORD _throw_error(-6)
@@ -30,7 +30,8 @@ static const char* g_error_text[20]={
 	"Not public field/method",       // #define ERROR_NOT_PUBLIC  _throw_error(-16)
 	"",                              // #define ERROR_STATEMENT_NOT_DETECTED (-17)
 	"Class file not found",          // #define ERROR_NO_CLASS_FILE _throw_error(-18)
-	"",                              // #define ERROR_OTHERS (-19)
+	"Compile object too large",      // #define ERROR_OBJ_TOO_LARGE _throw_error(-19)
+	"Invalid value or setting",      // #define ERROR_INVALID _throw_error(-20)
 };
 
 int show_error(int e, int pos){

@@ -9,7 +9,7 @@
 	Configration
 */
 
-#define DEBUG_MODE
+//#define DEBUG_MODE
 #define TEMPVAR_NUMBER 10
 #define ALLOC_BLOCK_NUM 256
 
@@ -30,7 +30,7 @@
 #endif
 #define ERROR_SYNTAX _throw_error(-1)
 #define ERROR_UNKNOWN _throw_error(-2)
-#define ERROR_OBJ_TOO_LARGE _throw_error(-3)
+#define ERROR_OTHERS (-3)
 #define ERROR_VARNAME_USED _throw_error(-4)
 #define ERROR_TOO_MANY_VARS _throw_error(-5)
 #define ERROR_RESERVED_WORD _throw_error(-6)
@@ -46,7 +46,8 @@
 #define ERROR_NOT_PUBLIC  _throw_error(-16)
 #define ERROR_STATEMENT_NOT_DETECTED (-17)
 #define ERROR_NO_CLASS_FILE _throw_error(-18)
-#define ERROR_OTHERS (-19)
+#define ERROR_OBJ_TOO_LARGE _throw_error(-19)
+#define ERROR_INVALID _throw_error(-20)
 
 /*
 	Libraries

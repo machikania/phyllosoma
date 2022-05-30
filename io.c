@@ -10,9 +10,17 @@
 #include "hardware/gpio.h"
 #include "hardware/adc.h"
 #include "hardware/i2c.h"
+#include "hardware/uart.h"
+#include "hardware/irq.h"
 #include "./compiler.h"
 #include "./api.h"
 #include "./io.h"
+
+static unsigned short* io_uart_buff;
+static int io_uart_var;
+static int io_uart_buff_size;
+static int io_uart_buff_read_pos;
+static int io_uart_buff_write_pos;
 
 void io_init(void){
 	// Clear all GPIO settings and let all ports to be input
@@ -23,6 +31,9 @@ void io_init(void){
 	pwm_set_enabled(IO_PWM3_SLICE, false);
 	// Disable I2C
 	i2c_deinit(IO_I2C_CH);
+	// Clear UART buffer
+	io_uart_buff=0;
+	io_uart_var=0;
 }
 
 int io_prepare_stack(int min_args){
@@ -146,11 +157,11 @@ int lib_pwm(int r0, int r1, int r2){
 			return r0;
 	}
 	// Allocate GPIO to the PWM
-    gpio_set_function(port, GPIO_FUNC_PWM);
-    // Set clock divier for frequency
-    pwm_set_clkdiv(slice,125000.0/((float)r1));
-    // 1000 cycles PWM
-    pwm_set_wrap(slice, 1000);
+	gpio_set_function(port, GPIO_FUNC_PWM);
+	// Set clock divier for frequency
+	pwm_set_clkdiv(slice,125000.0/((float)r1));
+	// 1000 cycles PWM
+	pwm_set_wrap(slice, 1000);
 	// Set duty
 	pwm_set_chan_level(slice, channel, r2);
 	// Enable
@@ -198,10 +209,10 @@ int lib_analog(int r0, int r1, int r2){
 		init=1;
 		adc_init();
 	}
-    // Make sure GPIO is high-impedance, no pullups etc
-    adc_gpio_init(port);
-    // Select ADC input 0
-    adc_select_input(input);
+	// Make sure GPIO is high-impedance, no pullups etc
+	adc_gpio_init(port);
+	// Select ADC input 0
+	adc_select_input(input);
 	// Read
 	return adc_read();	
 }
@@ -389,25 +400,98 @@ int lib_i2c(int r0, int r1, int r2){
 */
 
 int serial_statement(void){
-	// LIB_SERIAL_SERIAL 1
-	return 0;
+	g_default_args[1]=0;
+	g_default_args[2]=0;
+	return argn_function(LIB_SERIAL,
+		ARG_INTEGER<<ARG1 |
+		ARG_INTEGER_OPTIONAL<<ARG2 |
+		ARG_INTEGER_OPTIONAL<<ARG3 |
+		LIB_SERIAL_SERIAL<<LIBOPTION);
 }
 
 int serialin_function(void){
-	// LIB_SERIAL_SERIALIN 2
-	return 0;
+	g_default_args[1]=0;
+	return argn_function(LIB_SERIAL,
+		ARG_INTEGER_OPTIONAL<<ARG1 |
+		LIB_SERIAL_SERIALIN<<LIBOPTION);
 }
 
 int serialout_statement(void){
-	// LIB_SERIAL_SERIALOUT 3
-	return 0;
+	return argn_function(LIB_SERIAL,
+		ARG_INTEGER<<ARG1 |
+		LIB_SERIAL_SERIALOUT<<LIBOPTION);
+}
+
+void on_uart_rx() {
+	// The interrupt function
+	if((uart_get_hw(IO_UART_CH)->rsr & UART_UARTRSR_PE_BITS)){
+		// Parity error
+		io_uart_buff[io_uart_buff_write_pos++]=0x100 | uart_getc(IO_UART_CH);
+	} else {
+		// No parity error
+		io_uart_buff[io_uart_buff_write_pos++]=uart_getc(IO_UART_CH);
+	}
+	if (io_uart_buff_size<=io_uart_buff_write_pos) io_uart_buff_write_pos=0;
 }
 
 int lib_serial(int r0, int r1, int r2){
+	int* sp=(int*)r1;
 	switch(r2){
 		case LIB_SERIAL_SERIAL:
+			// Prepare io_uart_buff[]
+			if (sp[2]) {
+				io_uart_buff_size=sp[2];
+			} else {
+				io_uart_buff_size=sp[0]/60/8+1;
+			}
+			io_uart_buff_read_pos=io_uart_buff_write_pos=0;
+			if (!io_uart_var) io_uart_var=get_permanent_block_number();
+			io_uart_buff=(unsigned short*)alloc_memory((io_uart_buff_size+1)/2,io_uart_var);
+			// Initialize UART
+			uart_init(IO_UART_CH, 2400);
+			gpio_set_function(IO_UART_TX, GPIO_FUNC_UART);
+			gpio_set_function(IO_UART_RX, GPIO_FUNC_UART);
+			uart_set_baudrate(IO_UART_CH, sp[0]);
+			uart_set_hw_flow(IO_UART_CH, false, false);
+			switch(sp[1]){
+				case 0:
+					uart_set_format(IO_UART_CH, 8, 1, UART_PARITY_NONE);
+					break;
+				case 1:
+					uart_set_format(IO_UART_CH, 8, 1, UART_PARITY_EVEN);
+					break;
+				case 2:
+					uart_set_format(IO_UART_CH, 8, 1, UART_PARITY_ODD);
+					break;
+				case 3:
+				default:
+					stop_with_error(ERROR_INVALID);
+					return r0;
+			}
+			uart_set_fifo_enabled(IO_UART_CH, false);
+			irq_set_exclusive_handler(IO_UART_IRQ, on_uart_rx);
+			irq_set_enabled(IO_UART_IRQ, true);
+			uart_set_irq_enables(IO_UART_CH, true, false);
+			return r0;
 		case LIB_SERIAL_SERIALIN:
+			switch(r0){
+				case 1:
+					// Return number in buffer
+					r0=io_uart_buff_write_pos-io_uart_buff_read_pos;
+					if (r0<0) r0+=io_uart_buff_size;
+					return r0;
+				case 0:
+				default:
+					// Return -1 if not received
+					if (io_uart_buff_read_pos==io_uart_buff_write_pos) return -1;
+					// Return a received byte
+					r0=io_uart_buff[io_uart_buff_read_pos]++;
+					if (io_uart_buff_size<=io_uart_buff_read_pos) io_uart_buff_read_pos=0;
+					return 0;
+			}
 		case LIB_SERIAL_SERIALOUT:
+			uart_putc_raw(IO_UART_CH,r0);
+			return r0;
 		default:
 			// Invalid
 			return 0;
@@ -517,10 +601,10 @@ int lib_gpio(int r0, int r1, int r2){
 		case LIB_GPIO_OUT:
 			if (r1<0 || 15<r1) return r0;
 			i=gpio_table[r1];
-		    gpio_init(i);
-		    gpio_set_dir(i, GPIO_OUT);
-	        gpio_put(i, r0 ? 1:0);
-	        return r0;
+			gpio_init(i);
+			gpio_set_dir(i, GPIO_OUT);
+			gpio_put(i, r0 ? 1:0);
+			return r0;
 		case LIB_GPIO_OUT8H:
 			gpio_init_mask(IO_GPIO_8H_MASK);
 			gpio_set_dir_out_masked(IO_GPIO_8H_MASK);

@@ -75,7 +75,9 @@
 // Serial settings
 #define IO_UART_TX 6
 #define IO_UART_RX 7
-#define IO_UART_CH 1
+#define IO_UART_CH uart1
+#define IO_UART_IRQ UART1_IRQ
+
 
 // ADC settings
 #define IO_ADC0 26

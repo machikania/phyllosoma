@@ -44,10 +44,11 @@ if (TARGET tinyusb_device)
 		)
 
 	# Pull in our pico_stdlib which aggregates commonly used features
-	target_link_libraries(phyllosoma pico_stdlib hardware_spi)
-	target_link_libraries(phyllosoma pico_stdlib hardware_pwm)
-	target_link_libraries(phyllosoma pico_stdlib hardware_adc)
-	target_link_libraries(phyllosoma pico_stdlib hardware_i2c)
+	target_link_libraries(phyllosoma pico_stdlib)
+	target_link_libraries(phyllosoma hardware_spi)
+	target_link_libraries(phyllosoma hardware_pwm)
+	target_link_libraries(phyllosoma hardware_adc)
+	target_link_libraries(phyllosoma hardware_i2c)
 
 	# enable usb output, disable uart output
 	pico_enable_stdio_usb(phyllosoma 1)
