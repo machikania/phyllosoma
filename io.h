@@ -55,6 +55,7 @@
 #define IO_SPI_RX SD_SPI_RX
 #define IO_SPI_SCK SD_SPI_SCK
 #define IO_SPI_CH SD_SPICH
+#define IO_SPI_SSPCR0 ((volatile unsigned int*)(SPI0_BASE + SPI_SSPCR0_OFFSET))
 
 // I2C settings
 #define IO_I2C_SDA 4

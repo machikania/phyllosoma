@@ -304,6 +304,7 @@ extern short g_fordepth;
 
 extern volatile char g_scratch[32];
 extern volatile int* g_scratch_int;
+extern volatile short* g_scratch_short;
 extern volatile float* g_scratch_float;
 extern volatile char* g_scratch_char;
 

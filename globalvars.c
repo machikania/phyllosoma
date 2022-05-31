@@ -54,6 +54,8 @@ short g_fordepth;
 // Scratch variable
 volatile char g_scratch[32];
 volatile int* g_scratch_int=(volatile int*)&g_scratch[0];
+volatile short* g_scratch_short=(volatile short*)&g_scratch[0];
+volatile char* g_scratch_char=(volatile char*)&g_scratch[0];
 volatile float* g_scratch_float=(volatile float*)&g_scratch[0];
 
 // Constant values

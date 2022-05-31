@@ -12,15 +12,21 @@
 #include "hardware/i2c.h"
 #include "hardware/uart.h"
 #include "hardware/irq.h"
+#include "hardware/spi.h"
 #include "./compiler.h"
 #include "./api.h"
 #include "./io.h"
 
+// UART data
 static unsigned short* io_uart_buff;
 static int io_uart_var;
 static int io_uart_buff_size;
 static int io_uart_buff_read_pos;
 static int io_uart_buff_write_pos;
+
+// SPI data
+static unsigned int io_spi_sspcr[2];
+static unsigned int sd_spi_sspcr[2];
 
 void io_init(void){
 	// Clear all GPIO settings and let all ports to be input
@@ -34,6 +40,9 @@ void io_init(void){
 	// Clear UART buffer
 	io_uart_buff=0;
 	io_uart_var=0;
+	// Resister SSPCR0 for SD
+	IO_SPI_SSPCR0[0]=sd_spi_sspcr[0];
+	IO_SPI_SSPCR0[1]=sd_spi_sspcr[1];
 }
 
 int io_prepare_stack(int min_args){
@@ -222,44 +231,298 @@ int lib_analog(int r0, int r1, int r2){
 */
 
 int spi_statement(void){
-	// LIB_SPI_SPI 1
-	return 0;
+	g_default_args[2]=8;
+	g_default_args[3]=0;
+	g_default_args[4]=IO_SPI_CS;
+	return argn_function(LIB_SPI,
+		ARG_INTEGER<<ARG1 |
+		ARG_INTEGER_OPTIONAL<<ARG2 |
+		ARG_INTEGER_OPTIONAL<<ARG3 |
+		ARG_INTEGER_OPTIONAL<<ARG4 |
+		LIB_SPI_SPI<<LIBOPTION);
 }
 
 int spiwrite_statement(void){
-	// LIB_SPI_SPIWRITE 3
-	return 0;
+	return io_call_lib_with_stack(LIB_SPI,LIB_SPI_SPIWRITE,1);
 }
 
 int spiwritedata_statement(void){
-	// LIB_SPI_SPIWRITEDATA 5
-	return 0;
+	return io_call_lib_with_stack(LIB_SPI,LIB_SPI_SPIWRITEDATA,2);
 }
 
 int spiread_function(void){
-	// LIB_SPI_SPIREAD 2
-	return 0;
+	return io_call_lib_with_stack(LIB_SPI,LIB_SPI_SPIREAD,0);
 }
 
 int spireaddata_statement(void){
-	// LIB_SPI_SPIREADDATA 4
-	return 0;
+	return io_call_lib_with_stack(LIB_SPI,LIB_SPI_SPIREADDATA,2);
 }
 
 int spiswapdata_statement(void){
-	// LIB_SPI_SPISWAPDATA 6
-	return 0;
+	return io_call_lib_with_stack(LIB_SPI,LIB_SPI_SPISWAPDATA,2);
+}
+
+int spi_read32_blocking(spi_inst_t *spi, uint32_t repeated_tx_data, uint32_t *dst, size_t len){
+	int i;
+	uint16_t* dst16=(uint16_t*)dst;
+	for(i=0;i<len;i++){
+		if (!spi_read16_blocking (spi,repeated_tx_data>>16,&dst16[i*2+1],1)) break;
+		if (!spi_read16_blocking (spi,repeated_tx_data&0xffff,&dst16[i*2],1)) break;
+	}
+	return i;
+}
+
+int spi_write32_blocking(spi_inst_t *spi, const uint32_t *src, size_t len){
+	int i;
+	const uint16_t* src16=(const uint16_t*)src;
+	for(i=0;i<len;i++){
+		if (!spi_write16_blocking (spi,&src16[i*2+1],1)) break;
+		if (!spi_write16_blocking (spi,&src16[i*2],1)) break;
+	}
+	return i;
+}
+
+int spi_write32_read32_blocking(spi_inst_t *spi, const uint32_t *src, uint32_t *dst, size_t len){
+	int i;
+	const uint16_t* src16=(const uint16_t*)src;
+	uint16_t* dst16=(uint16_t*)dst;
+	for(i=0;i<len;i++){
+		if (!spi_write16_read16_blocking (spi,&src16[i*2+1],&dst16[i*2+1],1)) break;
+		if (!spi_write16_read16_blocking (spi,&src16[i*2],&dst16[i*2],1)) break;
+	}
+	return i;
+}
+
+void spi_send_option(int bit_num, unsigned int* sp, int sp_num){
+	int i;
+	switch(bit_num){
+		case 8:
+			for(i=0;i<sp_num;i++) spi_write_blocking(IO_SPI_CH,(const unsigned char*)&sp[i],1);
+			break;
+		case 16:
+			for(i=0;i<sp_num;i++) spi_write16_blocking(IO_SPI_CH,(const unsigned short*)&sp[i],1);
+			break;
+		case 32:
+		default:
+			for(i=0;i<sp_num;i++) spi_write32_blocking(IO_SPI_CH,((const unsigned long*)&sp[i]),1);
+			break;
+	}
 }
 
 int lib_spi(int r0, int r1, int r2){
+	static char cs_port=-1;
+	static unsigned char bit_num;
+	int i;
+	unsigned int* sp=(unsigned int*)r1;
+	// Set control registers for IO
+	IO_SPI_SSPCR0[0]=io_spi_sspcr[0];
+	IO_SPI_SSPCR0[1]=io_spi_sspcr[1];
+	// Activate SPI connection
+    asm volatile("nop \n nop \n nop");
+    if (0<=cs_port) gpio_put(cs_port,0);
+    asm volatile("nop \n nop \n nop");
+    // r2 is the option number
 	switch(r2){
 		case LIB_SPI_SPI:
+/*
+SPI x[,y[,z1[,z2]]]
+	SPI利用をマスターモードで開始する。xは、クロック数をkHz単位で指定(有効値は、
+	93-47727)。yは、１ワードのビット数を8/16/32で指定(省略した場合は、8)。z1は、
+	SPIクロックの取り扱い方を指定(省略した場合は、0)。詳細は、下記に。z2は、CS
+	ラインにどのポートを使用するかを指定する。省略した場合は、3 (GP3)。
+		z1=0:アイドル時にL、データー変更はLに変化する時(CKP=0,CKE=1; CPOL=0,CPHA=0)
+		z1=1:アイドル時にL、データー変更はHに変化する時(CKP=0,CKE=0; CPOL=0,CPHA=1)
+		z1=2:アイドル時にH、データー変更はHに変化する時(CKP=1,CKE=1; CPOL=1,CPHA=1)
+		z1=3:アイドル時にH、データー変更はLに変化する時(CKP=1,CKE=0; CPOL=1,CPHA=0)
+Note:
+	sp[0]=x
+	sp[1]=y
+	sp[2]=z1
+	r0=Z2
+*/
+			// First, inactivate previous CS port, if set
+		    if (0<=cs_port) gpio_put(cs_port,1);
+			// Store bit number (either 8, 16, or 32)
+			switch(sp[1]){
+				case 8:
+				case 16:
+				case 32:
+					bit_num=sp[1];
+					break;
+				default:
+					stop_with_error(ERROR_INVALID);
+					return r0;
+			}
+			// Set CS port
+			cs_port=r0;
+			gpio_init(cs_port);
+			gpio_set_dir(cs_port, GPIO_OUT);
+			gpio_put(cs_port,1);
+			// Init SPI
+			// Note: initializaion of I/O ports is not needed as these are shared with file system
+			spi_init(IO_SPI_CH,sp[0]*1000);
+			// Set format
+			// Note: order must be SPI_MSB_FIRST, no other values supported on the PL022 
+			switch(sp[2]){
+				case 0: // CPOL=0, CPHA=0
+					spi_set_format(IO_SPI_CH,sp[1],SPI_CPOL_0,SPI_CPHA_0,SPI_MSB_FIRST);
+					break;
+				case 1: // CPOL=0, CPHA=1
+					spi_set_format(IO_SPI_CH,sp[1],SPI_CPOL_0,SPI_CPHA_1,SPI_MSB_FIRST);
+					break;
+				case 2: // CPOL=1, CPHA=1
+					spi_set_format(IO_SPI_CH,sp[1],SPI_CPOL_1,SPI_CPHA_1,SPI_MSB_FIRST);
+					break;
+				case 3: // CPOL=1, CPHA=0
+					spi_set_format(IO_SPI_CH,sp[1],SPI_CPOL_1,SPI_CPHA_0,SPI_MSB_FIRST);
+					break;
+				default:
+					stop_with_error(ERROR_INVALID);
+					return r0;
+			}
+			// Store control registers for IO
+			io_spi_sspcr[0]=IO_SPI_SSPCR0[0];
+			io_spi_sspcr[1]=IO_SPI_SSPCR0[1];
+			break;
 		case LIB_SPI_SPIREAD:
+/*
+SPIREAD([x[,y[,z[, ... ]]])
+	SPI固定長送信(オプション)の後、１ワードの受信を行ない、返す。x,y,z等は、受信
+	前に送信するコード。
+
+Note:
+	sp[0]=x
+	sp[1]=y
+	sp[2]=z
+	...
+*/
+			spi_send_option(bit_num,sp,r0);
+			switch(bit_num){
+				case 8:
+					spi_read_blocking(IO_SPI_CH,0xff,(unsigned char*)&g_scratch_char[0],1);
+					r0=(unsigned char)g_scratch_char[0];
+					break;
+				case 16:
+					spi_read16_blocking(IO_SPI_CH,0xffff,(unsigned short*)&g_scratch_short[0],1);
+					r0=(unsigned short)g_scratch_short[0];
+					break;
+				case 32:
+				default:
+					spi_read32_blocking(IO_SPI_CH,0xffffffff,(unsigned long*)&g_scratch_int[0],1);
+					r0=(unsigned int)g_scratch_int[0];
+					break;
+			}
+			break;
 		case LIB_SPI_SPIWRITE:
+/*
+SPIWRITE x[,y[,z[, ... ]]
+	SPI固定長送信を行なう。x, y, z等は送信コード。
+
+Note:
+	sp[0]=x
+	sp[1]=y
+	sp[2]=z
+	...
+*/
+			spi_send_option(bit_num,sp,r0);
+			break;
+		case LIB_SPI_SPIREADDATA:
+/*
+SPIREADDATA x,y[,z1[,z2[,z3...]]]
+	SPI複数ワード受信を行なう。xは受信する内容を格納するバッファーへのポインター。
+	yは受信するワード数。z1,z2,z3等はオプションの送信コードで、これらがまず送信さ
+	れ、続けてyワードのデーターを受信してバッファーxに格納する。
+
+Note:
+	sp[0]=x
+	sp[1]=y
+	sp[2]=z1
+	sp[3]=z2
+	...
+*/
+			spi_send_option(bit_num,&sp[2],r0-2);
+			switch(bit_num){
+				case 8:
+					spi_read_blocking(IO_SPI_CH,0xff,(unsigned char*)sp[0],sp[1]);
+					break;
+				case 16:
+					spi_read16_blocking(IO_SPI_CH,0xffff,(unsigned short*)sp[0],sp[1]);
+					break;
+				case 32:
+				default:
+					spi_read32_blocking(IO_SPI_CH,0xffffffff,(unsigned long*)sp[0],sp[1]);
+					break;
+			}
+			break;
+		case LIB_SPI_SPIWRITEDATA:
+/*
+SPIWRITEDATA x,y[,z1[,z2[,z3...]]]
+	SPI複数ワード送信を行なう。xは送信する内容を含むバッファーへのポインター。yは
+	バッファーのワード数。z1,z2,z3等はオプションの送信コードで、これらがまず送信
+	され、続けてバッファーxの内容がyワードに渡って送信される。
+
+Note:
+	sp[0]=x
+	sp[1]=y
+	sp[2]=z1
+	sp[3]=z2
+	...
+*/
+			spi_send_option(bit_num,&sp[2],r0-2);
+			switch(bit_num){
+				case 8:
+					spi_write_blocking(IO_SPI_CH,(unsigned char*)sp[0],sp[1]);
+					break;
+				case 16:
+					spi_write16_blocking(IO_SPI_CH,(unsigned short*)sp[0],sp[1]);
+					break;
+				case 32:
+				default:
+					spi_write32_blocking(IO_SPI_CH,(unsigned long*)sp[0],sp[1]);
+					break;
+			}
+			break;
+		case LIB_SPI_SPISWAPDATA:
+/*
+SPISWAPDATA x,y[,z1[,z2[,z3...]]]
+	SPI複数ワード送受信を行なう。xは送受信する内容を格納するバッファーへのポイン
+	ター。yは送受信するワード数。z1,z2,z3等はオプションの送信コードで、これらがま
+	ず送信される。続けて、バッファーxの内容を送信した後にデーターを受信してバッ
+	ファーxに格納しなおす動作を、yワードに渡って繰り返す。
+
+Note:
+	sp[0]=x
+	sp[1]=y
+	sp[2]=z1
+	sp[3]=z2
+	...
+*/
+			spi_send_option(bit_num,&sp[2],r0-2);
+			switch(bit_num){
+				case 8:
+					spi_write_read_blocking(IO_SPI_CH,(unsigned char*)sp[0],(unsigned char*)sp[0],sp[1]);
+					break;
+				case 16:
+					spi_write16_read16_blocking(IO_SPI_CH,(unsigned short*)sp[0],(unsigned short*)sp[0],sp[1]);
+					break;
+				case 32:
+				default:
+					spi_write32_read32_blocking(IO_SPI_CH,(unsigned long*)sp[0],(unsigned long*)sp[0],sp[1]);
+					break;
+			}
+			break;
 		default:
 			// Invalid
-			return 0;
+			break;
 	}
+	// Inactivate SPI connection
+    asm volatile("nop \n nop \n nop");
+    if (0<=cs_port) gpio_put(cs_port,1);
+    asm volatile("nop \n nop \n nop");
+	// Set control registers for SD
+	IO_SPI_SSPCR0[0]=sd_spi_sspcr[0];
+	IO_SPI_SSPCR0[1]=sd_spi_sspcr[1];
+	return r0;
 }
 
 /*
@@ -439,8 +702,8 @@ int lib_serial(int r0, int r1, int r2){
 	switch(r2){
 		case LIB_SERIAL_SERIAL:
 			// Prepare io_uart_buff[]
-			if (sp[2]) {
-				io_uart_buff_size=sp[2];
+			if (r0) {
+				io_uart_buff_size=r0;
 			} else {
 				io_uart_buff_size=sp[0]/60/8+1;
 			}
