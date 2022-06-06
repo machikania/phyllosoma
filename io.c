@@ -41,8 +41,8 @@ void io_init(void){
 	io_uart_buff=0;
 	io_uart_var=0;
 	// Resister SSPCR0 for SD
-	IO_SPI_SSPCR0[0]=sd_spi_sspcr[0];
-	IO_SPI_SSPCR0[1]=sd_spi_sspcr[1];
+	sd_spi_sspcr[0]=IO_SPI_SSPCR0[0];
+	sd_spi_sspcr[1]=IO_SPI_SSPCR0[1];
 }
 
 int io_prepare_stack(int min_args){
