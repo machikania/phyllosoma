@@ -12,10 +12,10 @@
 	GP1 I/O bit1 / PWM2
 	GP2 I/O bit2 / PWM1
 	GP3 I/O bit3 / SPI CS
-	GP4 I/O bit4 / I2C SDA
-	GP5 I/O bit5 / I2C SCL
-	GP6 I/O bit6 / UART TX
-	GP7 I/O bit7 / UART RX
+	GP4 I/O bit4 / UART TX
+	GP5 I/O bit5 / UART RX
+	GP6 I/O bit6 / I2C SDA
+	GP7 I/O bit7 / I2C SCL
 	GP8 I/O bit8 / button1 (UP)
 	GP9 I/O bit9 / button2 (LEFT)
 	GP10 LCD-DC
@@ -34,6 +34,7 @@
 	GP26 I/O bit13 / button6 (FIRE) / ADC0
 	GP27 I/O bit14 / ADC1
 	GP28 I/O bit15 / SOUND OUT / ADC2
+	GP29 ADC3
 */
 
 #define GPIO_ALL_MASK 0b00011100011100000000001111111111
@@ -58,9 +59,9 @@
 #define IO_SPI_SSPCR0 ((volatile unsigned int*)(SPI0_BASE + SPI_SSPCR0_OFFSET))
 
 // I2C settings
-#define IO_I2C_SDA 4
-#define IO_I2C_SCL 5
-#define IO_I2C_CH i2c0
+#define IO_I2C_SDA 6
+#define IO_I2C_SCL 7
+#define IO_I2C_CH i2c1
 
 // PWM settings
 #define IO_PWM1 2
@@ -74,16 +75,16 @@
 #define IO_PWM3_CHANNEL PWM_CHAN_A
 
 // Serial settings
-#define IO_UART_TX 6
-#define IO_UART_RX 7
+#define IO_UART_TX 4
+#define IO_UART_RX 5
 #define IO_UART_CH uart1
 #define IO_UART_IRQ UART1_IRQ
-
 
 // ADC settings
 #define IO_ADC0 26
 #define IO_ADC1 27
 #define IO_ADC2 28
+#define IO_ADC3 29
 
 // GPIO settings
 #define IO_GPIO0  0

@@ -16,6 +16,7 @@ int main() {
 	int e,i,s;
 	char* str;
 	// Initializations
+	io_init();
 	timer_init();
 	sleep_ms(500);
 	stdio_init_all();

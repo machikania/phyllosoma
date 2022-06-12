@@ -29,14 +29,20 @@ static unsigned int io_spi_sspcr[2];
 static unsigned int sd_spi_sspcr[2];
 
 void io_init(void){
+	int i;
 	// Clear all GPIO settings and let all ports to be input
-	gpio_init_mask(GPIO_ALL_MASK);
+	gpio_init_mask(IO_GPIO_16_MASK);
+	// All pull up
+	for(i=0;i<29;i++){
+		if (IO_GPIO_16_MASK & (1<<i) ) gpio_pull_up(i);
+	}
 	// Disable PWMs
 	pwm_set_enabled(IO_PWM1_SLICE, false);
 	pwm_set_enabled(IO_PWM2_SLICE, false);
 	pwm_set_enabled(IO_PWM3_SLICE, false);
-	// Disable I2C
+	// Disable I2C and UART
 	i2c_deinit(IO_I2C_CH);
+	uart_deinit(IO_UART_CH);
 	// Clear UART buffer
 	io_uart_buff=0;
 	io_uart_var=0;
@@ -103,19 +109,7 @@ int io_call_lib_with_stack(int lib, int option, int min_args){
 */
 
 int lib_keys(int r0, int r1, int r2){
-	static char init=0;
 	unsigned int res,k;
-	if (!init) {
-		init=1;
-		gpio_init_mask(KEYSMASK);
-		gpio_set_dir_in_masked(KEYSMASK);
-		gpio_pull_up(GPIO_KEYUP);
-		gpio_pull_up(GPIO_KEYLEFT);
-		gpio_pull_up(GPIO_KEYRIGHT);
-		gpio_pull_up(GPIO_KEYDOWN);
-		gpio_pull_up(GPIO_KEYSTART);
-		gpio_pull_up(GPIO_KEYFIRE);
-	}
 	k=~gpio_get_all() & KEYSMASK;
 	res =(k&KEYUP)    ?  1:0;
 	res|=(k&KEYDOWN)  ?  2:0;
@@ -193,22 +187,28 @@ int lib_analog(int r0, int r1, int r2){
 	int port,input;
 	switch(r0){
 		case 13:
-		case 26:
+		case IO_ADC0:
 			// ADC0
 			port=26;
 			input=0;
 			break;
 		case 14:
-		case 27:
+		case IO_ADC1:
 			// ADC1
 			port=27;
 			input=1;
 			break;
 		case 15:
-		case 28:
+		case IO_ADC2:
 			// ADC2
 			port=28;
 			input=2;
+			break;
+		case 16:
+		case IO_ADC3:
+			// ADC3
+			port=29;
+			input=3;
 			break;
 		default:
 			// Invalid
@@ -219,6 +219,7 @@ int lib_analog(int r0, int r1, int r2){
 		adc_init();
 	}
 	// Make sure GPIO is high-impedance, no pullups etc
+	gpio_disable_pulls(port);
 	adc_gpio_init(port);
 	// Select ADC input 0
 	adc_select_input(input);
@@ -359,8 +360,11 @@ Note:
 			gpio_set_dir(cs_port, GPIO_OUT);
 			gpio_put(cs_port,1);
 			// Init SPI
-			// Note: initializaion of I/O ports is not needed as these are shared with file system
 			spi_init(IO_SPI_CH,sp[0]*1000);
+		    gpio_set_function(IO_SPI_RX, GPIO_FUNC_SPI);
+		    gpio_set_function(IO_SPI_TX, GPIO_FUNC_SPI);
+		    gpio_set_function(IO_SPI_SCK, GPIO_FUNC_SPI);
+			gpio_set_pulls(IO_SPI_RX, true, false); // pull-up DO
 			// Set format
 			// Note: order must be SPI_MSB_FIRST, no other values supported on the PL022 
 			switch(sp[2]){
@@ -701,6 +705,11 @@ int lib_serial(int r0, int r1, int r2){
 	int* sp=(int*)r1;
 	switch(r2){
 		case LIB_SERIAL_SERIAL:
+			if (0==sp[0]) {
+				// End using UART
+				uart_deinit(IO_UART_CH);
+				return r0;
+			}
 			// Prepare io_uart_buff[]
 			if (r0) {
 				io_uart_buff_size=r0;
@@ -748,9 +757,9 @@ int lib_serial(int r0, int r1, int r2){
 					// Return -1 if not received
 					if (io_uart_buff_read_pos==io_uart_buff_write_pos) return -1;
 					// Return a received byte
-					r0=io_uart_buff[io_uart_buff_read_pos]++;
+					r0=io_uart_buff[io_uart_buff_read_pos++];
 					if (io_uart_buff_size<=io_uart_buff_read_pos) io_uart_buff_read_pos=0;
-					return 0;
+					return r0;
 			}
 		case LIB_SERIAL_SERIALOUT:
 			uart_putc_raw(IO_UART_CH,r0);
