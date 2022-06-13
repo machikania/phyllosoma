@@ -108,11 +108,10 @@ int variable_to_r0(int vn){
 		(object++)[0]=0x6828 | (vn<<6); // ldr	r0, [r5, #xx]
 		return 0;
 	} else if (vn<256) {
-		e=set_value_in_register(1,vn*4);
+		e=set_value_in_register(0,vn*4);
 		if (e) return e;
-		check_object(2);
-		(object++)[0]=0x0089;           // lsls	r1, r1, #2
-		(object++)[0]=0x5868;           // ldr	r0, [r5, r1]
+		check_object(1);
+		(object++)[0]=0x5828;           // ldr	r0, [r5, r0]
 		return 0;
 	} else return ERROR_UNKNOWN;
 }

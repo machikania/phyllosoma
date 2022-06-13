@@ -625,23 +625,7 @@ int lib_str2obj(int r0, int r1, int r2){
 
 int lib_debug(int r0, int r1, int r2){
 #ifdef DEBUG_MODE
-	asm("push {r0,r1,r2,r3,r4,r5,r6,r7}");
-	asm("movs r1,r8");
-	asm("movs r2,r9");
-	asm("movs r3,r10");
-	asm("movs r4,r11");
-	asm("movs r5,r12");
-	asm("movs r6,lr");
-	asm("push {r1,r2,r3,r4,r5,r6}");
-	asm("blx r0");
-	asm("pop {r1,r2,r3,r4,r5,r6}");
-	asm("movs r8,r1");
-	asm("movs r9,r2");
-	asm("movs r10,r3");
-	asm("movs r11,r4");
-	asm("movs r12,r5");
-	asm("movs lr,r6");
-	asm("pop {r0,r1,r2,r3,r4,r5,r6,r7}");
+	asm("ldr	r0, [r5, r0]");
 	//printhex32(r0);
 	//lib_wait(60,0,0);
 	return r0;
