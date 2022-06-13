@@ -20,10 +20,10 @@ GP0 I/O bit0 / PWM3
 GP1 I/O bit1 / PWM2
 GP2 I/O bit2 / PWM1
 GP3 I/O bit3 / SPI CS
-GP4 I/O bit4 / I2C SDA
-GP5 I/O bit5 / I2C SCL
-GP6 I/O bit6 / UART TX
-GP7 I/O bit7 / UART RX
+GP4 I/O bit4 / UART TX
+GP5 I/O bit5 / UART RX
+GP6 I/O bit6 / I2C SDA
+GP7 I/O bit7 / I2C SCL
 GP8 I/O bit8 / button1 (UP)
 GP9 I/O bit9 / button2 (LEFT)
 GP10 LCD-DC
@@ -42,4 +42,5 @@ GP22 I/O bit12 / button5 (START)
 GP26 I/O bit13 / button6 (FIRE) / ADC0
 GP27 I/O bit14 / ADC1
 GP28 I/O bit15 / SOUND OUT / ADC2
+GP29 ADC3
 ```

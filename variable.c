@@ -92,7 +92,6 @@ int r0_to_variable(int vn){
 		e=set_value_in_register(1,vn*4);
 		if (e) return e;
 		check_object(6);
-		(object++)[0]=0x0089;           // lsls	r1, r1, #2
 		(object++)[0]=0x5068;           // str	r0, [r5, r1]
 		(object++)[0]=0x2300;           // movs	r3, #0
 		(object++)[0]=0x68ba;           // ldr	r2, [r7, #8]
