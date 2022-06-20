@@ -15,14 +15,15 @@ static struct repeating_timer g_drawcount_timer;
 static unsigned short g_drawcount;
 static void* g_interrupt_vector[7];
 static struct repeating_timer g_coretimer_timer;
+static unsigned int g_interrupt_flags;
 
-#define INTERRUPT_TIMER     0
-#define INTERRUPT_DRAWCOUNT 1
-#define INTERRUPT_KEYS      2
-#define INTERRUPT_INKEY     3
-#define INTERRUPT_MUSIC     4
-#define INTERRUPT_WAVE      5
-#define INTERRUPT_CORETIMER 6
+void raise_interrupt_flag(int i){
+	g_interrupt_flags|=1<<i;
+}
+
+void drop_interrupt_flag(int i){
+	g_interrupt_flags&=~(1<<i);
+}
 
 int interrupt_statement(void){
 	unsigned short* bl;
@@ -132,6 +133,11 @@ bool repeating_drawcount_callback(struct repeating_timer *t) {
 		if (0<=s_keys && s_keys!=keys) call_interrupt_function(g_interrupt_vector[INTERRUPT_KEYS]);
 		s_keys=keys;
 	}
+	musicint();
+	if (g_interrupt_vector[INTERRUPT_MUSIC]) {
+		if (g_interrupt_flags&(1<<INTERRUPT_MUSIC)) call_interrupt_function(g_interrupt_vector[INTERRUPT_MUSIC]);
+		drop_interrupt_flag(INTERRUPT_MUSIC);
+	}
 	return true;
 }
 
@@ -148,6 +154,7 @@ void timer_init(void){
 	cancel_repeating_timer(&g_coretimer_timer);
 	// Cancel all interrupts
 	for(i=0;i<(sizeof g_interrupt_vector)/(sizeof g_interrupt_vector[0]);i++) g_interrupt_vector[i]=0;
+	g_interrupt_flags=0;
 	// Start drawcount interrupt (every 1/60 sec)
 	add_repeating_timer_us(16667, repeating_drawcount_callback, NULL, &g_drawcount_timer);
 }
@@ -190,6 +197,7 @@ int lib_interrupt(int r0, int r1, int r2){
 		case INTERRUPT_WAVE:
 		case INTERRUPT_CORETIMER:
 			g_interrupt_vector[r0]=(void*)r1;
+			drop_interrupt_flag(r0);
 			break;
 		default:
 			break;

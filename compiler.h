@@ -48,6 +48,7 @@
 #define ERROR_NO_CLASS_FILE _throw_error(-18)
 #define ERROR_OBJ_TOO_LARGE _throw_error(-19)
 #define ERROR_INVALID _throw_error(-20)
+#define ERROR_MUSIC (-21)
 
 /*
 	Libraries
@@ -116,6 +117,15 @@
 #define LIB_I2C 149
 #define LIB_SERIAL 150
 #define LIB_GPIO 151
+#define LIB_MUSIC 152
+
+/*
+	LIB MUSIC options
+*/
+
+#define LIB_MUSIC_MUSIC 1
+#define LIB_MUSIC_SOUND 2
+#define LIB_MUSIC_MUSICFUNC 3
 
 /*
 	LIB IO options
@@ -274,6 +284,14 @@
 #define ARG6      15
 #define LIBOPTION 24
 
+#define INTERRUPT_TIMER     0
+#define INTERRUPT_DRAWCOUNT 1
+#define INTERRUPT_KEYS      2
+#define INTERRUPT_INKEY     3
+#define INTERRUPT_MUSIC     4
+#define INTERRUPT_WAVE      5
+#define INTERRUPT_CORETIMER 6
+
 /*
 	Variables
 */
@@ -365,6 +383,7 @@ void post_run(void);
 int lib_end(int r0, int r1, int r2);
 unsigned short* seek_data(int mode);
 int lib_restore(int r0, int r1, int r2);
+int lib_read(int r0, int r1, int r2);
 int kmbasic_library(int r0, int r1, int r2, int r3);
 
 // statement.c
@@ -374,6 +393,7 @@ int gosub_statement(void);
 int post_gosub_statement(int i);
 int compile_statement(void);
 int end_of_statement(void);
+int restore_statement(void);
 
 // string.c
 int string_char(void);
@@ -504,6 +524,7 @@ void timer_init(void);
 int lib_timer(int r0, int r1, int r2);
 int lib_interrupt(int r0, int r1, int r2);
 void call_interrupt_function(void* r0);
+void raise_interrupt_flag(int i);
 
 // io.c
 void io_init(void);
@@ -516,6 +537,15 @@ int lib_serial(int r0, int r1, int r2);
 int lib_gpio(int r0, int r1, int r2);
 int io_statements(void);
 int io_functions(void);
+
+// music.c
+void musicint(void);
+void init_music(void);
+void stop_music(void);
+int lib_music(int r0, int r1, int r2);
+int music_statement(void);
+int music_function(void);
+int sound_statement(void);
 
 // For debugging
 void dump_cmpdata(void);

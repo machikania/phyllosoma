@@ -105,6 +105,8 @@ void pre_run(void){
 	close_all_files();
 	// Init I/O
 	io_init();
+	// Init music
+	init_music();
 }
 
 void post_run(void){
@@ -112,5 +114,9 @@ void post_run(void){
 	close_all_files();
 	// Reset I/O and activate buttons
 	io_init();
-	lib_keys(63,0,0);	
+	lib_keys(63,0,0);
+	// Init timer (to stop interrupt etc)
+	timer_init();
+	// Stop music
+	stop_music();
 }

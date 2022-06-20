@@ -1465,6 +1465,9 @@ int compile_statement(void){
 	if (instruction_is("TIMER")) return timer_statement();
 	if (instruction_is("INTERRUPT")) return interrupt_statement();
 	if (instruction_is("CORETIMER")) return coretimer_statement();
+	// Music statements
+	if (instruction_is("MUSIC")) return music_statement();
+	if (instruction_is("SOUND")) return sound_statement();
 	// IO statements
 	e=io_statements();
 	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;

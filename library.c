@@ -781,6 +781,7 @@ static const void* lib_list2[]={
 	lib_i2c,        // #define LIB_I2C 149
 	lib_serial,     // #define LIB_SERIAL 150
 	lib_gpio,       // #define LIB_GPIO 151
+	lib_music,      // #define LIB_MUSIC 152
 };
 
 int statement_library(int r0, int r1, int r2, int r3){

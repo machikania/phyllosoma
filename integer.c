@@ -152,6 +152,8 @@ int integer_functions(void){
 	// Timer functions
 	if (instruction_is("CORETIMER(")) return coretimer_function();
 	if (instruction_is("TIMER(")) return timer_function();
+	// Music functions
+	if (instruction_is("MUSIC(")) return music_function();
 	// IO functions
 	e=io_functions();
 	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;

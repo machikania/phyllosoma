@@ -186,24 +186,28 @@ int lib_analog(int r0, int r1, int r2){
 	static char init=0;
 	int port,input;
 	switch(r0){
+		case 0:
 		case 13:
 		case IO_ADC0:
 			// ADC0
 			port=26;
 			input=0;
 			break;
+		case 1:
 		case 14:
 		case IO_ADC1:
 			// ADC1
 			port=27;
 			input=1;
 			break;
+		case 2:
 		case 15:
 		case IO_ADC2:
 			// ADC2
 			port=28;
 			input=2;
 			break;
+		case 3:
 		case 16:
 		case IO_ADC3:
 			// ADC3
