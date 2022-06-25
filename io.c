@@ -31,10 +31,10 @@ static unsigned int sd_spi_sspcr[2];
 void io_init(void){
 	int i;
 	// Clear all GPIO settings and let all ports to be input
-	gpio_init_mask(IO_GPIO_16_MASK);
+	gpio_init_mask(GPIO_ALL_MASK);
 	// All pull up
 	for(i=0;i<29;i++){
-		if (IO_GPIO_16_MASK & (1<<i) ) gpio_pull_up(i);
+		if (GPIO_ALL_MASK & (1<<i) ) gpio_pull_up(i);
 	}
 	// Disable PWMs
 	pwm_set_enabled(IO_PWM1_SLICE, false);
@@ -912,6 +912,7 @@ int io_statements(void){
 	if (instruction_is("I2C")) return i2c_statement();
 	if (instruction_is("I2CWRITE")) return i2cwrite_statement();
 	if (instruction_is("I2CREADDATA")) return i2creaddata_statement();
+	if (instruction_is("I2CWRITEDATA")) return i2cwritedata_statement();
 	if (instruction_is("SERIAL")) return serial_statement();
 	if (instruction_is("SERIALOUT")) return serialout_statement();
 	if (instruction_is("OUT")) return out_statement();
