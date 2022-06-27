@@ -37,6 +37,8 @@
 	GP29 ADC3
 */
 
+//                     31     24      16       8       0
+//                      |      |       |       |       |
 #define GPIO_ALL_MASK 0b00011100011100000000001111111111
 
 // Button settings

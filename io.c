@@ -587,6 +587,21 @@ int lib_i2c(int r0, int r1, int r2){
 			for(i=0;i<num;i++) i2cdat[i]=(unsigned char)sp[i+1];
 			break;
 		case LIB_I2C_I2CWRITEDATA:
+			// Prepare values
+			sp=(int*)r1;
+			//i2cdat=(unsigned char*)&sp[3];// i2cdat (used for optional writing) starts at argument 4
+			i2cdat2=(unsigned char*)sp[1];  // i2cdat2 (used for main writing/reading) is argument 2
+			numdat2=sp[2];                  // size of i2cdat2 is argument 3
+			num=r0-3;                       // exclude arguments 1, 2 and 3 for number of I2C data
+			addr=(unsigned char)sp[0]&0x7f; // address is 7 bits data
+			// Allocate temporary memory for data to write
+			i2cdat=alloc_memory((num+numdat2+3)/4,-1);
+			// Construct byte array
+			for(i=0;i<num+numdat2;i++) {
+				if (i<num) i2cdat[i]=(unsigned char)sp[i+3];
+				else i2cdat[i]=i2cdat2[i-num];
+			}
+			break;
 		case LIB_I2C_I2CREADDATA:
 			// Prepare values
 			sp=(int*)r1;
@@ -639,14 +654,8 @@ int lib_i2c(int r0, int r1, int r2){
 			} else s_err=0;
 			return (unsigned int)i2cdat[-1];
 		case LIB_I2C_I2CWRITEDATA:
-			if (num) {
-				// Optional writing 
-				num=i2c_write_blocking(IO_I2C_CH,addr,i2cdat,num,true);
-				if (num<0) return s_err=num;
-				else s_err=0;
-			}
 			// Write
-			num=i2c_write_blocking(IO_I2C_CH,addr,i2cdat2,numdat2,false);
+			num=i2c_write_blocking(IO_I2C_CH,addr,i2cdat,num+numdat2,false);
 			if (num<0) return s_err=num;
 			else return s_err=0;
 		case LIB_I2C_I2CREADDATA:
