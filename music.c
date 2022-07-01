@@ -9,6 +9,7 @@
 #include "hardware/pwm.h"
 #include "./compiler.h"
 #include "./api.h"
+#include "./core1.h"
 
 /*
 	clkdiv=138.75, clock=125000000
@@ -81,6 +82,17 @@ static char g_sound_mode=0;
 
 static volatile unsigned short g_pwm_wrap;
 
+static FIL g_ofhandle;
+static FIL* g_fhandle=0;
+static unsigned char* g_wavtable=0;
+static int g_wave_readpos;
+static int g_wave_writepos;
+static int g_pcm_counter;
+static char g_wave_enable;
+
+#define WAVE_BUFFER_SIZE 1024
+static unsigned char g_wavtablea[WAVE_BUFFER_SIZE];
+
 #define SOUND_MODE_NONE 0
 #define SOUND_MODE_MUSIC 1
 #define SOUND_MODE_WAVE 2
@@ -96,7 +108,7 @@ int musicRemaining(int flagsLR){
 
 void musicint(void){
 	// This function is called every 1/60 sec.
-	unsigned int i;
+	unsigned int i,j;
 	switch(g_sound_mode){
 		case SOUND_MODE_MUSIC:
 			if (g_soundstart!=g_soundend){
@@ -160,8 +172,14 @@ void musicint(void){
 				}
 			} else {
 				pwm_set_enabled(AUDIO_SLICE, false);
-			}			
+			}
+			break;
 		case SOUND_MODE_WAVE:
+			if (g_wave_writepos==g_wave_readpos) {
+				g_sound_mode=SOUND_MODE_NONE;
+				g_wave_enable=0;
+			}
+			break;
 		default:
 			break;
 	}
@@ -206,6 +224,11 @@ void stop_music(void){
 	pwm_set_enabled(AUDIO_SLICE, false);
 	// Reset counter
 	pwm_set_counter(AUDIO_SLICE, 0);
+	// Close WAVE file
+	if (g_fhandle) f_close(g_fhandle);
+	g_fhandle=0;
+	if (g_wavtable) delete_memory(g_wavtable);
+	g_wavtable=0;
 }
 
 void init_music(void){
@@ -497,6 +520,134 @@ void set_music(char* str, int flagsLR){
 	}
 }
 
+int waveRemaining(int mode){
+	if (!g_fhandle) return 0;
+	switch(mode){
+		case 1: // current position (header excluded)
+			return f_tell(g_fhandle)-0x2c;
+			break;
+		case 2: // file size (header excluded)
+			return f_size(g_fhandle)-0x2c;
+			break;
+		case 0: // remaining
+		default:
+			return f_size(g_fhandle)-f_tell(g_fhandle);
+			break;
+	}
+}
+
+void wave_core1_readfile(void){
+	int i;
+	i=g_wave_writepos-g_wave_readpos;
+	if (i<0) i+=WAVE_BUFFER_SIZE;
+	if (!g_wave_enable) {
+		// Force stop
+		if (g_fhandle) f_close(g_fhandle);
+		g_fhandle=0;
+		return;
+	}
+	if (0==i || 0==g_fhandle) {
+		// All done
+		return;
+	} else if (i<WAVE_BUFFER_SIZE/2) {
+		// Load from file
+		f_read(g_fhandle,(void*)&g_wavtablea[g_wave_writepos],WAVE_BUFFER_SIZE/2,&i);
+		i+=g_wave_writepos;
+		if (i<WAVE_BUFFER_SIZE) g_wave_writepos=i;
+		else g_wave_writepos=i-WAVE_BUFFER_SIZE;
+		if (f_eof(g_fhandle)) {
+			// End of file
+			f_close(g_fhandle);
+			g_fhandle=0;
+			return;
+		}
+	}
+	// Check at ~100 Hz
+	request_core1_callback_at(wave_core1_readfile,time_us_32()+10000);
+}
+
+static struct repeating_timer g_wave_timer;
+bool repeating_wave_callback(struct repeating_timer *t) {
+	int i=g_wave_readpos;
+	if (g_wave_readpos==g_wave_writepos) {
+		return false;
+	}
+	pwm_set_chan_level(AUDIO_SLICE, AUDIO_CHAN, g_wavtable[i++]);
+	if (i<WAVE_BUFFER_SIZE) g_wave_readpos=i;
+	else g_wave_readpos=i-WAVE_BUFFER_SIZE;
+	return true;
+}
+
+int checkChars(char* str1, char* str2, int num){
+	int i;
+	for(i=0;i<num;i++){
+		if (str1[i]!=str2[i]) return 1;
+	}
+	return 0;
+}
+
+void set_wave(char* filename, int start){
+	int i;
+	// If previous WAVE is still beeing played, force quit previous one
+	g_wave_enable=0;
+	while (g_sound_mode==SOUND_MODE_WAVE) sleep_ms(1);
+	// Exit function if null filename
+	if (filename[0]==0x00) return;
+	// Alocate 1024 byte buffer if not assigned
+	if (!g_wavtable) {
+		g_wavtable=alloc_memory(256,get_permanent_block_number());
+		g_wavtable=&g_wavtablea[0];
+	}
+	// Open file
+	g_fhandle=&g_ofhandle;
+	if (f_open(g_fhandle,filename,FA_READ)) {
+		g_fhandle=0;
+		stop_with_error(ERROR_FILE);
+	}
+	// Read header and check if monaural 8 bit 16000 Hz.
+	if (f_read(g_fhandle,(void*)&g_wavtable[0],0x2c,&g_wave_writepos)) stop_with_error(ERROR_FILE);
+	i=0;
+	i+=checkChars((char*)&g_wavtable[0],"RIFF",4);                      // Check RIFF
+	i+=checkChars((char*)&g_wavtable[8],"WAVEfmt ",8);                  // Check WAVE and fmt
+	i+=checkChars((char*)&g_wavtable[16],"\x10\x00\x00\x00\x01\x00",6); // Check if liear PCM
+	if (!checkChars((char*)&g_wavtable[22],"\x01\x00\x80\x3e\x00\x00\x80\x3e\x00\x00\x01\x00",12)) {
+		// Monaural 16000 Hz
+	} else if (!checkChars((char*)&g_wavtable[22],"\x01\x00\x54\x3d\x00\x00\x54\x3d\x00\x00\x01\x00",12)) {
+		// Monaural 15700 Hz
+	} else {
+		i=1;
+	}
+	i+=checkChars((char*)&g_wavtable[34],"\x08\x00\x64\x61\x74\x61",6); // Check bit # and data
+	if (i) err_music("WAVE format error");
+	// Support defined start position here to skip file pointer here.
+	f_lseek(g_fhandle, start+0x2c);
+	// Read first data.
+	if (f_read(g_fhandle,(void*)&g_wavtable[0],WAVE_BUFFER_SIZE/2,NULL)) stop_with_error(ERROR_FILE);
+	g_wave_writepos=WAVE_BUFFER_SIZE/2;
+
+	// Initialize PWM for PCM
+	g_sound_mode=SOUND_MODE_WAVE;
+	// Disable
+	pwm_set_enabled(AUDIO_SLICE, false);
+	// Fastest clock
+	pwm_set_clkdiv(AUDIO_SLICE, 1.0);
+	// 256 cycles PWM
+	pwm_set_wrap(AUDIO_SLICE, 255);
+	// Set duty to 50%
+	pwm_set_chan_level(AUDIO_SLICE, AUDIO_CHAN, 128);
+	// Reset counter
+	pwm_set_counter(AUDIO_SLICE, 0);
+	// Enable
+	pwm_set_enabled(AUDIO_SLICE, true);
+
+	// Start core1 and request callback
+	g_wave_enable=1;
+	start_core1();
+	request_core1_callback(wave_core1_readfile);
+	// Fire PCM interrupt
+	add_repeating_timer_us(63, repeating_wave_callback, NULL, &g_wave_timer);
+}
+
 int lib_music(int r0, int r1, int r2){
 	switch(r2){
 		case LIB_MUSIC_MUSIC:
@@ -507,6 +658,11 @@ int lib_music(int r0, int r1, int r2){
 			return r0;
 		case LIB_MUSIC_MUSICFUNC:
 			return musicRemaining(3);
+		case LIB_MUSIC_PLAYWAVE:
+			set_wave((char*)r1,r0);
+			return r0;
+		case LIB_MUSIC_PLAYWAVEFUNC:
+			return waveRemaining(r0);
 		default:
 			return r0;
 	}
@@ -541,4 +697,19 @@ int sound_statement(void){
 	return argn_function(LIB_MUSIC,
 		ARG_NONE | 
 		LIB_MUSIC_SOUND<<LIBOPTION);
+}
+
+int playwave_statement(void){
+	g_default_args[2]=0;
+	return argn_function(LIB_MUSIC,
+		ARG_STRING<<ARG1 | 
+		ARG_INTEGER_OPTIONAL<<ARG2 |
+		LIB_MUSIC_PLAYWAVE<<LIBOPTION);
+}
+
+int playwave_function(void){
+	g_default_args[1]=0;
+	return argn_function(LIB_MUSIC,
+		ARG_INTEGER_OPTIONAL<<ARG1 |
+		LIB_MUSIC_PLAYWAVEFUNC<<LIBOPTION);
 }

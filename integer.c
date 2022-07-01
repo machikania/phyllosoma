@@ -154,6 +154,7 @@ int integer_functions(void){
 	if (instruction_is("TIMER(")) return timer_function();
 	// Music functions
 	if (instruction_is("MUSIC(")) return music_function();
+	if (instruction_is("PLAYWAVE(")) return playwave_function();
 	// IO functions
 	e=io_functions();
 	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;

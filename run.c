@@ -5,6 +5,7 @@
 */
 
 #include "./compiler.h"
+#include "./core1.h"
 
 const int const g_r6_array[]={
 	0,                         // Pointer to object
@@ -119,4 +120,6 @@ void post_run(void){
 	timer_init();
 	// Stop music
 	stop_music();
+	// Stop core1
+	stop_core1();
 }

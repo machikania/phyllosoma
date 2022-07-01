@@ -126,6 +126,8 @@
 #define LIB_MUSIC_MUSIC 1
 #define LIB_MUSIC_SOUND 2
 #define LIB_MUSIC_MUSICFUNC 3
+#define LIB_MUSIC_PLAYWAVE 4
+#define LIB_MUSIC_PLAYWAVEFUNC 5
 
 /*
 	LIB IO options
@@ -546,6 +548,8 @@ int lib_music(int r0, int r1, int r2);
 int music_statement(void);
 int music_function(void);
 int sound_statement(void);
+int playwave_statement(void);
+int playwave_function(void);
 
 // For debugging
 void dump_cmpdata(void);

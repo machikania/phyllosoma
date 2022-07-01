@@ -1468,6 +1468,7 @@ int compile_statement(void){
 	// Music statements
 	if (instruction_is("MUSIC")) return music_statement();
 	if (instruction_is("SOUND")) return sound_statement();
+	if (instruction_is("PLAYWAVE")) return playwave_statement();
 	// IO statements
 	e=io_statements();
 	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;
