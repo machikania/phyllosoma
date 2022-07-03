@@ -604,6 +604,9 @@ void printchar(unsigned char n){
 	if(n=='\n'){
 		//改行
 		cursor+=WIDTH_X-((cursor-TVRAM)%WIDTH_X);
+	} else if(n==0x08){
+		//BS
+		if (TVRAM<cursor) cursor--;
 	} else{
 		*cursor=n;
 		*(cursor+ATTROFFSET)=cursorcolor;

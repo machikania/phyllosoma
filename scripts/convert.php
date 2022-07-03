@@ -10,7 +10,7 @@ $maxlengths=array();
 
 // Check uf2 file
 echo "Investigating uf2 file...\n";
-$maxlengths[0]=check_text_area('AUTOEXEC');
+$maxlengths[0]=check_text_area('MACHIKAP');
 for($classnum=1;$classnum<=0xf;$classnum++){
 	$maxlengths[$classnum]=check_text_area('CLASS00'.strtoupper(dechex($classnum)));
 	if (!$maxlengths[$classnum]) {
@@ -27,11 +27,11 @@ for($i=0;$i<count($d);$i++) {
 	if (12<strlen($d[$i])) exit("$d[$i]: Too long file name!");
 	$flen=filesize($d[$i]);
 	echo substr($d[$i].'       ',0,12),' found: '."$flen bytes ";
-	if (strtoupper($d[$i])=='AUTOEXEC.BAS') {
+	if (strtoupper($d[$i])=='MACHIKAP.BAS') {
 		if ($maxlengths[0]<$flen) exit(' file too large!');
 		else echo "(fits to $maxlengths[0] bytes area)\n";
 		// Replace text file
-		replace_bas($d[$i],'AUTOEXEC');
+		replace_bas($d[$i],'MACHIKAP');
 	} else {
 		$basnum++;
 		if ($classnum<$basnum) exit('Too many class files!');

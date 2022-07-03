@@ -12,6 +12,11 @@
 #include "./debug.h"
 #include "./display.h"
 
+#define PHYLLOSOMA
+#define SYSVER1 "Phyllosoma"
+#define SYSVER2 "0.8.0"
+#define BASVER "KM-1500"
+
 int main() {
 	int e,i,s;
 	char* str;
@@ -25,9 +30,14 @@ int main() {
 	init_file_system();
 	fileselect_init();
 	// Get filename to compile
-	str=fileselect();
+	if (file_exists("MACHIKAP.BAS")) str="MACHIKAP.BAS";
+	else str=fileselect();
 	// Start
-	printstr("KM-BASIC for ARM\n");
+	printstr("MachiKania BASIC System\n");
+	printstr(" Ver "SYSVER1" "SYSVER2"\n");
+	printstr("BASIC Compiler "BASVER" by Katsumi\n");
+	printstr("LCD and File systems by KENKEN\n");
+	printstr("\n");
 	// Compile the code
 	s=time_us_32();
 	init_compiler();
@@ -35,6 +45,7 @@ int main() {
 	if (!e) e=post_compile();
 	printint(time_us_32()-s);
 	printstr(" micro seconds spent for compiling\n");
+	printstr("\n");
 	// Show dump
 	// dump();
 	// Run the code if error didn't occur

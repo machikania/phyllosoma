@@ -25,7 +25,7 @@ unsigned char* debug_fileselect(void){
 	// Wait for total three seconds
 	sleep_ms(2500);
 	// Return file name to compile
-	return "AUTOEXEC.BAS";
+	return "MACHIKAP.BAS";
 }
 
 #define rem_repeat16k(a) \
@@ -87,8 +87,8 @@ unsigned char* debug_fileselect(void){
 
 #define CR "\n"
 static const char* debug_files[]={
-	"AUTOEXEC.BAS",
-	rem_repeat64k("AUTOEXEC")
+	"MACHIKAP.BAS",
+	rem_repeat64k("MACHIKAP")
 	,"CLASS001.BAS",
 	rem_repeat16k("CLASS001")
 	,"CLASS002.BAS",

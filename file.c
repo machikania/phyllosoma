@@ -24,6 +24,13 @@ void init_file_system(void){
 	else printstr("failed\n");
 }
 
+int file_exists(unsigned char* fname){
+	FILINFO fileinfo;
+	fileinfo.fsize=-1;
+	f_stat(fname,&fileinfo);
+	return fileinfo.fsize+1;
+}
+
 int compile_file(unsigned char* fname, char isclass){
 	int e,i,num;
 	FIL fpo;
