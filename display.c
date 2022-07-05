@@ -9,6 +9,7 @@
 #include "./compiler.h"
 #include "./api.h"
 #include "./display.h"
+#include "./config.h"
 
 /*
 	Local prototypings

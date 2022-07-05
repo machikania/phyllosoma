@@ -11,11 +11,7 @@
 #include "./api.h"
 #include "./debug.h"
 #include "./display.h"
-
-#define PHYLLOSOMA
-#define SYSVER1 "Phyllosoma"
-#define SYSVER2 "0.8.0"
-#define BASVER "KM-1500"
+#include "./config.h"
 
 int main() {
 	int e,i,s;

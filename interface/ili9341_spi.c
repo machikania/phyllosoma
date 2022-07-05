@@ -2,6 +2,7 @@
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
 #include "LCDdriver.h"
+#include "../config.h"
 
 int LCD_ALIGNMENT; // VERTICAL or HORIZONTAL
 int X_RES; // 横方向解像度

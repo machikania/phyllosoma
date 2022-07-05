@@ -5,7 +5,7 @@ MachiKania Phyllosoma
 MachiKania Phyllosoma is a BASIC compiler for ARMv6-M, especially for Raspberry Pi Pico.
 
 ## how to compile
-cmake and make.
+cmake and make. The pico-sdk with tinyusb submodule is required.
 
 ## how to use
 Copy "kmbasic.uf2" to the RPI-RP2 drive of Raspberry Pi Pico. Immediately connect to COMx port (com number depends on environment) by serial console at 115200 baud rate.

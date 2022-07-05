@@ -16,6 +16,7 @@
 #include "./compiler.h"
 #include "./api.h"
 #include "./io.h"
+#include "./config.h"
 
 // UART data
 static unsigned short* io_uart_buff;

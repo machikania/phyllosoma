@@ -1,11 +1,3 @@
-#define LCD_CS 13
-#define LCD_DC 10
-#define LCD_RESET 11
-#define LCD_SPI_TX 15
-#define LCD_SPI_RX 12
-#define LCD_SPI_SCK 14
-#define LCD_SPICH spi1
-
 #define VERTICAL 0
 #define HORIZONTAL 1
 

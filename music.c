@@ -10,6 +10,7 @@
 #include "./compiler.h"
 #include "./api.h"
 #include "./core1.h"
+#include "./config.h"
 
 /*
 	clkdiv=138.75, clock=125000000
@@ -96,10 +97,6 @@ static unsigned char g_wavtablea[WAVE_BUFFER_SIZE];
 #define SOUND_MODE_NONE 0
 #define SOUND_MODE_MUSIC 1
 #define SOUND_MODE_WAVE 2
-
-#define AUDIO_PORT 28
-#define AUDIO_SLICE 6
-#define AUDIO_CHAN PWM_CHAN_A
 
 int musicRemaining(int flagsLR){
 	// flagsLR is ignored

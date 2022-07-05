@@ -5,7 +5,7 @@
 #include "LCDdriver.h"
 #include "graphlib.h"
 #include "ff.h"
-#include "buttons.h"
+#include "../config.h"
 
 #define MAXFILE 256
 
