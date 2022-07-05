@@ -88,7 +88,31 @@ unsigned char* debug_fileselect(void){
 #define CR "\n"
 static const char* debug_files[]={
 	"MACHIKAP.BAS",
-	rem_repeat64k("MACHIKAP")
+//	rem_repeat64k("MACHIKAP")
+
+//M0PLUS 0xe0000000
+//SYST_CVR 0xe018
+//SYST_RVR 0xe014
+"poke32 0xe000e014,0x00FFFFFF" CR
+"poke32 0xe000e010,0x05" CR
+"FOR I=1 TO 20" CR
+"  A=peek32(0xe000e018)" CR
+"  PRINT a-peek32(0xe000e018)," CR
+"  A=peek32(0xe000e018)" CR
+"  WAITUS 0" CR
+"  PRINT a-peek32(0xe000e018)," CR
+"  A=peek32(0xe000e018)" CR
+"  WAITUS 10" CR
+"  PRINT a-peek32(0xe000e018)," CR
+"  A=peek32(0xe000e018)" CR
+"  WAITUS 1000" CR
+"  PRINT a-peek32(0xe000e018)," CR
+"  A=peek32(0xe000e018)" CR
+"  WAITMS 2" CR
+"  PRINT a-peek32(0xe000e018)" CR
+"NEXT" CR
+"END" CR
+
 	,"CLASS001.BAS",
 	rem_repeat16k("CLASS001")
 	,"CLASS002.BAS",

@@ -554,6 +554,18 @@ int lib_wait(int r0, int r1, int r2){
 	return r0;
 }
 
+int lib_waitus(int r0, int r1, int r2){
+	// At least 449 CPU cycles (3.592 micro seconds) are required to call this function.
+	r1=r0-3;
+	if (0<r1) sleep_us(r1);
+	return r0;
+}
+
+int lib_waitms(int r0, int r1, int r2){
+	sleep_ms(r0);
+	return r0;
+}
+
 int lib_inkey(int r0, int r1, int r2){
 	int i=getchar_timeout_us(0);
 	if (i<0 || 255<i) i=0;
@@ -625,7 +637,9 @@ int lib_str2obj(int r0, int r1, int r2){
 
 int lib_debug(int r0, int r1, int r2){
 #ifdef DEBUG_MODE
-	asm("ldr	r0, [r5, r0]");
+	//M0PLUS 0xe0000000
+	//SYST_CVR 0xe018
+	//asm("ldr	r0, [r5, r0]");
 	//printhex32(r0);
 	//lib_wait(60,0,0);
 	return r0;
@@ -782,6 +796,8 @@ static const void* lib_list2[]={
 	lib_serial,     // #define LIB_SERIAL 150
 	lib_gpio,       // #define LIB_GPIO 151
 	lib_music,      // #define LIB_MUSIC 152
+	lib_waitus,     // #define LIB_WAITUS 153
+	lib_waitms,     // #define LIB_WAITMS 154
 };
 
 int statement_library(int r0, int r1, int r2, int r3){
