@@ -657,6 +657,7 @@ int lib_i2c(int r0, int r1, int r2){
 		case LIB_I2C_I2CWRITEDATA:
 			// Write
 			num=i2c_write_blocking(IO_I2C_CH,addr,i2cdat,num+numdat2,false);
+			garbage_collection(i2cdat);
 			if (num<0) return s_err=num;
 			else return s_err=0;
 		case LIB_I2C_I2CREADDATA:
