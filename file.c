@@ -256,7 +256,7 @@ int lib_fopen(int r0, int r1, int r2){
 			break;
 		case 'a':
 		case 'A':
-			mode=FA_CREATE_ALWAYS | FA_WRITE;
+			mode=FA_OPEN_APPEND | FA_WRITE;
 			if ('+'==modestr[1]) mode|=FA_READ;
 			break;
 		default:
