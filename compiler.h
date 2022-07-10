@@ -118,8 +118,8 @@
 #define LIB_SERIAL 150
 #define LIB_GPIO 151
 #define LIB_MUSIC 152
-#define LIB_WAITUS 153
-#define LIB_WAITMS 154
+#define LIB_DELAYUS 153
+#define LIB_DELAYMS 154
 
 /*
 	LIB MUSIC options

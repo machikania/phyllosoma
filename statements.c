@@ -1339,12 +1339,12 @@ int wait_statement(void){
 	return argn_function(LIB_WAIT,ARG_INTEGER<<ARG1);
 }
 
-int waitus_statement(void){
-	return argn_function(LIB_WAITUS,ARG_INTEGER<<ARG1);
+int delayus_statement(void){
+	return argn_function(LIB_DELAYUS,ARG_INTEGER<<ARG1);
 }
 
-int waitms_statement(void){
-	return argn_function(LIB_WAITMS,ARG_INTEGER<<ARG1);
+int delayms_statement(void){
+	return argn_function(LIB_DELAYMS,ARG_INTEGER<<ARG1);
 }
 
 int rem_statement(void){
@@ -1455,8 +1455,8 @@ int compile_statement(void){
 	if (instruction_is("USEVAR")) return usevar_statement();
 	if (instruction_is("VAR")) return var_statement();
 	if (instruction_is("WAIT")) return wait_statement();
-	if (instruction_is("WAITUS")) return waitus_statement();
-	if (instruction_is("WAITMS")) return waitms_statement();
+	if (instruction_is("DELAYUS")) return delayus_statement();
+	if (instruction_is("DELAYMS")) return delayms_statement();
 	if (instruction_is("WEND")) return wend_statement();
 	if (instruction_is("WHILE")) return while_statement();
 	// File statements

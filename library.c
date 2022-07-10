@@ -554,14 +554,14 @@ int lib_wait(int r0, int r1, int r2){
 	return r0;
 }
 
-int lib_waitus(int r0, int r1, int r2){
+int lib_delayus(int r0, int r1, int r2){
 	// At least 449 CPU cycles (3.592 micro seconds) are required to call this function.
 	r1=r0-3;
 	if (0<r1) sleep_us(r1);
 	return r0;
 }
 
-int lib_waitms(int r0, int r1, int r2){
+int lib_delayms(int r0, int r1, int r2){
 	sleep_ms(r0);
 	return r0;
 }
@@ -796,8 +796,8 @@ static const void* lib_list2[]={
 	lib_serial,     // #define LIB_SERIAL 150
 	lib_gpio,       // #define LIB_GPIO 151
 	lib_music,      // #define LIB_MUSIC 152
-	lib_waitus,     // #define LIB_WAITUS 153
-	lib_waitms,     // #define LIB_WAITMS 154
+	lib_delayus,    // #define LIB_DELAYUS 153
+	lib_delayms,    // #define LIB_DELAYMS 154
 };
 
 int statement_library(int r0, int r1, int r2, int r3){

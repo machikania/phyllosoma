@@ -88,9 +88,12 @@ int* g_empty_object_list;
 
 // Reserved words
 
-const char* const g_reserved_words[157]={
+
+
+const char* const g_reserved_words[167]={
 	"ABS",
 	"ACOS",
+	"ANALOG",
 	"ARGS",
 	"ASC",
 	"ASIN",
@@ -109,6 +112,7 @@ const char* const g_reserved_words[157]={
 	"CLS",
 	"COLOR",
 	"CONTINUE",
+	"CORETIMER",
 	"COS",
 	"COSH",
 	"CREAD",
@@ -116,6 +120,8 @@ const char* const g_reserved_words[157]={
 	"DATA",
 	"DEBUG",
 	"DEC",
+	"DELAYMS",
+	"DELAYUS",
 	"DELETE",
 	"DIM",
 	"DO",
@@ -143,6 +149,7 @@ const char* const g_reserved_words[157]={
 	"FPRINT",
 	"FPUT",
 	"FPUTC",
+	"FREMOVE",
 	"FSEEK",
 	"GCLS",
 	"GCOLOR",
@@ -152,11 +159,22 @@ const char* const g_reserved_words[157]={
 	"GPALETTE",
 	"GPRINT",
 	"HEX",
+	"I2C",
+	"I2CERROR",
+	"I2CREAD",
+	"I2CREADDATA",
+	"I2CWRITE",
+	"I2CWRITEDATA",
 	"IDLE",
 	"IF",
+	"IN",
+	"IN16",
+	"IN8H",
+	"IN8L",
 	"INKEY",
 	"INPUT",
 	"INT",
+	"INTERRUPT",
 	"KEYS",
 	"LABEL",
 	"LEN",
@@ -165,18 +183,24 @@ const char* const g_reserved_words[157]={
 	"LOG",
 	"LOG10",
 	"LOOP",
+	"METHOD",
 	"MODF",
 	"MUSIC",
 	"NEW",
 	"NEXT",
 	"NOT",
 	"OPTION",
+	"OUT",
+	"OUT16",
+	"OUT8H",
+	"OUT8L",
 	"PALETTE",
 	"PCG",
 	"PEEK",
 	"PEEK16",
 	"PEEK32",
 	"PI",
+	"PLAYWAVE",
 	"POINT",
 	"POKE",
 	"POKE16",
@@ -187,21 +211,32 @@ const char* const g_reserved_words[157]={
 	"PSET",
 	"PUBLIC",
 	"PUTBMP",
+	"PWM",
 	"READ",
 	"REM",
 	"RESTORE",
 	"RETURN",
 	"RND",
 	"SCROLL",
+	"SERIAL",
+	"SERIALIN",
+	"SERIALOUT",
 	"SETDIR",
 	"SGN",
 	"SIN",
 	"SINH",
 	"SOUND",
+	"SPI",
+	"SPIREAD",
+	"SPIREADDATA",
+	"SPISWAPDATA",
+	"SPIWRITE",
+	"SPIWRITEDATA",
 	"SPRINTF",
 	"SQRT",
 	"STATIC",
 	"STEP",
+	"STOP",
 	"STRNCMP",
 	"SYSTEM",
 	"TAN",
@@ -214,42 +249,20 @@ const char* const g_reserved_words[157]={
 	"USECLASS",
 	"USEGRAPHIC",
 	"USEPCG",
+	"USETIMER",
 	"USEVAR",
 	"VAL",
 	"VAR",
 	"WAIT",
+	"WAVE",
 	"WEND",
 	"WHILE",
 	"WIDTH",
-	"OUT",
-	"OUT8H",
-	"OUT8L",
-	"OUT16",
-	"PWM",
-	"SERIAL",
-	"SERIALOUT",
-	"I2CWRITE",
-	"I2CWRITEDATA",
-	"I2CREADDATA",
-	"I2C",
-	"SPI",
-	"SPIWRITE",
-	"SPIWRITEDATA",
-	"SPIREADDATA",
-	"SPISWAPDATA",
-	"IN",
-	"IN8H",
-	"IN8L",
-	"IN16",
-	"ANALOG",
-	"SERIALIN",
-	"I2CREAD",
-	"I2CERROR",
-	"SPIREAD",
 };
-const int const g_hash_resereved_words[157]={
+const int const g_hash_resereved_words[167]={
 	0x000400d3, //ABS
 	0x01002393, //ACOS
+	0x0f00d397, //ANALOG
 	0x01013193, //ARGS
 	0x00040483, //ASC
 	0x0101220e, //ASIN
@@ -268,6 +281,7 @@ const int const g_hash_resereved_words[157]={
 	0x00042353, //CLS
 	0x4238d392, //COLOR
 	0x2ade0dd9, //CONTINUE
+	0xea9ef7dc, //CORETIMER
 	0x00042393, //COS
 	0x0108e488, //COSH
 	0x424c4004, //CREAD
@@ -275,6 +289,8 @@ const int const g_hash_resereved_words[157]={
 	0x01140541, //DATA
 	0x45103507, //DEBUG
 	0x00045103, //DEC
+	0x0d018742, //DELAYMS
+	0x0d018142, //DELAYUS
 	0x44344554, //DELETE
 	0x0004520d, //DIM
 	0x0000114f, //DO
@@ -302,6 +318,7 @@ const int const g_hash_resereved_words[157]={
 	0xd14c83c5, //FPRINT
 	0x011d1514, //FPUT
 	0x47454543, //FPUTC
+	0x3bcf1e71, //FREMOVE
 	0x4748410b, //FSEEK
 	0x01182353, //GCLS
 	0x8238d383, //GCOLOR
@@ -311,11 +328,22 @@ const int const g_hash_resereved_words[157]={
 	0x0d1043aa, //GPALETTE
 	0x914c83c5, //GPRINT
 	0x00049118, //HEX
+	0x00049cc3, //I2C
+	0x7bb3eb62, //I2CERROR
+	0xc24c4498, //I2CREAD
+	0x992a493a, //I2CREADDATA
+	0x69b25db5, //I2CWRITE
+	0xb47db71c, //I2CWRITEDATA
 	0x01205345, //IDLE
 	0x00001206, //IF
+	0x0000120e, //IN
+	0x0120ec76, //IN16
+	0x0120ee48, //IN8H
+	0x0120ee4c, //IN8L
 	0x483ca119, //INKEY
 	0x483d1514, //INPUT
 	0x000483d4, //INT
+	0x130576fa, //INTERRUPT
 	0x01284613, //KEYS
 	0x4d00310c, //LABEL
 	0x0004d10e, //LEN
@@ -324,18 +352,24 @@ const int const g_hash_resereved_words[157]={
 	0x0004d387, //LOG
 	0x4d387c70, //LOG10
 	0x0134e390, //LOOP
+	0x04549397, //METHOD
 	0x0130e146, //MODF
 	0x4c512203, //MUSIC
 	0x0004f117, //NEW
 	0x013c4654, //NEXT
 	0x0004f394, //NOT
 	0x9154839d, //OPTION
+	0x0004e514, //OUT
+	0x4e514c76, //OUT16
+	0x4e514e48, //OUT8H
+	0x4e514e4c, //OUT8L
 	0x0d115055, //PALETTE
 	0x00051087, //PCG
 	0x0144410b, //PEEK
 	0x4410bc62, //PEEK16
 	0x4410bce6, //PEEK32
 	0x00001449, //PI
+	0x18594115, //PLAYWAVE
 	0x513883d4, //POINT
 	0x0144e285, //POKE
 	0x4e285c62, //POKE16
@@ -346,21 +380,32 @@ const int const g_hash_resereved_words[157]={
 	0x01452114, //PSET
 	0x540cd217, //PUBLIC
 	0x54543304, //PUTBMP
+	0x0005158d, //PWM
 	0x014c4004, //READ
 	0x0005310d, //REM
 	0xedab1e34, //RESTORE
 	0xc45544da, //RETURN
 	0x000533c4, //RND
 	0x824ce358, //SCROLL
+	0x844c8018, //SERIAL
+	0xc80195b5, //SERIALIN
+	0xff9af426, //SERIALOUT
 	0x84545206, //SETDIR
 	0x0005218e, //SGN
 	0x0005220e, //SIN
 	0x014883c8, //SINH
 	0x523943c4, //SOUND
+	0x00052449, //SPI
+	0xb7b3bae0, //SPIREAD
+	0x1ea046fb, //SPIREADDATA
+	0xf55fbc1b, //SPISWAPDATA
+	0x164dc3a8, //SPIWRITE
+	0xa901b8bd, //SPIWRITEDATA
 	0xacdf0fa2, //SPRINTF
 	0x014904d4, //SQRT
 	0x95015217, //STATIC
 	0x01495110, //STEP
+	0x01495390, //STOP
 	0xacc3d9f5, //STRNCMP
 	0x98495119, //SYSTEM
 	0x0005500e, //TAN
@@ -373,36 +418,13 @@ const int const g_hash_resereved_words[157]={
 	0xfdcaaa72, //USECLASS
 	0x2aaa8267, //USEGRAPHIC
 	0x12111092, //USEPCG
+	0xeade6ff3, //USETIMER
 	0x12117007, //USEVAR
 	0x0005700c, //VAL
 	0x00057012, //VAR
 	0x01580214, //WAIT
+	0x015805c5, //WAVE
 	0x015843c4, //WEND
 	0x56248345, //WHILE
 	0x56205548, //WIDTH
-	0x0004e514, //OUT
-	0x4e514e48, //OUT8H
-	0x4e514e4c, //OUT8L
-	0x4e514c76, //OUT16
-	0x0005158d, //PWM
-	0x844c8018, //SERIAL
-	0xff9af426, //SERIALOUT
-	0x69b25db5, //I2CWRITE
-	0xb47db71c, //I2CWRITEDATA
-	0x992a493a, //I2CREADDATA
-	0x00049cc3, //I2C
-	0x00052449, //SPI
-	0x164dc3a8, //SPIWRITE
-	0xa901b8bd, //SPIWRITEDATA
-	0x1ea046fb, //SPIREADDATA
-	0xf55fbc1b, //SPISWAPDATA
-	0x0000120e, //IN
-	0x0120ee48, //IN8H
-	0x0120ee4c, //IN8L
-	0x0120ec76, //IN16
-	0x0f00d397, //ANALOG
-	0xc80195b5, //SERIALIN
-	0xc24c4498, //I2CREAD
-	0x7bb3eb62, //I2CERROR
-	0xb7b3bae0, //SPIREAD
 };
