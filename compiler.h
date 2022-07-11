@@ -330,8 +330,8 @@ extern volatile short* g_scratch_short;
 extern volatile float* g_scratch_float;
 extern volatile char* g_scratch_char;
 
-extern const char* const g_reserved_words[157];
-extern const int const g_hash_resereved_words[157];
+extern const char* const g_reserved_words[167];
+extern const int const g_hash_resereved_words[167];
 
 extern char g_constant_value_flag;
 extern int g_constant_int;

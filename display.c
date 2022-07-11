@@ -154,9 +154,21 @@ int lib_display(int r0, int r1, int r2){
 			// TODO: here
 			break;
 		case DISPLAY_WIDTH:
-			//WIDTH x
-			//	キャラクターディスプレイの横幅を文字数で指定。xは30、36、40、48、
-			//	もしくは80。
+			// Vertical/horizontal setting
+			switch(r0){
+				case 1:
+					set_lcdalign(VERTICAL);
+					break;
+				case 2:
+					set_lcdalign(HORIZONTAL);
+				default:
+					break;
+			}
+			// Width setting
+			if (0<r1 & r1<=40) {
+				WIDTH_X=r1;
+				cls();
+			}
 			break;
 		case DISPLAY_TVRAM:
 			if (r0<0) return (int)&TVRAM[0];
@@ -323,8 +335,10 @@ int scroll_statement(void){
 
 int width_statement(void){
 	// WIDTH x
+	g_default_args[2]=0;
 	return argn_function(LIB_DISPLAY_FUNCTION,
 		ARG_INTEGER<<ARG1 | 
+		ARG_INTEGER_OPTIONAL<<ARG2 | 
 		DISPLAY_WIDTH<<LIBOPTION);
 }
 

@@ -88,8 +88,6 @@ int* g_empty_object_list;
 
 // Reserved words
 
-
-
 const char* const g_reserved_words[167]={
 	"ABS",
 	"ACOS",
