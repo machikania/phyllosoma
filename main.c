@@ -6,12 +6,44 @@
 */
 
 #include <stdio.h>
+#include <string.h>
 #include "pico/stdlib.h"
 #include "./compiler.h"
 #include "./api.h"
 #include "./debug.h"
 #include "./display.h"
 #include "./config.h"
+
+char g_autoexec[12]="MACHIKAP.BAS";
+
+void read_ini(void){
+	int i;
+	FIL fpo;
+	unsigned char* str=g_compile_buffer;
+	// Open INI file
+	if (f_open(&fpo,"MACHIKAP.INI",FA_READ)) return;
+	// Read each line
+	while(f_gets(str,g_file_buffer_size,&fpo)){
+		if (!strncmp(str,"AUTOEXEC=",9)) {
+			// Get file name
+			for(i=0;i<12;i++){
+				if (str[i+9]<0x21) break;
+				g_autoexec[i]=str[i+9];
+			}
+			g_autoexec[i]=0x00;
+		} else if (!strncmp(str,"VERTICAL",8)) {
+			set_lcdalign(VERTICAL);
+		} else if (!strncmp(str,"HORIZONTAL",10)) {
+			set_lcdalign(HORIZONTAL);
+		} else if (!strncmp(str,"USBSERIALON",11)) {
+			g_disable_printf=0;
+		} else if (!strncmp(str,"USBSERIALOFF",12)) {
+			g_disable_printf=1;
+		}
+	}
+	// Close file
+	f_close(&fpo);
+}
 
 int main() {
 	int e,i,s;
@@ -25,8 +57,10 @@ int main() {
 	init_buttons();
 	init_file_system();
 	fileselect_init();
+	// Read MACHIKAP.INI
+	read_ini();
 	// Get filename to compile
-	if (file_exists("MACHIKAP.BAS")) str="MACHIKAP.BAS";
+	if (file_exists(g_autoexec)) str=&g_autoexec[0];
 	else str=fileselect();
 	// Start
 	printstr("MachiKania BASIC System\n");
