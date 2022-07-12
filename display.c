@@ -4,6 +4,7 @@
    https://github.com/kmorimatsu
 */
 
+#include <string.h>
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
 #include "./compiler.h"
@@ -148,10 +149,47 @@ int lib_display(int r0, int r1, int r2){
 			}
 			break;
 		case DISPLAY_SCROLL:
-			//SCROLL x,y
-			//	画面を横方向、もしくは縦方向(斜めも可)に動かす。動かす方向と大きさ
-			//	は、x, yでそれぞれ、横方向の移動度、縦方向の移動度として指定する。
-			// TODO: here
+			// SCROLL x,y
+			// x:r1, y:r0
+			// Break if invalid value
+			if (WIDTH_Y<r0) break;
+			if (WIDTH_Y<(0-r0)) break;
+			if (WIDTH_X<r1) break;
+			if (WIDTH_X<(0-r1)) break;
+			if (0==r0 && 0==r1) break;
+			memmove(&TVRAM[0],&TVRAM[(0-r0)*WIDTH_X-r1],WIDTH_X*WIDTH_Y);
+			memmove(&TVRAM[ATTROFFSET],&TVRAM[ATTROFFSET+(0-r0)*WIDTH_X-r1],WIDTH_X*WIDTH_Y);
+			if (0<r0) {
+				for(i=0;i<WIDTH_X;i++){
+					for(j=0;j<r0;j++){
+						TVRAM[i+j*WIDTH_X]=0;
+						TVRAM[ATTROFFSET+i+j*WIDTH_X]=cursorcolor;
+					}
+				}
+			} else if (r0<0) {
+				for(i=0;i<WIDTH_X;i++){
+					for(j=0;j<(0-r0);j++){
+						TVRAM[i+(WIDTH_Y-j-1)*WIDTH_X]=0;
+						TVRAM[ATTROFFSET+i+(WIDTH_Y-j-1)*WIDTH_X]=cursorcolor;
+					}
+				}
+			}
+			if (0<r1) {
+				for(i=0;i<r1;i++){
+					for(j=0;j<WIDTH_Y;j++){
+						TVRAM[i+j*WIDTH_X]=0;
+						TVRAM[ATTROFFSET+i+j*WIDTH_X]=cursorcolor;
+					}
+				}
+			} else if (r1<0) {
+				for(i=0;i<(0-r1);i++){
+					for(j=0;j<WIDTH_Y;j++){
+						TVRAM[WIDTH_X-i-1+j*WIDTH_X]=0;
+						TVRAM[ATTROFFSET+WIDTH_X-i-1+j*WIDTH_X]=cursorcolor;
+					}
+				}
+			}
+			textredraw();
 			break;
 		case DISPLAY_WIDTH:
 			// Vertical/horizontal setting
