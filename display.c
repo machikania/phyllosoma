@@ -195,15 +195,15 @@ int lib_display(int r0, int r1, int r2){
 			// Vertical/horizontal setting
 			switch(r0){
 				case 1:
-					set_lcdalign(VERTICAL);
+					set_lcdalign(VERTICAL | (LCD_ALIGNMENT&LCD180TURN));
 					break;
 				case 2:
-					set_lcdalign(HORIZONTAL);
+					set_lcdalign(HORIZONTAL | (LCD_ALIGNMENT&LCD180TURN));
 				default:
 					break;
 			}
 			// Width setting
-			if (0<r1 & r1<=40) {
+			if (0<r1 & r1<=(LCD_ALIGNMENT&HORIZONTAL ? 40:30)) {
 				WIDTH_X=r1;
 				cls();
 			}

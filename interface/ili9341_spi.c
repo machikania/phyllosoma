@@ -4,7 +4,7 @@
 #include "LCDdriver.h"
 #include "../config.h"
 
-int LCD_ALIGNMENT; // VERTICAL or HORIZONTAL
+int LCD_ALIGNMENT; // VERTICAL, HORIZONTAL, VERTICAL&LCD180TURN, or HORIZONTAL&LCD180TURN
 int X_RES; // 横方向解像度
 int Y_RES; // 縦方向解像度
 
@@ -255,7 +255,7 @@ void LCD_Init()
 
 void LCD_setAddrWindow(unsigned short x,unsigned short y,unsigned short w,unsigned short h)
 {
-	if(LCD_ALIGNMENT == VERTICAL){
+	if(!(LCD_ALIGNMENT&HORIZONTAL)){
 		LCD_WriteComm(0x2a);
 		LCD_WriteData2(x);
 		LCD_WriteData2(x+w-1);

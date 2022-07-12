@@ -35,6 +35,14 @@ void read_ini(void){
 			set_lcdalign(VERTICAL);
 		} else if (!strncmp(str,"HORIZONTAL",10)) {
 			set_lcdalign(HORIZONTAL);
+		} else if (!strncmp(str,"LCD270TURN",10)) {
+			set_lcdalign(VERTICAL);
+		} else if (!strncmp(str,"LCD0TURN",8)) {
+			set_lcdalign(HORIZONTAL);
+		} else if (!strncmp(str,"LCD90TURN",9)) {
+			set_lcdalign(VERTICAL | LCD180TURN);
+		} else if (!strncmp(str,"LCD180TURN",10)) {
+			set_lcdalign(HORIZONTAL | LCD180TURN);
 		} else if (!strncmp(str,"USBSERIALON",11)) {
 			g_disable_printf=0;
 		} else if (!strncmp(str,"USBSERIALOFF",12)) {

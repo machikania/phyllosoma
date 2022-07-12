@@ -1,5 +1,7 @@
 #define VERTICAL 0
 #define HORIZONTAL 1
+#define LCD0TURN 0
+#define LCD180TURN 2
 
 #define LCD_COLUMN_RES 240
 #define LCD_ROW_RES 320

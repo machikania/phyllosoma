@@ -208,7 +208,7 @@ unsigned char *fileselect(void){
 				}
 				break;
 			case KEYSTART:
-				set_lcdalign(!LCD_ALIGNMENT);
+				set_lcdalign(LCD_ALIGNMENT^HORIZONTAL);
 				mx=WIDTH_X/13;
 				my=WIDTH_Y-1;
 				n = 0;
