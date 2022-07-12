@@ -279,15 +279,25 @@ int lib_display(int r0, int r1, int r2){
 			switch(r0&3){
 				case 0:
 					g_clearscreen();
-//					set_graphmode(0);
 					break;
 				case 2:
-					// TODO: clear palette
-					// TODO: clear graphic display
+					// clear palette
+					for(i=0;i<8;i++){
+						set_palette(i,255*(i&1),255*((i>>1)&1),255*(i>>2));
+					}
+					for(i=0;i<8;i++){
+						set_palette(i+8,128*(i&1),128*((i>>1)&1),128*(i>>2));
+					}
+					for(i=16;i<256;i++){
+						set_palette(i,255,255,255);
+					}
+					// clear graphic display
+					cls();
+					g_clearscreen();
+					break;
 				case 1:
 				default:
 					cls();
-//					set_graphmode(1);
 					break;
 			}
 			break;
