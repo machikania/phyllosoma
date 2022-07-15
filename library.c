@@ -103,7 +103,7 @@ int lib_print_main(int r0, int r1, int r2){
 	}
 	if (0x20==(r1&0xf0)) {
 		// ","
-		printstr(&("                "[i&0xf]));
+		printstr(&("          "[i%10]));
 	}
 	return r0;
 }
