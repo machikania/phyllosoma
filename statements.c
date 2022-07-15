@@ -137,12 +137,6 @@ int var_statement(void){
 
 /*
 	DATA/CDATA/RESTORE statements
-
-	} else if (g_constant_value_flag) {
-		// Label number is used
-		rewind_object(obefore);
-		return goto_line(g_constant_int);
-
 */
 
 int goto_label(void);
@@ -313,6 +307,35 @@ int cdata_statement(void){
 	return 0;
 }
 
+/*
+	EXEC statement
+*/
+
+int exec_statement(void){
+	int e;
+	char* sbefore;
+	unsigned short* obefore;
+	do {
+		sbefore=source;
+		obefore=object;
+		e=get_integer();
+		if (e) return e;
+		// Rewind object
+		rewind_object(obefore);
+		if (!g_constant_value_flag) {
+			source=sbefore;
+			return ERROR_SYNTAX;
+		}
+		// Check if 16 bit data
+		if (g_constant_int<0 || 65535<g_constant_int) {
+			source=sbefore;
+			return ERROR_SYNTAX;
+		}
+		// Got 2 bytes data in g_constant_int
+		(object++)[0]=g_constant_int;
+	} while (','==(source++)[0]);
+	return 0;
+}
 /*
 	LABEL/GOTO/GOSUB/RETURN statements
 	
@@ -1433,6 +1456,7 @@ int compile_statement(void){
 	if (instruction_is("ELSEIF")) return elseif_statement();
 	if (instruction_is("END")) return end_statement();
 	if (instruction_is("ENDIF")) return endif_statement();
+	if (instruction_is("EXEC")) return exec_statement();
 	if (instruction_is("FIELD")) return field_statement();
 	if (instruction_is("FOR")) return for_statement();
 	if (instruction_is("GOSUB")) return gosub_statement();

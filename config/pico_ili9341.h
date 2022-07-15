@@ -97,8 +97,6 @@
 #define LCD_SPI_RX 12
 #define LCD_SPI_SCK 14
 #define LCD_SPICH spi1
-#define VERTICAL 0
-#define HORIZONTAL 1
 #define LCD_COLUMN_RES 240
 #define LCD_ROW_RES 320
 

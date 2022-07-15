@@ -78,7 +78,8 @@ DRAWCOUNT
 END
 	BASICプログラムを停止する。
 EXEC x[,y[,z[...]]]
-	機械語を実行する。ただし、x,y,zは32ビット整数値。Type Pでは未実装。
+	機械語を実行する。ただし、x,y,zは、Type Z, Type Mでは32ビット整数値、
+	Type Pでは16ビット整数値。。
 FOR x=yyy TO zzz [ STEP www ]
 NEXT
 	yyyで示された計算結果をxに代入し、xの値がzzzになるまで次のNEXT文

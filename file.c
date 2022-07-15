@@ -19,9 +19,7 @@
 FATFS g_FatFs;
 
 void init_file_system(void){
-	printstr("Initializing file system, ");
-	if (FR_OK==f_mount(&g_FatFs, "", 0)) printstr("done\n");
-	else printstr("failed\n");
+	if (FR_OK!=f_mount(&g_FatFs, "", 0)) printstr("Initializing file system failed\n");
 }
 
 int file_exists(unsigned char* fname){
@@ -116,6 +114,10 @@ int compile_file(unsigned char* fname, char isclass){
 		}
 	}
 	f_close(fp);
+	// Add "END" statement at the end
+	for(i=0;g_file_buffer[i]="END"[i];i++);
+	e=compile_line(g_file_buffer);
+	if (e<0) return e;
 	// Delete the temporary string for current directory
 	cmpdata_delete_string_stack(curdir);
 	return end_file_compiler();
