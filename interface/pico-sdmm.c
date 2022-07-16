@@ -39,6 +39,7 @@
 
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
+<<<<<<< HEAD
 
 #define SD_SPI_CS 17
 #define SD_SPI_TX 19
@@ -46,6 +47,9 @@
 #define SD_SPI_SCK 18
 #define SD_SPICH spi0
 #define SD_SPI_BAUDRATE 10*1000*1000
+=======
+#include "../config.h"
+>>>>>>> remotes/origin/production
 
 #define	CS_H() gpio_put(SD_SPI_CS, 1)	/* Set MMC CS "high" */
 #define CS_L() gpio_put(SD_SPI_CS, 0)	/* Set MMC CS "low" */

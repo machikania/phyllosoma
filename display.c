@@ -4,11 +4,19 @@
    https://github.com/kmorimatsu
 */
 
+<<<<<<< HEAD
+=======
+#include <string.h>
+>>>>>>> remotes/origin/production
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
 #include "./compiler.h"
 #include "./api.h"
 #include "./display.h"
+<<<<<<< HEAD
+=======
+#include "./config.h"
+>>>>>>> remotes/origin/production
 
 /*
 	Local prototypings
@@ -50,6 +58,26 @@ int lib_display(int r0, int r1, int r2){
 	int* sp=(int*)r1;
 	int i,j,gc;
 	unsigned int x1,y1,x2,y2;
+<<<<<<< HEAD
+=======
+	if (0==r2) {
+		// Return the static data
+		switch(r0){
+			case 0:
+				return cursorcolor;
+			case 1:
+				return gcolor;
+			case 2:
+				return (int)ppcg;
+			case 3:
+				return prevx1;
+			case 4:
+				return prevy1;
+			default:
+				return 0;
+		}
+	}
+>>>>>>> remotes/origin/production
 	// Set x1,y1,x2,y2 for graphic
 	if (DISPLAY_USE_STACK & (1<<r2)) {
 		// r1 is a pointer to stack
@@ -130,6 +158,7 @@ int lib_display(int r0, int r1, int r2){
 			}
 			break;
 		case DISPLAY_SCROLL:
+<<<<<<< HEAD
 			//SCROLL x,y
 			//	画面を横方向、もしくは縦方向(斜めも可)に動かす。動かす方向と大きさ
 			//	は、x, yでそれぞれ、横方向の移動度、縦方向の移動度として指定する。
@@ -139,6 +168,66 @@ int lib_display(int r0, int r1, int r2){
 			//WIDTH x
 			//	キャラクターディスプレイの横幅を文字数で指定。xは30、36、40、48、
 			//	もしくは80。
+=======
+			// SCROLL x,y
+			// x:r1, y:r0
+			// Break if invalid value
+			if (WIDTH_Y<r0) break;
+			if (WIDTH_Y<(0-r0)) break;
+			if (WIDTH_X<r1) break;
+			if (WIDTH_X<(0-r1)) break;
+			if (0==r0 && 0==r1) break;
+			memmove(&TVRAM[0],&TVRAM[(0-r0)*WIDTH_X-r1],WIDTH_X*WIDTH_Y);
+			memmove(&TVRAM[ATTROFFSET],&TVRAM[ATTROFFSET+(0-r0)*WIDTH_X-r1],WIDTH_X*WIDTH_Y);
+			if (0<r0) {
+				for(i=0;i<WIDTH_X;i++){
+					for(j=0;j<r0;j++){
+						TVRAM[i+j*WIDTH_X]=0;
+						TVRAM[ATTROFFSET+i+j*WIDTH_X]=cursorcolor;
+					}
+				}
+			} else if (r0<0) {
+				for(i=0;i<WIDTH_X;i++){
+					for(j=0;j<(0-r0);j++){
+						TVRAM[i+(WIDTH_Y-j-1)*WIDTH_X]=0;
+						TVRAM[ATTROFFSET+i+(WIDTH_Y-j-1)*WIDTH_X]=cursorcolor;
+					}
+				}
+			}
+			if (0<r1) {
+				for(i=0;i<r1;i++){
+					for(j=0;j<WIDTH_Y;j++){
+						TVRAM[i+j*WIDTH_X]=0;
+						TVRAM[ATTROFFSET+i+j*WIDTH_X]=cursorcolor;
+					}
+				}
+			} else if (r1<0) {
+				for(i=0;i<(0-r1);i++){
+					for(j=0;j<WIDTH_Y;j++){
+						TVRAM[WIDTH_X-i-1+j*WIDTH_X]=0;
+						TVRAM[ATTROFFSET+WIDTH_X-i-1+j*WIDTH_X]=cursorcolor;
+					}
+				}
+			}
+			textredraw();
+			break;
+		case DISPLAY_WIDTH:
+			// Vertical/horizontal setting
+			switch(r0){
+				case 1:
+					set_lcdalign(VERTICAL | (LCD_ALIGNMENT&LCD180TURN));
+					break;
+				case 2:
+					set_lcdalign(HORIZONTAL | (LCD_ALIGNMENT&LCD180TURN));
+				default:
+					break;
+			}
+			// Width setting
+			if (0<r1 & r1<=(LCD_ALIGNMENT&HORIZONTAL ? 40:30)) {
+				WIDTH_X=r1;
+				cls();
+			}
+>>>>>>> remotes/origin/production
 			break;
 		case DISPLAY_TVRAM:
 			if (r0<0) return (int)&TVRAM[0];
@@ -211,6 +300,7 @@ int lib_display(int r0, int r1, int r2){
 			switch(r0&3){
 				case 0:
 					g_clearscreen();
+<<<<<<< HEAD
 //					set_graphmode(0);
 					break;
 				case 2:
@@ -220,6 +310,27 @@ int lib_display(int r0, int r1, int r2){
 				default:
 					cls();
 //					set_graphmode(1);
+=======
+					break;
+				case 2:
+					// clear palette
+					for(i=0;i<8;i++){
+						set_palette(i,255*(i&1),255*((i>>1)&1),255*(i>>2));
+					}
+					for(i=0;i<8;i++){
+						set_palette(i+8,128*(i&1),128*((i>>1)&1),128*(i>>2));
+					}
+					for(i=16;i<256;i++){
+						set_palette(i,255,255,255);
+					}
+					// clear graphic display
+					cls();
+					g_clearscreen();
+					break;
+				case 1:
+				default:
+					cls();
+>>>>>>> remotes/origin/production
 					break;
 			}
 			break;
@@ -305,8 +416,15 @@ int scroll_statement(void){
 
 int width_statement(void){
 	// WIDTH x
+<<<<<<< HEAD
 	return argn_function(LIB_DISPLAY_FUNCTION,
 		ARG_INTEGER<<ARG1 | 
+=======
+	g_default_args[2]=0;
+	return argn_function(LIB_DISPLAY_FUNCTION,
+		ARG_INTEGER<<ARG1 | 
+		ARG_INTEGER_OPTIONAL<<ARG2 | 
+>>>>>>> remotes/origin/production
 		DISPLAY_WIDTH<<LIBOPTION);
 }
 

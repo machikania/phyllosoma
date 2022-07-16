@@ -102,17 +102,32 @@ int inkey_function(void){
 	return argn_function(LIB_INKEY,ARG_INTEGER_OPTIONAL<<ARG1);
 }
 
+<<<<<<< HEAD
 int drawcount_function(void){
 	set_value_in_register(0,-1);
 	return call_lib_code(LIB_DRAWCOUNT);
 }
 
+=======
+>>>>>>> remotes/origin/production
 int keys_function(void){
 	g_default_args[1]=63;
 	return argn_function(LIB_KEYS,ARG_INTEGER_OPTIONAL<<ARG1);
 }
 
+<<<<<<< HEAD
 int integer_functions(void){
+=======
+int system_function(void){
+	int e;
+	e=get_integer();
+	if (e) return e;
+	return call_lib_code(LIB_SYSTEM);
+}
+
+int integer_functions(void){
+	int e;
+>>>>>>> remotes/origin/production
 	if (instruction_is("ABS(")) return abs_function();
 	if (instruction_is("ARGS(")) return args_function();
 	if (instruction_is("ASC(")) return asc_function();
@@ -133,7 +148,32 @@ int integer_functions(void){
 	if (instruction_is("RND(")) return rnd_function();
 	if (instruction_is("SGN(")) return sgn_function();
 	if (instruction_is("STRNCMP(")) return strncmp_function();
+<<<<<<< HEAD
 	if (instruction_is("VAL(")) return val_function();
+=======
+	if (instruction_is("SYSTEM(")) return system_function();
+	if (instruction_is("VAL(")) return val_function();
+	// File functions
+	if (instruction_is("FOPEN(")) return fopen_function();
+	if (instruction_is("FEOF(")) return feof_function();
+	if (instruction_is("FGET(")) return fget_function();
+	if (instruction_is("FGETC(")) return fgetc_function();
+	if (instruction_is("FLEN(")) return flen_function();
+	if (instruction_is("FPUT(")) return fput_function();
+	if (instruction_is("FPUTC(")) return fputc_function();
+	if (instruction_is("FREMOVE(")) return fremove_function();
+	if (instruction_is("FSEEK(")) return fseek_function();
+	if (instruction_is("SETDIR(")) return setdir_function();
+	// Timer functions
+	if (instruction_is("CORETIMER(")) return coretimer_function();
+	if (instruction_is("TIMER(")) return timer_function();
+	// Music functions
+	if (instruction_is("MUSIC(")) return music_function();
+	if (instruction_is("PLAYWAVE(")) return playwave_function();
+	// IO functions
+	e=io_functions();
+	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;
+>>>>>>> remotes/origin/production
 	// Environment
 	return display_functions();
 }

@@ -137,12 +137,15 @@ int var_statement(void){
 
 /*
 	DATA/CDATA/RESTORE statements
+<<<<<<< HEAD
 
 	} else if (g_constant_value_flag) {
 		// Label number is used
 		rewind_object(obefore);
 		return goto_line(g_constant_int);
 
+=======
+>>>>>>> remotes/origin/production
 */
 
 int goto_label(void);
@@ -314,6 +317,38 @@ int cdata_statement(void){
 }
 
 /*
+<<<<<<< HEAD
+=======
+	EXEC statement
+*/
+
+int exec_statement(void){
+	int e;
+	char* sbefore;
+	unsigned short* obefore;
+	do {
+		sbefore=source;
+		obefore=object;
+		e=get_integer();
+		if (e) return e;
+		// Rewind object
+		rewind_object(obefore);
+		if (!g_constant_value_flag) {
+			source=sbefore;
+			return ERROR_SYNTAX;
+		}
+		// Check if 16 bit data
+		if (g_constant_int<0 || 65535<g_constant_int) {
+			source=sbefore;
+			return ERROR_SYNTAX;
+		}
+		// Got 2 bytes data in g_constant_int
+		(object++)[0]=g_constant_int;
+	} while (','==(source++)[0]);
+	return 0;
+}
+/*
+>>>>>>> remotes/origin/production
 	LABEL/GOTO/GOSUB/RETURN statements
 	
 	CMPDATA_LINENUM
@@ -511,8 +546,12 @@ int gosub_arguments(void){
 	check_object(4);
 	(object++)[0]=0xb080; //      	sub	sp, #xx (this will be updated; see below)
 	(object++)[0]=0x9601; //      	str	r6, [sp, #4]
+<<<<<<< HEAD
 	(object++)[0]=0x466e; //      	mov	r6, sp
 	(object++)[0]=0x6030; //        str	r0, [r6, #0]
+=======
+	(object++)[0]=0x9000; //        str	r0, [sp, #0]
+>>>>>>> remotes/origin/production
 	for(i=3;','==source[0] || '('==source[0] ;i++){
 		source++;
 		skip_blank();
@@ -520,13 +559,22 @@ int gosub_arguments(void){
 		e=get_string_int_or_float();
 		if (e) return e;
 		check_object(1);
+<<<<<<< HEAD
 		(object++)[0]=0x6030 | (i<<6); // str	r0, [r6, #xx]
+=======
+		(object++)[0]=0x9000 | i; // str	r0, [sp, #xx]
+>>>>>>> remotes/origin/production
 	}
 	obefore[0]|=i; // Update sub sp,#xx assembly
 	// Set number of variables
 	e=set_value_in_register(0,i-3);
 	if (e) return e;
+<<<<<<< HEAD
 	check_object(1);
+=======
+	check_object(2);
+	(object++)[0]=0x466e; //      	mov	r6, sp
+>>>>>>> remotes/origin/production
 	(object++)[0]=0x6030 | (2<<6); // str	r0, [r6, #xx]
 	return i;
 }
@@ -1204,7 +1252,11 @@ int let_statement(void){
 	}
 }
 
+<<<<<<< HEAD
 int print_statement(void) {
+=======
+int print_statement(int lib) {
+>>>>>>> remotes/origin/production
 	// Mode; 0x00: ingeger, 0x01: string, 0x02: float
 	// Mode; 0x00: CR, 0x10: ';', 0x20: ','
 	int e;
@@ -1218,7 +1270,11 @@ int print_statement(void) {
 		if (e) return e;
 		e=set_value_in_register(1,1);
 		if (e) return e;
+<<<<<<< HEAD
 		return call_lib_code(LIB_PRINT);
+=======
+		return call_lib_code(lib);
+>>>>>>> remotes/origin/production
 	}
 	while(1){
 		sb=source;
@@ -1248,7 +1304,11 @@ int print_statement(void) {
 		}
 		check_object(1);
 		(object++)[0]=0x2100|mode; // movs	r1, #xxxx
+<<<<<<< HEAD
 		e=call_lib_code(LIB_PRINT);
+=======
+		e=call_lib_code(lib);
+>>>>>>> remotes/origin/production
 		if (e) return e;
 		if (0x00==mode&0xf0) break;
 		if (end_of_statement()) break;
@@ -1297,6 +1357,26 @@ int method_statement(void){
 	return label_statement();
 }
 
+<<<<<<< HEAD
+=======
+int system_statement(void){
+	int e;
+	e=get_integer();
+	if (e) return e;
+	check_object(1);
+	(object++)[0]=0xb401; // push	{r0}
+	skip_blank();
+	if (','!=source[0]) return ERROR_SYNTAX;
+	source++;
+	e=get_integer();
+	if (e) return e;
+	check_object(2);
+	(object++)[0]=0x0001; // movs	r1, r0
+	(object++)[0]=0xbc01; // pop	{r0}
+	return call_lib_code(LIB_SYSTEM);
+}
+
+>>>>>>> remotes/origin/production
 /*
 	Misc
 */
@@ -1312,10 +1392,30 @@ int debug_statement(void){
 #endif
 }
 
+<<<<<<< HEAD
+=======
+int idle_statement(void){
+	check_object(1);
+	(object++)[0]=0xbf30; // wfi
+	return 0;
+}
+
+>>>>>>> remotes/origin/production
 int wait_statement(void){
 	return argn_function(LIB_WAIT,ARG_INTEGER<<ARG1);
 }
 
+<<<<<<< HEAD
+=======
+int delayus_statement(void){
+	return argn_function(LIB_DELAYUS,ARG_INTEGER<<ARG1);
+}
+
+int delayms_statement(void){
+	return argn_function(LIB_DELAYMS,ARG_INTEGER<<ARG1);
+}
+
+>>>>>>> remotes/origin/production
 int rem_statement(void){
 	while(source[0]) source++;
 	return 0;
@@ -1325,10 +1425,13 @@ int end_statement(void){
 	return call_lib_code(LIB_END);
 }
 
+<<<<<<< HEAD
 int drawcount_statement(void){
 	return argn_function(LIB_SET_DRAWCOUNT,ARG_INTEGER<<ARG1);
 }
 
+=======
+>>>>>>> remotes/origin/production
 int dim_statement(void){
 	unsigned short* obefore;
 	int i,e,vn;
@@ -1406,10 +1509,18 @@ int compile_statement(void){
 	if (instruction_is("ELSEIF")) return elseif_statement();
 	if (instruction_is("END")) return end_statement();
 	if (instruction_is("ENDIF")) return endif_statement();
+<<<<<<< HEAD
+=======
+	if (instruction_is("EXEC")) return exec_statement();
+>>>>>>> remotes/origin/production
 	if (instruction_is("FIELD")) return field_statement();
 	if (instruction_is("FOR")) return for_statement();
 	if (instruction_is("GOSUB")) return gosub_statement();
 	if (instruction_is("GOTO")) return goto_statement();
+<<<<<<< HEAD
+=======
+	if (instruction_is("IDLE")) return idle_statement();
+>>>>>>> remotes/origin/production
 	if (instruction_is("IF")) return if_statement();
 	if (instruction_is("LABEL")) return label_statement();
 	if (instruction_is("LOOP")) return loop_statement();
@@ -1418,7 +1529,11 @@ int compile_statement(void){
 	if (instruction_is("POKE")) return poke_statement();
 	if (instruction_is("POKE16")) return poke16_statement();
 	if (instruction_is("POKE32")) return poke32_statement();
+<<<<<<< HEAD
 	if (instruction_is("PRINT")) return print_statement();
+=======
+	if (instruction_is("PRINT")) return print_statement(LIB_PRINT);
+>>>>>>> remotes/origin/production
 	if (instruction_is("REM")) return rem_statement();
 	if (instruction_is("RESTORE")) return restore_statement();
 	if (instruction_is("RETURN")) return return_statement();
@@ -1427,8 +1542,38 @@ int compile_statement(void){
 	if (instruction_is("USEVAR")) return usevar_statement();
 	if (instruction_is("VAR")) return var_statement();
 	if (instruction_is("WAIT")) return wait_statement();
+<<<<<<< HEAD
 	if (instruction_is("WEND")) return wend_statement();
 	if (instruction_is("WHILE")) return while_statement();
+=======
+	if (instruction_is("DELAYUS")) return delayus_statement();
+	if (instruction_is("DELAYMS")) return delayms_statement();
+	if (instruction_is("WEND")) return wend_statement();
+	if (instruction_is("WHILE")) return while_statement();
+	// File statements
+	if (instruction_is("FCLOSE")) return fclose_statement();
+	if (instruction_is("FGET")) return fget_function();
+	if (instruction_is("FILE")) return file_statement();
+	if (instruction_is("FOPEN")) return fopen_function();
+	if (instruction_is("FPRINT")) return print_statement(LIB_FPRINT);
+	if (instruction_is("FPUT")) return fput_function();
+	if (instruction_is("FPUTC")) return fputc_function();
+	if (instruction_is("FREMOVE")) return fremove_function();
+	if (instruction_is("FSEEK")) return fseek_statement();
+	if (instruction_is("SETDIR")) return setdir_function();
+	// Timer and interrupt statements
+	if (instruction_is("USETIMER")) return usetimer_statement();
+	if (instruction_is("TIMER")) return timer_statement();
+	if (instruction_is("INTERRUPT")) return interrupt_statement();
+	if (instruction_is("CORETIMER")) return coretimer_statement();
+	// Music statements
+	if (instruction_is("MUSIC")) return music_statement();
+	if (instruction_is("SOUND")) return sound_statement();
+	if (instruction_is("PLAYWAVE")) return playwave_statement();
+	// IO statements
+	e=io_statements();
+	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;
+>>>>>>> remotes/origin/production
 	// Environment statements
 	e=display_statements();
 	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;

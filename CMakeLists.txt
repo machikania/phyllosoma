@@ -32,6 +32,13 @@ if (TARGET tinyusb_device)
 			class.c
 			file.c
 			display.c
+<<<<<<< HEAD
+=======
+			timer.c
+			io.c
+			music.c
+			core1.c
+>>>>>>> remotes/origin/production
 			debug.c
 			interface/fontdata.c
 			interface/graphlib.c
@@ -42,8 +49,17 @@ if (TARGET tinyusb_device)
 		)
 
 	# Pull in our pico_stdlib which aggregates commonly used features
+<<<<<<< HEAD
 	target_link_libraries(phyllosoma pico_stdlib hardware_spi)
 
+=======
+	target_link_libraries(phyllosoma pico_stdlib)
+	target_link_libraries(phyllosoma pico_multicore)
+	target_link_libraries(phyllosoma hardware_spi)
+	target_link_libraries(phyllosoma hardware_pwm)
+	target_link_libraries(phyllosoma hardware_adc)
+	target_link_libraries(phyllosoma hardware_i2c)
+>>>>>>> remotes/origin/production
 	# enable usb output, disable uart output
 	pico_enable_stdio_usb(phyllosoma 1)
 	pico_enable_stdio_uart(phyllosoma 0)

@@ -23,6 +23,7 @@ void dump_variables(void);
 
 unsigned char* debug_fileselect(void){
 	// Wait for total three seconds
+<<<<<<< HEAD
 	sleep_ms(2500);
 	// Return file name to compile
 	return "main.bas";
@@ -66,6 +67,82 @@ static const char* debug_files[]={
 "  TEST3=ARGS(1)" CR
 "RETURN" CR
 "END" CR
+=======
+	if (!g_disable_debugwait2500) sleep_ms(2500);
+	// Return file name to compile
+	return "MACHIKAP.BAS";
+}
+
+#define rem_repeat16k(a) \
+	rem_repeat2(a "0") \
+	rem_repeat2(a "1") \
+	rem_repeat2(a "2") \
+	rem_repeat2(a "3")
+#define rem_repeat64k(a) \
+	rem_repeat2(a "0") \
+	rem_repeat2(a "1") \
+	rem_repeat2(a "2") \
+	rem_repeat2(a "3") \
+	rem_repeat2(a "4") \
+	rem_repeat2(a "5") \
+	rem_repeat2(a "6") \
+	rem_repeat2(a "7") \
+	rem_repeat2(a "8") \
+	rem_repeat2(a "9") \
+	rem_repeat2(a "A") \
+	rem_repeat2(a "B") \
+	rem_repeat2(a "C") \
+	rem_repeat2(a "D") \
+	rem_repeat2(a "E") \
+	rem_repeat2(a "F") 
+#define rem_repeat2(a) \
+	rem_repeat3(a "0") \
+	rem_repeat3(a "1") \
+	rem_repeat3(a "2") \
+	rem_repeat3(a "3") \
+	rem_repeat3(a "4") \
+	rem_repeat3(a "5") \
+	rem_repeat3(a "6") \
+	rem_repeat3(a "7") \
+	rem_repeat3(a "8") \
+	rem_repeat3(a "9") \
+	rem_repeat3(a "A") \
+	rem_repeat3(a "B") \
+	rem_repeat3(a "C") \
+	rem_repeat3(a "D") \
+	rem_repeat3(a "E") \
+	rem_repeat3(a "F") 
+#define rem_repeat3(a) \
+	"REM " a "0" CR \
+	"REM " a "1" CR \
+	"REM " a "2" CR \
+	"REM " a "3" CR \
+	"REM " a "4" CR \
+	"REM " a "5" CR \
+	"REM " a "6" CR \
+	"REM " a "7" CR \
+	"REM " a "8" CR \
+	"REM " a "9" CR \
+	"REM " a "A" CR \
+	"REM " a "B" CR \
+	"REM " a "C" CR \
+	"REM " a "D" CR \
+	"REM " a "E" CR \
+	"REM " a "F" CR
+
+#define CR "\n"
+static const char* debug_files[]={
+	"MACHIKAP.BAS",
+	rem_repeat64k("MACHIKAP")
+	,"CLASS001.BAS",
+	rem_repeat16k("CLASS001")
+	,"CLASS002.BAS",
+	rem_repeat16k("CLASS002")
+	,"CLASS003.BAS",
+	rem_repeat16k("CLASS003")
+	,"CLASS004.BAS",
+	rem_repeat16k("CLASS004")
+>>>>>>> remotes/origin/production
 	,0
 };
 
@@ -193,6 +270,10 @@ TCHAR* debug_f_gets (TCHAR* buff, int len, FIL* fp){
 	int i;
 	unsigned char c;
 	TCHAR* file=(TCHAR*)fp->dir_ptr;
+<<<<<<< HEAD
+=======
+	if (f_eof(fp)) return 0;
+>>>>>>> remotes/origin/production
 	for(i=0;i<len-1;i++){
 		if (f_eof(fp)) break;
 		c=buff[i]=file[fp->fptr++];
@@ -209,5 +290,19 @@ TCHAR* debug_f_gets (TCHAR* buff, int len, FIL* fp){
 	return buff;
 }
 
+<<<<<<< HEAD
+=======
+FRESULT debug_f_getcwd (TCHAR* buff, UINT len){
+	if (len<2) return FR_NOT_ENOUGH_CORE;
+	buff[0]='/';
+	buff[1]=0x00;
+	return FR_OK;
+}
+
+FRESULT debug_f_chdir (const TCHAR* path){
+	return FR_OK;
+}
+
+>>>>>>> remotes/origin/production
 #endif // DEBUG_MODE
 

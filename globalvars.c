@@ -54,6 +54,11 @@ short g_fordepth;
 // Scratch variable
 volatile char g_scratch[32];
 volatile int* g_scratch_int=(volatile int*)&g_scratch[0];
+<<<<<<< HEAD
+=======
+volatile short* g_scratch_short=(volatile short*)&g_scratch[0];
+volatile char* g_scratch_char=(volatile char*)&g_scratch[0];
+>>>>>>> remotes/origin/production
 volatile float* g_scratch_float=(volatile float*)&g_scratch[0];
 
 // Constant values
@@ -84,11 +89,28 @@ unsigned short* g_class_id_list;
 int* g_class_list;
 int* g_empty_object_list;
 
+<<<<<<< HEAD
 // Reserved words
 
 const char* const g_reserved_words[132]={
 	"ABS",
 	"ACOS",
+=======
+// printf() ON/OFF
+
+char g_disable_printf=0;
+
+// debug wait ON/OFF
+
+char g_disable_debugwait2500=0;
+
+// Reserved words
+
+const char* const g_reserved_words[167]={
+	"ABS",
+	"ACOS",
+	"ANALOG",
+>>>>>>> remotes/origin/production
 	"ARGS",
 	"ASC",
 	"ASIN",
@@ -107,6 +129,10 @@ const char* const g_reserved_words[132]={
 	"CLS",
 	"COLOR",
 	"CONTINUE",
+<<<<<<< HEAD
+=======
+	"CORETIMER",
+>>>>>>> remotes/origin/production
 	"COS",
 	"COSH",
 	"CREAD",
@@ -114,6 +140,11 @@ const char* const g_reserved_words[132]={
 	"DATA",
 	"DEBUG",
 	"DEC",
+<<<<<<< HEAD
+=======
+	"DELAYMS",
+	"DELAYUS",
+>>>>>>> remotes/origin/production
 	"DELETE",
 	"DIM",
 	"DO",
@@ -141,6 +172,10 @@ const char* const g_reserved_words[132]={
 	"FPRINT",
 	"FPUT",
 	"FPUTC",
+<<<<<<< HEAD
+=======
+	"FREMOVE",
+>>>>>>> remotes/origin/production
 	"FSEEK",
 	"GCLS",
 	"GCOLOR",
@@ -150,11 +185,30 @@ const char* const g_reserved_words[132]={
 	"GPALETTE",
 	"GPRINT",
 	"HEX",
+<<<<<<< HEAD
 	"IDLE",
 	"IF",
 	"INKEY",
 	"INPUT",
 	"INT",
+=======
+	"I2C",
+	"I2CERROR",
+	"I2CREAD",
+	"I2CREADDATA",
+	"I2CWRITE",
+	"I2CWRITEDATA",
+	"IDLE",
+	"IF",
+	"IN",
+	"IN16",
+	"IN8H",
+	"IN8L",
+	"INKEY",
+	"INPUT",
+	"INT",
+	"INTERRUPT",
+>>>>>>> remotes/origin/production
 	"KEYS",
 	"LABEL",
 	"LEN",
@@ -163,18 +217,33 @@ const char* const g_reserved_words[132]={
 	"LOG",
 	"LOG10",
 	"LOOP",
+<<<<<<< HEAD
+=======
+	"METHOD",
+>>>>>>> remotes/origin/production
 	"MODF",
 	"MUSIC",
 	"NEW",
 	"NEXT",
 	"NOT",
 	"OPTION",
+<<<<<<< HEAD
+=======
+	"OUT",
+	"OUT16",
+	"OUT8H",
+	"OUT8L",
+>>>>>>> remotes/origin/production
 	"PALETTE",
 	"PCG",
 	"PEEK",
 	"PEEK16",
 	"PEEK32",
 	"PI",
+<<<<<<< HEAD
+=======
+	"PLAYWAVE",
+>>>>>>> remotes/origin/production
 	"POINT",
 	"POKE",
 	"POKE16",
@@ -185,21 +254,44 @@ const char* const g_reserved_words[132]={
 	"PSET",
 	"PUBLIC",
 	"PUTBMP",
+<<<<<<< HEAD
+=======
+	"PWM",
+>>>>>>> remotes/origin/production
 	"READ",
 	"REM",
 	"RESTORE",
 	"RETURN",
 	"RND",
 	"SCROLL",
+<<<<<<< HEAD
+=======
+	"SERIAL",
+	"SERIALIN",
+	"SERIALOUT",
+>>>>>>> remotes/origin/production
 	"SETDIR",
 	"SGN",
 	"SIN",
 	"SINH",
 	"SOUND",
+<<<<<<< HEAD
+=======
+	"SPI",
+	"SPIREAD",
+	"SPIREADDATA",
+	"SPISWAPDATA",
+	"SPIWRITE",
+	"SPIWRITEDATA",
+>>>>>>> remotes/origin/production
 	"SPRINTF",
 	"SQRT",
 	"STATIC",
 	"STEP",
+<<<<<<< HEAD
+=======
+	"STOP",
+>>>>>>> remotes/origin/production
 	"STRNCMP",
 	"SYSTEM",
 	"TAN",
@@ -212,17 +304,32 @@ const char* const g_reserved_words[132]={
 	"USECLASS",
 	"USEGRAPHIC",
 	"USEPCG",
+<<<<<<< HEAD
+=======
+	"USETIMER",
+>>>>>>> remotes/origin/production
 	"USEVAR",
 	"VAL",
 	"VAR",
 	"WAIT",
+<<<<<<< HEAD
+=======
+	"WAVE",
+>>>>>>> remotes/origin/production
 	"WEND",
 	"WHILE",
 	"WIDTH",
 };
+<<<<<<< HEAD
 const int const g_hash_resereved_words[132]={
 	0x000400d3, //ABS
 	0x01002393, //ACOS
+=======
+const int const g_hash_resereved_words[167]={
+	0x000400d3, //ABS
+	0x01002393, //ACOS
+	0x0f00d397, //ANALOG
+>>>>>>> remotes/origin/production
 	0x01013193, //ARGS
 	0x00040483, //ASC
 	0x0101220e, //ASIN
@@ -241,6 +348,10 @@ const int const g_hash_resereved_words[132]={
 	0x00042353, //CLS
 	0x4238d392, //COLOR
 	0x2ade0dd9, //CONTINUE
+<<<<<<< HEAD
+=======
+	0xea9ef7dc, //CORETIMER
+>>>>>>> remotes/origin/production
 	0x00042393, //COS
 	0x0108e488, //COSH
 	0x424c4004, //CREAD
@@ -248,6 +359,11 @@ const int const g_hash_resereved_words[132]={
 	0x01140541, //DATA
 	0x45103507, //DEBUG
 	0x00045103, //DEC
+<<<<<<< HEAD
+=======
+	0x0d018742, //DELAYMS
+	0x0d018142, //DELAYUS
+>>>>>>> remotes/origin/production
 	0x44344554, //DELETE
 	0x0004520d, //DIM
 	0x0000114f, //DO
@@ -275,6 +391,10 @@ const int const g_hash_resereved_words[132]={
 	0xd14c83c5, //FPRINT
 	0x011d1514, //FPUT
 	0x47454543, //FPUTC
+<<<<<<< HEAD
+=======
+	0x3bcf1e71, //FREMOVE
+>>>>>>> remotes/origin/production
 	0x4748410b, //FSEEK
 	0x01182353, //GCLS
 	0x8238d383, //GCOLOR
@@ -284,11 +404,30 @@ const int const g_hash_resereved_words[132]={
 	0x0d1043aa, //GPALETTE
 	0x914c83c5, //GPRINT
 	0x00049118, //HEX
+<<<<<<< HEAD
 	0x01205345, //IDLE
 	0x00001206, //IF
 	0x483ca119, //INKEY
 	0x483d1514, //INPUT
 	0x000483d4, //INT
+=======
+	0x00049cc3, //I2C
+	0x7bb3eb62, //I2CERROR
+	0xc24c4498, //I2CREAD
+	0x992a493a, //I2CREADDATA
+	0x69b25db5, //I2CWRITE
+	0xb47db71c, //I2CWRITEDATA
+	0x01205345, //IDLE
+	0x00001206, //IF
+	0x0000120e, //IN
+	0x0120ec76, //IN16
+	0x0120ee48, //IN8H
+	0x0120ee4c, //IN8L
+	0x483ca119, //INKEY
+	0x483d1514, //INPUT
+	0x000483d4, //INT
+	0x130576fa, //INTERRUPT
+>>>>>>> remotes/origin/production
 	0x01284613, //KEYS
 	0x4d00310c, //LABEL
 	0x0004d10e, //LEN
@@ -297,18 +436,33 @@ const int const g_hash_resereved_words[132]={
 	0x0004d387, //LOG
 	0x4d387c70, //LOG10
 	0x0134e390, //LOOP
+<<<<<<< HEAD
+=======
+	0x04549397, //METHOD
+>>>>>>> remotes/origin/production
 	0x0130e146, //MODF
 	0x4c512203, //MUSIC
 	0x0004f117, //NEW
 	0x013c4654, //NEXT
 	0x0004f394, //NOT
 	0x9154839d, //OPTION
+<<<<<<< HEAD
+=======
+	0x0004e514, //OUT
+	0x4e514c76, //OUT16
+	0x4e514e48, //OUT8H
+	0x4e514e4c, //OUT8L
+>>>>>>> remotes/origin/production
 	0x0d115055, //PALETTE
 	0x00051087, //PCG
 	0x0144410b, //PEEK
 	0x4410bc62, //PEEK16
 	0x4410bce6, //PEEK32
 	0x00001449, //PI
+<<<<<<< HEAD
+=======
+	0x18594115, //PLAYWAVE
+>>>>>>> remotes/origin/production
 	0x513883d4, //POINT
 	0x0144e285, //POKE
 	0x4e285c62, //POKE16
@@ -319,21 +473,44 @@ const int const g_hash_resereved_words[132]={
 	0x01452114, //PSET
 	0x540cd217, //PUBLIC
 	0x54543304, //PUTBMP
+<<<<<<< HEAD
+=======
+	0x0005158d, //PWM
+>>>>>>> remotes/origin/production
 	0x014c4004, //READ
 	0x0005310d, //REM
 	0xedab1e34, //RESTORE
 	0xc45544da, //RETURN
 	0x000533c4, //RND
 	0x824ce358, //SCROLL
+<<<<<<< HEAD
+=======
+	0x844c8018, //SERIAL
+	0xc80195b5, //SERIALIN
+	0xff9af426, //SERIALOUT
+>>>>>>> remotes/origin/production
 	0x84545206, //SETDIR
 	0x0005218e, //SGN
 	0x0005220e, //SIN
 	0x014883c8, //SINH
 	0x523943c4, //SOUND
+<<<<<<< HEAD
+=======
+	0x00052449, //SPI
+	0xb7b3bae0, //SPIREAD
+	0x1ea046fb, //SPIREADDATA
+	0xf55fbc1b, //SPISWAPDATA
+	0x164dc3a8, //SPIWRITE
+	0xa901b8bd, //SPIWRITEDATA
+>>>>>>> remotes/origin/production
 	0xacdf0fa2, //SPRINTF
 	0x014904d4, //SQRT
 	0x95015217, //STATIC
 	0x01495110, //STEP
+<<<<<<< HEAD
+=======
+	0x01495390, //STOP
+>>>>>>> remotes/origin/production
 	0xacc3d9f5, //STRNCMP
 	0x98495119, //SYSTEM
 	0x0005500e, //TAN
@@ -346,12 +523,23 @@ const int const g_hash_resereved_words[132]={
 	0xfdcaaa72, //USECLASS
 	0x2aaa8267, //USEGRAPHIC
 	0x12111092, //USEPCG
+<<<<<<< HEAD
+=======
+	0xeade6ff3, //USETIMER
+>>>>>>> remotes/origin/production
 	0x12117007, //USEVAR
 	0x0005700c, //VAL
 	0x00057012, //VAR
 	0x01580214, //WAIT
+<<<<<<< HEAD
+=======
+	0x015805c5, //WAVE
+>>>>>>> remotes/origin/production
 	0x015843c4, //WEND
 	0x56248345, //WHILE
 	0x56205548, //WIDTH
 };
+<<<<<<< HEAD
 
+=======
+>>>>>>> remotes/origin/production

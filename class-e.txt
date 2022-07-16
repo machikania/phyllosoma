@@ -1,0 +1,127 @@
+<How to use classes and objects>
+
+This section describes object-oriented programming, which is class-based in MachiKania. MachiKania allows class-based object-oriented programming with the following features
+
+　(1) Objects have fields (public or private) and methods (public only).
+　(2) Classes are described in separate files, with one class per file.
+　(3) Multiple classes can be used. Also, another class can be used within a class.
+　(4) Class inheritance is not implemented.
+　(5) Field names and method names can be alphanumeric characters of 2 to 6 characters (long names are also possible with Type P).
+
+By writing a class as a separate file and specifying this file as a class, it is possible to create a program consisting of multiple files. Connections between classes are made only via fields and methods. Therefore, even if a variable or label with the same name exists in multiple files, each file is controlled individually, so there is no name conflict.
+
+<How to Write a Class>
+
+To create a class, prepare a text file with the name "classname.BAS". The class name must be between 2 and 6 alphanumeric characters long (Type P allows up to 8 characters). In the class file, the FIELD, STATIC, and METHOD instructions are required.
+
+FIELD [PUBLIC] x[,y[,z[, ... ]]]
+	Declares a public field in the class file. PUBLIC" can be omitted. x, y, z, etc. are alphanumeric field names of 6 characters or less (Type P allows longer names). However, if the field is used as a string type, "$" must be added after the field name.
+FIELD PRIVATE x[,y[,z[, ... ]]]
+	Declares a private field in the class file. x, y, z, etc. are field names of 6 characters or less (Type P allows longer names) and are specified in alphanumeric characters. However, when the field is used as a string type, "$" should be added after the field name, and "()" should be added when the field is used as an array.
+STATIC [PUBLIC] x[,y[,z[, ... ]]]
+	Declares a public static variable in the class file." PUBLIC" may be omitted.
+STATIC PRIVATE x[,y[,z[, ... ]]]
+	Declares a private static variable in the class file.
+METHOD x
+	Declares a method in the class file. x is the name of the method, up to 6 alphanumeric characters (Type P allows longer names).
+
+To access field values (both public and private) in a class file, access (read and write) directly to the variable with the long name specified FIELD. Notations such as "THIS" are not necessary.
+
+If you want to access a static variable that is not a field of an object, use the STATIC or USEVAR instruction. A variable with a long name used here does not affect the value of a variable with the same name in other files. However, reading or changing variables A-Z will affect the values used in other files.
+
+All methods declared with the METHOD instruction are public. Use the LABEL and GOSUB instructions/functions for private subroutine calls. Arguments for method calls can be retrieved with the ARGS() function. If a pointer to your own object is needed in the method, it can be retrieved with ARGS(-2).
+
+To specify a constructor, use "METHOD INIT". If the INIT method is specified in this way, it will be called when the object is created; it is also possible to give arguments to the INIT method (arguments are not required).
+
+Example (saved under the name CLASS1.BAS)
+　FIELD PUBLIC TEST1,TEST2
+　FIELD PRIVATE TEST3
+　STATIC PUBLIC TEST7
+　METHOD INIT
+　　IF ARGS(0)=2 THEN
+　　　TEST1=ARGS(1)
+　　　TEST2=ARGS(2)
+　　ENDIF
+　RETURN
+　METHOD TEST4
+　　TEST1=ARGS(1)
+　　TEST2=ARGS(2)
+　RETURN
+　METHOD TEST5
+　　TEST3=TEST1+TEST2+TEST7
+　RETURN METHOD TEST6
+　METHOD TEST6
+　RETURN TEST3
+　METHOD TEST8
+　RETURN TEST8
+
+<How to create an object>
+
+To create an object, first specify the class to be used with the USECLASS instruction, and then use the NEW function.
+
+USECLASS x[,y[,z[, ... ]]]
+	Declares the use of the class. x,y,z, etc. are class names up to 6 alphanumeric characters (Type P allows up to 8 characters).
+NEW(x[,y[,z[, ... ]]])
+	Creates a class object and returns a pointer to the object. x specifies the class name. y, z, etc. are arguments used when there is a constructor.
+
+Example 1
+　USECLASS CLASS1
+　A=NEW(CLASS1)
+
+Example 2 (when arguments are specified for the constructor): USECLASS CLASS1
+　USECLASS CLASS1
+　A=NEW(CLASS1,123,456)
+
+<How to destroy an object>
+
+Created objects can also be destroyed using the DELETE instruction. However, since the destructor is not implemented, if necessary, create a method for it and call it just before destroying the object.
+
+If the fields of the object are strings or arrays, these areas will not be destroyed simply by DELETE of the object. In this case, first destroy these fields in the method (a DELETE instruction can be used) and then destroy the object.
+
+Example
+　USECLASS CLASS1
+　A=NEW(CLASS1)
+　DELETE A
+
+<How to Access Fields>
+
+To access a public field, enter the variable containing the object followed by ". followed by the name of the field. If the field is a character string, add a "$" after it, and if the field is a real number, add a "#" after it.
+
+Example
+　USECLASS CLASS1
+　A=NEW(CLASS1)
+　A.TEST1=123
+　PRINT A.TEST2
+
+<How to access methods>
+
+To access a public method, enter a variable containing an object followed by ". followed by the name of the method, followed by "( )". If the method returns a string as the return value, append "$" to the method name ("#" for real numbers). Methods are treated like functions, but they can also be called with the CALL instruction if the return value is not used.
+
+CALL x
+	Calls the method of the object specified by x.
+
+Example description (579 is displayed)
+　USECLASS CLASS1
+　A=NEW(CLASS1)
+　CALL A.TEST4(123,456)
+　CALL A.TEST5()
+　PRINT A.TEST6()
+
+<Use of Static Variables and Static Methods>
+
+Variables specified with "STATIC PUBLIC" in a class can be referenced or modified externally. In this case, the class name must be followed by "::" and the name of the variable.
+
+Each method can also be used as a static method. In this case, enter the class name followed by "::" and the name of the method, followed by "( )".
+
+Example (123 is displayed):
+　USECLASS CLASS1
+　CLASS1::TEST6=123
+　PRINT CLASS1::TEST7()
+
+<About the library>
+
+Class files are read if there is a "classname.BAS" file in the current directory. BAS" file in the current directory. If the file is not in the current directory, it will be read from the "⌘LIB\class name\class name.BAS" file, if available. Therefore, if you place a group of classes in the "⌘LIB" directory, you can use them as a library that can be used at any time.
+
+＜Version History
+KM-1500: Released in July 2022.
+KM-1207/KM1302 released in March 2019.

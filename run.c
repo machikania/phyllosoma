@@ -5,6 +5,10 @@
 */
 
 #include "./compiler.h"
+<<<<<<< HEAD
+=======
+#include "./core1.h"
+>>>>>>> remotes/origin/production
 
 const int const g_r6_array[]={
 	0,                         // Pointer to object
@@ -13,6 +17,10 @@ const int const g_r6_array[]={
 };
 
 void run_code(void){
+<<<<<<< HEAD
+=======
+	// See also call_interrupt_function()
+>>>>>>> remotes/origin/production
 	// Push r0-r12
 	asm("push {lr}");
 	asm("push {r0,r1,r2,r3,r4,r5,r6,r7}");
@@ -55,6 +63,43 @@ void run_code(void){
 	asm("pop {pc}");
 }
 
+<<<<<<< HEAD
+=======
+void call_interrupt_function(void* r0){
+	// See also run_code()
+	// Push registers
+	asm("push {r0,r1,r2,r3,r4,r5,r6,r7}");
+	asm("mov r1,r8");
+	asm("mov r2,r9");
+	asm("mov r3,r10");
+	asm("mov r4,r11");
+	asm("mov r5,r12");
+	asm("mov r6,lr");
+	asm("push {r1,r2,r3,r4,r5,r6}");
+	// Set special registers
+	// R5 is pointer to array containing variable values
+	asm("ldr r5,=kmbasic_variables");
+	// R6 is pointer to argument array
+	asm("ldr r6,=g_r6_array");
+	// R7 is pointer to array containing various data
+	asm("ldr r7,=kmbasic_data");
+	// R8 is pointer to library function
+	asm("ldr r1,=kmbasic_library");
+	asm("mov r8,r1");
+	// Call the code
+	asm("blx r0");
+	// Pop registers
+	asm("pop {r1,r2,r3,r4,r5,r6}");
+	asm("mov r8,r1");
+	asm("mov r9,r2");
+	asm("mov r10,r3");
+	asm("mov r11,r4");
+	asm("mov r12,r5");
+	asm("mov lr,r6");
+	asm("pop {r0,r1,r2,r3,r4,r5,r6,r7}");
+}
+
+>>>>>>> remotes/origin/production
 void pre_run(void){
 	// Initializing environment
 	init_memory();
@@ -66,8 +111,31 @@ void pre_run(void){
 	g_rnd_seed=0x92D68CA2; //2463534242
 	// Inilialize kmbasic_data[] (see also run_code() )
 	kmbasic_data[2]=(int)&kmbasic_var_size[0];
+<<<<<<< HEAD
 }
 
 void post_run(void){
 
+=======
+	// Close all files
+	close_all_files();
+	// Init I/O
+	io_init();
+	// Init music
+	init_music();
+}
+
+void post_run(void){
+	// Close all files
+	close_all_files();
+	// Reset I/O and activate buttons
+	io_init();
+	lib_keys(63,0,0);
+	// Init timer (to stop interrupt etc)
+	timer_init();
+	// Stop music
+	stop_music();
+	// Stop core1
+	stop_core1();
+>>>>>>> remotes/origin/production
 }

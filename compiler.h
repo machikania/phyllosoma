@@ -30,7 +30,11 @@
 #endif
 #define ERROR_SYNTAX _throw_error(-1)
 #define ERROR_UNKNOWN _throw_error(-2)
+<<<<<<< HEAD
 #define ERROR_OBJ_TOO_LARGE _throw_error(-3)
+=======
+#define ERROR_OTHERS (-3)
+>>>>>>> remotes/origin/production
 #define ERROR_VARNAME_USED _throw_error(-4)
 #define ERROR_TOO_MANY_VARS _throw_error(-5)
 #define ERROR_RESERVED_WORD _throw_error(-6)
@@ -46,7 +50,13 @@
 #define ERROR_NOT_PUBLIC  _throw_error(-16)
 #define ERROR_STATEMENT_NOT_DETECTED (-17)
 #define ERROR_NO_CLASS_FILE _throw_error(-18)
+<<<<<<< HEAD
 #define ERROR_OTHERS (-19)
+=======
+#define ERROR_OBJ_TOO_LARGE _throw_error(-19)
+#define ERROR_INVALID _throw_error(-20)
+#define ERROR_MUSIC (-21)
+>>>>>>> remotes/origin/production
 
 /*
 	Libraries
@@ -83,7 +93,11 @@
 #define LIB_DISPLAY_FUNCTION 22
 #define LIB_INKEY 23
 #define LIB_INPUT 24
+<<<<<<< HEAD
 #define LIB_DRAWCOUNT 25
+=======
+#define LIB_TIMER 25
+>>>>>>> remotes/origin/production
 #define LIB_KEYS 26
 #define LIB_NEW 27
 #define LIB_OBJ_FIELD 28
@@ -102,9 +116,95 @@
 #define LIB_VAR_POP 136
 #define LIB_DISPLAY 137
 #define LIB_WAIT 138
+<<<<<<< HEAD
 #define LIB_SET_DRAWCOUNT 139
 #define LIB_STR_TO_OBJECT 140
 #define LIB_DELETE 141
+=======
+#define LIB_SYSTEM 139
+#define LIB_STR_TO_OBJECT 140
+#define LIB_DELETE 141
+#define LIB_FILE 142
+#define LIB_FOPEN 143
+#define LIB_FPRINT 144
+#define LIB_INTERRUPT 145
+#define LIB_PWM 146
+#define LIB_ANALOG 147
+#define LIB_SPI 148
+#define LIB_I2C 149
+#define LIB_SERIAL 150
+#define LIB_GPIO 151
+#define LIB_MUSIC 152
+#define LIB_DELAYUS 153
+#define LIB_DELAYMS 154
+
+/*
+	LIB MUSIC options
+*/
+
+#define LIB_MUSIC_MUSIC 1
+#define LIB_MUSIC_SOUND 2
+#define LIB_MUSIC_MUSICFUNC 3
+#define LIB_MUSIC_PLAYWAVE 4
+#define LIB_MUSIC_PLAYWAVEFUNC 5
+
+/*
+	LIB IO options
+*/
+
+#define LIB_SPI_SPI 1
+#define LIB_SPI_SPIREAD 2
+#define LIB_SPI_SPIWRITE 3
+#define LIB_SPI_SPIREADDATA 4
+#define LIB_SPI_SPIWRITEDATA 5
+#define LIB_SPI_SPISWAPDATA 6
+#define LIB_I2C_I2C 1
+#define LIB_I2C_I2CREAD 2
+#define LIB_I2C_I2CWRITE 3
+#define LIB_I2C_I2CERROR 4
+#define LIB_I2C_I2CREADDATA 5
+#define LIB_I2C_I2CWRITEDATA 6
+#define LIB_SERIAL_SERIAL 1
+#define LIB_SERIAL_SERIALIN 2
+#define LIB_SERIAL_SERIALOUT 3
+#define LIB_GPIO_IN 1
+#define LIB_GPIO_IN8H 2
+#define LIB_GPIO_IN8L 3
+#define LIB_GPIO_IN16 4
+#define LIB_GPIO_OUT 5
+#define LIB_GPIO_OUT8H 6
+#define LIB_GPIO_OUT8L 7
+#define LIB_GPIO_OUT16 8
+
+/*
+	LIB FILE options
+*/
+#define FILE_FCLOSE 1
+#define FILE_FGET 2
+#define FILE_FILE 3
+#define FILE_FPUT 4
+#define FILE_FPUTC 5
+#define FILE_FREMOVE 6
+#define FILE_FSEEK 7
+#define FILE_SETDIR 8
+#define FILE_FEOF 9
+#define FILE_FGETC 10
+#define FILE_FLEN 11
+#define FILE_FSEEKFUNC 12
+#define FILE_FINPUT 13
+#define FILE_GETDIR 14
+
+/*
+	LIB TIMER options
+*/
+#define TIMER_CORETIMER 1
+#define TIMER_USETIMER 2
+#define TIMER_TIMER 3
+#define TIMER_CORETIMERFUNC 4
+#define TIMER_TIMERFUNC 5
+#define TIMER_DRAWCOUNT 6
+#define TIMER_DRAWCOUNTFUNC 7
+>>>>>>> remotes/origin/production
 
 /*
 	LIB MATH options
@@ -206,6 +306,17 @@
 #define ARG6      15
 #define LIBOPTION 24
 
+<<<<<<< HEAD
+=======
+#define INTERRUPT_TIMER     0
+#define INTERRUPT_DRAWCOUNT 1
+#define INTERRUPT_KEYS      2
+#define INTERRUPT_INKEY     3
+#define INTERRUPT_MUSIC     4
+#define INTERRUPT_WAVE      5
+#define INTERRUPT_CORETIMER 6
+
+>>>>>>> remotes/origin/production
 /*
 	Variables
 */
@@ -236,11 +347,20 @@ extern short g_fordepth;
 
 extern volatile char g_scratch[32];
 extern volatile int* g_scratch_int;
+<<<<<<< HEAD
 extern volatile float* g_scratch_float;
 extern volatile char* g_scratch_char;
 
 extern const char* const g_reserved_words[132];
 extern const int const g_hash_resereved_words[132];
+=======
+extern volatile short* g_scratch_short;
+extern volatile float* g_scratch_float;
+extern volatile char* g_scratch_char;
+
+extern const char* const g_reserved_words[167];
+extern const int const g_hash_resereved_words[167];
+>>>>>>> remotes/origin/production
 
 extern char g_constant_value_flag;
 extern int g_constant_int;
@@ -263,6 +383,12 @@ extern unsigned short* g_class_id_list;
 extern int* g_class_list;
 extern int* g_empty_object_list;
 
+<<<<<<< HEAD
+=======
+extern char g_disable_printf;
+extern char g_disable_debugwait2500;
+
+>>>>>>> remotes/origin/production
 /*
 	Prototypes
 */
@@ -296,6 +422,10 @@ void post_run(void);
 int lib_end(int r0, int r1, int r2);
 unsigned short* seek_data(int mode);
 int lib_restore(int r0, int r1, int r2);
+<<<<<<< HEAD
+=======
+int lib_read(int r0, int r1, int r2);
+>>>>>>> remotes/origin/production
 int kmbasic_library(int r0, int r1, int r2, int r3);
 
 // statement.c
@@ -305,12 +435,20 @@ int gosub_statement(void);
 int post_gosub_statement(int i);
 int compile_statement(void);
 int end_of_statement(void);
+<<<<<<< HEAD
+=======
+int restore_statement(void);
+>>>>>>> remotes/origin/production
 
 // string.c
 int string_char(void);
 int get_string(void);
 
 // integer.c
+<<<<<<< HEAD
+=======
+int system_function(void);
+>>>>>>> remotes/origin/production
 int get_positive_decimal_value(void);
 int get_simple_integer(void);
 int get_integer(void);
@@ -400,7 +538,69 @@ int lib_post_method(int r0, int r1, int r2);
 
 // file.c
 void init_file_system(void);
+<<<<<<< HEAD
 int compile_file(unsigned char* fname, char isclass);
+=======
+int file_exists(unsigned char* fname);
+int compile_file(unsigned char* fname, char isclass);
+void close_all_files(void);
+int lib_file(int r0, int r1, int r2);
+int lib_fopen(int r0, int r1, int r2);
+int lib_fprint_main(int r0, int r1, int r2);
+int fclose_statement(void);
+int fget_function(void);
+int file_statement(void);
+int fopen_function(void);
+int fput_function(void);
+int fputc_function(void);
+int fremove_function(void);
+int fseek_statement(void);
+int setdir_function(void);
+int feof_function(void);
+int fgetc_function(void);
+int flen_function(void);
+int fseek_function(void);
+int finput_function(void);
+int getdir_function(void);
+
+// timer.c
+int interrupt_statement(void);
+int drawcount_statement(void);
+int drawcount_function(void);
+int coretimer_function(void);
+int usetimer_statement(void);
+int coretimer_statement(void);
+int timer_statement(void);
+int timer_function(void);
+void timer_init(void);
+int lib_timer(int r0, int r1, int r2);
+int lib_interrupt(int r0, int r1, int r2);
+void call_interrupt_function(void* r0);
+void raise_interrupt_flag(int i);
+
+// io.c
+void io_init(void);
+int lib_keys(int r0, int r1, int r2);
+int lib_pwm(int r0, int r1, int r2);
+int lib_analog(int r0, int r1, int r2);
+int lib_spi(int r0, int r1, int r2);
+int lib_i2c(int r0, int r1, int r2);
+int lib_serial(int r0, int r1, int r2);
+int lib_gpio(int r0, int r1, int r2);
+int io_statements(void);
+int io_functions(void);
+
+// music.c
+void musicint(void);
+void init_music(void);
+void stop_music(void);
+int lib_music(int r0, int r1, int r2);
+int music_statement(void);
+int music_function(void);
+int sound_statement(void);
+int playwave_statement(void);
+int playwave_function(void);
+>>>>>>> remotes/origin/production
 
 // For debugging
 void dump_cmpdata(void);

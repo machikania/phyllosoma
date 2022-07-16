@@ -23,9 +23,19 @@
 FRESULT debug_f_open (FIL* fp, const TCHAR* path, BYTE mode);
 FRESULT debug_f_close (FIL* fp);
 TCHAR* debug_f_gets (TCHAR* buff, int len, FIL* fp);
+<<<<<<< HEAD
 #define f_open debug_f_open
 #define f_close debug_f_close
 #define f_gets debug_f_gets
+=======
+FRESULT debug_f_getcwd (TCHAR* buff, UINT len);
+FRESULT debug_f_chdir (const TCHAR* path);
+#define f_open debug_f_open
+#define f_close debug_f_close
+#define f_gets debug_f_gets
+#define f_getcwd debug_f_getcwd
+#define f_chdir debug_f_chdir
+>>>>>>> remotes/origin/production
 
 unsigned char* debug_fileselect(void);
 #define fileselect debug_fileselect

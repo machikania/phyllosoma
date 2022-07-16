@@ -86,7 +86,11 @@ int lib_print_main(int r0, int r1, int r2){
 			} else {
 				i=0;
 			}
+<<<<<<< HEAD
 			if (0x00 == (r1&0xf0)) printchar('\n');
+=======
+			if (0x00 == (r1&0xf0)) printstr("\n");
+>>>>>>> remotes/origin/production
 			break;
 		case 0x02: // float
 			g_scratch_int[0]=r0;
@@ -103,7 +107,11 @@ int lib_print_main(int r0, int r1, int r2){
 	}
 	if (0x20==(r1&0xf0)) {
 		// ","
+<<<<<<< HEAD
 		printstr(&("                "[i&0xf]));
+=======
+		printstr(&("          "[i%10]));
+>>>>>>> remotes/origin/production
 	}
 	return r0;
 }
@@ -112,6 +120,13 @@ void lib_print(){
 	use_lib_stack("lib_print_main");
 }
 
+<<<<<<< HEAD
+=======
+void lib_fprint(){
+	use_lib_stack("lib_fprint_main");
+}
+
+>>>>>>> remotes/origin/production
 int lib_let_str(int r0, int r1, int r2){
 	int i;
 	char* str=(char*)r0;
@@ -550,6 +565,7 @@ int lib_wait(int r0, int r1, int r2){
 	return r0;
 }
 
+<<<<<<< HEAD
 int lib_drawcount(int r0, int r1, int r2){
 	static unsigned short drawcount=0;
 	unsigned short res;
@@ -561,6 +577,18 @@ int lib_drawcount(int r0, int r1, int r2){
 	res=t;
 	res-=drawcount;
 	return res;
+=======
+int lib_delayus(int r0, int r1, int r2){
+	// At least 449 CPU cycles (3.592 micro seconds) are required to call this function.
+	r1=r0-3;
+	if (0<r1) sleep_us(r1);
+	return r0;
+}
+
+int lib_delayms(int r0, int r1, int r2){
+	sleep_ms(r0);
+	return r0;
+>>>>>>> remotes/origin/production
 }
 
 int lib_inkey(int r0, int r1, int r2){
@@ -632,6 +660,7 @@ int lib_str2obj(int r0, int r1, int r2){
 	return (int)str2;
 }
 
+<<<<<<< HEAD
 #define GPIO_KEYUP 0
 #define GPIO_KEYLEFT 1
 #define GPIO_KEYRIGHT 2
@@ -677,12 +706,111 @@ int lib_debug(int r0, int r1, int r2){
 	//asm("adds	r0, r6, #0");
 	printhex32(r0);
 	lib_wait(60,0,0);
+=======
+int lib_debug(int r0, int r1, int r2){
+#ifdef DEBUG_MODE
+	//M0PLUS 0xe0000000
+	//SYST_CVR 0xe018
+	//asm("ldr	r0, [r5, r0]");
+	//printhex32(r0);
+	//lib_wait(60,0,0);
+>>>>>>> remotes/origin/production
 	return r0;
 #else
 	return r0;
 #endif
 }
 
+<<<<<<< HEAD
+=======
+extern unsigned char TVRAM[];
+extern unsigned char *cursor;
+extern unsigned char cursorcolor;
+extern unsigned char *fontp;
+extern const unsigned char FontData[256*8];
+
+int lib_system(int r0, int r1, int r2){
+	switch(r0){
+		case 0:
+		//	MachiKania バージョン文字列、"Zoea"等を返す。
+			return (int)"Phyllosoma";
+		case 1:
+		//	MachiKania バージョン文字列、"1.2"等を返す。
+			return (int)"0.1";
+		case 2:
+		//	BASIC バージョン文字列、"KM-1208"等を返す。
+			return (int)"KM-2000";
+		case 3:
+		//	現在実行中のHEXファイル名、"ZOEA.HEX"等を返す。
+		case 4:
+		//	現在実行中のCPUのクロック周波数を返す。
+			return 125000000;
+		case 20:
+		//	キャラクターディスプレイ横幅を返す。
+			return WIDTH_X;
+		case 21:
+		//	キャラクターディスプレイ縦幅を返す。
+			return WIDTH_Y;
+		case 22:
+		//	グラフィックディスプレイ横幅を返す。
+			return WIDTH_X*8;
+		case 23:
+		//	グラフィックディスプレイ横幅を返す。
+			return WIDTH_Y*8;
+		case 24:
+		//	キャラクターディスプレイ用の指定色を返す。
+			return (unsigned char)lib_display(0,0,0);
+		case 25:
+		//	グラフィックディスプレイ用の指定色を返す。
+			return (unsigned char)lib_display(1,0,0);
+		case 26:
+		//	キャラクターディスプレイの、現在のX位置を返す。
+			return ((int)cursor-(int)&TVRAM[0])%WIDTH_X;
+		case 27:
+		//	キャラクターディスプレイの、現在のY位置を返す。
+			return ((int)cursor-(int)&TVRAM[0])/WIDTH_X;
+		case 28:
+		//	グラフィックディスプレイの、現在のX位置を返す。
+			return lib_display(3,0,0);
+		case 29:
+		//	グラフィックディスプレイの、現在のY位置を返す。
+			return lib_display(4,0,0);
+		case 40:
+		//	PS/2キーボードを使用中かどうかを返す。
+			return 0;
+		case 41:
+		//	PS/2キーボード情報、vkeyを返す。
+			return 0;
+		case 42:
+		//	PS/2キーボード情報、lockkeyを返す。
+			return 0;
+		case 43:
+		//	PS/2キーボード情報、keytypeを返す。
+			return 0;
+		case 100:
+		//	変数格納領域(g_var_mem)へのポインターを返す。
+		case 101:
+		//	乱数シードへのポインターを返す。
+		case 102:
+		//	キャラクターディスプレイ領域(TVRAM)へのポインターを返す。
+			return (int)&TVRAM[0];
+		case 103:
+		//	フォント領域へのポインターを返す。
+			return (int)&FontData[0];
+		case 104:
+		//	PCGフォント領域へのポインターを返す。
+			return (int)fontp;
+		case 105:
+		//	グラフィックディスプレイ領域へのポインターを返す。
+		case 200:
+		//	ディスプレイの表示を停止(xが0のとき)、もしくは開始(xが0以外の時)する。
+		default:
+			break;
+	}
+	return 0;
+}
+
+>>>>>>> remotes/origin/production
 static const void* lib_list1[]={
 	lib_calc,                   // #define LIB_CALC 0
 	lib_calc_float,             // #define LIB_CALC_FLOAT 1
@@ -709,14 +837,21 @@ static const void* lib_list1[]={
 	lib_display,                // #define LIB_DISPLAY_FUNCTION 22
 	lib_inkey,                  // #define LIB_INKEY 23
 	lib_input,                  // #define LIB_INPUT 24
+<<<<<<< HEAD
 	lib_drawcount,              // #define LIB_DRAWCOUNT 25
+=======
+	lib_timer,                  // #define LIB_TIMER 32
+>>>>>>> remotes/origin/production
 	lib_keys,                   // #define LIB_KEYS 26
 	lib_new,                    // #define LIB_NEW 27
 	lib_resolve_field_address,  // #define LIB_OBJ_FIELD 28
 	lib_resolve_method_address, // #define LIB_OBJ_METHOD 29
 	lib_pre_method,             // #define LIB_PRE_METHOD 30
 	lib_post_method,            // #define LIB_POST_METHOD 31
+<<<<<<< HEAD
 
+=======
+>>>>>>> remotes/origin/production
 };
 
 static const void* lib_list2[]={
@@ -731,9 +866,28 @@ static const void* lib_list2[]={
 	lib_var_pop,    // #define LIB_VAR_POP 136
 	lib_display,    // #define LIB_DISPLAY 137
 	lib_wait,       // #define LIB_WAIT 138
+<<<<<<< HEAD
 	lib_drawcount,  // #define LIB_SET_DRAWCOUNT 139
 	lib_str2obj,    // #define LIB_STR_TO_OBJECT 140
 	lib_delete,     // #define LIB_DELETE 141
+=======
+	lib_system,     // #define LIB_SYSTEM 139
+	lib_str2obj,    // #define LIB_STR_TO_OBJECT 140
+	lib_delete,     // #define LIB_DELETE 141
+	lib_file,       // #define LIB_FILE 142
+	lib_fopen,      // #define LIB_FOPEN 143
+	lib_fprint,     // #define LIB_FPRINT 144
+	lib_interrupt,  // #define LIB_INTERRUPT 145
+	lib_pwm,        // #define LIB_PWM 146
+	lib_analog,     // #define LIB_ANALOG 147
+	lib_spi,        // #define LIB_SPI 148
+	lib_i2c,        // #define LIB_I2C 149
+	lib_serial,     // #define LIB_SERIAL 150
+	lib_gpio,       // #define LIB_GPIO 151
+	lib_music,      // #define LIB_MUSIC 152
+	lib_delayus,    // #define LIB_DELAYUS 153
+	lib_delayms,    // #define LIB_DELAYMS 154
+>>>>>>> remotes/origin/production
 };
 
 int statement_library(int r0, int r1, int r2, int r3){

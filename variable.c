@@ -92,7 +92,10 @@ int r0_to_variable(int vn){
 		e=set_value_in_register(1,vn*4);
 		if (e) return e;
 		check_object(6);
+<<<<<<< HEAD
 		(object++)[0]=0x0089;           // lsls	r1, r1, #2
+=======
+>>>>>>> remotes/origin/production
 		(object++)[0]=0x5068;           // str	r0, [r5, r1]
 		(object++)[0]=0x2300;           // movs	r3, #0
 		(object++)[0]=0x68ba;           // ldr	r2, [r7, #8]
@@ -108,11 +111,18 @@ int variable_to_r0(int vn){
 		(object++)[0]=0x6828 | (vn<<6); // ldr	r0, [r5, #xx]
 		return 0;
 	} else if (vn<256) {
+<<<<<<< HEAD
 		e=set_value_in_register(1,vn*4);
 		if (e) return e;
 		check_object(2);
 		(object++)[0]=0x0089;           // lsls	r1, r1, #2
 		(object++)[0]=0x5868;           // ldr	r0, [r5, r1]
+=======
+		e=set_value_in_register(0,vn*4);
+		if (e) return e;
+		check_object(1);
+		(object++)[0]=0x5828;           // ldr	r0, [r5, r0]
+>>>>>>> remotes/origin/production
 		return 0;
 	} else return ERROR_UNKNOWN;
 }

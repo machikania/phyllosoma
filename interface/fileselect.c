@@ -5,6 +5,7 @@
 #include "LCDdriver.h"
 #include "graphlib.h"
 #include "ff.h"
+<<<<<<< HEAD
 
 #define MAXFILE 256
 
@@ -26,6 +27,15 @@
 unsigned char path[256];
 unsigned char filenames[MAXFILE][13];
 unsigned short keystatus, keystatus2, keystatus3, oldkey; //最新のボタン状態と前回のボタン状態
+=======
+#include "../config.h"
+
+#define MAXFILE 256
+
+unsigned char path[256];
+unsigned char filenames[MAXFILE][13];
+unsigned int keystatus, keystatus2, keystatus3, oldkey; //最新のボタン状態と前回のボタン状態
+>>>>>>> remotes/origin/production
 int keycountUP, keycountLEFT, keycountRIGHT, keycountDOWN, keycountSTART, keycountFIRE;
 int filenum, dirnum;
 
@@ -122,7 +132,11 @@ unsigned char *fileselect(void){
 	int top;	 // 画面先頭のファイル番号
 	int x, y;
 	unsigned char *p, *p2;
+<<<<<<< HEAD
 	unsigned short key;
+=======
+	unsigned int key;
+>>>>>>> remotes/origin/production
 	int mx,my;
 
 	mx=WIDTH_X/13;
@@ -222,7 +236,11 @@ unsigned char *fileselect(void){
 				}
 				break;
 			case KEYSTART:
+<<<<<<< HEAD
 				set_lcdalign(!LCD_ALIGNMENT);
+=======
+				set_lcdalign(LCD_ALIGNMENT^HORIZONTAL);
+>>>>>>> remotes/origin/production
 				mx=WIDTH_X/13;
 				my=WIDTH_Y-1;
 				n = 0;
