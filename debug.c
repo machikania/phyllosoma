@@ -224,6 +224,7 @@ TCHAR* debug_f_gets (TCHAR* buff, int len, FIL* fp){
 	int i;
 	unsigned char c;
 	TCHAR* file=(TCHAR*)fp->dir_ptr;
+	if (f_eof(fp)) return 0;
 	for(i=0;i<len-1;i++){
 		if (f_eof(fp)) break;
 		c=buff[i]=file[fp->fptr++];
