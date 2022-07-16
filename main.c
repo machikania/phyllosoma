@@ -6,17 +6,12 @@
 */
 
 #include <stdio.h>
-<<<<<<< HEAD
-=======
 #include <string.h>
->>>>>>> remotes/origin/production
 #include "pico/stdlib.h"
 #include "./compiler.h"
 #include "./api.h"
 #include "./debug.h"
 #include "./display.h"
-<<<<<<< HEAD
-=======
 #include "./config.h"
 
 char g_autoexec[12]="MACHIKAP.BAS";
@@ -61,29 +56,19 @@ void read_ini(void){
 	// Close file
 	f_close(&fpo);
 }
->>>>>>> remotes/origin/production
 
 int main() {
 	int e,i,s;
 	char* str;
 	// Initializations
-<<<<<<< HEAD
-=======
 	io_init();
 	timer_init();
->>>>>>> remotes/origin/production
 	sleep_ms(500);
 	stdio_init_all();
 	display_init();
 	init_buttons();
 	init_file_system();
 	fileselect_init();
-<<<<<<< HEAD
-	// Get filename to compile
-	str=fileselect();
-	// Start
-	printstr("KM-BASIC for ARM\n");
-=======
 	// Read MACHIKAP.INI
 	read_ini();
 	// Get filename to compile
@@ -95,7 +80,6 @@ int main() {
 	printstr("BASIC Compiler "BASVER" by Katsumi\n");
 	printstr("LCD and File systems by KENKEN\n");
 	printstr("\n");
->>>>>>> remotes/origin/production
 	// Compile the code
 	s=time_us_32();
 	init_compiler();
@@ -103,14 +87,9 @@ int main() {
 	if (!e) e=post_compile();
 	printint(time_us_32()-s);
 	printstr(" micro seconds spent for compiling\n");
-<<<<<<< HEAD
-	// Show dump
-	dump();
-=======
 	printstr("\n");
 	// Show dump
 	// dump();
->>>>>>> remotes/origin/production
 	// Run the code if error didn't occur
 	if (!e) {
 		pre_run();

@@ -4,19 +4,13 @@
    https://github.com/kmorimatsu
 */
 
-<<<<<<< HEAD
-=======
 #include <string.h>
->>>>>>> remotes/origin/production
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
 #include "./compiler.h"
 #include "./api.h"
 #include "./display.h"
-<<<<<<< HEAD
-=======
 #include "./config.h"
->>>>>>> remotes/origin/production
 
 /*
 	Local prototypings
@@ -58,8 +52,6 @@ int lib_display(int r0, int r1, int r2){
 	int* sp=(int*)r1;
 	int i,j,gc;
 	unsigned int x1,y1,x2,y2;
-<<<<<<< HEAD
-=======
 	if (0==r2) {
 		// Return the static data
 		switch(r0){
@@ -77,7 +69,6 @@ int lib_display(int r0, int r1, int r2){
 				return 0;
 		}
 	}
->>>>>>> remotes/origin/production
 	// Set x1,y1,x2,y2 for graphic
 	if (DISPLAY_USE_STACK & (1<<r2)) {
 		// r1 is a pointer to stack
@@ -158,17 +149,6 @@ int lib_display(int r0, int r1, int r2){
 			}
 			break;
 		case DISPLAY_SCROLL:
-<<<<<<< HEAD
-			//SCROLL x,y
-			//	画面を横方向、もしくは縦方向(斜めも可)に動かす。動かす方向と大きさ
-			//	は、x, yでそれぞれ、横方向の移動度、縦方向の移動度として指定する。
-			// TODO: here
-			break;
-		case DISPLAY_WIDTH:
-			//WIDTH x
-			//	キャラクターディスプレイの横幅を文字数で指定。xは30、36、40、48、
-			//	もしくは80。
-=======
 			// SCROLL x,y
 			// x:r1, y:r0
 			// Break if invalid value
@@ -227,7 +207,6 @@ int lib_display(int r0, int r1, int r2){
 				WIDTH_X=r1;
 				cls();
 			}
->>>>>>> remotes/origin/production
 			break;
 		case DISPLAY_TVRAM:
 			if (r0<0) return (int)&TVRAM[0];
@@ -300,17 +279,6 @@ int lib_display(int r0, int r1, int r2){
 			switch(r0&3){
 				case 0:
 					g_clearscreen();
-<<<<<<< HEAD
-//					set_graphmode(0);
-					break;
-				case 2:
-					// TODO: clear palette
-					// TODO: clear graphic display
-				case 1:
-				default:
-					cls();
-//					set_graphmode(1);
-=======
 					break;
 				case 2:
 					// clear palette
@@ -330,7 +298,6 @@ int lib_display(int r0, int r1, int r2){
 				case 1:
 				default:
 					cls();
->>>>>>> remotes/origin/production
 					break;
 			}
 			break;
@@ -416,15 +383,10 @@ int scroll_statement(void){
 
 int width_statement(void){
 	// WIDTH x
-<<<<<<< HEAD
-	return argn_function(LIB_DISPLAY_FUNCTION,
-		ARG_INTEGER<<ARG1 | 
-=======
 	g_default_args[2]=0;
 	return argn_function(LIB_DISPLAY_FUNCTION,
 		ARG_INTEGER<<ARG1 | 
 		ARG_INTEGER_OPTIONAL<<ARG2 | 
->>>>>>> remotes/origin/production
 		DISPLAY_WIDTH<<LIBOPTION);
 }
 

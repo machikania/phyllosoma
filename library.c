@@ -86,11 +86,7 @@ int lib_print_main(int r0, int r1, int r2){
 			} else {
 				i=0;
 			}
-<<<<<<< HEAD
-			if (0x00 == (r1&0xf0)) printchar('\n');
-=======
 			if (0x00 == (r1&0xf0)) printstr("\n");
->>>>>>> remotes/origin/production
 			break;
 		case 0x02: // float
 			g_scratch_int[0]=r0;
@@ -107,11 +103,7 @@ int lib_print_main(int r0, int r1, int r2){
 	}
 	if (0x20==(r1&0xf0)) {
 		// ","
-<<<<<<< HEAD
-		printstr(&("                "[i&0xf]));
-=======
 		printstr(&("          "[i%10]));
->>>>>>> remotes/origin/production
 	}
 	return r0;
 }
@@ -120,13 +112,10 @@ void lib_print(){
 	use_lib_stack("lib_print_main");
 }
 
-<<<<<<< HEAD
-=======
 void lib_fprint(){
 	use_lib_stack("lib_fprint_main");
 }
 
->>>>>>> remotes/origin/production
 int lib_let_str(int r0, int r1, int r2){
 	int i;
 	char* str=(char*)r0;
@@ -565,19 +554,6 @@ int lib_wait(int r0, int r1, int r2){
 	return r0;
 }
 
-<<<<<<< HEAD
-int lib_drawcount(int r0, int r1, int r2){
-	static unsigned short drawcount=0;
-	unsigned short res;
-	uint64_t t=to_us_since_boot(get_absolute_time())/16667;
-	if (0<=r0 && r0<=65535) {
-		drawcount=t;
-		drawcount-=r0;
-	}
-	res=t;
-	res-=drawcount;
-	return res;
-=======
 int lib_delayus(int r0, int r1, int r2){
 	// At least 449 CPU cycles (3.592 micro seconds) are required to call this function.
 	r1=r0-3;
@@ -588,7 +564,6 @@ int lib_delayus(int r0, int r1, int r2){
 int lib_delayms(int r0, int r1, int r2){
 	sleep_ms(r0);
 	return r0;
->>>>>>> remotes/origin/production
 }
 
 int lib_inkey(int r0, int r1, int r2){
@@ -660,53 +635,6 @@ int lib_str2obj(int r0, int r1, int r2){
 	return (int)str2;
 }
 
-<<<<<<< HEAD
-#define GPIO_KEYUP 0
-#define GPIO_KEYLEFT 1
-#define GPIO_KEYRIGHT 2
-#define GPIO_KEYDOWN 3
-#define GPIO_KEYSTART 4
-#define GPIO_KEYFIRE 5
-#define KEYUP (1<<GPIO_KEYUP)
-#define KEYLEFT (1<<GPIO_KEYLEFT)
-#define KEYRIGHT (1<<GPIO_KEYRIGHT)
-#define KEYDOWN (1<<GPIO_KEYDOWN)
-#define KEYSTART (1<<GPIO_KEYSTART)
-#define KEYFIRE (1<<GPIO_KEYFIRE)
-#define KEYSMASK (KEYUP|KEYLEFT|KEYRIGHT|KEYDOWN|KEYSTART|KEYFIRE)
-int lib_keys(int r0, int r1, int r2){
-	static char init=0;
-	int res,k;
-	if (!init) {
-		init=1;
-		gpio_init_mask(KEYSMASK);
-		gpio_set_dir_in_masked(KEYSMASK);
-		gpio_pull_up(GPIO_KEYUP);
-		gpio_pull_up(GPIO_KEYLEFT);
-		gpio_pull_up(GPIO_KEYRIGHT);
-		gpio_pull_up(GPIO_KEYDOWN);
-		gpio_pull_up(GPIO_KEYSTART);
-		gpio_pull_up(GPIO_KEYFIRE);
-	}
-	k=~gpio_get_all() & KEYSMASK;
-	res =(k&KEYUP)    ?  1:0;
-	res|=(k&KEYDOWN)  ?  2:0;
-	res|=(k&KEYLEFT)  ?  4:0;
-	res|=(k&KEYRIGHT) ?  8:0;
-	res|=(k&KEYSTART) ? 16:0;
-	res|=(k&KEYFIRE)  ? 32:0;
-	return res&r0;
-}
-
-int lib_debug(int r0, int r1, int r2){
-#ifdef DEBUG_MODE
-	//asm("push {r0}");
-	//asm("pop {r0}");
-	asm volatile("mov r1,r6");
-	//asm("adds	r0, r6, #0");
-	printhex32(r0);
-	lib_wait(60,0,0);
-=======
 int lib_debug(int r0, int r1, int r2){
 #ifdef DEBUG_MODE
 	//M0PLUS 0xe0000000
@@ -714,15 +642,12 @@ int lib_debug(int r0, int r1, int r2){
 	//asm("ldr	r0, [r5, r0]");
 	//printhex32(r0);
 	//lib_wait(60,0,0);
->>>>>>> remotes/origin/production
 	return r0;
 #else
 	return r0;
 #endif
 }
 
-<<<<<<< HEAD
-=======
 extern unsigned char TVRAM[];
 extern unsigned char *cursor;
 extern unsigned char cursorcolor;
@@ -810,7 +735,6 @@ int lib_system(int r0, int r1, int r2){
 	return 0;
 }
 
->>>>>>> remotes/origin/production
 static const void* lib_list1[]={
 	lib_calc,                   // #define LIB_CALC 0
 	lib_calc_float,             // #define LIB_CALC_FLOAT 1
@@ -837,21 +761,13 @@ static const void* lib_list1[]={
 	lib_display,                // #define LIB_DISPLAY_FUNCTION 22
 	lib_inkey,                  // #define LIB_INKEY 23
 	lib_input,                  // #define LIB_INPUT 24
-<<<<<<< HEAD
-	lib_drawcount,              // #define LIB_DRAWCOUNT 25
-=======
 	lib_timer,                  // #define LIB_TIMER 32
->>>>>>> remotes/origin/production
 	lib_keys,                   // #define LIB_KEYS 26
 	lib_new,                    // #define LIB_NEW 27
 	lib_resolve_field_address,  // #define LIB_OBJ_FIELD 28
 	lib_resolve_method_address, // #define LIB_OBJ_METHOD 29
 	lib_pre_method,             // #define LIB_PRE_METHOD 30
 	lib_post_method,            // #define LIB_POST_METHOD 31
-<<<<<<< HEAD
-
-=======
->>>>>>> remotes/origin/production
 };
 
 static const void* lib_list2[]={
@@ -866,11 +782,6 @@ static const void* lib_list2[]={
 	lib_var_pop,    // #define LIB_VAR_POP 136
 	lib_display,    // #define LIB_DISPLAY 137
 	lib_wait,       // #define LIB_WAIT 138
-<<<<<<< HEAD
-	lib_drawcount,  // #define LIB_SET_DRAWCOUNT 139
-	lib_str2obj,    // #define LIB_STR_TO_OBJECT 140
-	lib_delete,     // #define LIB_DELETE 141
-=======
 	lib_system,     // #define LIB_SYSTEM 139
 	lib_str2obj,    // #define LIB_STR_TO_OBJECT 140
 	lib_delete,     // #define LIB_DELETE 141
@@ -887,7 +798,6 @@ static const void* lib_list2[]={
 	lib_music,      // #define LIB_MUSIC 152
 	lib_delayus,    // #define LIB_DELAYUS 153
 	lib_delayms,    // #define LIB_DELAYMS 154
->>>>>>> remotes/origin/production
 };
 
 int statement_library(int r0, int r1, int r2, int r3){

@@ -79,11 +79,6 @@
 		data[n-1]: private/public field value
 */
 
-<<<<<<< HEAD
-// TODO: Use only a CMPDATA_FIELDNAME field for a field name
-
-=======
->>>>>>> remotes/origin/production
 /*
 	Inilialize compiler
 */
@@ -285,11 +280,7 @@ void var2obj(int* obj){
 	}
 }
 
-<<<<<<< HEAD
-int lib_pre_method(int r0, int r1, int r2){// TODO: debug here
-=======
 int lib_pre_method(int r0, int r1, int r2){
->>>>>>> remotes/origin/production
 	int* r6=(int*)r1;
 	int* obj=(int*)r6[0];
 	int* prev_r6=(int*)r6[1];

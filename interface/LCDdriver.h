@@ -1,20 +1,7 @@
-<<<<<<< HEAD
-#define LCD_CS 13
-#define LCD_DC 10
-#define LCD_RESET 11
-#define LCD_SPI_TX 15
-#define LCD_SPI_RX 12
-#define LCD_SPI_SCK 14
-#define LCD_SPICH spi1
-
-#define VERTICAL 0
-#define HORIZONTAL 1
-=======
 #define VERTICAL 0
 #define HORIZONTAL 1
 #define LCD0TURN 0
 #define LCD180TURN 2
->>>>>>> remotes/origin/production
 
 #define LCD_COLUMN_RES 240
 #define LCD_ROW_RES 320

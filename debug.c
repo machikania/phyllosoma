@@ -23,51 +23,6 @@ void dump_variables(void);
 
 unsigned char* debug_fileselect(void){
 	// Wait for total three seconds
-<<<<<<< HEAD
-	sleep_ms(2500);
-	// Return file name to compile
-	return "main.bas";
-}
-
-#define CR "\n"
-static const char* debug_files[]={
-	"main.bas",
-"USECLASS CLASS1,CLASS2" CR
-"O=NEW(CLASS1)" CR
-"P=NEW(CLASS2,3)" CR
-"GOSUB SUB" CR
-"PRINT O.TEST4(),P.TEST4()" CR
-"O.TEST2=123" CR
-"P.TEST2=456" CR
-"PRINT O.TEST4(),P.TEST4()" CR
-"GOSUB SUB" CR
-"END" CR
-"LABEL SUB" CR
-"FOR I=0 TO 3:PRINT HEX$(O(I)),:NEXT" CR
-"PRINT" CR
-"FOR I=0 TO 3:PRINT HEX$(P(I)),:NEXT" CR
-"PRINT" CR
-"RETURN" CR
-	,"CLASS1.BAS",
-"STATIC TEST" CR
-"FIELD  TEST2" CR
-"FIELD PRIVATE TEST3" CR
-"METHOD TEST4" CR
-"  TEST3=TEST3+1" CR
-"RETURN TEST3" CR
-"END" CR
-	,"CLASS2.BAS",
-"STATIC TEST" CR
-"FIELD PRIVATE TEST3" CR
-"FIELD  TEST2" CR
-"METHOD TEST4" CR
-"  TEST3=TEST3+2" CR
-"RETURN TEST3" CR
-"METHOD INIT" CR
-"  TEST3=ARGS(1)" CR
-"RETURN" CR
-"END" CR
-=======
 	if (!g_disable_debugwait2500) sleep_ms(2500);
 	// Return file name to compile
 	return "MACHIKAP.BAS";
@@ -142,7 +97,6 @@ static const char* debug_files[]={
 	rem_repeat16k("CLASS003")
 	,"CLASS004.BAS",
 	rem_repeat16k("CLASS004")
->>>>>>> remotes/origin/production
 	,0
 };
 
@@ -270,10 +224,7 @@ TCHAR* debug_f_gets (TCHAR* buff, int len, FIL* fp){
 	int i;
 	unsigned char c;
 	TCHAR* file=(TCHAR*)fp->dir_ptr;
-<<<<<<< HEAD
-=======
 	if (f_eof(fp)) return 0;
->>>>>>> remotes/origin/production
 	for(i=0;i<len-1;i++){
 		if (f_eof(fp)) break;
 		c=buff[i]=file[fp->fptr++];
@@ -290,8 +241,6 @@ TCHAR* debug_f_gets (TCHAR* buff, int len, FIL* fp){
 	return buff;
 }
 
-<<<<<<< HEAD
-=======
 FRESULT debug_f_getcwd (TCHAR* buff, UINT len){
 	if (len<2) return FR_NOT_ENOUGH_CORE;
 	buff[0]='/';
@@ -303,6 +252,5 @@ FRESULT debug_f_chdir (const TCHAR* path){
 	return FR_OK;
 }
 
->>>>>>> remotes/origin/production
 #endif // DEBUG_MODE
 

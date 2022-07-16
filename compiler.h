@@ -30,11 +30,7 @@
 #endif
 #define ERROR_SYNTAX _throw_error(-1)
 #define ERROR_UNKNOWN _throw_error(-2)
-<<<<<<< HEAD
-#define ERROR_OBJ_TOO_LARGE _throw_error(-3)
-=======
 #define ERROR_OTHERS (-3)
->>>>>>> remotes/origin/production
 #define ERROR_VARNAME_USED _throw_error(-4)
 #define ERROR_TOO_MANY_VARS _throw_error(-5)
 #define ERROR_RESERVED_WORD _throw_error(-6)
@@ -50,13 +46,9 @@
 #define ERROR_NOT_PUBLIC  _throw_error(-16)
 #define ERROR_STATEMENT_NOT_DETECTED (-17)
 #define ERROR_NO_CLASS_FILE _throw_error(-18)
-<<<<<<< HEAD
-#define ERROR_OTHERS (-19)
-=======
 #define ERROR_OBJ_TOO_LARGE _throw_error(-19)
 #define ERROR_INVALID _throw_error(-20)
 #define ERROR_MUSIC (-21)
->>>>>>> remotes/origin/production
 
 /*
 	Libraries
@@ -93,11 +85,7 @@
 #define LIB_DISPLAY_FUNCTION 22
 #define LIB_INKEY 23
 #define LIB_INPUT 24
-<<<<<<< HEAD
-#define LIB_DRAWCOUNT 25
-=======
 #define LIB_TIMER 25
->>>>>>> remotes/origin/production
 #define LIB_KEYS 26
 #define LIB_NEW 27
 #define LIB_OBJ_FIELD 28
@@ -116,11 +104,6 @@
 #define LIB_VAR_POP 136
 #define LIB_DISPLAY 137
 #define LIB_WAIT 138
-<<<<<<< HEAD
-#define LIB_SET_DRAWCOUNT 139
-#define LIB_STR_TO_OBJECT 140
-#define LIB_DELETE 141
-=======
 #define LIB_SYSTEM 139
 #define LIB_STR_TO_OBJECT 140
 #define LIB_DELETE 141
@@ -204,7 +187,6 @@
 #define TIMER_TIMERFUNC 5
 #define TIMER_DRAWCOUNT 6
 #define TIMER_DRAWCOUNTFUNC 7
->>>>>>> remotes/origin/production
 
 /*
 	LIB MATH options
@@ -306,8 +288,6 @@
 #define ARG6      15
 #define LIBOPTION 24
 
-<<<<<<< HEAD
-=======
 #define INTERRUPT_TIMER     0
 #define INTERRUPT_DRAWCOUNT 1
 #define INTERRUPT_KEYS      2
@@ -316,7 +296,6 @@
 #define INTERRUPT_WAVE      5
 #define INTERRUPT_CORETIMER 6
 
->>>>>>> remotes/origin/production
 /*
 	Variables
 */
@@ -347,20 +326,12 @@ extern short g_fordepth;
 
 extern volatile char g_scratch[32];
 extern volatile int* g_scratch_int;
-<<<<<<< HEAD
-extern volatile float* g_scratch_float;
-extern volatile char* g_scratch_char;
-
-extern const char* const g_reserved_words[132];
-extern const int const g_hash_resereved_words[132];
-=======
 extern volatile short* g_scratch_short;
 extern volatile float* g_scratch_float;
 extern volatile char* g_scratch_char;
 
 extern const char* const g_reserved_words[167];
 extern const int const g_hash_resereved_words[167];
->>>>>>> remotes/origin/production
 
 extern char g_constant_value_flag;
 extern int g_constant_int;
@@ -383,12 +354,9 @@ extern unsigned short* g_class_id_list;
 extern int* g_class_list;
 extern int* g_empty_object_list;
 
-<<<<<<< HEAD
-=======
 extern char g_disable_printf;
 extern char g_disable_debugwait2500;
 
->>>>>>> remotes/origin/production
 /*
 	Prototypes
 */
@@ -422,10 +390,7 @@ void post_run(void);
 int lib_end(int r0, int r1, int r2);
 unsigned short* seek_data(int mode);
 int lib_restore(int r0, int r1, int r2);
-<<<<<<< HEAD
-=======
 int lib_read(int r0, int r1, int r2);
->>>>>>> remotes/origin/production
 int kmbasic_library(int r0, int r1, int r2, int r3);
 
 // statement.c
@@ -435,20 +400,14 @@ int gosub_statement(void);
 int post_gosub_statement(int i);
 int compile_statement(void);
 int end_of_statement(void);
-<<<<<<< HEAD
-=======
 int restore_statement(void);
->>>>>>> remotes/origin/production
 
 // string.c
 int string_char(void);
 int get_string(void);
 
 // integer.c
-<<<<<<< HEAD
-=======
 int system_function(void);
->>>>>>> remotes/origin/production
 int get_positive_decimal_value(void);
 int get_simple_integer(void);
 int get_integer(void);
@@ -538,9 +497,6 @@ int lib_post_method(int r0, int r1, int r2);
 
 // file.c
 void init_file_system(void);
-<<<<<<< HEAD
-int compile_file(unsigned char* fname, char isclass);
-=======
 int file_exists(unsigned char* fname);
 int compile_file(unsigned char* fname, char isclass);
 void close_all_files(void);
@@ -600,7 +556,6 @@ int music_function(void);
 int sound_statement(void);
 int playwave_statement(void);
 int playwave_function(void);
->>>>>>> remotes/origin/production
 
 // For debugging
 void dump_cmpdata(void);

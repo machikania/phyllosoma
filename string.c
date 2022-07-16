@@ -53,13 +53,10 @@ int string_functions(void){
 	if (instruction_is("INPUT$(")) return input_function();
 	if (instruction_is("READ$(")) return read_str_function();
 	if (instruction_is("SPRINTF$(")) return sprintf_function();
-<<<<<<< HEAD
-=======
 	if (instruction_is("SYSTEM$(")) return system_function();
 	// File functions
 	if (instruction_is("FINPUT$(")) return finput_function();
 	if (instruction_is("GETDIR$(")) return getdir_function();
->>>>>>> remotes/origin/production
 	return ERROR_SYNTAX;
 }
 

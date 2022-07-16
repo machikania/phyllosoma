@@ -5,29 +5,6 @@
 #include "LCDdriver.h"
 #include "graphlib.h"
 #include "ff.h"
-<<<<<<< HEAD
-
-#define MAXFILE 256
-
-// 入力ボタンのビット定義
-#define GPIO_KEYUP 0
-#define GPIO_KEYLEFT 1
-#define GPIO_KEYRIGHT 2
-#define GPIO_KEYDOWN 3
-#define GPIO_KEYSTART 4
-#define GPIO_KEYFIRE 5
-#define KEYUP (1 << GPIO_KEYUP)
-#define KEYLEFT (1 << GPIO_KEYLEFT)
-#define KEYRIGHT (1 << GPIO_KEYRIGHT)
-#define KEYDOWN (1 << GPIO_KEYDOWN)
-#define KEYSTART (1 << GPIO_KEYSTART)
-#define KEYFIRE (1 << GPIO_KEYFIRE)
-#define KEYSMASK (KEYUP | KEYLEFT | KEYRIGHT | KEYDOWN | KEYSTART | KEYFIRE)
-
-unsigned char path[256];
-unsigned char filenames[MAXFILE][13];
-unsigned short keystatus, keystatus2, keystatus3, oldkey; //最新のボタン状態と前回のボタン状態
-=======
 #include "../config.h"
 
 #define MAXFILE 256
@@ -35,7 +12,6 @@ unsigned short keystatus, keystatus2, keystatus3, oldkey; //最新のボタン�
 unsigned char path[256];
 unsigned char filenames[MAXFILE][13];
 unsigned int keystatus, keystatus2, keystatus3, oldkey; //最新のボタン状態と前回のボタン状態
->>>>>>> remotes/origin/production
 int keycountUP, keycountLEFT, keycountRIGHT, keycountDOWN, keycountSTART, keycountFIRE;
 int filenum, dirnum;
 
@@ -132,11 +108,7 @@ unsigned char *fileselect(void){
 	int top;	 // 画面先頭のファイル番号
 	int x, y;
 	unsigned char *p, *p2;
-<<<<<<< HEAD
-	unsigned short key;
-=======
 	unsigned int key;
->>>>>>> remotes/origin/production
 	int mx,my;
 
 	mx=WIDTH_X/13;
@@ -236,11 +208,7 @@ unsigned char *fileselect(void){
 				}
 				break;
 			case KEYSTART:
-<<<<<<< HEAD
-				set_lcdalign(!LCD_ALIGNMENT);
-=======
 				set_lcdalign(LCD_ALIGNMENT^HORIZONTAL);
->>>>>>> remotes/origin/production
 				mx=WIDTH_X/13;
 				my=WIDTH_Y-1;
 				n = 0;

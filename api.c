@@ -52,78 +52,49 @@ void _putchar(unsigned char c){
 }
 
 void _printchar(unsigned char c){
-<<<<<<< HEAD
-	_putchar(c);
-	printchar(c);
-=======
 	printchar(c);
 	if (g_disable_printf) return;
 	_putchar(c);
->>>>>>> remotes/origin/production
 }
 
 void _printstr(unsigned char *s){
 	unsigned char c;
 	printstr(s);
-<<<<<<< HEAD
-=======
 	if (g_disable_printf) return;
->>>>>>> remotes/origin/production
 	while(c=(s++)[0]) _putchar(c);
 }
 
 void _printnum(unsigned int n){
 	unsigned char c;
-<<<<<<< HEAD
-	char* buff=(char*)&g_scratch[0];
-	snprintf(buff,sizeof g_scratch,"%d",n);
-	while(c=(buff++)[0]) _putchar(c);
-	printnum(n);
-=======
 	printnum(n);
 	if (g_disable_printf) return;
 	char* buff=(char*)&g_scratch[0];
 	snprintf(buff,sizeof g_scratch,"%d",n);
 	while(c=(buff++)[0]) _putchar(c);
->>>>>>> remotes/origin/production
 }
 
 void _printnum2(unsigned int n,unsigned char e){
 	unsigned char c;
 	int i;
-<<<<<<< HEAD
-=======
 	printnum2(n,e);
 	if (g_disable_printf) return;
->>>>>>> remotes/origin/production
 	char* buff=(char*)&g_scratch[0];
 	i=snprintf(buff,sizeof g_scratch,"%d",n);
 	e-=i;
 	for(i=0;i<e;i++) _putchar(' ');
 	while(c=(buff++)[0]) _putchar(c);
-<<<<<<< HEAD
-	printnum2(n,e);
-=======
->>>>>>> remotes/origin/production
 }
 
 void _cls(void){
 	int i;
-<<<<<<< HEAD
-=======
 	cls();
 	if (g_disable_printf) return;
->>>>>>> remotes/origin/production
 	printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 	for(i=0;i<23;i++) {
 		// Go up
 		putchar(0x1b); putchar(0x5b); putchar(0x41);
 	}
 	g_cursor=0;
-<<<<<<< HEAD
-	cls();
-=======
->>>>>>> remotes/origin/production
 }
 
 /*
@@ -134,11 +105,8 @@ left key:  1b 5b 44
 */
 void _setcursor(unsigned char x,unsigned char y,unsigned char c){
 	int i,cx,cy;
-<<<<<<< HEAD
-=======
 	setcursor(x,y,c);
 	if (g_disable_printf) return;
->>>>>>> remotes/origin/production
 	cy=g_cursor/80;
 	cx=g_cursor-cy*80;
 	if (y<cy) {
@@ -164,10 +132,6 @@ void _setcursor(unsigned char x,unsigned char y,unsigned char c){
 		}
 	}
 	g_cursor=x+y*80;
-<<<<<<< HEAD
-	setcursor(x,y,c);
-=======
->>>>>>> remotes/origin/production
 }
 
 void printint(int i){

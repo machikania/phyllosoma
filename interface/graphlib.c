@@ -36,11 +36,7 @@ void g_putbmpmn(int x,int y,unsigned char m,unsigned char n,const unsigned char 
 	if(x<=-m || x>X_RES || y<=-n || y>=Y_RES) return; //画面外
 	outflag=0;
 
-<<<<<<< HEAD
-	if(LCD_ALIGNMENT == VERTICAL){
-=======
 	if(!(LCD_ALIGNMENT&HORIZONTAL)){
->>>>>>> remotes/origin/production
 		if(y<0){ //画面上部に切れる場合
 			i=0;
 			p=bmp-y*m;
@@ -300,11 +296,7 @@ void g_putfont(int x,int y,unsigned char c,int bc,unsigned char n)
 	const unsigned char *p;
 	if(x<=-8 || x>=X_RES || y<=-8 || y>=Y_RES) return; //画面外
 	c1=palette[c];
-<<<<<<< HEAD
-	if(LCD_ALIGNMENT == VERTICAL){
-=======
 	if(!(LCD_ALIGNMENT&HORIZONTAL)){
->>>>>>> remotes/origin/production
 		if(y<0){ //画面上部に切れる場合
 			i=0;
 			p=fontp+n*8-y;
@@ -521,11 +513,7 @@ void textredraw(void){
 	LCD_setAddrWindow(0,0,X_RES,Y_RES);
 	p=TVRAM;
 
-<<<<<<< HEAD
-	if(LCD_ALIGNMENT == VERTICAL){
-=======
 	if(!(LCD_ALIGNMENT&HORIZONTAL)){
->>>>>>> remotes/origin/production
 		for(y=0;y<WIDTH_Y;y++){
 			for(i=0;i<8;i++){
 				for(x=0;x<WIDTH_X;x++){
@@ -616,12 +604,9 @@ void printchar(unsigned char n){
 	if(n=='\n'){
 		//改行
 		cursor+=WIDTH_X-((cursor-TVRAM)%WIDTH_X);
-<<<<<<< HEAD
-=======
 	} else if(n==0x08){
 		//BS
 		if (TVRAM<cursor) cursor--;
->>>>>>> remotes/origin/production
 	} else{
 		*cursor=n;
 		*(cursor+ATTROFFSET)=cursorcolor;
@@ -718,26 +703,17 @@ void set_lcdalign(unsigned char align){
 	// 液晶の縦横設定
 	LCD_ALIGNMENT=align;
 	LCD_WriteComm(0x36);
-<<<<<<< HEAD
-	if(align==VERTICAL){
-		LCD_WriteData(0x48);
-=======
 	if(!(align&HORIZONTAL)){
 		if (align&LCD180TURN) LCD_WriteData(0x8C);
 		else LCD_WriteData(0x48);
->>>>>>> remotes/origin/production
 		X_RES=LCD_COLUMN_RES;
 		Y_RES=LCD_ROW_RES;
 		WIDTH_X=LCD_COLUMN_RES/8;
 		WIDTH_Y=LCD_ROW_RES/8;
 	}
 	else{
-<<<<<<< HEAD
-		LCD_WriteData(0x0C);
-=======
 		if (align&LCD180TURN) LCD_WriteData(0xC8);
 		else LCD_WriteData(0x0C);
->>>>>>> remotes/origin/production
 		X_RES=LCD_ROW_RES;
 		Y_RES=LCD_COLUMN_RES;
 		WIDTH_X=LCD_ROW_RES/8;

@@ -5,10 +5,7 @@
 */
 
 #include "./compiler.h"
-<<<<<<< HEAD
-=======
 #include "./core1.h"
->>>>>>> remotes/origin/production
 
 const int const g_r6_array[]={
 	0,                         // Pointer to object
@@ -17,10 +14,7 @@ const int const g_r6_array[]={
 };
 
 void run_code(void){
-<<<<<<< HEAD
-=======
 	// See also call_interrupt_function()
->>>>>>> remotes/origin/production
 	// Push r0-r12
 	asm("push {lr}");
 	asm("push {r0,r1,r2,r3,r4,r5,r6,r7}");
@@ -63,8 +57,6 @@ void run_code(void){
 	asm("pop {pc}");
 }
 
-<<<<<<< HEAD
-=======
 void call_interrupt_function(void* r0){
 	// See also run_code()
 	// Push registers
@@ -99,7 +91,6 @@ void call_interrupt_function(void* r0){
 	asm("pop {r0,r1,r2,r3,r4,r5,r6,r7}");
 }
 
->>>>>>> remotes/origin/production
 void pre_run(void){
 	// Initializing environment
 	init_memory();
@@ -111,12 +102,6 @@ void pre_run(void){
 	g_rnd_seed=0x92D68CA2; //2463534242
 	// Inilialize kmbasic_data[] (see also run_code() )
 	kmbasic_data[2]=(int)&kmbasic_var_size[0];
-<<<<<<< HEAD
-}
-
-void post_run(void){
-
-=======
 	// Close all files
 	close_all_files();
 	// Init I/O
@@ -137,5 +122,4 @@ void post_run(void){
 	stop_music();
 	// Stop core1
 	stop_core1();
->>>>>>> remotes/origin/production
 }

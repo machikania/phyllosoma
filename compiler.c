@@ -27,13 +27,8 @@
 			kmbasic_data[0]: stack pointer value for ending program
 			kmbasic_data[1]: address to return for ending program
 			kmbasic_data[2]: &kmbasic_var_size[0]
-<<<<<<< HEAD
-			kmbasic_data[3]: 
-			kmbasic_data[4]: 
-=======
 			kmbasic_data[3]: return address from executing library function
 			kmbasic_data[4]: used for error-handling
->>>>>>> remotes/origin/production
 */
 
 #include <string.h>
@@ -166,10 +161,7 @@ int instruction_is(unsigned char* instruction){
 		case 0x20:
 		case 0x00:
 		case ':':
-<<<<<<< HEAD
-=======
 		case ',':
->>>>>>> remotes/origin/production
 			source+=n;
 			skip_blank();
 			return 1;
