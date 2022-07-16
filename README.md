@@ -14,6 +14,7 @@ Copy "phyllosoma.uf2" to the RPI-RP2 drive of Raspberry Pi Pico. Immediately con
 Most of codes (written in C) are provided with LGPL 2.1 license, but some codes are provided with the other licenses. See the comment of each file.
 
 ## Connection
+![schematic.png](https://raw.githubusercontent.com/machikania/machikania.github.io/9495b0a7a14e506432ecb5e32338ec7df6ca3a49/phyllosoma/shematic.png)
 
 ```console
 GP0 I/O bit0 / PWM3

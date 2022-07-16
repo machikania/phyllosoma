@@ -23,7 +23,7 @@ void dump_variables(void);
 
 unsigned char* debug_fileselect(void){
 	// Wait for total three seconds
-	sleep_ms(2500);
+	if (!g_disable_debugwait2500) sleep_ms(2500);
 	// Return file name to compile
 	return "MACHIKAP.BAS";
 }

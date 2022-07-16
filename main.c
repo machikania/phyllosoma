@@ -47,6 +47,10 @@ void read_ini(void){
 			g_disable_printf=0;
 		} else if (!strncmp(str,"USBSERIALOFF",12)) {
 			g_disable_printf=1;
+		} else if (!strncmp(str,"DEBUGWAIT2500",13)) {
+			g_disable_debugwait2500=0;
+		} else if (!strncmp(str,"NODEBUGWAIT2500",15)) {
+			g_disable_debugwait2500=1;
 		}
 	}
 	// Close file

@@ -355,6 +355,7 @@ extern int* g_class_list;
 extern int* g_empty_object_list;
 
 extern char g_disable_printf;
+extern char g_disable_debugwait2500;
 
 /*
 	Prototypes

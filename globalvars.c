@@ -90,6 +90,10 @@ int* g_empty_object_list;
 
 char g_disable_printf=0;
 
+// debug wait ON/OFF
+
+char g_disable_debugwait2500=0;
+
 // Reserved words
 
 const char* const g_reserved_words[167]={
