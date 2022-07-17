@@ -12,3 +12,10 @@ The convert.php is used for embeding basic files in MachiKania uf2 file. Place "
 
 ## disassembler.php
 The disassembler.php is used for debugging by the team. This script is not needed by the users.
+
+## reserved_names.php
+The reserved_names.php is used for code construction by the team. This script is not needed by the users.
+
+## reservedWords.html
+The reservedWords.html is used for code construction by the team. This script is not needed by the users.
+
