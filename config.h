@@ -23,3 +23,14 @@
 #define KEYSTART (1 << GPIO_KEYSTART)
 #define KEYFIRE (1 << GPIO_KEYFIRE)
 #define KEYSMASK (KEYUP | KEYLEFT | KEYRIGHT | KEYDOWN | KEYSTART | KEYFIRE)
+
+extern char g_enable_button_rotation;
+extern int LCD_ALIGNMENT;
+#define rotate_buttons_data(a) (((~LCD_ALIGNMENT)&g_enable_button_rotation) ? (\
+		((a)&KEYUP ? KEYRIGHT:0)|\
+		((a)&KEYLEFT ? KEYUP:0)|\
+		((a)&KEYRIGHT ? KEYDOWN:0)|\
+		((a)&KEYDOWN ? KEYLEFT:0)|\
+		((a)&KEYSTART)|\
+		((a)&KEYFIRE)\
+	):(a))

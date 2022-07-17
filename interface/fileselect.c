@@ -40,6 +40,7 @@ void keycheck(void){
 	//keycountXX:XXボタンが押された状態で連続して読み込まれた回数
 	oldkey = keystatus;
 	keystatus = ~gpio_get_all() & KEYSMASK;
+	keystatus=rotate_buttons_data(keystatus);
 	keystatus2 = keystatus & ~oldkey; //前回ボタンを離していたかチェック
 	keystatus3 = ~keystatus & oldkey; //前回ボタンを押していたかチェック
 	if (keystatus & KEYUP) keycountUP++;
