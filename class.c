@@ -725,7 +725,7 @@ int let_object(int vn){
 */
 
 int lib_delete(int r0, int r1, int r2){
-	cmpdata_delete((int*)r0);
+	delete_memory((int*)r0);
 	return r0;
 }
 
