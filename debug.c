@@ -88,27 +88,9 @@ unsigned char* debug_fileselect(void){
 #define CR "\n"
 static const char* debug_files[]={
 	"MACHIKAP.BAS",
-//	rem_repeat64k("MACHIKAP")
-
-"useclass CLASS001" CR
-"i=0" CR
-"t=coretimer()" CR
-"do" CR
-"  o=new(CLASS001)" CR
-"  i=i+1" CR
-"  if not(i and 255) then" CR
-"    s=coretimer()" CR
-"    print s-t," CR
-"    t=s" CR
-"  endif" CR
-"  delete o" CR
-"loop" CR
-
+	rem_repeat64k("MACHIKAP")
 	,"CLASS001.BAS",
-//	rem_repeat16k("CLASS001")
-
-"field a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,aa,ab,ac,ad,ae,af" CR
-
+	rem_repeat16k("CLASS001")
 	,"CLASS002.BAS",
 	rem_repeat16k("CLASS002")
 	,"CLASS003.BAS",
