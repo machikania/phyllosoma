@@ -1475,6 +1475,7 @@ int compile_statement(void){
 	if (instruction_is("RESTORE")) return restore_statement();
 	if (instruction_is("RETURN")) return return_statement();
 	if (instruction_is("STATIC")) return static_statement();
+	if (instruction_is("SYSTEM")) return system_statement();
 	if (instruction_is("USECLASS")) return useclass_statement();
 	if (instruction_is("USEVAR")) return usevar_statement();
 	if (instruction_is("VAR")) return var_statement();
