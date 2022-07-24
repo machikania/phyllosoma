@@ -43,6 +43,10 @@ void read_ini(void){
 			set_lcdalign(VERTICAL | LCD180TURN);
 		} else if (!strncmp(str,"LCD180TURN",10)) {
 			set_lcdalign(HORIZONTAL | LCD180TURN);
+		} else if (!strncmp(str,"ROTATEBUTTONS",13)) {
+			g_enable_button_rotation=1;
+		} else if (!strncmp(str,"NOROTATEBUTTONS",15)) {
+			g_enable_button_rotation=0;
 		} else if (!strncmp(str,"USBSERIALON",11)) {
 			g_disable_printf=0;
 		} else if (!strncmp(str,"USBSERIALOFF",12)) {

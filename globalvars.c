@@ -94,6 +94,10 @@ char g_disable_printf=0;
 
 char g_disable_debugwait2500=0;
 
+// Button rotation ON/OFF
+
+char g_enable_button_rotation=1;
+
 // Reserved words
 
 const char* const g_reserved_words[167]={

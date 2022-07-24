@@ -112,6 +112,7 @@ int io_call_lib_with_stack(int lib, int option, int min_args){
 int lib_keys(int r0, int r1, int r2){
 	unsigned int res,k;
 	k=~gpio_get_all() & KEYSMASK;
+	k=rotate_buttons_data(k);
 	res =(k&KEYUP)    ?  1:0;
 	res|=(k&KEYDOWN)  ?  2:0;
 	res|=(k&KEYLEFT)  ?  4:0;

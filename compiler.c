@@ -247,7 +247,8 @@ int compile_line(unsigned char* code){
 	g_linenum++;
 	before=source=code2upper(code);
 	// Get line number if exists
-	e=get_positive_decimal_value();
+	if (g_multiple_statement) e=ERROR_OTHERS;
+	else e=get_positive_decimal_value();
 	if (0<=e) {
 		// Line number exists
 		g_linenum=e;

@@ -356,6 +356,7 @@ extern int* g_empty_object_list;
 
 extern char g_disable_printf;
 extern char g_disable_debugwait2500;
+extern char g_enable_button_rotation;
 
 /*
 	Prototypes

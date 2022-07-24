@@ -175,6 +175,7 @@ void musicint(void){
 			if (g_wave_writepos==g_wave_readpos) {
 				g_sound_mode=SOUND_MODE_NONE;
 				g_wave_enable=0;
+				raise_interrupt_flag(INTERRUPT_WAVE);
 			}
 			break;
 		default:

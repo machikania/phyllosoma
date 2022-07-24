@@ -49,7 +49,7 @@ static int* g_heap_end;
 
 #define DELETE_LIST_SIZE 10
 static int g_deleted_num;
-static int g_deleted_pointer[DELETE_LIST_SIZE];
+static int* g_deleted_pointer[DELETE_LIST_SIZE];
 static unsigned short g_deleted_size[DELETE_LIST_SIZE];
 
 void init_memory(void){
@@ -119,30 +119,26 @@ void* alloc_memory(int size, int var_num){
 		stop_with_error(ERROR_UNKNOWN);
 	}
 	// Try to find a block
+	// TODO: confirm the logick here
 	while(1){
 		// Try the block previously deleted
 		// This is for fast allocation of memory for class object
-		min=0; // minimum size
-		for(i=j=0;i<g_deleted_num;i++){
-			if (0<min && min<=g_deleted_size[i]) continue;
-			if (g_deleted_size[i]<size) continue;
-			min=g_deleted_size[i];
-			j=i;
-			if (min==size) break;
-		}
-		if (min) {
-			// Found one
-			candidate=(int*)g_deleted_pointer[j];
-			// Discard it from the deleted list
-			for(i=j;i<g_deleted_num-1;i++){
-				g_deleted_pointer[i]=g_deleted_pointer[i+1];
-				g_deleted_size[i]=g_deleted_size[i+1];
-			}
+		candidate=0;
+		while(g_deleted_num){
+			// Check if the last deleted block fits
+			// If not, these cannot be used anymore
 			g_deleted_num--;
+			if (size<=g_deleted_size[g_deleted_num]) {
+				candidate=g_deleted_pointer[g_deleted_num];
+				break;
+			}
+		}
+		if (candidate) {
+			// Candidate found
 			break;
 		} else {
-			// Not found
-			// Invalidate deleted list
+			// Candidate not found in previously deleted blocks
+			// Lets forget the deleted block list as the area assgined below may invade the deleted blocks area
 			g_deleted_num=0;
 		}
 		// Try block after the last block
@@ -154,34 +150,38 @@ void* alloc_memory(int size, int var_num){
 			if (&var[kmbasic_var_size[i]]<candidate) continue; // Not last one
 			candidate=&var[kmbasic_var_size[i]];
 		}
-		if (&candidate[size]<=HEAP_END) break; // Found an available block
+		if (&candidate[size]<=HEAP_END) {
+			// Found an available block
+			break;
+		}
 		// Check between blocks
-		// TODO: confirm this logic
-		candidate=HEAP_BEGIN;
-		for(i=0;i<=ALLOC_BLOCK_NUM;i++){
-			// Check the overlap
+		candidate=HEAP_BEGIN-1;
+		for(i=0;i<ALLOC_BLOCK_NUM;i++){
+			if (!kmbasic_var_size[i]) continue;
+			// Candidate is after this block.
+			var=(int*)kmbasic_variables[i];
+			candidate=var+kmbasic_var_size[i];
+			// Check if there is an overlap.
 			for(j=0;j<ALLOC_BLOCK_NUM;j++){
-				if (0==kmbasic_var_size[j]) continue; // Not using heap
+				if (!kmbasic_var_size[j]) continue;
+				// Check this block for the overlap
 				var=(int*)kmbasic_variables[j];
-				if (var<HEAP_BEGIN || HEAP_END <=var) continue; // Invalid
-				if (&candidate[size]<=&var[0] || &var[kmbasic_var_size[j]] <=&candidate[0]) continue; // No overlap
-				candidate=0;
+				if (candidate+size<=var) continue;
+				if (var+kmbasic_var_size[j]<=candidate) continue;
+				// This block overlaps with the candidate
+				candidate=HEAP_BEGIN-1;
 				break;
 			}
-			if (candidate) break;
-			if (ALLOC_BLOCK_NUM<=i) break;
-			// Check after a block
-			for(i=i;i<ALLOC_BLOCK_NUM;i++){
-				if (0==kmbasic_var_size[i]) continue; // Not using heap
-				var=(int*)kmbasic_variables[i];
-				if (var<HEAP_BEGIN || HEAP_END <=var) continue; // Invalid
-				var=(int*)kmbasic_variables[i];
-				candidate=&var[kmbasic_var_size[i]];
+			if (HEAP_BEGIN<=candidate && candidate+size<=HEAP_END) {
+				// Available block found
 				break;
 			}
 		}
-		if (candidate) break;
-		// No free area found
+		if (HEAP_BEGIN<=candidate && candidate+size<=HEAP_END) {
+			// Available block found
+			break;
+		}
+		// New memory block cannot be allocated
 		stop_with_error(ERROR_OUT_OF_MEMORY);
 	}
 	// A free area found
@@ -192,35 +192,38 @@ void* alloc_memory(int size, int var_num){
 
 void delete_memory(void* data){
 	int i,j,min;
-	// Check if number of data reaches maximum
-	if (DELETE_LIST_SIZE<=g_deleted_num) {
-		// Delete one of data
-		// Determine minimum one
-		min=65535;
-		for(i=j=0;i<DELETE_LIST_SIZE;i++){
-			if (g_deleted_size[i]<min) j=i;
-		}
-		// g_deleted_size[j] is the minimum
-		for(i=j;i<DELETE_LIST_SIZE-1;i++){
-			g_deleted_pointer[i]=g_deleted_pointer[i+1];
-			g_deleted_size[i]=g_deleted_size[i+1];
-		}
-		g_deleted_num=DELETE_LIST_SIZE-1;
-	}
-	// Delete all data to fit
-	// It must be only one, but delete all the data to fit anyway
-	g_deleted_size[g_deleted_num]=0;
-	for(i=0;i<TEMPVAR_NUMBER;i++) {
-		if (data!=(void*)kmbasic_variables[i]) continue;
-		if (0==kmbasic_var_size[i]) continue;
-		// Found it
-		// Register to the delete list
-		g_deleted_pointer[g_deleted_num]=kmbasic_variables[i];
-		g_deleted_size[g_deleted_num]=kmbasic_var_size[i];
-		// Delete the record
+	int size;
+	int* var;
+	if (!data) return;
+	// Delete the corresponding area (multiple variables may exist)
+	size=0;
+	for(i=0;i<ALLOC_BLOCK_NUM;i++){
+		if (!kmbasic_var_size[i]) continue;
+		var=(int*)kmbasic_variables[i];
+		if (var!=data) continue;
+		// Remember the size
+		if (size<kmbasic_var_size[i]) size=kmbasic_var_size[i];
+		// Delete the var area
+		kmbasic_variables[i]=0;
 		kmbasic_var_size[i]=0;
 	}
-	g_deleted_num++;
+	// Update the list of deleted area
+	if (DELETE_LIST_SIZE<=g_deleted_num) {
+		// List is full
+		// Let's check the last data
+		g_deleted_num=DELETE_LIST_SIZE;
+		if (g_deleted_size[DELETE_LIST_SIZE-1]<size) {
+			// Size is bigger than the previous one
+			// Let's replace it
+			g_deleted_pointer[DELETE_LIST_SIZE-1]=data;
+			g_deleted_size[DELETE_LIST_SIZE-1]=size;
+		}
+	} else {
+		// Add a record at the end
+		g_deleted_pointer[g_deleted_num]=data;
+		g_deleted_size[g_deleted_num]=size;
+		g_deleted_num++;
+	}
 }
 
 int move_from_temp(int vn, int pdata){

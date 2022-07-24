@@ -52,6 +52,7 @@ int interrupt_statement(void){
 	} else {
 		if (','!=source[0]) return ERROR_SYNTAX;
 		source++;
+		skip_blank();
 		// BL instruction
 		check_object(2);
 		bl=object;
@@ -137,6 +138,12 @@ bool repeating_drawcount_callback(struct repeating_timer *t) {
 	if (g_interrupt_vector[INTERRUPT_MUSIC]) {
 		if (g_interrupt_flags&(1<<INTERRUPT_MUSIC)) call_interrupt_function(g_interrupt_vector[INTERRUPT_MUSIC]);
 		drop_interrupt_flag(INTERRUPT_MUSIC);
+	}
+	if (g_interrupt_vector[INTERRUPT_WAVE]) {
+		if (g_interrupt_flags&(1<<INTERRUPT_WAVE)) {
+			call_interrupt_function(g_interrupt_vector[INTERRUPT_WAVE]);
+		}
+		drop_interrupt_flag(INTERRUPT_WAVE);
 	}
 	return true;
 }
