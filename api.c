@@ -52,21 +52,21 @@ void _putchar(unsigned char c){
 }
 
 void _printchar(unsigned char c){
-	printchar(c);
+	if (!g_disable_lcd_out) printchar(c);
 	if (g_disable_printf) return;
 	_putchar(c);
 }
 
 void _printstr(unsigned char *s){
 	unsigned char c;
-	printstr(s);
+	if (!g_disable_lcd_out) printstr(s);
 	if (g_disable_printf) return;
 	while(c=(s++)[0]) _putchar(c);
 }
 
 void _printnum(unsigned int n){
 	unsigned char c;
-	printnum(n);
+	if (!g_disable_lcd_out) printnum(n);
 	if (g_disable_printf) return;
 	char* buff=(char*)&g_scratch[0];
 	snprintf(buff,sizeof g_scratch,"%d",n);
@@ -76,7 +76,7 @@ void _printnum(unsigned int n){
 void _printnum2(unsigned int n,unsigned char e){
 	unsigned char c;
 	int i;
-	printnum2(n,e);
+	if (!g_disable_lcd_out) printnum2(n,e);
 	if (g_disable_printf) return;
 	char* buff=(char*)&g_scratch[0];
 	i=snprintf(buff,sizeof g_scratch,"%d",n);
@@ -87,7 +87,7 @@ void _printnum2(unsigned int n,unsigned char e){
 
 void _cls(void){
 	int i;
-	cls();
+	if (!g_disable_lcd_out) cls();
 	if (g_disable_printf) return;
 	printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 	for(i=0;i<23;i++) {
@@ -105,7 +105,7 @@ left key:  1b 5b 44
 */
 void _setcursor(unsigned char x,unsigned char y,unsigned char c){
 	int i,cx,cy;
-	setcursor(x,y,c);
+	if (!g_disable_lcd_out) setcursor(x,y,c);
 	if (g_disable_printf) return;
 	cy=g_cursor/80;
 	cx=g_cursor-cy*80;

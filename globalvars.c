@@ -86,9 +86,10 @@ unsigned short* g_class_id_list;
 int* g_class_list;
 int* g_empty_object_list;
 
-// printf() ON/OFF
+// printf() ON/OFF, LCD out ON/OFF
 
 char g_disable_printf=0;
+char g_disable_lcd_out=0;
 
 // debug wait ON/OFF
 
