@@ -51,6 +51,10 @@ void read_ini(void){
 			g_disable_printf=0;
 		} else if (!strncmp(str,"USBSERIALOFF",12)) {
 			g_disable_printf=1;
+		} else if (!strncmp(str,"LCDOUTON",8)) {
+			g_disable_lcd_out=0;
+		} else if (!strncmp(str,"LCDOUTOFF",9)) {
+			g_disable_lcd_out=1;
 		} else if (!strncmp(str,"DEBUGWAIT2500",13)) {
 			g_disable_debugwait2500=0;
 		} else if (!strncmp(str,"NODEBUGWAIT2500",15)) {
