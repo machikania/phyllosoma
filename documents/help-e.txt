@@ -98,9 +98,9 @@ PCG x,y,z
 	Changes the display character for characters whose ASCII code is x. y,z are character data. See <PCG> below for details.
 POKE x,y
 	Writes the value (1-byte value) indicated by y to the physical address indicated by x.
-PEEK16 x,y
+POKE16 x,y
 	Writes the value indicated by y (16-bit value) to the physical address indicated by x. Note that if x is an odd value, the exception stops.
-PEEK32 x,y
+POKE32 x,y
 	Writes the value indicated by y (32-bit value) to the physical address indicated by x. Note that if x is not a multiple of 4, the exception stops.
 PRINT [ x or x$ or x# [ , or; [ y or y$ or y# [ ... ]]]]
 	Prints a whole number or string on the display. If ";" is used, the next display follows. If "," is used, the display is separated by 10 characters. If neither is used, the next display is on a different line.
@@ -618,7 +618,7 @@ OUT16 x
 I2C [x].
 	Starts I2C use in master mode. x specifies the number of clocks in kHz (valid values are 12-3409). If omitted, x=100.
 I2CWRITE x[,y[,z[, ... ]]
-	Performs I2C fixed-length transmission. x is the 7-bit slave address. y, z, etc. are optional transmission codes, specified as byte values.
+	Performs I2C fixed-length transmission. x is the 7-bit slave address. y, z, etc. are optional transmission codes, specified as byte values. Note that in the case of Type P, if y is not specified, no communication takes place at all.
 I2CREAD(x[,y[,z[, ... ]])
 	Receive 1 byte after I2C fixed length transmission. x is the 7-bit slave address. y, z, etc. are optional transmission codes, specified as byte values. Returns an 8-bit value on success, -1 on error. Returns -1 in case of error.
 I2CWRITEDATA x,y,z1[,z2[,z3...]]
