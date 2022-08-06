@@ -99,6 +99,11 @@ char g_disable_debugwait2500=0;
 
 char g_enable_button_rotation=1;
 
+// Reset at the end of program
+
+char g_reset_at_end=0;
+
+
 // Reserved words
 
 const char* const g_reserved_words[167]={

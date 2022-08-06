@@ -358,6 +358,7 @@ extern char g_disable_printf;
 extern char g_disable_lcd_out;
 extern char g_disable_debugwait2500;
 extern char g_enable_button_rotation;
+extern char g_reset_at_end;
 
 /*
 	Prototypes
