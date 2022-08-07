@@ -65,6 +65,75 @@ void disperror(unsigned char *s, FRESULT fr){
 	while (1) ;
 }
 
+// テキストファイルの中身表示
+void viewfile(unsigned char *fname){
+	FIL Fil;
+	FRESULT fr;
+	unsigned char linebuf[256],ch,*p;
+	unsigned char *vramend,*cursor2;
+
+	vramend=TVRAM+WIDTH_X*WIDTH_Y;
+	cls();
+	fr = f_open(&Fil, fname, FA_READ);
+	if (fr) disperror("File Open Error.", fr);
+	setcursor(0,1,7);
+	while (!f_eof(&Fil)){
+		if (f_gets(linebuf, sizeof(linebuf), &Fil) == NULL)
+			disperror("Read Line Error.", 0);
+		p=linebuf;
+		while(p<linebuf+sizeof(linebuf)){
+			if(*p==0) break;
+			ch=*p++;
+			if(ch==13) continue;
+			printchar(ch);
+			if(cursor>=vramend) break;
+		}
+		if(cursor>=vramend) break;
+	}
+	cursor2=cursor;
+	setcursor(0,0,4);
+	printstr("[FIRE]:EXECUTE [START]:RETURN");
+	while(cursor<TVRAM+WIDTH_X) printchar(' ');
+	cursor=cursor2;
+	setcursorcolor(7);
+	//FIREキーを離すまで待つ
+	while(keystatus3!=KEYFIRE){
+		keycheck();
+		wait60thsec(1);
+	}
+	while(1){
+		keycheck();
+		if(keystatus3==KEYFIRE) break;
+		if(keystatus3==KEYSTART) break;
+		if(cursor>=vramend && (keystatus2==KEYDOWN || keycountDOWN>20)){
+			while (1){
+				if(*p==0 && !f_eof(&Fil)){
+					if (f_gets(linebuf, sizeof(linebuf), &Fil) == NULL)
+						disperror("Read Line Error.", 0);
+					p=linebuf;
+				}
+				while(p<linebuf+sizeof(linebuf)){
+					if(*p==0) break;
+					ch=*p++;
+					if(ch==13) continue;
+					printchar(ch);
+					if(cursor>=vramend) break;
+				}
+				if(cursor>=vramend) break;
+			}
+			cursor2=cursor;
+			setcursor(0,0,4);
+			printstr("[FIRE]:EXECUTE [START]:RETURN");
+			while(cursor<TVRAM+WIDTH_X) printchar(' ');
+			cursor=cursor2;
+			setcursorcolor(7);
+		}
+		wait60thsec(1);
+	}
+	f_close(&Fil);
+	cls();
+}
+
 // filenames配列のn番目のファイルから一覧表示
 void dispfiles(int n){
 	int i, j;
@@ -163,11 +232,12 @@ unsigned char *fileselect(void){
 			printchar(' ');
 			keycheck();
 			key = keystatus2;
-			// 30回以上同じボタンを押し続けていればリピートさせる
-			if (keycountUP > 30) key |= KEYUP;
-			if (keycountLEFT > 30) key |= KEYLEFT;
-			if (keycountRIGHT > 30) key |= KEYRIGHT;
-			if (keycountDOWN > 30) key |= KEYDOWN;
+			// 20回以上同じボタンを押し続けていればリピートさせる
+			if (keycountUP > 20) key |= KEYUP;
+			if (keycountLEFT > 20) key |= KEYLEFT;
+			if (keycountRIGHT > 20) key |= KEYRIGHT;
+			if (keycountDOWN > 20) key |= KEYDOWN;
+			if (keycountFIRE > 30) key |= KEYFIRE;
 			switch (key){
 			case KEYUP:
 				if (y > 0){
@@ -218,8 +288,14 @@ unsigned char *fileselect(void){
 				y = 0;
 				dispfiles(top); //ファイル番号topから一覧を画面表示
 				break;
+			case KEYFIRE:
+				if (n >= dirnum && keycountFIRE>30){
+					viewfile(filenames[n]);
+					if(keystatus3 != KEYFIRE) dispfiles(top);
+				}
+				break;
 			}
-		} while (keystatus2 != KEYFIRE);
+		} while (keystatus3 != KEYFIRE);
 		if (n < dirnum){
 			// ディレクトリの場合
 			if (filenames[n][0] == '.'){

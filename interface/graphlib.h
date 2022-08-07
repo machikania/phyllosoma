@@ -91,4 +91,5 @@ extern unsigned char TVRAM[];
 
 extern int WIDTH_X; // 横方向文字数
 extern int WIDTH_Y; // 縦方向文字数
+extern unsigned char *cursor; // カーソル位置
 #define ATTROFFSET (LCD_COLUMN_RES*LCD_ROW_RES/64) // VRAM上のカラーパレット格納位置
