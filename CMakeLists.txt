@@ -37,6 +37,7 @@ if (TARGET tinyusb_device)
 			music.c
 			core1.c
 			debug.c
+			pcconect.c
 			interface/fontdata.c
 			interface/graphlib.c
 			interface/ili9341_spi.c
