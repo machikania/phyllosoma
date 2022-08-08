@@ -63,6 +63,9 @@ void read_ini(void){
 			g_reset_at_end=0;
 		} else if (!strncmp(str,"RESETATEND",10)) {
 			g_reset_at_end=1;
+		} else if (!strncmp(str,"STARTWAIT=",10)) {
+			sscanf(str+10,"%d",&g_wait_at_begin);
+			if (g_wait_at_begin<500) g_wait_at_begin=500;
 		}
 	}
 	// Close file
@@ -88,6 +91,7 @@ int main() {
 	fileselect_init();
 	// Read MACHIKAP.INI
 	read_ini();
+	sleep_ms(g_wait_at_begin-500);
 	// Get filename to compile
 	if (file_exists(g_autoexec)) str=&g_autoexec[0];
 	else str=fileselect();

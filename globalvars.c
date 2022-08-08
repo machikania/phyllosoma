@@ -103,6 +103,10 @@ char g_enable_button_rotation=1;
 
 char g_reset_at_end=0;
 
+// Waiting time at the beginning
+
+int g_wait_at_begin=500;
+
 
 // Reserved words
 
