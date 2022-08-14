@@ -1,0 +1,51 @@
+********************************************
+
+   MachiKania BASIC System type P Ver 1.00
+
+    Copyright (C) 2022 Katsumi & Kenken
+
+http://hp.vector.co.jp/authors/VA016157/
+http://www.ze.em-net.ne.jp/~kenken/index.html
+
+********************************************
+
+このライブラリはフリーソフトウェアです。あなたはこれを、フリーソフトウェ
+ア財団によって発行されたGNU 劣等一般公衆利用許諾契約書(バージョン2.1 
+か、希望によってはそれ以降のバージョンのうちどれか)の定める条件の下で
+再頒布または改変することができます。
+
+このライブラリは有用であることを願って頒布されますが、*全くの無保証* 
+です。商業可能性の保証や特定の目的への適合性は、言外に示されたものも含
+め全く存在しません。詳しくはGNU 劣等一般公衆利用許諾契約書をご覧くださ
+い。
+
+あなたはこのライブラリと共に、GNU 劣等一般公衆利用許諾契約書の複製物を
+一部受け取ったはずです。もし受け取っていなければ、フリーソフトウェア財
+団まで請求してください(宛先は the Free Software Foundation, Inc., 59
+Temple Place, Suite 330, Boston, MA 02111-1307 USA)。
+
+GNU 劣等一般公衆利用許諾契約書(バージョン2.1)の非公式な日本語訳は、
+次のURLで閲覧することができるかもしれません。
+http://www.opensource.gr.jp/lesser/lgpl.ja.html
+
+LGPL(v2.1)に基づくフリーソフトウェアとして扱われる限り再頒布可能です。
+
+
+＜ライセンス＞
+本システムはKatsumiおよびKenkenがLGPLライセンスもしくは別のライセンス
+（MachiKaniaライセンスと呼ぶことにします）の元作成したコードによりバイ
+ナリーが作成されています。これにより、バイナリー(phyllosoma.uf2)の使用
+条件としては、非商用で使用する限り、フリーなソフトウェアということにな
+ります。我々が書いたソースコード部分(*.cファイル、と一部の*.hファイル)
+は一部の例外を除いてLGPL v2.1です。
+
+ソースコード中、interfaceディレクトリーに含まれているファイルはLGPLで
+はありませんので、注意して下さい。
+
+<License>
+The binary (phyllosoma.ufs) is made from codes originally by Katsumi & 
+Kenken under LGPL license and another licese (of which we call MachiKania
+license). As a result, the license of the binary is free software but only 
+if it will be used for non-profit purpose. The most of the source code 
+files written by us (*.c files and some *.h files) are provided with LGPL 
+license (v2.1), but files included in interface directory are not.
