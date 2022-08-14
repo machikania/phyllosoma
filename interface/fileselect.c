@@ -15,11 +15,6 @@ unsigned int keystatus, keystatus2, keystatus3, oldkey; //最新のボタン状�
 int keycountUP, keycountLEFT, keycountRIGHT, keycountDOWN, keycountSTART, keycountFIRE;
 int filenum, dirnum;
 
-void wait60thsec(unsigned short n){
-	// 60分のn秒ウェイト
-	uint64_t t = to_us_since_boot(get_absolute_time()) % 16667;
-	sleep_us(16667 * n - t);
-}
 void init_buttons(void){
 	// ボタン用GPIO設定
 	gpio_init_mask(KEYSMASK);
@@ -76,30 +71,15 @@ void viewfile(unsigned char *fname){
 	cls();
 	fr = f_open(&Fil, fname, FA_READ);
 	if (fr) disperror("File Open Error.", fr);
-	setcursorcolor(4);
-	printstr("[FIRE]:EXECUTE [START]:RETURN\n");
-	setcursorcolor(7);
-	while (!f_eof(&Fil) && cursor<vramend){
-		if (f_gets(linebuf, sizeof(linebuf), &Fil) == NULL)
-			disperror("Read Line Error.", 0);
-		p=linebuf;
-		while(*p && cursor<vramend){
-			ch=*p++;
-			if(ch==13) continue;
-			printchar(ch);
-		}
-	}
-	//FIREキーを離すまで待つ
-	while(keystatus3!=KEYFIRE){
-		keycheck();
-		wait60thsec(1);
-	}
+	p=linebuf;
+	*p=0;
+	setcursor(0,1,7);
 	while(1){
 		keycheck();
-		if(keystatus3==KEYFIRE) break;
+		if(keystatus2==KEYFIRE) break;
 		if(keystatus3==KEYSTART) break;
-		if(cursor>=vramend && (keystatus2==KEYDOWN || keycountDOWN>20)){
-			while (1){
+		while (!f_eof(&Fil)){
+			while (cursor<vramend || (keystatus2==KEYDOWN || keycountDOWN>20)){
 				if(*p==0 && !f_eof(&Fil)){
 					if (f_gets(linebuf, sizeof(linebuf), &Fil) == NULL)
 						disperror("Read Line Error.", 0);
@@ -114,14 +94,15 @@ void viewfile(unsigned char *fname){
 				}
 				if(cursor>=vramend) break;
 			}
-			cursor2=cursor;
-			setcursor(0,0,4);
-			printstr("[FIRE]:EXECUTE [START]:RETURN");
-			while(cursor<TVRAM+WIDTH_X) printchar(' ');
-			cursor=cursor2;
-			setcursorcolor(7);
+			if(cursor>=vramend) break;
 		}
-		wait60thsec(1);
+		cursor2=cursor;
+		setcursor(0,0,4);
+		printstr("[FIRE]:Exec [START]:Return");
+		while(cursor<TVRAM+WIDTH_X) printchar(' ');
+		cursor=cursor2;
+		setcursorcolor(7);
+		sleep_ms(16);
 	}
 	f_close(&Fil);
 	cls();
@@ -135,7 +116,7 @@ void dispfiles(int n){
 	mx=WIDTH_X/13;
 	my=WIDTH_Y-1;
 	setcursor(0, 0, 4);
-	printstr("Select file & Push FIRE\n");
+	printstr("[FIRE]:Exec [START]:View\n");
 	for (i = 0; i < my * mx; i++){
 		if (i % mx == 0) printchar(' ');
 		if (i + n < dirnum){
@@ -220,17 +201,16 @@ unsigned char *fileselect(void){
 		do{
 			setcursor(x * 13, y + 1, 5);
 			printchar(0x1c); // right arrow
-			wait60thsec(2);
+			sleep_ms(25);
 			setcursor(x * 13, y + 1, 5);
 			printchar(' ');
 			keycheck();
 			key = keystatus2;
-			// 20回以上同じボタンを押し続けていればリピートさせる
-			if (keycountUP > 20) key |= KEYUP;
-			if (keycountLEFT > 20) key |= KEYLEFT;
-			if (keycountRIGHT > 20) key |= KEYRIGHT;
-			if (keycountDOWN > 20) key |= KEYDOWN;
-			if (keycountFIRE > 30) key |= KEYFIRE;
+			// 30回以上同じボタンを押し続けていればリピートさせる
+			if (keycountUP > 30) key |= KEYUP;
+			if (keycountLEFT > 30) key |= KEYLEFT;
+			if (keycountRIGHT > 30) key |= KEYRIGHT;
+			if (keycountDOWN > 30) key |= KEYDOWN;
 			switch (key){
 			case KEYUP:
 				if (y > 0){
@@ -291,24 +271,30 @@ unsigned char *fileselect(void){
 					}
 				}
 				break;
-			case KEYSTART:
+			}
+			if (keycountSTART>20){
+				//画面の縦横変更
 				set_lcdalign(LCD_ALIGNMENT^HORIZONTAL);
-				mx=WIDTH_X/13;
-				my=WIDTH_Y-1;
+				mx = WIDTH_X/13;
+				my = WIDTH_Y-1;
 				n = 0;
 				top = 0;
 				x = 0;
 				y = 0;
 				dispfiles(top); //ファイル番号topから一覧を画面表示
-				break;
-			case KEYFIRE:
-				if (n >= dirnum && keycountFIRE>30){
-					viewfile(filenames[n]);
-					if(keystatus3 != KEYFIRE) dispfiles(top);
+				//STARTキーを離すまで待つ
+				while(keycountSTART){
+					keycheck();
+					sleep_ms(16);
 				}
-				break;
 			}
-		} while (keystatus3 != KEYFIRE);
+			else if(keystatus3==KEYSTART && n >= dirnum){
+				//プログラムソース表示
+				viewfile(filenames[n]);
+				if(keystatus2 == KEYFIRE) break;
+				dispfiles(top);
+			}
+		} while (keystatus2 != KEYFIRE);
 		if (n < dirnum){
 			// ディレクトリの場合
 			if (filenames[n][0] == '.'){
