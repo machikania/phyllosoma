@@ -76,26 +76,19 @@ void viewfile(unsigned char *fname){
 	cls();
 	fr = f_open(&Fil, fname, FA_READ);
 	if (fr) disperror("File Open Error.", fr);
-	setcursor(0,1,7);
-	while (!f_eof(&Fil)){
+	setcursorcolor(4);
+	printstr("[FIRE]:EXECUTE [START]:RETURN\n");
+	setcursorcolor(7);
+	while (!f_eof(&Fil) && cursor<vramend){
 		if (f_gets(linebuf, sizeof(linebuf), &Fil) == NULL)
 			disperror("Read Line Error.", 0);
 		p=linebuf;
-		while(p<linebuf+sizeof(linebuf)){
-			if(*p==0) break;
+		while(*p && cursor<vramend){
 			ch=*p++;
 			if(ch==13) continue;
 			printchar(ch);
-			if(cursor>=vramend) break;
 		}
-		if(cursor>=vramend) break;
 	}
-	cursor2=cursor;
-	setcursor(0,0,4);
-	printstr("[FIRE]:EXECUTE [START]:RETURN");
-	while(cursor<TVRAM+WIDTH_X) printchar(' ');
-	cursor=cursor2;
-	setcursorcolor(7);
 	//FIREキーを離すまで待つ
 	while(keystatus3!=KEYFIRE){
 		keycheck();
@@ -112,8 +105,8 @@ void viewfile(unsigned char *fname){
 						disperror("Read Line Error.", 0);
 					p=linebuf;
 				}
-				while(p<linebuf+sizeof(linebuf)){
-					if(*p==0) break;
+				else if(*p==0) break;
+				while(*p){
 					ch=*p++;
 					if(ch==13) continue;
 					printchar(ch);
@@ -251,19 +244,20 @@ unsigned char *fileselect(void){
 				}
 				break;
 			case KEYDOWN:
-				if (n - x + mx < filenum){
+				if (y < my-1){
+					if (n + mx < filenum){
+						n += mx;
+						y++;
+					}
+				}
+				else if(n - x + mx < filenum){
 					n += mx;
 					if (n >= filenum){
 						n -= x;
 						x = 0;
 					}
-					if (y < my-1){
-						y++;
-					}
-					else{
-						top += mx;
-						dispfiles(top);
-					}
+					top += mx;
+					dispfiles(top);
 				}
 				break;
 			case KEYLEFT:
@@ -271,11 +265,30 @@ unsigned char *fileselect(void){
 					n--;
 					x--;
 				}
+				else if (y > 0){
+						n--;
+						x = mx - 1;
+						y--;
+				}
+				else if (top >= mx){
+					n--;
+					x = mx - 1;
+					top -= mx;
+					dispfiles(top);
+				}
 				break;
 			case KEYRIGHT:
-				if (x < mx-1 && n + 1 < filenum){
-					n++;
-					x++;
+				if (n + 1 >= filenum) break;
+				n++;
+				x++;
+				if (x >= mx){
+					x = 0;
+					y++;
+					if (y >= my){
+						y--;
+						top += mx;
+						dispfiles(top);
+					}
 				}
 				break;
 			case KEYSTART:
