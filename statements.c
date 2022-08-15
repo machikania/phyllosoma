@@ -334,6 +334,7 @@ int exec_statement(void){
 		// Got 2 bytes data in g_constant_int
 		(object++)[0]=g_constant_int;
 	} while (','==(source++)[0]);
+	source--;
 	return 0;
 }
 /*
