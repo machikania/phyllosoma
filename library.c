@@ -12,6 +12,7 @@
 #include "./compiler.h"
 #include "./api.h"
 #include "./display.h"
+#include "./config.h"
 
 /*
 	Local macros
@@ -658,15 +659,16 @@ int lib_system(int r0, int r1, int r2){
 	switch(r0){
 		case 0:
 		//	MachiKania バージョン文字列、"Zoea"等を返す。
-			return (int)"Phyllosoma";
+			return (int)SYSVER1;
 		case 1:
 		//	MachiKania バージョン文字列、"1.2"等を返す。
-			return (int)"0.1";
+			return (int)SYSVER2;
 		case 2:
 		//	BASIC バージョン文字列、"KM-1208"等を返す。
-			return (int)"KM-2000";
+			return (int)BASVER;
 		case 3:
 		//	現在実行中のHEXファイル名、"ZOEA.HEX"等を返す。
+			return (int)"";
 		case 4:
 		//	現在実行中のCPUのクロック周波数を返す。
 			return 125000000;
@@ -714,8 +716,10 @@ int lib_system(int r0, int r1, int r2){
 			return 0;
 		case 100:
 		//	変数格納領域(g_var_mem)へのポインターを返す。
+			return (int)&kmbasic_variables[0];
 		case 101:
 		//	乱数シードへのポインターを返す。
+			return (int)&g_rnd_seed;
 		case 102:
 		//	キャラクターディスプレイ領域(TVRAM)へのポインターを返す。
 			return (int)&TVRAM[0];
@@ -727,6 +731,7 @@ int lib_system(int r0, int r1, int r2){
 			return (int)fontp;
 		case 105:
 		//	グラフィックディスプレイ領域へのポインターを返す。
+			return 0;
 		case 200:
 		//	ディスプレイの表示を停止(xが0のとき)、もしくは開始(xが0以外の時)する。
 		default:
