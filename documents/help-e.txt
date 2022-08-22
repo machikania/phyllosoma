@@ -630,7 +630,7 @@ I2CERROR()
 SPI x[,y[,z1[,z2]]]
 	Starts SPI usage in master mode. x specifies the number of clocks in kHz (valid values are 93-47727). y specifies the number of bits in one word in 8/16/32 (8 if omitted). z1 specifies how to handle SPI clock (0 if omitted). ). z1 specifies how to handle the SPI clock (0 if omitted). For details, see below. z2 specifies which port is used for the CS line.
 	In the case of Type M, if z2 is omitted, it is 0x39 (PORTD9). If other ports are used, for example, 0x15 for PORTB5 and 0x13 for PORTB3.
-	For Type P, if z2 is omitted, 3 (GP3).
+	For Type P, if z2 is omitted, 3 (GP3). If other ports are used, for example, 4 for GP4 (I/O bit 4) and 27 or 14 for GP27 (I/O bit 14).
 		z1=0: Low when idle and data changes to Low (CKP=0,CKE=1; CPOL=0,CPHA=0)
 		z1=1: Low when idle, data changes to high (CKP=0,CKE=0; CPOL=0,CPHA=1)
 		z1=2: "H" when idle, data changes to "H" (CKP=1,CKE=1; CPOL=1,CPHA=1)

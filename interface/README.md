@@ -1,5 +1,5 @@
 ## License
-The licenses of files in this directory is NOT LGPL.  
+The licenses of files in this directory are NOT LGPL.  
   
 ChaN (http://elm-chan.org/) has the license of following files:  
 pico-sdmm.c, ff.h, ffconf.h, diskio.h, diskio.c, and ffsystem.c.  
