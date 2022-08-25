@@ -1,3 +1,20 @@
+/*----------------------------------------------------------------------------
+
+Copyright (C) 2022, KenKen, all right reserved.
+
+This program supplied herewith by KenKen is free software; you can
+redistribute it and/or modify it under the terms of the same license written
+here and only for non-commercial purpose.
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of FITNESS FOR A PARTICULAR
+PURPOSE. The copyright owner and contributors are NOT LIABLE for any damages
+caused by using this program.
+
+----------------------------------------------------------------------------*/
 //LCDテキスト・グラフィックライブラリ
 
 #include "graphlib.h"
@@ -6,7 +23,7 @@
 unsigned char TVRAM[ATTROFFSET*2+1] __attribute__ ((aligned (4)));
 unsigned char *fontp; //フォント格納アドレス、初期化時はFontData、RAM指定することでPCGを実現
 unsigned int bgcolor; // バックグランドカラー
-unsigned char twidth; //テキスト1行文字数
+//unsigned char twidth; //テキスト1行文字数
 unsigned char *cursor;
 unsigned char cursorcolor;
 unsigned short palette[256];
@@ -510,10 +527,11 @@ void textredraw(void){
 	unsigned short c;
 	unsigned char d,b,*p,*p2;
 
-	LCD_setAddrWindow(0,0,X_RES,Y_RES);
+	LCD_setAddrWindow(0,0,WIDTH_X*8,WIDTH_Y*8);
 	p=TVRAM;
 
 	if(!(LCD_ALIGNMENT&HORIZONTAL)){
+		// Vertical case
 		for(y=0;y<WIDTH_Y;y++){
 			for(i=0;i<8;i++){
 				for(x=0;x<WIDTH_X;x++){
@@ -533,8 +551,7 @@ void textredraw(void){
 	else{
 		// Horizontal case
 		for(x=0;x<WIDTH_X;x++){
-			b=0x80;
-			for(j=0;j<8;j++){
+			for(b=0x80;b;b>>=1){
 				for(y=0;y<WIDTH_Y;y++){
 					p2=fontp+(*p)*8;
 					c=palette[*(p+ATTROFFSET)];
@@ -544,8 +561,7 @@ void textredraw(void){
 					}
 					p+=WIDTH_X;
 				}
-				p-=ATTROFFSET;
-				b>>=1;
+				p-=WIDTH_X*WIDTH_Y;
 			}
 			p++;
 		}
@@ -554,32 +570,34 @@ void textredraw(void){
 }
 
 void vramscroll(void){
-	unsigned short *p1,*p2;
+	unsigned char *p1,*p2,*vramend;
 
-	p1=(unsigned short *)TVRAM;
-	p2=(unsigned short *)(TVRAM+WIDTH_X);
-	while(p2<(unsigned short *)(TVRAM+ATTROFFSET)){
-		*(p1+ATTROFFSET/2)=*(p2+ATTROFFSET/2);
+	vramend=TVRAM+WIDTH_X*WIDTH_Y;
+	p1=TVRAM;
+	p2=p1+WIDTH_X;
+	while(p2<vramend){
+		*(p1+ATTROFFSET)=*(p2+ATTROFFSET);
 		*p1++=*p2++;
 	}
-	while(p1<(unsigned short *)(TVRAM+ATTROFFSET)){
-		*(p1+ATTROFFSET/2)=0;
+	while(p1<vramend){
+		*(p1+ATTROFFSET)=0;
 		*p1++=0;
 	}
 	textredraw();
 }
 void vramscrolldown(void){
-	unsigned short *p1,*p2;
+	unsigned char *p1,*p2,*vramend;
 
-	p1=(unsigned short *)(TVRAM+ATTROFFSET)-1;
-	p2=(unsigned short *)(TVRAM+ATTROFFSET-WIDTH_X)-1;
-	while(p2>=(unsigned short *)(TVRAM)){
-		*(p1+ATTROFFSET/2)=*(p2+ATTROFFSET/2);
-		*p1++=*p2++;
+	vramend=TVRAM+WIDTH_X*WIDTH_Y;
+	p1=vramend-1;
+	p2=p1-WIDTH_X;
+	while(p2>=TVRAM){
+		*(p1+ATTROFFSET)=*(p2+ATTROFFSET);
+		*p1--=*p2--;
 	}
-	while(p1>=(unsigned short *)(TVRAM)){
-		*(p1+ATTROFFSET/2)=0;
-		*p1++=0;
+	while(p1>=TVRAM){
+		*(p1+ATTROFFSET)=0;
+		*p1--=0;
 	}
 	textredraw();
 }
@@ -596,8 +614,8 @@ void setcursorcolor(unsigned char c){
 void printchar(unsigned char n){
 	//カーソル位置にテキストコードnを1文字表示し、カーソルを1文字進める
 	//画面最終文字表示してもスクロールせず、次の文字表示時にスクロールする
-	if(cursor<TVRAM || cursor>TVRAM+ATTROFFSET) return;
-	if(cursor==TVRAM+ATTROFFSET){
+	if(cursor<TVRAM || cursor>TVRAM+WIDTH_X*WIDTH_Y) return;
+	if(cursor==TVRAM+WIDTH_X*WIDTH_Y){
 		vramscroll();
 		cursor-=WIDTH_X;
 	}

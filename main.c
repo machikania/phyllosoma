@@ -59,10 +59,22 @@ void read_ini(void){
 			g_disable_debugwait2500=0;
 		} else if (!strncmp(str,"NODEBUGWAIT2500",15)) {
 			g_disable_debugwait2500=1;
+		} else if (!strncmp(str,"LOOPATEND",9)) {
+			g_reset_at_end=0;
+		} else if (!strncmp(str,"RESETATEND",10)) {
+			g_reset_at_end=1;
+		} else if (!strncmp(str,"STARTWAIT=",10)) {
+			sscanf(str+10,"%d",&g_wait_at_begin);
+			if (g_wait_at_begin<500) g_wait_at_begin=500;
 		}
 	}
 	// Close file
 	f_close(&fpo);
+}
+
+void software_reset(void){
+	unsigned int* AIRCR=(unsigned int*)0xe000ed0c;
+	AIRCR[0]=0x05FA0004;
 }
 
 int main() {
@@ -79,6 +91,7 @@ int main() {
 	fileselect_init();
 	// Read MACHIKAP.INI
 	read_ini();
+	sleep_ms(g_wait_at_begin-500);
 	// Get filename to compile
 	if (file_exists(g_autoexec)) str=&g_autoexec[0];
 	else str=fileselect();
@@ -107,10 +120,18 @@ int main() {
 	// Show dump
 	//dump_variables();
 	// Infinite loop
-	for(i=0;i<16;i++){
-		sleep_ms(1000);
-		//run_code();
-		printchar("-/|\\"[i&0x03]); printchar(0x08);
+	s=0;
+	if (g_reset_at_end) software_reset();
+	for(i=0;true;i++){
+		sleep_ms(50);
+		if (s) {
+			if (lib_keys(16,0,0)) software_reset();
+		} else {
+			if (!lib_keys(16,0,0)) s=1;
+		}
+		if (320<=i) continue;
+		if (i%20) continue;
+		printchar("-/|\\"[(i/20)&0x03]); printchar(0x08);
 	}
 	return 0;
 }

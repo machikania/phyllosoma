@@ -1,7 +1,8 @@
 REM SPACE AILEN GAME
-REM  for MachiKania type Z
+REM  for MachiKania type P
 REM   Programmed by KENKEN
 
+WIDTH 40,2
 GOSUB INIT1
 WHILE 1
  GOSUB INITGM

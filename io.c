@@ -18,6 +18,25 @@
 #include "./io.h"
 #include "./config.h"
 
+static unsigned char gpio_table[16]={
+	IO_GPIO0,
+	IO_GPIO1,
+	IO_GPIO2,
+	IO_GPIO3,
+	IO_GPIO4,
+	IO_GPIO5,
+	IO_GPIO6,
+	IO_GPIO7,
+	IO_GPIO8,
+	IO_GPIO9,
+	IO_GPIO10,
+	IO_GPIO11,
+	IO_GPIO12,
+	IO_GPIO13,
+	IO_GPIO14,
+	IO_GPIO15
+};
+
 // UART data
 static unsigned short* io_uart_buff;
 static int io_uart_var;
@@ -334,10 +353,10 @@ int lib_spi(int r0, int r1, int r2){
 	IO_SPI_SSPCR0[0]=io_spi_sspcr[0];
 	IO_SPI_SSPCR0[1]=io_spi_sspcr[1];
 	// Activate SPI connection
-    asm volatile("nop \n nop \n nop");
-    if (0<=cs_port) gpio_put(cs_port,0);
-    asm volatile("nop \n nop \n nop");
-    // r2 is the option number
+	asm volatile("nop \n nop \n nop");
+	if (0<=cs_port) gpio_put(cs_port,0);
+	asm volatile("nop \n nop \n nop");
+	// r2 is the option number
 	switch(r2){
 		case LIB_SPI_SPI:
 /*
@@ -370,7 +389,8 @@ Note:
 					return r0;
 			}
 			// Set CS port
-			cs_port=r0;
+			if (r0<16) cs_port=gpio_table[r0];
+			else cs_port=r0;
 			gpio_init(cs_port);
 			gpio_set_dir(cs_port, GPIO_OUT);
 			gpio_put(cs_port,1);
@@ -535,9 +555,9 @@ Note:
 			break;
 	}
 	// Inactivate SPI connection
-    asm volatile("nop \n nop \n nop");
-    if (0<=cs_port) gpio_put(cs_port,1);
-    asm volatile("nop \n nop \n nop");
+	asm volatile("nop \n nop \n nop");
+	if (0<=cs_port) gpio_put(cs_port,1);
+	asm volatile("nop \n nop \n nop");
 	// Set control registers for SD
 	IO_SPI_SSPCR0[0]=sd_spi_sspcr[0];
 	IO_SPI_SSPCR0[1]=sd_spi_sspcr[1];
@@ -847,25 +867,6 @@ int out16_statement(void){
 		ARG_INTEGER<<ARG1 |
 		LIB_GPIO_OUT16<<LIBOPTION);
 }
-
-static unsigned char gpio_table[16]={
-	IO_GPIO0,
-	IO_GPIO1,
-	IO_GPIO2,
-	IO_GPIO3,
-	IO_GPIO4,
-	IO_GPIO5,
-	IO_GPIO6,
-	IO_GPIO7,
-	IO_GPIO8,
-	IO_GPIO9,
-	IO_GPIO10,
-	IO_GPIO11,
-	IO_GPIO12,
-	IO_GPIO13,
-	IO_GPIO14,
-	IO_GPIO15
-};
 
 int lib_gpio(int r0, int r1, int r2){
 	int i;

@@ -15,7 +15,7 @@ Most of codes (written in C) are provided with LGPL 2.1 license, but some codes 
 
 ## Connection
 Connect a Raspberry Pi Pico to an ILI9341-based LCD (SPI connection) and an MultiMediaCard (SPI connection) as follows.
-![schematic.png](https://raw.githubusercontent.com/machikania/machikania.github.io/9495b0a7a14e506432ecb5e32338ec7df6ca3a49/phyllosoma/shematic.png)
+![schematic.png](documents/shematic.png)
 
 ```console
 GP0 I/O bit0 / PWM3
@@ -30,14 +30,14 @@ GP8 I/O bit8 / button1 (UP)
 GP9 I/O bit9 / button2 (LEFT)
 GP10 LCD-DC
 GP11 LCD-RESET
-GP12 LCD-MISO (pulled up by a 10k ohm resistor)
+GP12 LCD-MISO
 GP13 LCD-CS
 GP14 LCD-SCK
 GP15 LCD-MOSI
-GP16 SD-DO / SPI RX
+GP16 SD-DO(MISO) / SPI RX (pulled up by a 10k ohm resistor)
 GP17 SD-CS
 GP18 SD-SCLK / SCK
-GP19 SD-DI / SPI TX
+GP19 SD-DI(MOSI) / SPI TX
 GP20 I/O bit10 / button3 (RIGHT)
 GP21 I/O bit11 / button4 (DOWN)
 GP22 I/O bit12 / button5 (START)

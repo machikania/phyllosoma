@@ -1,3 +1,20 @@
+/*----------------------------------------------------------------------------
+
+Copyright (C) 2022, KenKen, all right reserved.
+
+This program supplied herewith by KenKen is free software; you can
+redistribute it and/or modify it under the terms of the same license written
+here and only for non-commercial purpose.
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of FITNESS FOR A PARTICULAR
+PURPOSE. The copyright owner and contributors are NOT LIABLE for any damages
+caused by using this program.
+
+----------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <string.h>
 #include "pico/stdlib.h"
@@ -15,11 +32,6 @@ unsigned int keystatus, keystatus2, keystatus3, oldkey; //最新のボタン状�
 int keycountUP, keycountLEFT, keycountRIGHT, keycountDOWN, keycountSTART, keycountFIRE;
 int filenum, dirnum;
 
-void wait60thsec(unsigned short n){
-	// 60分のn秒ウェイト
-	uint64_t t = to_us_since_boot(get_absolute_time()) % 16667;
-	sleep_us(16667 * n - t);
-}
 void init_buttons(void){
 	// ボタン用GPIO設定
 	gpio_init_mask(KEYSMASK);
@@ -65,6 +77,54 @@ void disperror(unsigned char *s, FRESULT fr){
 	while (1) ;
 }
 
+// テキストファイルの中身表示
+void viewfile(unsigned char *fname){
+	FIL Fil;
+	FRESULT fr;
+	unsigned char linebuf[256],ch,*p;
+	unsigned char *vramend,*cursor2;
+
+	vramend=TVRAM+WIDTH_X*WIDTH_Y;
+	cls();
+	fr = f_open(&Fil, fname, FA_READ);
+	if (fr) disperror("File Open Error.", fr);
+	p=linebuf;
+	*p=0;
+	setcursor(0,1,7);
+	while(1){
+		keycheck();
+		if(keystatus2==KEYFIRE) break;
+		if(keystatus3==KEYSTART) break;
+		while (!f_eof(&Fil)){
+			while (cursor<vramend || (keystatus2==KEYDOWN || keycountDOWN>20)){
+				if(*p==0 && !f_eof(&Fil)){
+					if (f_gets(linebuf, sizeof(linebuf), &Fil) == NULL)
+						disperror("Read Line Error.", 0);
+					p=linebuf;
+				}
+				else if(*p==0) break;
+				while(*p){
+					ch=*p++;
+					if(ch==13) continue;
+					printchar(ch);
+					if(cursor>=vramend) break;
+				}
+				if(cursor>=vramend) break;
+			}
+			if(cursor>=vramend) break;
+		}
+		cursor2=cursor;
+		setcursor(0,0,4);
+		printstr("[FIRE]:Exec [START]:Return");
+		while(cursor<TVRAM+WIDTH_X) printchar(' ');
+		cursor=cursor2;
+		setcursorcolor(7);
+		sleep_ms(16);
+	}
+	f_close(&Fil);
+	cls();
+}
+
 // filenames配列のn番目のファイルから一覧表示
 void dispfiles(int n){
 	int i, j;
@@ -73,7 +133,7 @@ void dispfiles(int n){
 	mx=WIDTH_X/13;
 	my=WIDTH_Y-1;
 	setcursor(0, 0, 4);
-	printstr("Select file & Push FIRE\n");
+	printstr("[FIRE]:Exec [START]:View\n");
 	for (i = 0; i < my * mx; i++){
 		if (i % mx == 0) printchar(' ');
 		if (i + n < dirnum){
@@ -158,7 +218,7 @@ unsigned char *fileselect(void){
 		do{
 			setcursor(x * 13, y + 1, 5);
 			printchar(0x1c); // right arrow
-			wait60thsec(2);
+			sleep_ms(25);
 			setcursor(x * 13, y + 1, 5);
 			printchar(' ');
 			keycheck();
@@ -181,19 +241,20 @@ unsigned char *fileselect(void){
 				}
 				break;
 			case KEYDOWN:
-				if (n - x + mx < filenum){
+				if (y < my-1){
+					if (n + mx < filenum){
+						n += mx;
+						y++;
+					}
+				}
+				else if(n - x + mx < filenum){
 					n += mx;
 					if (n >= filenum){
 						n -= x;
 						x = 0;
 					}
-					if (y < my-1){
-						y++;
-					}
-					else{
-						top += mx;
-						dispfiles(top);
-					}
+					top += mx;
+					dispfiles(top);
 				}
 				break;
 			case KEYLEFT:
@@ -201,23 +262,54 @@ unsigned char *fileselect(void){
 					n--;
 					x--;
 				}
-				break;
-			case KEYRIGHT:
-				if (x < mx-1 && n + 1 < filenum){
-					n++;
-					x++;
+				else if (y > 0){
+						n--;
+						x = mx - 1;
+						y--;
+				}
+				else if (top >= mx){
+					n--;
+					x = mx - 1;
+					top -= mx;
+					dispfiles(top);
 				}
 				break;
-			case KEYSTART:
+			case KEYRIGHT:
+				if (n + 1 >= filenum) break;
+				n++;
+				x++;
+				if (x >= mx){
+					x = 0;
+					y++;
+					if (y >= my){
+						y--;
+						top += mx;
+						dispfiles(top);
+					}
+				}
+				break;
+			}
+			if (keycountSTART>20){
+				//画面の縦横変更
 				set_lcdalign(LCD_ALIGNMENT^HORIZONTAL);
-				mx=WIDTH_X/13;
-				my=WIDTH_Y-1;
+				mx = WIDTH_X/13;
+				my = WIDTH_Y-1;
 				n = 0;
 				top = 0;
 				x = 0;
 				y = 0;
 				dispfiles(top); //ファイル番号topから一覧を画面表示
-				break;
+				//STARTキーを離すまで待つ
+				while(keycountSTART){
+					keycheck();
+					sleep_ms(16);
+				}
+			}
+			else if(keystatus3==KEYSTART && n >= dirnum){
+				//プログラムソース表示
+				viewfile(filenames[n]);
+				if(keystatus2 == KEYFIRE) break;
+				dispfiles(top);
 			}
 		} while (keystatus2 != KEYFIRE);
 		if (n < dirnum){

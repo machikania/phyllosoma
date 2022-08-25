@@ -15,7 +15,7 @@ Floating-point constants should be written as "2e-3" (for 0.002) or "10.5".
 String type constants should be written by enclosing them with " ". When "" is used, it can be written as "CHR$($22)".
 
 <General Instructions>
-Hereinafter, x, y, z, etc. refer to integer values; x$, y$, z$ refer to character strings; x#, y#, z# refer to floating-point real values; xxx, yyy, zzz, www, etc. refer to arbitrary statements; x#, y#, z# refer to floating-point real values; x#, y#, z#, etc. refer to floating-point real values. [ ] indicates that the statement is optional.
+Hereinafter, x, y, z, etc. refer to integer values; x$, y$, z$ refer to character strings; x#, y#, z# refer to floating-point real values; xxx, yyy, zzz, www, etc. refer to arbitrary statements; x#, y#, z# refer to floating-point real values; x#, y#, z#, etc. refer to floating-point real values. [ ] indicates that the statement is optional. | (vertical line) indicates that either left or right notation can be used.
 
 Multiple commands can be processed on a single line by separating them with ":".
 
@@ -45,18 +45,18 @@ DELAYUS x
 	Available for Type P. Stop execution for x microseconds.
 DIM xxx [, yyy [, zzz [, ... ]]]
 	Assigns an array of integer or floating-point type. xxx,yyy,zzz should be written, for example, "A(10)". In this case, 11 integer type variables from A(0) to A(10) are allocated. In the case of a floating-point array, it should be written as "A#(10)". Multi-dimensional arrays can also be declared.
-DO WHILE x
+DO WHILE x|x#
 LOOP
-	If x is non-zero, the statements from DO to LOOP are executed repeatedly.
-DO UNTIL x
+	If x or x# is non-zero, the statements from DO to LOOP are executed repeatedly.
+DO UNTIL x|x#
 LOOP
-	If x is 0, repeats the statements from the DO statement to the LOOP statement.
+	If x or x# is 0, repeats the statements from the DO statement to the LOOP statement.
 DO
-LOOP WHILE x
-	Executes the statements from the DO statement through the LOOP statement and repeats if x is non-zero.
+LOOP WHILE x|x#
+	Executes the statements from the DO statement through the LOOP statement and repeats if x or x# is non-zero.
 DO
-LOOP UNTIL x
-	Executes statements from the DO statement through the LOOP statement and repeats if x is 0.
+LOOP UNTIL x|x#
+	Executes statements from the DO statement through the LOOP statement and repeats if x or x# is 0.
 DRAWCOUNT x
 	Specifies the DRAWCOUNT value, see DRAWCOUNT() function for DRAWCOUNT value.
 END
@@ -70,16 +70,16 @@ GOSUB xxx [, yyy [, zzz [, ... ]]]
 	Memorize the current execution position and move to line xxx (or label). yyyy, zzz, etc. are arguments that are passed on to the subroutine (see the ARGS() function).
 GOTO xxx
 	Go to line xxx (or label).
-IF x or x# THEN yyy [ ELSE zzz ].
+IF x|x# THEN yyy [ ELSE zzz ].
 	If x is non-zero, execute yyyy; if x is zero, execute zzzz. yyyy and zzzz can be written with multiple statements separated by ":".
-IF x or x# THEN
+IF x|x# THEN
 xxx
-[ELSEIF y or y# THEN
+[ELSEIF y|y# THEN
 yyy]
 [ELSE
 zzz]
 ENDIF
-	ELSEIF statements can be multiple. Note that on each line, do not put anything after the THEN statement.
+	Execute xxx when x or x# is non-zero, yyyy otherwise and y or y# is non-zero (if described), zzzz otherwise. ELSEIF statements can be multiple. Note that on each line, do not put anything after the THEN statement.
 LABEL xxx
 	Register a jump destination for GOTO/GOSUB. xxx is a string of up to 6 alphanumeric characters.
 [LET] x=yyyy
@@ -98,9 +98,9 @@ PCG x,y,z
 	Changes the display character for characters whose ASCII code is x. y,z are character data. See <PCG> below for details.
 POKE x,y
 	Writes the value (1-byte value) indicated by y to the physical address indicated by x.
-PEEK16 x,y
+POKE16 x,y
 	Writes the value indicated by y (16-bit value) to the physical address indicated by x. Note that if x is an odd value, the exception stops.
-PEEK32 x,y
+POKE32 x,y
 	Writes the value indicated by y (32-bit value) to the physical address indicated by x. Note that if x is not a multiple of 4, the exception stops.
 PRINT [ x or x$ or x# [ , or; [ y or y$ or y# [ ... ]]]]
 	Prints a whole number or string on the display. If ";" is used, the next display follows. If "," is used, the display is separated by 10 characters. If neither is used, the next display is on a different line.
@@ -122,9 +122,9 @@ VAR xxx [, yyy [, zzz [, ... ]]]
 	Specifies local variables to be used in the subroutine. xxx, yyy, etc. can be specified by A-Z alphabetical characters or variable names.
 WAIT x
 	Stops program execution for the time indicated by x. If x is 60, the program stops for about 1 second.
-WHILE x
+WHILE x|x#
 WEND
-	If x is non-zero, the statements from WHILE to WEND are executed repeatedly.
+	If x or x# is non-zero, the statements from WHILE to WEND are executed repeatedly.
 WIDTH x[,y].
 	Specifies the width of the character display in characters. x can be 30, 36, 40, 48, or 80; for Type P, the range is 1-40. If y=1, the display is vertical; if y=2, the display is horizontal (Type P only).
 
@@ -618,7 +618,7 @@ OUT16 x
 I2C [x].
 	Starts I2C use in master mode. x specifies the number of clocks in kHz (valid values are 12-3409). If omitted, x=100.
 I2CWRITE x[,y[,z[, ... ]]
-	Performs I2C fixed-length transmission. x is the 7-bit slave address. y, z, etc. are optional transmission codes, specified as byte values.
+	Performs I2C fixed-length transmission. x is the 7-bit slave address. y, z, etc. are optional transmission codes, specified as byte values. Note that in the case of Type P, if y is not specified, no communication takes place at all.
 I2CREAD(x[,y[,z[, ... ]])
 	Receive 1 byte after I2C fixed length transmission. x is the 7-bit slave address. y, z, etc. are optional transmission codes, specified as byte values. Returns an 8-bit value on success, -1 on error. Returns -1 in case of error.
 I2CWRITEDATA x,y,z1[,z2[,z3...]]
@@ -630,7 +630,7 @@ I2CERROR()
 SPI x[,y[,z1[,z2]]]
 	Starts SPI usage in master mode. x specifies the number of clocks in kHz (valid values are 93-47727). y specifies the number of bits in one word in 8/16/32 (8 if omitted). z1 specifies how to handle SPI clock (0 if omitted). ). z1 specifies how to handle the SPI clock (0 if omitted). For details, see below. z2 specifies which port is used for the CS line.
 	In the case of Type M, if z2 is omitted, it is 0x39 (PORTD9). If other ports are used, for example, 0x15 for PORTB5 and 0x13 for PORTB3.
-	For Type P, if z2 is omitted, 3 (GP3).
+	For Type P, if z2 is omitted, 3 (GP3). If other ports are used, for example, 4 for GP4 (I/O bit 4) and 27 or 14 for GP27 (I/O bit 14).
 		z1=0: Low when idle and data changes to Low (CKP=0,CKE=1; CPOL=0,CPHA=0)
 		z1=1: Low when idle, data changes to high (CKP=0,CKE=0; CPOL=0,CPHA=1)
 		z1=2: "H" when idle, data changes to "H" (CKP=1,CKE=1; CPOL=1,CPHA=1)
@@ -647,7 +647,7 @@ SPISWAPDATA x,y[,z1[,z2[,z3...]]]
 	SPI multi-word send/receive. x is a pointer to the buffer that stores the contents to be sent/received. y is the number of words to be sent/received. z1, z2, z3, etc. are optional transmission codes, which are sent first. Then, after sending the contents of buffer x, data is received and stored back into buffer x. This operation is repeated over y words.
 
 <Option>
-The OPTION statement can be used to specify various options at compile-time or run-time. The following options are available
+Type Z and Type M allow various options to be specified at compile-time or run-time using the OPTION statement. The following options are available
 
 OPTION NOLINENUM
 	Do not insert a line numbering instruction at compile time. This option is expected to reduce program size and increase execution speed. However, if an error occurs, it will not be clear which line the error occurred on.
@@ -693,7 +693,7 @@ If strings are handled consecutively in a line, an error message "String too com
 Be careful when accessing global variables in interrupt functions. If a variable of the same name is specified as a VAR in one of the subroutines and is also used as a local variable, depending on when the interrupt is triggered, the value of the variable may or may not belong to the global or local variable. Therefore, if you want to handle a global variable in an interrupt function, do not specify a variable of the same name as a VAR.
 
 <Version history>
-KM-1500 Scheduled to be released in August 2022.
+KM-1500 Released in August 2022.
 KM-1303 Released in May 2019.
 　KM-1303 Released in May 2019. -Added timer functions (USETIMER, TIMER, CORETIMER statements and TIMER(), CORETIMER() functions).
 　Interrupt function (INTERRUPT statement) is added.

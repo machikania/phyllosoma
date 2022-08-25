@@ -19,10 +19,10 @@
 	GP13 LCD-CS
 	GP14 LCD-SCK
 	GP15 LCD-MOSI
-	GP16 SD-DO / SPI RX
+	GP16 SD-DO(MISO) / SPI RX (pulled up by a 10k ohm resistor)
 	GP17 SD-CS
 	GP18 SD-SCLK / SCK
-	GP19 SD-DI / SPI TX
+	GP19 SD-DI(MOSI) / SPI TX
 	GP20 I/O bit10 / button3 (RIGHT)
 	GP21 I/O bit11 / button4 (DOWN)
 	GP22 I/O bit12 / button5 (START)

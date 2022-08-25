@@ -123,5 +123,5 @@ Example (123 is displayed):
 Class files are read if there is a "classname.BAS" file in the current directory. BAS" file in the current directory. If the file is not in the current directory, it will be read from the "⌘LIB\class name\class name.BAS" file, if available. Therefore, if you place a group of classes in the "⌘LIB" directory, you can use them as a library that can be used at any time.
 
 ＜Version History
-KM-1500 Scheduled to be released in August 2022.
+KM-1500 released in August 2022.
 KM-1207/KM1302 released in March 2019.
