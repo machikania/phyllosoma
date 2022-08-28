@@ -9,7 +9,7 @@
 #define PHYLLOSOMA
 #define SYSVER1 "Phyllosoma"
 #define SYSVER2 "1.0.1"
-#define BASVER "KM-1500"
+#define BASVER "KM-1501"
 
 #define IO_SPI_TX SD_SPI_TX
 #define IO_SPI_RX SD_SPI_RX

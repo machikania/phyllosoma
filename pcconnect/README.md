@@ -11,12 +11,12 @@ The connect.c is the source code of appication running in PC for the connection 
 Use gcc. In windows, CygWin is required.
 
 ## How to use
-1.Place "connect.ini" file in the same directory where a.out or a.exe exists  
-2.Create "machikap" directory in the same directory.  
-3.Place the files (for example, MACHIKAP.BAS) to be transfered to MachiKania in the machikap directory.  
-4.Edit the files in machikap directory for your purpose.  
-5.Run a.out or a.exe.  
-6.Reset MachiKania to transfer the files.  
+1. Place "connect.ini" file in the same directory where a.out or a.exe exists  
+2. Create "machikap" directory in the same directory.  
+3. Place the files (for example, MACHIKAP.BAS) to be transfered to MachiKania in the machikap directory.  
+4. Edit the files in machikap directory for your purpose.  
+5. Run a.out or a.exe.  
+6. Reset MachiKania to transfer the files.  
 
 ## Settings
 Edit "connect.ini" file for configuration. It is necessary to specify the device to connect (for example, /dev/ttyS2, /dev/ttyACM0).
