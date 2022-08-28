@@ -561,6 +561,9 @@ int sound_statement(void);
 int playwave_statement(void);
 int playwave_function(void);
 
+// pcconnect.c
+void connect2pc(void);
+
 // For debugging
 void dump_cmpdata(void);
 void dump(void);
