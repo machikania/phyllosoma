@@ -40,6 +40,7 @@
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
 #include "../config.h"
+#include "../sleep.h"
 
 #define	CS_H() gpio_put(SD_SPI_CS, 1)	/* Set MMC CS "high" */
 #define CS_L() gpio_put(SD_SPI_CS, 0)	/* Set MMC CS "low" */

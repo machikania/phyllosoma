@@ -361,6 +361,8 @@ extern char g_enable_button_rotation;
 extern char g_reset_at_end;
 extern int g_wait_at_begin;
 
+extern char g_interrupt_code;
+
 /*
 	Prototypes
 */

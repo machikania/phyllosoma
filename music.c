@@ -11,6 +11,7 @@
 #include "./api.h"
 #include "./core1.h"
 #include "./config.h"
+#include "./sleep.h"
 
 /*
 	clkdiv=138.75, clock=125000000

@@ -68,6 +68,13 @@ void call_interrupt_function(void* r0){
 	asm("mov r5,r12");
 	asm("mov r6,lr");
 	asm("push {r1,r2,r3,r4,r5,r6}");
+	// Push current interrupt flag status
+	asm("ldr r1,=g_interrupt_code");
+	asm("ldrb r2,[r1,#0]");
+	asm("push {r2}");
+	// Set g_interrupt_code flag
+	asm("movs r2,#01");
+	asm("strb r2,[r1,#0]");
 	// Set special registers
 	// R5 is pointer to array containing variable values
 	asm("ldr r5,=kmbasic_variables");
@@ -80,6 +87,10 @@ void call_interrupt_function(void* r0){
 	asm("mov r8,r1");
 	// Call the code
 	asm("blx r0");
+	// Pop interrupt flag status
+	asm("pop {r2}");
+	asm("ldr r1,=g_interrupt_code");
+	asm("strb r2,[r1,#0]");
 	// Pop registers
 	asm("pop {r1,r2,r3,r4,r5,r6}");
 	asm("mov r8,r1");
