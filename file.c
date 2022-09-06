@@ -36,6 +36,12 @@ int compile_file(unsigned char* fname, char isclass){
 	unsigned char* classfile;
 	unsigned char* curdir;
 	unsigned short* bl;
+	unsigned char stackfname[13];
+	// Copy file name to stack
+	for(i=0;i<13;i++){
+		if (!(stackfname[i]=fname[i])) break;
+	}
+	fname=&stackfname[0];
 	// Initialize
 	char showfilename=1;
 	begin_file_compiler();
@@ -66,6 +72,7 @@ int compile_file(unsigned char* fname, char isclass){
 					return show_error(ERROR_NO_CLASS_FILE,0);
 				}
 				// Succesfully opened the file.
+				for(i=0;curdir[i]=g_file_buffer[i];i++);  
 			} else {
 				// The main file not found
 				return show_error(ERROR_FILE,0);
