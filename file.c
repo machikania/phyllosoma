@@ -30,13 +30,15 @@ int file_exists(unsigned char* fname){
 }
 
 int compile_file(unsigned char* fname, char isclass){
-	int e,i,num;
+	int e,i,num,class_id;
 	FIL fpo;
 	FIL* fp=&fpo;
 	unsigned char* classfile;
-	unsigned char* curdir;
+	unsigned char curdir[64];
 	unsigned short* bl;
 	unsigned char stackfname[13];
+	// Store current g_class_id
+	class_id=g_class_id;
 	// Copy file name to stack
 	for(i=0;i<13;i++){
 		if (!(stackfname[i]=fname[i])) break;
@@ -47,10 +49,9 @@ int compile_file(unsigned char* fname, char isclass){
 	begin_file_compiler();
 	// Store current directory
 	if (f_getcwd(g_file_buffer,g_file_buffer_size)) return show_error(ERROR_UNKNOWN,0);
-	for(num=0;g_file_buffer[num]!=0x00;num++);
-	curdir=cmpdata_insert_string_stack(num+1);
-	if (!curdir) return show_error(ERROR_OBJ_TOO_LARGE,0);
-	for(i=0;i<=num;i++) curdir[i]=g_file_buffer[i];
+	for(i=0;curdir[i]=g_file_buffer[i];i++) {
+		if ((sizeof curdir/sizeof curdir[0])-1==i) return ERROR_PATH_TOO_LONG;
+	}
 	// Open file
 	if (f_open(fp,fname,FA_READ)) {
 		// Mount and open again
@@ -71,8 +72,10 @@ int compile_file(unsigned char* fname, char isclass){
 					f_chdir(curdir);
 					return show_error(ERROR_NO_CLASS_FILE,0);
 				}
-				// Succesfully opened the file.
-				for(i=0;curdir[i]=g_file_buffer[i];i++);  
+				// Succesfully opened the file. Change the current dirctory
+				for(i=0;curdir[i]=g_file_buffer[i];i++) {
+					if ((sizeof curdir/sizeof curdir[0])-1==i) return ERROR_PATH_TOO_LONG;
+				}
 			} else {
 				// The main file not found
 				return show_error(ERROR_FILE,0);
@@ -93,6 +96,7 @@ int compile_file(unsigned char* fname, char isclass){
 			bl=object;
 			object+=2;
 			// Compile the class
+			num=g_class_id;
 			classfile=g_class_file;
 			e=compile_file(classfile,1);
 			if (e) return e;
@@ -102,6 +106,8 @@ int compile_file(unsigned char* fname, char isclass){
 			update_bl(bl,object);
 			// Delete the string stack stored for file name
 			cmpdata_delete_string_stack(classfile);
+			// Restore g_class_id
+			g_class_id=class_id;
 			// Open current file again, and continue from the beginning
 			f_chdir(curdir);
 			if (f_open(fp,fname,FA_READ)) return show_error(ERROR_FILE,0);
@@ -129,26 +135,6 @@ int compile_file(unsigned char* fname, char isclass){
 	cmpdata_delete_string_stack(curdir);
 	return end_file_compiler();
 }
-
-/*
-	File-related statements/functions follow
-		FCLOSE [x]
-		FGET x,y 関数として呼ばれた場合は、読み込みに成功したバイト数を返す。
-		FILE x
-		FOPEN x$,y$[,z]
-		FPRINT [ xまたはx$またはx# [ ,または; [ yまたはy$またはy# [ ... ]]]]
-		FPUT x,y 関数として呼ばれた場合は、読み込みに成功したバイト数を返す。
-		FPUTC x
-		FREMOVE x$
-		FSEEK x
-		SETDIR x$
-		FEOF()
-		FGETC()
-		FLEN()
-		FSEEK()
-		FINPUT$([x])
-		GETDIR$()
-*/
 
 FIL* g_pFileHandles[2];
 FIL g_FileHandles[2];

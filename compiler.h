@@ -49,6 +49,7 @@
 #define ERROR_OBJ_TOO_LARGE _throw_error(-19)
 #define ERROR_INVALID _throw_error(-20)
 #define ERROR_MUSIC (-21)
+#define ERROR_PATH_TOO_LONG _throw_error(-22)
 
 /*
 	Libraries
