@@ -118,10 +118,29 @@ Example (123 is displayed):
 　CLASS1::TEST6=123
 　PRINT CLASS1::TEST7()
 
+<To assign a string or array to a field of an object>
+
+You can also assign a string or an array to a field of an object. In this case, use the DELETE instruction to destroy the corresponding string or array when destroying the object.
+
+Example Description (MAIN.BAS):
+　USECLASS CLASS1
+　O=NEW(CLASS1)
+　O.DSTRCT()
+　DELETE O
+Example description (CLASS.BAS):
+　FIELD DAT
+　METHOD INIT
+　DIM DAT(100)
+　RETURN
+　METHOD DSTRCT
+　DELETE DAT
+　RETURN
+
 <About the library>
 
 Class files are read if there is a "classname.BAS" file in the current directory. BAS" file in the current directory. If the file is not in the current directory, it will be read from the "⌘LIB\class name\class name.BAS" file, if available. Therefore, if you place a group of classes in the "⌘LIB" directory, you can use them as a library that can be used at any time.
 
 ＜Version History
+KM-1501 Released in ??? 2022.
 KM-1500 released in August 2022.
 KM-1207/KM1302 released in March 2019.

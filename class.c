@@ -276,6 +276,8 @@ void var2obj(int* obj){
 			var_num=class[i]>>24;
 			// Update object field
 			obj[i]=kmbasic_variables[var_num];
+			// Move to permanent area if array
+			if (kmbasic_var_size[var_num]) var2permanent(var_num);
 		}
 	}
 }

@@ -696,6 +696,10 @@ Be careful when accessing global variables in interrupt functions. If a variable
 
 <Version history>
 KM-1501 Released in ??? 2022.
+　The NOT#() function was added.
+　Fixed a bug that prevented compiling when using another class in a class.
+　Fixed a bug in static function calls of the class.
+　Allow assignment of strings and arrays to object fields
 KM-1500 Released in August 2022.
 KM-1303 Released in May 2019.
 　KM-1303 Released in May 2019. -Added timer functions (USETIMER, TIMER, CORETIMER statements and TIMER(), CORETIMER() functions).

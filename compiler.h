@@ -479,6 +479,7 @@ void delete_memory(void* data);
 int move_from_temp(int vn, int pdata);
 void garbage_collection(void* data);
 int get_permanent_block_number(void);
+void var2permanent(int var_num);
 
 // class.c
 int init_class_compiling(void);
