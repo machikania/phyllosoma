@@ -26,6 +26,8 @@ void vramscroll(void);
 	//1行スクロール
 void vramscrolldown(void);
 	//1行逆スクロール
+void windowscroll(int y1,int y2);
+	//行y1からy2の間を1行スクロール
 void setcursor(unsigned char x,unsigned char y,unsigned char c);
 	//カーソル位置とカラーを設定
 void setcursorcolor(unsigned char c);
