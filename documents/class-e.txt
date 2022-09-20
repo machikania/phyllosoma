@@ -127,13 +127,15 @@ Example Description (MAIN.BAS):
 　O=NEW(CLASS1)
 　O.DSTRCT()
 　DELETE O
-Example description (CLASS.BAS):
-　FIELD DAT
+Example description (CLASS1.BAS):
+　FIELD DAT,STR
 　METHOD INIT
 　DIM DAT(100)
+　STR="TEST"
 　RETURN
 　METHOD DSTRCT
 　DELETE DAT
+　DELETE STR
 　RETURN
 
 <About the library>

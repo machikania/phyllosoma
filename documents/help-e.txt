@@ -700,6 +700,7 @@ KM-1501 Released in ??? 2022.
 　Fixed a bug that prevented compiling when using another class in a class.
 　Fixed a bug in static function calls of the class.
 　Allow assignment of strings and arrays to object fields
+　Fixed a bug that WAVE files stop playing after a certain period of time
 KM-1500 Released in August 2022.
 KM-1303 Released in May 2019.
 　KM-1303 Released in May 2019. -Added timer functions (USETIMER, TIMER, CORETIMER statements and TIMER(), CORETIMER() functions).
