@@ -695,12 +695,13 @@ If strings are handled consecutively in a line, an error message "String too com
 Be careful when accessing global variables in interrupt functions. If a variable of the same name is specified as a VAR in one of the subroutines and is also used as a local variable, depending on when the interrupt is triggered, the value of the variable may or may not belong to the global or local variable. Therefore, if you want to handle a global variable in an interrupt function, do not specify a variable of the same name as a VAR.
 
 <Version history>
-KM-1501 Released in ??? 2022.
+KM-1501 Released in October 2022.
 　The NOT#() function was added.
 　Fixed a bug that prevented compiling when using another class in a class.
 　Fixed a bug in static function calls of the class.
 　Allow assignment of strings and arrays to object fields
 　Fixed a bug that WAVE files stop playing after a certain period of time
+　Allows use of WAIT, DELAYMS, and DELAYUS statements during interrupts
 KM-1500 Released in August 2022.
 KM-1303 Released in May 2019.
 　KM-1303 Released in May 2019. -Added timer functions (USETIMER, TIMER, CORETIMER statements and TIMER(), CORETIMER() functions).
