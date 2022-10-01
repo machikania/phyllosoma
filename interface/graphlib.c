@@ -569,6 +569,23 @@ void textredraw(void){
 	checkSPIfinish();
 }
 
+void windowscroll(int y1,int y2){
+	// scroll up text bitween line y1 and y2
+	unsigned char *p1,*p2,*vramend;
+
+	vramend=TVRAM+WIDTH_X*(y2+1);
+	p1=TVRAM+WIDTH_X*y1;
+	p2=p1+WIDTH_X;
+	while(p2<vramend){
+		*(p1+ATTROFFSET)=*(p2+ATTROFFSET);
+		*p1++=*p2++;
+	}
+	while(p1<vramend){
+		*(p1+ATTROFFSET)=0;
+		*p1++=0;
+	}
+	textredraw();
+}
 void vramscroll(void){
 	unsigned char *p1,*p2,*vramend;
 

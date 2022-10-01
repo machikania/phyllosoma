@@ -10,7 +10,7 @@
 static char* g_error_file;
 static int g_error_line;
 
-static const char* g_error_text[22]={
+static const char* g_error_text[23]={
 	"No error",
 	"Syntax error",                  // #define ERROR_SYNTAX _throw_error(-1)
 	"Unknown error",                 // #define ERROR_UNKNOWN _throw_error(-2)
@@ -33,6 +33,7 @@ static const char* g_error_text[22]={
 	"Compile object too large",      // #define ERROR_OBJ_TOO_LARGE _throw_error(-19)
 	"Invalid value or setting",      // #define ERROR_INVALID _throw_error(-20)
 	"Music/sound error",             // #define ERROR_MUSIC (-21)
+	"File path too long",            // #define ERROR_PATH_TOO_LONG _throw_error(-22)
 };
 
 int show_error(int e, int pos){

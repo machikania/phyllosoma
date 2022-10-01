@@ -49,6 +49,7 @@
 #define ERROR_OBJ_TOO_LARGE _throw_error(-19)
 #define ERROR_INVALID _throw_error(-20)
 #define ERROR_MUSIC (-21)
+#define ERROR_PATH_TOO_LONG _throw_error(-22)
 
 /*
 	Libraries
@@ -361,6 +362,8 @@ extern char g_enable_button_rotation;
 extern char g_reset_at_end;
 extern int g_wait_at_begin;
 
+extern char g_interrupt_code;
+
 /*
 	Prototypes
 */
@@ -476,6 +479,7 @@ void delete_memory(void* data);
 int move_from_temp(int vn, int pdata);
 void garbage_collection(void* data);
 int get_permanent_block_number(void);
+void var2permanent(int var_num);
 
 // class.c
 int init_class_compiling(void);
@@ -560,6 +564,9 @@ int music_function(void);
 int sound_statement(void);
 int playwave_statement(void);
 int playwave_function(void);
+
+// pcconnect.c
+void connect2pc(void);
 
 // For debugging
 void dump_cmpdata(void);

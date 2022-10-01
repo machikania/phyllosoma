@@ -259,3 +259,27 @@ int get_permanent_block_number(void){
 	stop_with_error(ERROR_OBJ_TOO_MANY);
 	return ERROR_UNKNOWN;
 }
+
+void var2permanent(int var_num){
+	int i;
+	int val=kmbasic_variables[var_num];
+	if (kmbasic_var_size[var_num] && g_heap_begin<=(int*)val && (int*)val<g_heap_end) {
+		for(i=0;i<PERMVAR_NUMBER;i++){
+			if (kmbasic_var_size[var_num]!=kmbasic_var_size[ALLOC_PERM_BLOCK+i]) continue;
+			if (kmbasic_variables[ALLOC_PERM_BLOCK+i]!=val) continue;
+			// Permanent block already exists. Do not copy, but delete the source.
+			// This happens at and after 2nd time of calling this function with the same var.
+			// Note that moving of array from object field to var doesn't happen
+			// and that only moving the pointer happens.
+			// This mechanism is for avoinding accidental overlap of integer value (but not pointer) 
+			// over a permanent block area. 
+			kmbasic_var_size[var_num]=0;
+			return;
+		}
+		// Permanent block not found. Create a new one.
+		i=get_permanent_block_number();
+		kmbasic_variables[i]=kmbasic_variables[var_num];
+		kmbasic_var_size[i]=kmbasic_var_size[var_num];
+		kmbasic_var_size[var_num]=0;
+	}
+}

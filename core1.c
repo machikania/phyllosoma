@@ -44,21 +44,23 @@ void call_outer_requests(void){
 
 void core1_entry(void) {
 	int first;
-	int now,i,j;
+	int now32,i,j;
+	uint64_t now;
 	g_1w0r_core1_busy=1;
 	g_1w0r_core1_started=1;
 	while(g_0w1r_core1_enabled){
 		// Wait until next timing
-		now=time_us_32();
+		now32=time_us_32();
+		now=time_us_64();
 		first=16667; // Slowest frequency to check requests is 60 Hz
 		for(i=0;i<CALLBACK_BUFFER_NUM;i++){
 			if (!g_core1_callback[i]) continue;
-			j=g_core1_callback_at[i]-now;
+			j=g_core1_callback_at[i]-now32;
 			if (j<first) first=j;
 		}
 		if (1<first) {
 			g_1w0r_core1_busy=0;
-			sleep_until(now+first); // Must use "busy_wait_until()" ???
+			sleep_until(now+first);
 			g_1w0r_core1_busy=1;
 		}
 		// Call functions at requested timing

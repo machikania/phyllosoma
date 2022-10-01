@@ -276,6 +276,8 @@ void var2obj(int* obj){
 			var_num=class[i]>>24;
 			// Update object field
 			obj[i]=kmbasic_variables[var_num];
+			// Move to permanent area if array
+			if (kmbasic_var_size[var_num]) var2permanent(var_num);
 		}
 	}
 }
@@ -417,10 +419,13 @@ int static_method_or_property(int cn, char stringorfloat){
 	if (class[i]&CLASS_METHOD) {
 		// This is public class method.
 		if ('('!=source[0]) return ERROR_SYNTAX;
-		data=cmpdata_findfirst_with_id(CMPDATA_METHOD,class[i]&0xffff);
+		// Get method address
+		data=cmpdata_findfirst_with_id(CMPDATA_CLASS_ADDRESS,cn);
 		if (!data) return ERROR_UNKNOWN;
-		// Compile method
-		i=static_method(data[1]);
+		// data[2] is the pointer to empty object of specified class
+		data=(int*)data[2];
+		// Compile method. data[i] is the 
+		i=static_method(data[i]);
 		if (i) return i;
 		if (')'!=source[0]) return ERROR_SYNTAX;
 		source++;

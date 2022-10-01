@@ -30,6 +30,17 @@ int val_float_function(void){
 	return argn_function(LIB_VAL_FLOAT,ARG_STRING<<ARG1);
 }
 
+int not_sharp_function(void){
+	int e;
+	e=get_float();
+	if (e) return e;
+	e=set_value_in_register(1,0);
+	if (e) return e;
+	e=set_value_in_register(2,OP_EQ);
+	if (e) return e;
+	return call_lib_code(LIB_CALC_FLOAT);
+}
+
 int float_functions(void){
 	if (instruction_is("ACOS#(")) return float_arg1_function(MATH_ACOS);
 	if (instruction_is("ARGS#(")) return args_function();
@@ -49,6 +60,7 @@ int float_functions(void){
 	if (instruction_is("LOG#(")) return float_arg1_function(MATH_LOG);
 	if (instruction_is("LOG10#(")) return float_arg1_function(MATH_LOG10);
 	if (instruction_is("MODF#(")) return float_arg1_function(MATH_MODF);
+	if (instruction_is("NOT#(")) return not_sharp_function();
 	if (instruction_is("POW#(")) return float_arg2_function(MATH_POW);
 	if (instruction_is("SIN#(")) return float_arg1_function(MATH_SIN);
 	if (instruction_is("SINH#(")) return float_arg1_function(MATH_SINH);

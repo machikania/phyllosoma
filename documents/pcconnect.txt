@@ -1,0 +1,24 @@
+Type P の ver 1.1以降では、USBケーブルでPCとMachiKaniaを接続しておけば、MachiKaniaの起動時にPCから指定のファイルを転送することができます。BASICプログラムの作成やデバッグの際に、便利です。LIBディレクトリー中のライブラリーのデバッグも行えます。
+
+＜準備＞
+
+１．ver 1.1以降のMachiKania type Pを、Raspberry Pi Picoにインストールします。
+２．ダウンロードしたMachiKania type PのZIPアーカイブ中の「pcconnect」ディレクトリーを、PCのどこかに解凍・展開します。
+３．PCとしてLinuxを使用する場合は、connect.cをgccでコンパイルし、a.outを作成してください。Windowsを使用する場合は、forWindows.zipを解凍し、a.exeとcygwin1.dllをpcconnectディレクトリーに展開してください。
+４．connect.iniを編集します。「SERIALPORT=」の後にはMachiKaniaをPCに接続した場合のCOMポートを指定します。よく分からない場合は、とりあえずそのまま(「/dev/ttyDUMMY」のまま)で次に進めてください。
+５．connect.iniの「ROOT=」の後には、MachiKaniaに転送するファイルを含むディレクトリー名を指定します。デフォルトでは「machikap/」となっています。そのまま使用する場合は、pcconnectディレクトリーにmachikapディレクトリーを作成してください。別のディレクトリーを使用する場合は、指定した名のディレクトリーを作成してください。
+６．MachiKaniaをPCに接続し、a.out(Linuxの場合)もしくはa.exe(Windowsの場合)を起動します。うまく接続できた場合は「Waiting for request...」と表示され、MachiKaniaからの転送リクエスト待ちになります。
+７．接続に失敗した場合は、「open serial port...failed Try some from followings (/dev/tty* would be good)」と表示され、次の行にMachiKaniaが接続されたポートの候補のリストが表示されます。MachiKaniaをPCに接続した状態と接続しない状態でa.out/a.exeに表示されるポート名リストを比較すれば、MachiKaniaのポート名を知ることができます。正しいポート名をconnect.iniの「SERIALPORT=」に指定して、もう一度 a.out/a.exe を起動しなおしてください。
+８．machikapディレクトリーを空にしたままで、MachiKaniaのリセットボタンを押してください。この時、「Request detected! Waiting for SENDCMD...OK All done!」と表示されれば、a.out/a.exeとMachiKaniaの通信が問題なく行われています。
+９．もし通信がうまく行かない場合は、MachiKaniaのMMC/SDカードのルートにあるMACHIKAP.INIを編集し、「STARTWAIT=」の後の数字を少し多くしてください。500で通信に失敗しても、700や1000なら成功するようなケースもあります。
+
+＜ファイルの転送＞
+
+１．machikapディレクトリーに転送したいファイル（MACHIKAP.BASなど）を配置し、任意のエディターで編集してください。
+２．MachiKaniaのリセットボタンを押すと、PCからMachiKaniaにファイルが転送されます。MACHIKAP.BASがあれば、そのまま実行されます。
+
+＜後始末＞
+
+１．プログラムのデバッグ等が終わって、MMC/SDカードのMACHIKAP.BASが必要なくなった場合、machikapディレクトリー内のMACHIKAP.BASの内容を「fremove "MACHIKAP.BAS"」としてください。
+２．a.out/a.exeが起動した状態でMachiKaniaのリセットボタンを押すと、MMC/SDカードのMACHIKAP.BASが削除されます。
+３．a.out/a.exeを終了し、MachiKaniaのリセットボタンを再度押せば、MachiKaniaはファイル選択画面になります。

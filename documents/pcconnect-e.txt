@@ -1,0 +1,24 @@
+With Type P ver 1.1 or later, you can transfer files from your PC to MachiKania when MachiKania starts up, if the PC is connected to MachiKania with a USB cable. You can also debug libraries in the LIB directory.
+
+<Preparation>
+
+1. Install MachiKania type P ver 1.1 or later on your Raspberry Pi Pico.
+2. Extract the "pcconnect" directory in the MachiKania type P zip archive to a location on your PC.
+3. If you use Linux as PC, compile connect.c with gcc and create a.out. If you use Windows, unzip forWindows.zip and extract a.exe and cygwin1.dll to Extract a.exe and cygwin1.dll to the pcconnect directory.
+4. Edit connect.ini. After "SERIALPORT=", specify the COM port for MachiKania when it is connected to a PC. If you are not sure, leave it as it is ("/dev/ttyDUMMY") and proceed to the next step.
+5. After "ROOT=" in connect.ini, specify the directory name that contains the files to be transferred to MachiKania. The default is "machikap/". If you want to use it as it is, create the machikap directory in the pcconnect directory. If you want to use another directory, create a directory with the specified name.
+6. Connect MachiKania to the PC and start a.out (for Linux) or a.exe (for Windows). If the connection is successful, the message "Waiting for request..." will be displayed. is displayed and you are waiting for a transfer request from MachiKania. 
+7. If the connection fails, the message "open serial port.... . failed Try some from followings (/dev/tty* would be good)" will be displayed and the next line will show a list of possible ports to which MachiKania is connected. By comparing the list of port names displayed in a.out/a.exe with and without MachiKania connected to the PC, you can find out the MachiKania port names. Specify the correct port name in "SERIALPORT=" in connect.ini and re-start a.out/a.exe.
+8. Leave the machikap directory empty and press the reset button on MachiKania. At this time, the message "Request detected! Waiting for SENDCMD.... OK All done!" is displayed, communication between a.out/a.exe and MachiKania is working without any problem. 
+9. If communication fails, edit MACHIKAP.INI in the root of the MachiKania MMC/SD card and increase the number after "STARTWAIT=" a little. In some cases, communication may fail at 500, but succeed at 700 or 1000.
+
+<Transfer of files>
+
+1. Place the file you wish to transfer (e.g. MACHIKAP.BAS) in the machikap directory and edit it with your favorite editor. 
+2. If MACHIKAP.BAS is present, it will be executed as is.
+
+<Cleanup>
+
+1. If you have finished debugging the program and no longer need MACHIKAP.BAS on the MMC/SD card, fremove "MACHIKAP.BAS" from the MACHIKAP.BAS directory.
+2. Press the reset button of Machikania while a.out/a.exe is running to delete MACHIKAP.BAS in the MMC/SD card.
+3. Exit a.out/a.exe and press the reset button of MachiKania again, MachiKania will go to the file selection screen.

@@ -13,6 +13,7 @@
 #include "./api.h"
 #include "./display.h"
 #include "./config.h"
+#include "./sleep.h"
 
 /*
 	Local macros

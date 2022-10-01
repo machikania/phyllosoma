@@ -90,12 +90,14 @@ void viewfile(unsigned char *fname){
 	if (fr) disperror("File Open Error.", fr);
 	p=linebuf;
 	*p=0;
-	setcursor(0,1,7);
+	setcursorcolor(4);
+	printstr("[FIRE]:Exec [START]:Return\n");
+	setcursorcolor(7);
 	while(1){
 		keycheck();
 		if(keystatus2==KEYFIRE) break;
 		if(keystatus3==KEYSTART) break;
-		while (!f_eof(&Fil)){
+		while (*p!=0 || !f_eof(&Fil)){
 			while (cursor<vramend || (keystatus2==KEYDOWN || keycountDOWN>20)){
 				if(*p==0 && !f_eof(&Fil)){
 					if (f_gets(linebuf, sizeof(linebuf), &Fil) == NULL)
@@ -103,6 +105,10 @@ void viewfile(unsigned char *fname){
 					p=linebuf;
 				}
 				else if(*p==0) break;
+				if(cursor>=vramend){
+					windowscroll(1,WIDTH_Y-1);
+					cursor-=WIDTH_X;
+				}
 				while(*p){
 					ch=*p++;
 					if(ch==13) continue;
@@ -113,13 +119,7 @@ void viewfile(unsigned char *fname){
 			}
 			if(cursor>=vramend) break;
 		}
-		cursor2=cursor;
-		setcursor(0,0,4);
-		printstr("[FIRE]:Exec [START]:Return");
-		while(cursor<TVRAM+WIDTH_X) printchar(' ');
-		cursor=cursor2;
-		setcursorcolor(7);
-		sleep_ms(16);
+		sleep_ms(10);
 	}
 	f_close(&Fil);
 	cls();

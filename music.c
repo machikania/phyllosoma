@@ -11,6 +11,7 @@
 #include "./api.h"
 #include "./core1.h"
 #include "./config.h"
+#include "./sleep.h"
 
 /*
 	clkdiv=138.75, clock=125000000
@@ -650,6 +651,7 @@ int lib_music(int r0, int r1, int r2){
 	switch(r2){
 		case LIB_MUSIC_MUSIC:
 			set_music((char*)r1,r0);
+			garbage_collection((char*)r1);
 			return r0;
 		case LIB_MUSIC_SOUND:
 			set_sound(r0);
@@ -658,6 +660,7 @@ int lib_music(int r0, int r1, int r2){
 			return musicRemaining(3);
 		case LIB_MUSIC_PLAYWAVE:
 			set_wave((char*)r1,r0);
+			garbage_collection((char*)r1);
 			return r0;
 		case LIB_MUSIC_PLAYWAVEFUNC:
 			return waveRemaining(r0);

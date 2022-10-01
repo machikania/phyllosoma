@@ -92,6 +92,8 @@ int main() {
 	// Read MACHIKAP.INI
 	read_ini();
 	sleep_ms(g_wait_at_begin-500);
+	// Connect to PC
+	connect2pc();
 	// Get filename to compile
 	if (file_exists(g_autoexec)) str=&g_autoexec[0];
 	else str=fileselect();

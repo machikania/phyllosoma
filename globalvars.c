@@ -107,6 +107,9 @@ char g_reset_at_end=0;
 
 int g_wait_at_begin=500;
 
+// Flag of interrupt
+
+char g_interrupt_code=0;
 
 // Reserved words
 
