@@ -702,6 +702,7 @@ KM-1501 Released in October 2022.
 　Allow assignment of strings and arrays to object fields
 　Fixed a bug that WAVE files stop playing after a certain period of time
 　Allows use of WAIT, DELAYMS, and DELAYUS statements during interrupts
+　Fixed a bug that caused MUSIC statements to stop with an error in some environments
 KM-1500 Released in August 2022.
 KM-1303 Released in May 2019.
 　KM-1303 Released in May 2019. -Added timer functions (USETIMER, TIMER, CORETIMER statements and TIMER(), CORETIMER() functions).
