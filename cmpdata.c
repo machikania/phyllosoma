@@ -92,7 +92,7 @@ void cmpdata_reset(void){
 		unsigned char num:  Length of above data array. If not required, set 0.
 */
 int cmpdata_insert(unsigned char type, short data16, int* data, unsigned char num){
-	unsigned char i;
+	unsigned int i;
 	// Check the type
 	if (CMPDATA_STRSTACK==type) {
 		// Store the new record in the end as stack
