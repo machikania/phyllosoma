@@ -114,6 +114,51 @@ int system_function(void){
 	return call_lib_code(LIB_SYSTEM);
 }
 
+int dataaddress_function(void){
+	int id,e,val;
+	int* data;
+	// Get label id
+	id=get_label_id();
+	if (id<0) return id;
+	// Check if LABEL already set
+	data=cmpdata_findfirst_with_id(CMPDATA_LABEL,id);
+	if (data) val=data[1];
+	else val=0;
+	if ((int)object&0x03) {
+		// Lower 2 bit of object is 0b10
+		check_object(5);
+		(object++)[0]=0x4801;        // ldr    r0, [pc, #4]
+		(object++)[0]=0xe002;        // b.n    <skip>
+		(object++)[0]=0x46c0;        // nop            ; (mov r8, r8)
+		g_scratch_int[0]=(int)object;
+		(object++)[0]=val&0xffff;    // lower 16 bits
+		(object++)[0]=val>>16;       // upper 16 bits
+		                             // <skip>:	
+	} else {
+		// Lower 2 bit of object is 0b00
+		check_object(4);
+		(object++)[0]=0x4800;        // ldr    r0, [pc, #4]
+		(object++)[0]=0xe001;        // b.n    <skip>
+		g_scratch_int[0]=(int)object;
+		(object++)[0]=val&0xffff;    // lower 16 bits
+		(object++)[0]=val>>16;       // upper 16 bits
+		                             // <skip>:	
+	}
+	if (!val) {
+		e=cmpdata_insert(CMPDATA_DATA_LABEL_BL,id,(int*)g_scratch_int,1);
+		if (e) return e;
+	}
+	return 0;
+}
+
+int funcaddress_function(void){
+	int e;
+	e=dataaddress_function();
+	check_object(1);
+	(object++)[0]=0x3001; //	adds	r0, #1
+	return 0;
+}
+
 int integer_functions(void){
 	int e;
 	if (instruction_is("ABS(")) return abs_function();
@@ -121,7 +166,9 @@ int integer_functions(void){
 	if (instruction_is("ASC(")) return asc_function();
 	if (instruction_is("CREAD(")) return cread_function();
 	if (instruction_is("DEBUG(")) return debug_function();
+	if (instruction_is("DATAADDRESS(")) return dataaddress_function();
 	if (instruction_is("DRAWCOUNT(")) return drawcount_function();
+	if (instruction_is("FUNCADDRESS(")) return funcaddress_function();
 	if (instruction_is("GOSUB(")) return gosub_function();
 	if (instruction_is("INKEY(")) return inkey_function();
 	if (instruction_is("INT(")) return int_function();

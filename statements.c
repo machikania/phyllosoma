@@ -429,6 +429,16 @@ int label_statement(void){
 		// Delete the cmpdata record
 		cmpdata_delete(data);
 	}
+	// Resolve all CMPDATA_DATA_LABEL_BL(s)
+	while(data=cmpdata_findfirst_with_id(CMPDATA_DATA_LABEL_BL,id)){
+		// Found a CMPDATA_DATA_LABEL_BL
+		bl=(short*)data[1];
+		// Update it
+		bl[0]=((int)object)&0xffff;
+		bl[1]=((int)object)>>16;
+		// Delete the cmpdata record
+		cmpdata_delete(data);
+	}
 	// All done
 	return 0;
 }
@@ -1342,6 +1352,14 @@ int system_statement(void){
 	Misc
 */
 
+int align4_statement(void){
+	if ((int)object&0x03) {
+		check_object(1);
+		(object++)[0]=0x46c0;        // nop
+	}
+	return 0;
+}
+
 int debug_statement(void){
 #ifdef DEBUG_MODE
 	g_default_args[1]=0;
@@ -1443,6 +1461,7 @@ int compile_statement(void){
 	rewind_object(bobj);
 	source=bsrc;
 	// It's not LET statement. Let's continue for possibilities of the other statements.
+	if (instruction_is("ALIGN4")) return align4_statement();
 	if (instruction_is("BREAK")) return break_statement();
 	if (instruction_is("CALL")) return call_statement();
 	if (instruction_is("CDATA")) return cdata_statement();

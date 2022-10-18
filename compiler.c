@@ -73,6 +73,10 @@ int end_file_compiler(void){
 			printstr("Label not found");
 			break;
 		}
+		if (data=cmpdata_findfirst(CMPDATA_DATA_LABEL_BL)) {
+			printstr("Label not found");
+			break;
+		}
 		if (data=cmpdata_findfirst(CMPDATA_BREAK_BL)) {
 			printstr("FOR/WHILE/DO loop not terminated");
 			break;

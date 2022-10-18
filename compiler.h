@@ -255,6 +255,7 @@
 #define CMPDATA_STRSTACK      0x0F
 #define CMPDATA_CLASS_ADDRESS 0x10
 #define CMPDATA_STATIC        0x11
+#define CMPDATA_DATA_LABEL_BL 0x12
 #define CMPDATA_ALL           0xFF
 
 /*
@@ -401,6 +402,7 @@ int lib_read(int r0, int r1, int r2);
 int kmbasic_library(int r0, int r1, int r2, int r3);
 
 // statement.c
+int get_label_id(void);
 int goto_label(void);
 int gosub_arguments(void);
 int gosub_statement(void);

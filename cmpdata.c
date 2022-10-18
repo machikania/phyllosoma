@@ -218,6 +218,7 @@ void cmpdata_delete_invalid(void){
 	const static int const types[6]={
 		CMPDATA_GOTO_NUM_BL,
 		CMPDATA_GOTO_LABEL_BL,
+		CMPDATA_DATA_LABEL_BL,
 		CMPDATA_BREAK_BL,
 		CMPDATA_IF_BL,
 		CMPDATA_ENDIF_BL,
