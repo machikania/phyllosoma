@@ -644,7 +644,7 @@ void set_wave(char* filename, int start){
 	start_core1();
 	request_core1_callback(wave_core1_readfile);
 	// Fire PCM interrupt
-	add_repeating_timer_us(63, repeating_wave_callback, NULL, &g_wave_timer);
+	add_repeating_timer_us(-63, repeating_wave_callback, NULL, &g_wave_timer);
 }
 
 int lib_music(int r0, int r1, int r2){
