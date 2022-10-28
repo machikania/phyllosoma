@@ -215,7 +215,7 @@ void cmpdata_delete_all(unsigned char type){
 	Delete all records with invalid object positions.
 */
 void cmpdata_delete_invalid(void){
-	const static int const types[6]={
+	const static int const types[7]={
 		CMPDATA_GOTO_NUM_BL,
 		CMPDATA_GOTO_LABEL_BL,
 		CMPDATA_DATA_LABEL_BL,

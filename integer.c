@@ -111,6 +111,17 @@ int system_function(void){
 	int e;
 	e=get_integer();
 	if (e) return e;
+	skip_blank();
+	if (','==source[0]) {
+		source++;
+		check_object(1);
+		(object++)[0]=0xb401; // push	{r0}
+		e=get_integer();
+		if (e) return e;
+		check_object(2);
+		(object++)[0]=0x0001; // movs	r1, r0
+		(object++)[0]=0xbc01; // pop	{r0}
+	}
 	return call_lib_code(LIB_SYSTEM);
 }
 

@@ -735,6 +735,13 @@ int lib_system(int r0, int r1, int r2){
 			return 0;
 		case 200:
 		//	ディスプレイの表示を停止(xが0のとき)、もしくは開始(xが0以外の時)する。
+			break;
+		case 250:
+		// void* calloc (int bytes);
+			return (int)calloc_memory((r0+3)/4,get_permanent_block_number());		
+		case 251:
+		// void* malloc (int bytes);
+			return (int)alloc_memory((r0+3)/4,get_permanent_block_number());		
 		default:
 			break;
 	}

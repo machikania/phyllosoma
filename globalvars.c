@@ -113,9 +113,12 @@ char g_interrupt_code=0;
 
 // Reserved words
 
-const char* const g_reserved_words[167]={
+
+
+const char* const g_reserved_words[170]={
 	"ABS",
 	"ACOS",
+	"ALIGN4",
 	"ANALOG",
 	"ARGS",
 	"ASC",
@@ -141,6 +144,7 @@ const char* const g_reserved_words[167]={
 	"CREAD",
 	"CURSOR",
 	"DATA",
+	"DATAADDRESS",
 	"DEBUG",
 	"DEC",
 	"DELAYMS",
@@ -174,6 +178,7 @@ const char* const g_reserved_words[167]={
 	"FPUTC",
 	"FREMOVE",
 	"FSEEK",
+	"FUNCADDRESS",
 	"GCLS",
 	"GCOLOR",
 	"GETDIR",
@@ -282,9 +287,10 @@ const char* const g_reserved_words[167]={
 	"WHILE",
 	"WIDTH",
 };
-const int const g_hash_resereved_words[167]={
+const int const g_hash_resereved_words[170]={
 	0x000400d3, //ABS
 	0x01002393, //ACOS
+	0x0d2063a4, //ALIGN4
 	0x0f00d397, //ANALOG
 	0x01013193, //ARGS
 	0x00040483, //ASC
@@ -310,6 +316,7 @@ const int const g_hash_resereved_words[167]={
 	0x424c4004, //CREAD
 	0x944d2382, //CURSOR
 	0x01140541, //DATA
+	0x15594496, //DATAADDRESS
 	0x45103507, //DEBUG
 	0x00045103, //DEC
 	0x0d018742, //DELAYMS
@@ -343,6 +350,7 @@ const int const g_hash_resereved_words[167]={
 	0x47454543, //FPUTC
 	0x3bcf1e71, //FREMOVE
 	0x4748410b, //FSEEK
+	0x0fbcbca9, //FUNCADDRESS
 	0x01182353, //GCLS
 	0x8238d383, //GCOLOR
 	0x84545203, //GETDIR

@@ -585,6 +585,10 @@ SYSTEM(105)
 	Returns a pointer to the graphic display area.
 SYSTEM 200,x
 	Stops (when x is 0) or starts (when x is non-zero) the display.
+SYSTEM(250,x)
+	Allocates memory in an x-byte area initialized with zeros and returns an address (equivalent to calloc).
+SYSTEM(251,x)
+	Allocates memory for an area of x bytes and returns an address (equivalent to malloc).
 
 <Input/output commands and functions>
 Input/output functions are available for Type M and Type P.
