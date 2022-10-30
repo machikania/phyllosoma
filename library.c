@@ -742,6 +742,14 @@ int lib_system(int r0, int r1, int r2){
 		case 251:
 		// void* malloc (int bytes);
 			return (int)alloc_memory((r0+3)/4,get_permanent_block_number());		
+		case 252:
+		// void free (void* addr);
+			delete_memory((void*)r0);
+			break;
+		case 253:
+		// Garbage collection
+			garbage_collection((void*)r0);
+			break;
 		default:
 			break;
 	}
