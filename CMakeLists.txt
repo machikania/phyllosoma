@@ -37,6 +37,7 @@ if (TARGET tinyusb_device)
 			music.c
 			core1.c
 			pcconnect.c
+			hexfile.c
 			debug.c
 			interface/fontdata.c
 			interface/graphlib.c
@@ -59,6 +60,9 @@ if (TARGET tinyusb_device)
 
 	# create map/bin/hex/uf2 file etc.
 	pico_add_extra_outputs(phyllosoma)
+
+	# use custom linker script
+	pico_set_linker_script(phyllosoma ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania.ld)
 
 elseif(PICO_ON_DEVICE)
 	message(WARNING "not building kmbasic because TinyUSB submodule is not initialized in the SDK")

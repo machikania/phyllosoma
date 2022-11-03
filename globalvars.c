@@ -17,7 +17,7 @@ unsigned short* object;
 	KM-BASIC related global areas
 */
 
-unsigned short kmbasic_object[512*192]; // 192K bytes RAM area
+unsigned short __attribute__((section(".kmbasicobject"))) kmbasic_object[512*192]; // 192K bytes RAM area
 int kmbasic_data[32];
 int kmbasic_variables[ALLOC_BLOCK_NUM];
 unsigned short kmbasic_var_size[ALLOC_BLOCK_NUM];

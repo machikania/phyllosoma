@@ -103,6 +103,9 @@ int main() {
 	printstr("BASIC Compiler "BASVER" by Katsumi\n");
 	printstr("LCD and File systems by KENKEN\n");
 	printstr("\n");
+	// Run application if HEX file
+	for(i=0;str[i];i++);
+	if (!strncmp(&str[i-4],".HEX",4)) runHex(str);
 	// Compile the code
 	s=time_us_32();
 	init_compiler();

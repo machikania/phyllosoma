@@ -570,6 +570,9 @@ int playwave_function(void);
 // pcconnect.c
 void connect2pc(void);
 
+// hexfile.c
+void runHex(char* filename);
+
 // For debugging
 void dump_cmpdata(void);
 void dump(void);
