@@ -8,7 +8,7 @@
 
 #define PHYLLOSOMA
 #define SYSVER1 "Phyllosoma"
-#define SYSVER2 "1.1.5"
+#define SYSVER2 "1.1.6"
 #define BASVER "KM-1502"
 
 #define IO_SPI_TX SD_SPI_TX

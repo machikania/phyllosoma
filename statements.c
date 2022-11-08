@@ -312,29 +312,47 @@ int cdata_statement(void){
 */
 
 int exec_statement(void){
-	int e;
+	int i;
 	char* sbefore;
-	unsigned short* obefore;
 	do {
+		skip_blank();
 		sbefore=source;
-		obefore=object;
-		e=get_integer();
-		if (e) return e;
-		// Rewind object
-		rewind_object(obefore);
-		if (!g_constant_value_flag) {
-			source=sbefore;
-			return ERROR_SYNTAX;
+		// Check if the end of line for multiple EXEC statement
+		if (0x00==source[0]) {
+			g_multiple_statement=exec_statement;
+			return 0;
+		}
+		if ('$'==source[0] || '0'==source[0] && 'X'==source[1]) {
+			// Hex value
+			source+=('$'==source[0]) ? 1:2;
+			i=0;
+			while(1){
+				if ('0'<=source[0] && source[0]<='9') {
+					i=(i<<4)|(source[0]-'0');
+					source++;
+				} else if ('A'<=source[0] && source[0]<='F') {
+					i=(i<<4)|(source[0]-'A'+10);
+					source++;
+				} else {
+					break;
+				}
+			}
+		} else {
+			// Decimal value
+			i=get_positive_decimal_value();
+			if (i<0) return i;
 		}
 		// Check if 16 bit data
-		if (g_constant_int<0 || 65535<g_constant_int) {
+		if (i<0 || 65535<i) {
 			source=sbefore;
 			return ERROR_SYNTAX;
 		}
 		// Got 2 bytes data in g_constant_int
-		(object++)[0]=g_constant_int;
+		(object++)[0]=i;
+		skip_blank();
 	} while (','==(source++)[0]);
 	source--;
+	g_multiple_statement=0;
 	return 0;
 }
 /*
