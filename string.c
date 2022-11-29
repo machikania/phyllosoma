@@ -96,13 +96,20 @@ int string_char(void){
 	switch(c){
 		case 'n':
 			return '\n';
+		case 'r':
+			return '\r';
+		case 't':
+			return '\t';
 		case '0':
 			return '\0';
+		case '\\':
+			return '\\';
 		case 'x':
 		case 'X':
 			return get_byte();
 		default:
-			return (int)c;
+			source--;
+			return '\\';
 	}
 }
 
