@@ -237,6 +237,7 @@ int lib_fopen(int r0, int r1, int r2){
 	char* filename=(char*)r2;
 	char* modestr=(char*)r1;
 	char mode;
+	static DIR dobj;
 	// Check file mode
 	switch(modestr[0]){
 		case 'r':
@@ -263,9 +264,24 @@ int lib_fopen(int r0, int r1, int r2){
 	if (g_pFileHandles[r0-1]) f_close (g_pFileHandles[r0-1]);
 	// Open file
 	if (f_open(&g_FileHandles[r0-1],filename,mode)){
-		// Cannot open the file. Return zero
-		g_pFileHandles[r0-1]=0;
-		return 0;
+		// Check if directory can be open (or if the card is inserted)
+		if (FR_OK==f_opendir(&dobj,".")) {
+			// The card is inserted, but file cannot be open
+			g_pFileHandles[r0-1]=0;
+			return 0;
+		}
+		// Mount again
+		if (f_mount(&g_FatFs, "", 0)) {
+			// Cannot mount. Return zero
+			g_pFileHandles[r0-1]=0;
+			return 0;
+		}
+		// Open again
+		if (f_open(&g_FileHandles[r0-1],filename,mode)){
+			// Cannot open the file. Return zero
+			g_pFileHandles[r0-1]=0;
+			return 0;
+		}
 	}
 	// File sucessfully opened. Return file handle
 	g_pFileHandles[r0-1]=&g_FileHandles[r0-1];
