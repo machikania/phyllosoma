@@ -15,7 +15,7 @@
 #include "./config.h"
 #include "./core1.h"
 #include "./interface/usbkeyboard.h"
-#include "pico/multicore.h"
+//#include "pico/multicore.h"
 
 char g_autoexec[12]="MACHIKAP.BAS";
 
@@ -80,10 +80,8 @@ void software_reset(void){
 	AIRCR[0]=0x05FA0004;
 }
 void core1_entry_(void){
-  while(1){
-    usbkb_polling();
-    sleep_us(100);
-  }
+  usbkb_polling();
+  request_core1_callback_at(core1_entry_,time_us_32()+1000);
 }
 
 int main() {
@@ -111,7 +109,10 @@ int main() {
 		return 1;
 	}
     printstr("Init USB OK\n");
-	multicore_launch_core1(core1_entry_);
+	//multicore_launch_core1(core1_entry_);
+	start_core1();
+	request_core1_callback(core1_entry_);
+	
 	while(!usbkb_mounted()) //USBキーボードの接続待ち
 		sleep_ms(16);
     printstr("USB keyboard found\n");
