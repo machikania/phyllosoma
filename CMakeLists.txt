@@ -45,6 +45,8 @@ if (TARGET tinyusb_device)
 			interface/ff.c
 			interface/pico-sdmm.c
 			interface/fileselect.c
+			interface/usbkeyboard.c
+			interface/hid_virtual_keytable.c
 		)
 
 	# Pull in our pico_stdlib which aggregates commonly used features
@@ -54,8 +56,11 @@ if (TARGET tinyusb_device)
 	target_link_libraries(phyllosoma hardware_pwm)
 	target_link_libraries(phyllosoma hardware_adc)
 	target_link_libraries(phyllosoma hardware_i2c)
+	target_link_libraries(phyllosoma tinyusb_board)
+	target_link_libraries(phyllosoma tinyusb_host)
+	target_include_directories(phyllosoma PRIVATE ${CMAKE_CURRENT_LIST_DIR}/interface)
 	# enable usb output, disable uart output
-	pico_enable_stdio_usb(phyllosoma 1)
+	pico_enable_stdio_usb(phyllosoma 0)
 	pico_enable_stdio_uart(phyllosoma 0)
 
 	# create map/bin/hex/uf2 file etc.

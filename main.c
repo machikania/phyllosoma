@@ -13,6 +13,9 @@
 #include "./debug.h"
 #include "./display.h"
 #include "./config.h"
+#include "./core1.h"
+#include "./interface/usbkeyboard.h"
+#include "pico/multicore.h"
 
 char g_autoexec[12]="MACHIKAP.BAS";
 
@@ -76,6 +79,12 @@ void software_reset(void){
 	unsigned int* AIRCR=(unsigned int*)0xe000ed0c;
 	AIRCR[0]=0x05FA0004;
 }
+void core1_entry_(void){
+  while(1){
+    usbkb_polling();
+    sleep_us(100);
+  }
+}
 
 int main() {
 	int e,i,s;
@@ -94,6 +103,20 @@ int main() {
 	sleep_ms(g_wait_at_begin-500);
 	// Connect to PC
 	connect2pc();
+
+	g_disable_printf=1;
+    lockkey=1; // 下位3ビットが<SCRLK><CAPSLK><NUMLK>
+    keytype=0; // 0：日本語109キー、1：英語104キー
+	if(!usbkb_init()){
+		return 1;
+	}
+    printstr("Init USB OK\n");
+	multicore_launch_core1(core1_entry_);
+	while(!usbkb_mounted()) //USBキーボードの接続待ち
+		sleep_ms(16);
+    printstr("USB keyboard found\n");
+	sleep_ms(500); //0.5秒待ち
+
 	// Get filename to compile
 	if (file_exists(g_autoexec)) str=&g_autoexec[0];
 	else str=fileselect();
