@@ -132,5 +132,5 @@ void post_run(void){
 	// Stop music
 	stop_music();
 	// Stop core1
-	stop_core1();
+//	stop_core1();
 }

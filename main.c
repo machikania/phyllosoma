@@ -17,6 +17,8 @@
 #include "./interface/usbkeyboard.h"
 //#include "pico/multicore.h"
 
+void texteditor(void);
+
 char g_autoexec[12]="MACHIKAP.BAS";
 
 void read_ini(void){
@@ -117,6 +119,7 @@ int main() {
 		sleep_ms(16);
     printstr("USB keyboard found\n");
 	sleep_ms(500); //0.5秒待ち
+	texteditor(); //テキストエディタ起動
 
 	// Get filename to compile
 	if (file_exists(g_autoexec)) str=&g_autoexec[0];

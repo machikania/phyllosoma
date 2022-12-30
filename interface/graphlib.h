@@ -20,6 +20,8 @@ void set_palette(unsigned char n,unsigned char b,unsigned char r,unsigned char g
 void set_bgcolor(unsigned char b,unsigned char r,unsigned char g); //バックグランドカラー設定
 void init_textgraph(unsigned char align); //LCDテキスト・グラフィック機能利用準備
 
+void putcursorchar(void);
+	// カーソル位置の文字をテキストVRAMにしたがって液晶に出力
 void textredraw(void);
 	// テキスト画面再描画、テキストVRAMの内容にしたがって液晶に出力
 void vramscroll(void);
@@ -111,4 +113,6 @@ extern unsigned char TVRAM[];
 extern int WIDTH_X; // 横方向文字数
 extern int WIDTH_Y; // 縦方向文字数
 extern unsigned char *cursor; // カーソル位置
+extern unsigned char cursorcolor;
+extern unsigned int bgcolor; // バックグランドカラー
 #define ATTROFFSET (LCD_COLUMN_RES*LCD_ROW_RES/64) // VRAM上のカラーパレット格納位置

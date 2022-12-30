@@ -520,6 +520,11 @@ void g_clearscreen(void)
 	LCD_Clear(0);
 }
 
+// カーソル位置の文字をテキストVRAMにしたがって液晶に出力
+void putcursorchar(void){
+	g_putfont(((cursor-TVRAM)%WIDTH_X)*8,((cursor-TVRAM)/WIDTH_X)*8,*(cursor+ATTROFFSET),bgcolor,*cursor);
+}
+
 void textredraw(void){
 // テキスト画面再描画
 // テキストVRAMの内容にしたがって液晶に出力

@@ -39,6 +39,7 @@ if (TARGET tinyusb_device)
 			pcconnect.c
 			hexfile.c
 			debug.c
+			editor.c
 			interface/fontdata.c
 			interface/graphlib.c
 			interface/ili9341_spi.c
@@ -47,6 +48,7 @@ if (TARGET tinyusb_device)
 			interface/fileselect.c
 			interface/usbkeyboard.c
 			interface/hid_virtual_keytable.c
+			interface/keyinput.c
 		)
 
 	# Pull in our pico_stdlib which aggregates commonly used features
