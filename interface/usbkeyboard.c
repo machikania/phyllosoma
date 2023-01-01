@@ -29,8 +29,8 @@ semaphore_t keycodebuf_sem; //キーコードバッファ用セマフォ
 //公開変数
 volatile uint8_t usbkb_keystatus[256]; // 仮想コードに相当するキーの状態（Onの時1）
 uint16_t vkey; // usbkb_readkey()関数でセットされるキーコード、上位8ビットはシフト関連キー
-uint8_t lockkey; // 初期化時にLockキーの状態指定。下位3ビットが<SCRLK><CAPSLK><NUMLK>
-uint8_t keytype; // キーボードの種類。0：日本語109キー、1：英語104キー
+uint8_t lockkey=0; // 初期化時にLockキーの状態指定。下位3ビットが<SCRLK><CAPSLK><NUMLK>
+uint8_t keytype=0; // キーボードの種類。0：日本語109キー、1：英語104キー
 
 #define USBKBLED_TIMER_INTERVAL 10;
 static uint32_t usbkbled_timer=0;

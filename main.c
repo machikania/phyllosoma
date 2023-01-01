@@ -13,11 +13,12 @@
 #include "./debug.h"
 #include "./display.h"
 #include "./config.h"
+
+#if !LIB_PICO_STDIO_USB
 #include "./core1.h"
 #include "./interface/usbkeyboard.h"
-//#include "pico/multicore.h"
-
 void texteditor(void);
+#endif
 
 char g_autoexec[12]="MACHIKAP.BAS";
 
@@ -72,6 +73,19 @@ void read_ini(void){
 			sscanf(str+10,"%d",&g_wait_at_begin);
 			if (g_wait_at_begin<500) g_wait_at_begin=500;
 		}
+#if !LIB_PICO_STDIO_USB
+		else if (!strncmp(str,"106KEY",6)) {
+			keytype=0;
+		} else if (!strncmp(str,"101KEY",6)) {
+			keytype=1;
+		} else if (!strncmp(str,"NUMLOCK",7)) {
+			lockkey|=1;
+		} else if (!strncmp(str,"CAPSLOCK",8)) {
+			lockkey|=2;
+		} else if (!strncmp(str,"SCRLLOCK",8)) {
+			lockkey|=4;
+		}
+#endif
 	}
 	// Close file
 	f_close(&fpo);
@@ -81,10 +95,12 @@ void software_reset(void){
 	unsigned int* AIRCR=(unsigned int*)0xe000ed0c;
 	AIRCR[0]=0x05FA0004;
 }
+#if !LIB_PICO_STDIO_USB
 void core1_entry_(void){
   usbkb_polling();
   request_core1_callback_at(core1_entry_,time_us_32()+1000);
 }
+#endif
 
 int main() {
 	int e,i,s;
@@ -101,25 +117,24 @@ int main() {
 	// Read MACHIKAP.INI
 	read_ini();
 	sleep_ms(g_wait_at_begin-500);
-	// Connect to PC
-	connect2pc();
 
+#if !LIB_PICO_STDIO_USB
+	// USB keyboard and editor mode
 	g_disable_printf=1;
-    lockkey=1; // 下位3ビットが<SCRLK><CAPSLK><NUMLK>
-    keytype=0; // 0：日本語109キー、1：英語104キー
 	if(!usbkb_init()){
 		return 1;
 	}
     printstr("Init USB OK\n");
-	//multicore_launch_core1(core1_entry_);
 	start_core1();
 	request_core1_callback(core1_entry_);
-	
-	while(!usbkb_mounted()) //USBキーボードの接続待ち
+	while(!usbkb_mounted()) //waiting for USB keyboard connected
 		sleep_ms(16);
     printstr("USB keyboard found\n");
-	sleep_ms(500); //0.5秒待ち
-	texteditor(); //テキストエディタ起動
+	sleep_ms(500);
+	texteditor(); // Start editor, never come back
+#else
+	// Connect to PC
+	connect2pc();
 
 	// Get filename to compile
 	if (file_exists(g_autoexec)) str=&g_autoexec[0];
@@ -165,5 +180,6 @@ int main() {
 		if (i%20) continue;
 		printchar("-/|\\"[(i/20)&0x03]); printchar(0x08);
 	}
+#endif
 	return 0;
 }
