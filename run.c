@@ -131,6 +131,6 @@ void post_run(void){
 	timer_init();
 	// Stop music
 	stop_music();
-	// Stop core1
-//	stop_core1();
+	// Stop core1 when not using USB keyboard
+	if (!g_active_usb_keyboard) stop_core1();
 }

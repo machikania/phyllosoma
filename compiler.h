@@ -93,6 +93,7 @@
 #define LIB_OBJ_METHOD 29
 #define LIB_PRE_METHOD 30
 #define LIB_POST_METHOD 31
+#define LIB_READKEY 32
 
 #define LIB_DEBUG 128
 #define LIB_PRINT 129
@@ -365,6 +366,8 @@ extern int g_wait_at_begin;
 
 extern char g_interrupt_code;
 
+extern const char g_active_usb_keyboard;
+
 /*
 	Prototypes
 */
@@ -410,6 +413,17 @@ int post_gosub_statement(int i);
 int compile_statement(void);
 int end_of_statement(void);
 int restore_statement(void);
+
+// withoutkeyboard.c
+// withkeyboard.c
+void post_inifile(void);
+void pre_fileselect(void);
+int lib_inkey(int r0, int r1, int r2);
+int lib_input(int r0, int r1, int r2);
+int lib_readkey(int r0, int r1, int r2);
+
+// editor.c
+void texteditor(void);
 
 // string.c
 int string_char(void);

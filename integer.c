@@ -107,6 +107,10 @@ int keys_function(void){
 	return argn_function(LIB_KEYS,ARG_INTEGER_OPTIONAL<<ARG1);
 }
 
+int readkey_function(void){
+	return call_lib_code(LIB_READKEY);
+}
+
 int system_function(void){
 	int e;
 	e=get_integer();
@@ -191,6 +195,7 @@ int integer_functions(void){
 	if (instruction_is("PEEK16(")) return peek16_function();
 	if (instruction_is("PEEK32(")) return peek32_function();
 	if (instruction_is("READ(")) return read_function();
+	if (instruction_is("READKEY(")) return readkey_function();
 	if (instruction_is("RND(")) return rnd_function();
 	if (instruction_is("SGN(")) return sgn_function();
 	if (instruction_is("STRNCMP(")) return strncmp_function();

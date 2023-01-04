@@ -12,6 +12,7 @@
 #include "./editor.h"
 #include "./keyinput.h"
 #include "./compiler.h"
+#include "./config.h"
 #include "./interface/usbkeyboard.h"
 #include "./interface/graphlib.h"
 #include "./interface/LCDdriver.h"
@@ -1970,7 +1971,7 @@ void run(int test){
 //	g_disable_break=0;
 
 	//KM-BASIC実行
-	printstr("KM-BASIC for ARM\n");
+	printstr(INTRODUCE_MACHIKANIA);
 	// Compile the code
 	int s=time_us_32();
 	init_compiler();
