@@ -53,7 +53,8 @@ void pre_fileselect(void){
 
 int lib_readkey(int r0, int r1, int r2){
 	int ret=usbkb_readkey();
-	return ret|(vkey<<8);
+	int k=(vkey & 0x0cff) | ((vkey & 0x0100)<<1) | ((vkey & 0x0200)>>1) | ((vkey & 0x3000)<<1) | ((vkey & 0x4000)>>2);
+	return ret|(k<<8);
 }
 
 int lib_inkey(int r0, int r1, int r2){
