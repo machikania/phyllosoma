@@ -2040,24 +2040,22 @@ void run(int test){
 		break;
 	}
 
-//	if(!er){
-	if(1){
+	if(!er || g_error_linenum==0){
 		//正常終了またはファイルエラーまたはリンクエラーの場合
 		//カーソルを元の位置に設定
 		disptopbp=postobpix(disptoppos,&disptopix);
 		cursorbp=postobpix(cursorpos,&cursorix);
 	}
-/*
 	else{
 		//コンパイルエラーの場合
 		//カーソルをエラー行で画面トップに移動
-		disptopbp=linetobpix(er2,&disptopix);
+		disptopbp=linetobpix(g_error_linenum,&disptopix);
 		cursorbp=disptopbp;
 		cursorix=disptopix;
 		cx=0;
 		cx2=0;
 		cy=0;
-		line_no=er2;
+		line_no=g_error_linenum;
 		//中央になるようスクロール
 		for(i=0;i<EDITWIDTHY/2;i++){
 			//画面行数半分カーソルを上に移動
@@ -2068,7 +2066,6 @@ void run(int test){
 		}
 		for(;i>0;i--) cursor_down(); //元のY座標までカーソルを下に移動
 	}
-*/
 	cursorbp1=NULL; //範囲選択モード解除
 	clipsize=0; //クリップボードクリア
 	edited=edited1;

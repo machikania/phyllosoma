@@ -67,8 +67,7 @@ void pre_fileselect(void){
 
 int lib_readkey(int r0, int r1, int r2){
 	int ret=usbkb_readkey();
-	int k=(vkey & 0x0cff) | ((vkey & 0x0100)<<1) | ((vkey & 0x0200)>>1) | ((vkey & 0x3000)<<1) | ((vkey & 0x4000)>>2);
-	return ret|(k<<8);
+	return ret | ((vkey & 0x0cff)<<8) | ((vkey & 0x3100)<<9) | ((vkey & 0x0200)<<7) | ((vkey & 0x4000)<<6);
 }
 
 int lib_inkey(int r0, int r1, int r2){
@@ -94,7 +93,7 @@ int lib_input(int r0, int r1, int r2){
 }
 
 int check_break(void){
-	return usbkb_keystatus[0x03] ?1:0;
+	return usbkb_keystatus[VK_PAUSE] ?1:0;
 }
 
 int check_keypress(void){
