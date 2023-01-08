@@ -19,6 +19,7 @@ void clearscreen(void); //テキスト画面クリア
 void set_palette(unsigned char n,unsigned char b,unsigned char r,unsigned char g); //テキストパレット設定
 void set_bgcolor(unsigned char b,unsigned char r,unsigned char g); //バックグランドカラー設定
 void init_textgraph(unsigned char align); //LCDテキスト・グラフィック機能利用準備
+void init_palette(void); //カラーパレット初期化
 
 void putcursorchar(void);
 	// カーソル位置の文字をテキストVRAMにしたがって液晶に出力

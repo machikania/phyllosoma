@@ -7,8 +7,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "pico/stdlib.h"
-//#include "bsp/board.h"
-//#include "tusb.h"
 #include "./editor.h"
 #include "./keyinput.h"
 #include "./compiler.h"
@@ -1308,6 +1306,7 @@ void restore_cursor(void){
 	line_no=line_no_t;
 }
 
+extern FATFS g_FatFs; // file.c
 // SDファイルへの保存や読み込み時にファイルエラーが発生した場合に呼び出す
 // 戻り値　0：再実行要求、-1：Escapeで抜けた
 int filesystemretry(){
@@ -1317,7 +1316,10 @@ int filesystemretry(){
 	while(1){
 		inputchar(); //1文字入力待ち
 		vk=vkey & 0xff;
-		if(vk==VK_RETURN || vk==VK_SEPARATOR) return 0;
+		if(vk==VK_RETURN || vk==VK_SEPARATOR){
+			f_mount(&g_FatFs, "", 0);
+			return 0;
+		}
 		if(vk==VK_ESCAPE) return -1;
 	}
 }
@@ -1980,7 +1982,7 @@ void run(int test){
 	printnum(time_us_32()-s);
 	printstr(" micro seconds spent for compiling\n");
 	printstr("\n");
-	if (!er) {
+	if (!er && !test) {
 		pre_run();
 		run_code();
 		post_run();
@@ -1988,13 +1990,14 @@ void run(int test){
 
 	stopPCG();//システムフォントに戻す
 	setcursorcolor(COLOR_NORMALTEXT);
+	bgcolor=0; //バックグランドカラーは黒
 	printchar('\n');
 	printstr((unsigned char *)Message1);// Hit Any Key
 	do usbkb_readkey(); //キーバッファが空になるまで読み出し
 	while(vkey!=0);
 	inputchar(); //1文字入力待ち
-	stop_music(); //音楽再生停止
-	init_textgraph(alignment); //パレット初期化のため液晶初期化
+	init_palette();	//カラーパレット初期化
+	set_lcdalign(alignment);
 
 	while(1){
 		//カレントディレクトリをルートに変更

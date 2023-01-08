@@ -133,6 +133,16 @@ void usbkb_task(void){
 		if((usbkb_shiftkey & CHK_CTRL)==0) lockkeycheck(vk); //NumLock、CapsLock、ScrollLock反転処理
 		if(!pushkeycodebuf(vk2)) break; //キーコードをバッファにためる、バッファがいっぱいの場合無視
 	}
+	//シフト関連キーが押された場合もキーコードをバッファにためる
+	uint8_t modi=p_usbkb_report->modifier & ~prev_report.modifier;
+	if(modi & CHK_SHIFT_L) pushkeycodebuf(((uint16_t)usbkb_shiftkey<<8)+VK_LSHIFT);
+	if(modi & CHK_SHIFT_R) pushkeycodebuf(((uint16_t)usbkb_shiftkey<<8)+VK_RSHIFT);
+	if(modi & CHK_CTRL_L) pushkeycodebuf(((uint16_t)usbkb_shiftkey<<8)+VK_LCONTROL);
+	if(modi & CHK_CTRL_R) pushkeycodebuf(((uint16_t)usbkb_shiftkey<<8)+VK_RCONTROL);
+	if(modi & CHK_ALT_L) pushkeycodebuf(((uint16_t)usbkb_shiftkey<<8)+VK_LMENU);
+	if(modi & CHK_ALT_R) pushkeycodebuf(((uint16_t)usbkb_shiftkey<<8)+VK_RMENU);
+	if(modi & CHK_WIN_L) pushkeycodebuf(((uint16_t)usbkb_shiftkey<<8)+VK_LWIN);
+	if(modi & CHK_WIN_R) pushkeycodebuf(((uint16_t)usbkb_shiftkey<<8)+VK_RWIN);
 	sem_release(&keycodebuf_sem); //セマフォ許可解除
 	if(vk2 & 0xff && vk2==oldvkey){
 		//キーリピート処理。キーコードバッファが空でない場合はキーリピートしない
