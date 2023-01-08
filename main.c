@@ -77,6 +77,8 @@ void read_ini(void){
 			lockkey|=2;
 		} else if (!strncmp(str,"SCRLLOCK",8)) {
 			lockkey|=4;
+		} else if (!strncmp(str,"WAIT4KEYBOARD=",14)) {
+			sscanf(str+14,"%d",&g_wait_for_keyboard);
 		}
 	}
 	// Close file

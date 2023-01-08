@@ -111,9 +111,11 @@ int g_wait_at_begin=500;
 
 char g_interrupt_code=0;
 
+// How long time for waiting keyboard connection
+
+unsigned int g_wait_for_keyboard=2000;
+
 // Reserved words
-
-
 
 const char* const g_reserved_words[170]={
 	"ABS",

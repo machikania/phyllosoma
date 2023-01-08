@@ -36,7 +36,6 @@ if (TARGET tinyusb_device)
 		io.c
 		music.c
 		core1.c
-		pcconnect.c
 		hexfile.c
 		debug.c
 		editor.c
@@ -76,7 +75,6 @@ if (TARGET tinyusb_device)
 		io.c
 		music.c
 		core1.c
-		pcconnect.c
 		hexfile.c
 		debug.c
 		interface/fontdata.c
@@ -86,6 +84,7 @@ if (TARGET tinyusb_device)
 		interface/pico-sdmm.c
 		interface/fileselect.c
 		withoutkeyboard.c
+		pcconnect.c
 	)
 	# Pull in our pico_stdlib which aggregates commonly used features
 	target_link_libraries(phyllosoma_kb pico_stdlib)

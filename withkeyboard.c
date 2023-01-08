@@ -26,12 +26,15 @@
 
 const char g_active_usb_keyboard=1;
 
+static char g_fileselect_no_keyboard=0;
+
 void usbk_polling_handler(void){
   usbkb_polling();
   request_core1_callback_at(usbk_polling_handler,time_us_32()+1000);
 }
 
 void post_inifile(void){
+	unsigned int t;
 	// USB keyboard and editor mode
 	g_disable_printf=1;
 	if(!usbkb_init()){
@@ -41,13 +44,24 @@ void post_inifile(void){
     printstr("Init USB OK\n");
 	start_core1();
 	request_core1_callback(usbk_polling_handler);
-	while(!usbkb_mounted()) //waiting for USB keyboard connected
+	// Waiting for USB keyboard connected
+	t=time_us_32();
+	while(!usbkb_mounted()) {
 		sleep_ms(16);
+		if (!g_wait_for_keyboard) continue;
+		if (g_wait_for_keyboard*1000<time_us_32()-t) {
+		    printstr("USB keyboard not found\n");
+			sleep_ms(500);
+			g_fileselect_no_keyboard=1;
+			return;
+		}
+	}
     printstr("USB keyboard found\n");
 	sleep_ms(500);
 }
 
 void pre_fileselect(void){
+	if (g_fileselect_no_keyboard) return; // File select (no keyboard found)
 	texteditor(); // Start editor, never come back
 }
 

@@ -363,6 +363,7 @@ extern char g_disable_debugwait2500;
 extern char g_enable_button_rotation;
 extern char g_reset_at_end;
 extern int g_wait_at_begin;
+extern unsigned int g_wait_for_keyboard;
 
 extern char g_interrupt_code;
 
