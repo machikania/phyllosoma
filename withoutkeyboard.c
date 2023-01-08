@@ -98,3 +98,7 @@ int lib_input(int r0, int r1, int r2){
 	str[num]=0x00;
 	return (int)str;
 }
+
+int check_break(void){
+	return getchar_timeout_us(0)==0x1a ?1:0;
+}

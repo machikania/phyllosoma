@@ -92,3 +92,8 @@ int lib_input(int r0, int r1, int r2){
 	lineinput(str,255);
 	return (int)str;
 }
+
+int check_break(void){
+	return usbkb_keystatus[0x03] ?1:0;
+}
+
