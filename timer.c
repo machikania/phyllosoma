@@ -145,6 +145,10 @@ bool repeating_drawcount_callback(struct repeating_timer *t) {
 		}
 		drop_interrupt_flag(INTERRUPT_WAVE);
 	}
+	if (g_interrupt_vector[INTERRUPT_INKEY]) {
+		if (check_keypress()) call_interrupt_function(g_interrupt_vector[INTERRUPT_INKEY]);
+		drop_interrupt_flag(INTERRUPT_INKEY);
+	}
 	return true;
 }
 

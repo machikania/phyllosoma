@@ -423,6 +423,7 @@ int lib_inkey(int r0, int r1, int r2);
 int lib_input(int r0, int r1, int r2);
 int lib_readkey(int r0, int r1, int r2);
 int check_break(void);
+int check_keypress(void);
 
 // editor.c
 void texteditor(void);

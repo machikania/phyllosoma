@@ -97,3 +97,6 @@ int check_break(void){
 	return usbkb_keystatus[0x03] ?1:0;
 }
 
+int check_keypress(void){
+	return keycodeExists() ?1:0;
+}
