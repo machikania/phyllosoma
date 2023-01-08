@@ -321,6 +321,7 @@ extern const int g_file_buffer_size;
 
 extern void* g_multiple_statement;
 extern int g_linenum;
+extern int g_error_linenum;
 extern int g_next_varnum;
 extern int g_sdepth;
 extern int g_maxsdepth;

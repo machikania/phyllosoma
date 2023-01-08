@@ -36,6 +36,7 @@ const int g_file_buffer_size=ALLOC_BLOCK_NUM*2;
 
 // Line number
 int g_linenum;
+int g_error_linenum;
 
 // Function to call when multipe line statement
 void* g_multiple_statement;

@@ -85,6 +85,7 @@ int compile_file(unsigned char* fname, char isclass){
 	// Compile the file until EOF
 	while(!f_eof(fp)){
 		if (!f_gets(g_file_buffer,g_file_buffer_size,fp)) break;
+		g_error_linenum++;
 		e=compile_line(g_file_buffer);
 		if (ERROR_COMPILE_CLASS==e) {
 			// Compiling a class is needed.

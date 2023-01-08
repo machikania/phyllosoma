@@ -57,6 +57,7 @@ void begin_file_compiler(void){
 	g_ifdepth=0;
 	g_fordepth=0;
 	g_linenum=0;
+	g_error_linenum=0;
 	g_multiple_statement=0;
 }
 
