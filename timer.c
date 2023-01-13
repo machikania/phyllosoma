@@ -133,6 +133,8 @@ bool repeating_drawcount_callback(struct repeating_timer *t) {
 		keys=lib_keys(63,0,0);
 		if (0<=s_keys && s_keys!=keys) call_interrupt_function(g_interrupt_vector[INTERRUPT_KEYS]);
 		s_keys=keys;
+	} else {
+		s_keys=-1;
 	}
 	musicint();
 	if (g_interrupt_vector[INTERRUPT_MUSIC]) {

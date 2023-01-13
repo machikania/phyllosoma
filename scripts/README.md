@@ -19,3 +19,5 @@ The reserved_names.php is used for code construction by the team. This script is
 ## reservedWords.html
 The reservedWords.html is used for code construction by the team. This script is not needed by the users.
 
+## globalvars.php
+The globalvars.php is used for code construction by the team. This script is not needed by the users.

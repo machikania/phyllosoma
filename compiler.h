@@ -124,6 +124,12 @@
 #define LIB_DELAYMS 154
 
 /*
+	Gereral option used for intializing static variables
+*/
+
+#define RESET_STATIC_VARS 32767
+
+/*
 	LIB MUSIC options
 */
 
@@ -546,6 +552,9 @@ int flen_function(void);
 int fseek_function(void);
 int finput_function(void);
 int getdir_function(void);
+
+// display.c
+int lib_display(int r0, int r1, int r2);
 
 // timer.c
 int interrupt_statement(void);

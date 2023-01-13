@@ -92,6 +92,8 @@ static int g_wave_writepos;
 static int g_pcm_counter;
 static char g_wave_enable;
 
+static struct repeating_timer g_wave_timer;
+
 #define WAVE_BUFFER_SIZE 1024
 static unsigned char g_wavtablea[WAVE_BUFFER_SIZE];
 
@@ -207,9 +209,14 @@ int musicGetNum(){
 }
 
 void stop_music(void){
-	// Initializations for music/sound.
+	// Initializations for music/sound/wave.
 	g_musicstart=g_musicend=g_musicwait=g_soundstart=g_soundend=g_soundwait=g_soundrepeat=0;
 	g_sound_mode=SOUND_MODE_NONE;
+	g_wave_writepos=g_wave_readpos=0;
+	g_pwm_wrap=0;
+	
+	// Cancel interrupt
+	cancel_repeating_timer(&g_wave_timer);
 
 	// Allocate GPIO to the PWM
 	gpio_set_function(AUDIO_PORT, GPIO_FUNC_PWM);
@@ -228,6 +235,7 @@ void stop_music(void){
 	g_fhandle=0;
 	if (g_wavtable) delete_memory(g_wavtable);
 	g_wavtable=0;
+	g_wave_enable=0;
 }
 
 void init_music(void){
@@ -565,7 +573,6 @@ void wave_core1_readfile(void){
 	request_core1_callback_at(wave_core1_readfile,time_us_32()+10000);
 }
 
-static struct repeating_timer g_wave_timer;
 bool repeating_wave_callback(struct repeating_timer *t) {
 	int i=g_wave_readpos;
 	if (g_wave_readpos==g_wave_writepos) {

@@ -507,10 +507,8 @@ void redraw(){
 	int ix,ix1,ix2;
 	int x,y;
 	unsigned char ch,cl;
-	unsigned char written;
 
 	vp=TVRAM;
-	written=0;
 	bp=disptopbp;
 	ix=disptopix;
 	cl=COLOR_NORMALTEXT;
@@ -555,35 +553,23 @@ void redraw(){
 			if(bp==bp2 && ix==ix2) cl=COLOR_NORMALTEXT;
 			ch=bp->Buf[ix++];
 			if(ch=='\n') break;
-			if(*vp!=ch || *(vp+ATTROFFSET)!=cl){
-				*vp=ch;
-				*(vp+ATTROFFSET)=cl;
-				written=1;
-			}
-			vp++;
+			*(vp+ATTROFFSET)=cl;
+			*vp++=ch;
 		}
 		//改行およびバッファ最終以降の右側表示消去
 		for(;x<WIDTH_X;x++){
-			if(*vp!=0 || *(vp+ATTROFFSET)!=0){
-				*vp=0;
-				*(vp+ATTROFFSET)=0;
-				written=1;
-			}
-			vp++;
+			*(vp+ATTROFFSET)=0;
+			*vp++=0;
 		}
 	}
 	//バッファ最終以降の下側表示消去
 	for(;y<EDITWIDTHY;y++){
 		for(x=0;x<WIDTH_X;x++){
-			if(*vp!=0 || *(vp+ATTROFFSET)!=0){
-				*vp=0;
-				*(vp+ATTROFFSET)=0;
-				written=1;
-			}
-			vp++;
+			*(vp+ATTROFFSET)=0;
+			*vp++=0;
 		}
 	}
-	if(written) textredraw(); //液晶に出力
+	textredraw();
 }
 
 //カーソルを1つ前に移動
@@ -1906,7 +1892,6 @@ void changewidth(void){
 	EDITWIDTHY=WIDTH_Y-1; //エディタ画面行数設定
 	cursor_top(); //カーソルをテキストバッファの先頭に設定
 	redraw(); //再描画
-	textredraw(); //液晶に強制出力
 }
 
 //KM-BASICコンパイル＆実行

@@ -52,7 +52,14 @@ int lib_display(int r0, int r1, int r2){
 	int* sp=(int*)r1;
 	int i,j,gc;
 	unsigned int x1,y1,x2,y2;
-	if (0==r2) {
+	if (RESET_STATIC_VARS==r2) {
+		cursorcolor=7;
+		gcolor=7;
+		ppcg=0;
+		prevx1=0;
+		prevy1=0;
+		return r0;
+	} else if (0==r2) {
 		// Return the static data
 		switch(r0){
 			case 0:
