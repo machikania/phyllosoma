@@ -50,6 +50,7 @@
 #define ERROR_INVALID _throw_error(-20)
 #define ERROR_MUSIC (-21)
 #define ERROR_PATH_TOO_LONG _throw_error(-22)
+#define ERROR_OPTION_CLASSCODE (-23)
 
 /*
 	Libraries
@@ -363,6 +364,7 @@ extern int g_class_mode;
 extern unsigned short* g_class_id_list;
 extern int* g_class_list;
 extern int* g_empty_object_list;
+extern char g_before_classcode;
 
 extern char g_disable_printf;
 extern char g_disable_lcd_out;

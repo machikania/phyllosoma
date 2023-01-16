@@ -43,6 +43,8 @@ void init_compiler(void){
 	cmpdata_init();
 	// Initialize variable
 	variable_init();
+	// Start compiling non-class file
+	g_class_id=0;
 }
 
 int post_compile(void){
@@ -59,6 +61,7 @@ void begin_file_compiler(void){
 	g_linenum=0;
 	g_error_linenum=0;
 	g_multiple_statement=0;
+	g_before_classcode=0;
 }
 
 int end_file_compiler(void){
@@ -296,7 +299,7 @@ int compile_line(unsigned char* code){
 			return e;
 		default:
 			// Error happened
-			show_error(e,source-before);
+			if (!g_before_classcode) show_error(e,source-before);
 			return e;
 	}
 	// Error didn't happen

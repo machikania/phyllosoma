@@ -87,6 +87,17 @@ int compile_file(unsigned char* fname, char isclass){
 		if (!f_gets(g_file_buffer,g_file_buffer_size,fp)) break;
 		g_error_linenum++;
 		e=compile_line(g_file_buffer);
+		if (g_before_classcode) {
+			// Compiling a class file as the same file as BASIC main file
+			// The codes before "OPTION CLASSCODE" will be ignored
+			if (ERROR_OPTION_CLASSCODE==e) {
+				g_before_classcode=0;
+				e=0;
+			} else if (e) {
+				// Ignore the error before reaching "OPTION CLASSCODE"
+				e=0;
+			}
+		}
 		if (ERROR_COMPILE_CLASS==e) {
 			// Compiling a class is needed.
 			// Close current file, first
@@ -114,6 +125,10 @@ int compile_file(unsigned char* fname, char isclass){
 			if (f_open(fp,fname,FA_READ)) return show_error(ERROR_FILE,0);
 			begin_file_compiler();
 			continue;
+		} else if (ERROR_OPTION_CLASSCODE==e) {
+			// "OPTION CLASSCODE" found.
+			// Ignore following codes.
+			break;
 		}
 		if (showfilename) {
 			showfilename=0;

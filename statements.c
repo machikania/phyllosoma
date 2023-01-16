@@ -13,13 +13,17 @@
 */
 
 int useclass_statement(void){
-	int i,e;
+	int e;
 	do {
 		e=get_class_number();
 		if (e<0) {
 			// Class not found.
 			// Compile it
 			return init_class_compiling();
+		}
+		if (e==g_class_id) {
+			// Compiling a class file as the same file as BASIC main file
+			g_before_classcode=1;
 		}
 		skip_blank();
 	} while (','==(source++)[0]);
@@ -1452,6 +1456,20 @@ int dim_statement(void){
 	return 0;
 }
 
+int option_statement(void){
+	skip_blank();
+	do {
+		if (instruction_is("CLASSCODE")) {
+			return ERROR_OPTION_CLASSCODE;
+		} else {
+			return ERROR_SYNTAX;
+		}
+		skip_blank();
+	} while (','==(source++)[0]);
+	source--;
+	return 0;
+}
+
 int end_of_statement(void){
 	skip_blank();
 	if (0x00==source[0]) return 1;
@@ -1505,6 +1523,7 @@ int compile_statement(void){
 	if (instruction_is("LOOP")) return loop_statement();
 	if (instruction_is("METHOD")) return method_statement();
 	if (instruction_is("NEXT")) return next_statement();
+	if (instruction_is("OPTION")) return option_statement();
 	if (instruction_is("POKE")) return poke_statement();
 	if (instruction_is("POKE16")) return poke16_statement();
 	if (instruction_is("POKE32")) return poke32_statement();

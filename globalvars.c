@@ -86,6 +86,7 @@ int g_class_mode;
 unsigned short* g_class_id_list;
 int* g_class_list;
 int* g_empty_object_list;
+char g_before_classcode;
 
 // printf() ON/OFF, LCD out ON/OFF
 
