@@ -1,3 +1,20 @@
+/*----------------------------------------------------------------------------
+
+Copyright (C) 2023, KenKen, all right reserved.
+
+This program supplied herewith by KenKen is free software; you can
+redistribute it and/or modify it under the terms of the same license written
+here and only for non-commercial purpose.
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of FITNESS FOR A PARTICULAR
+PURPOSE. The copyright owner and contributors are NOT LIABLE for any damages
+caused by using this program.
+
+----------------------------------------------------------------------------*/
 #include "pico/stdlib.h"
 #include "usbkeyboard.h"
 

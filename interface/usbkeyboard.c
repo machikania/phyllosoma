@@ -1,15 +1,25 @@
+/*----------------------------------------------------------------------------
+
+Copyright (C) 2023, KenKen, all right reserved.
+
+This program supplied herewith by KenKen is free software; you can
+redistribute it and/or modify it under the terms of the same license written
+here and only for non-commercial purpose.
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of FITNESS FOR A PARTICULAR
+PURPOSE. The copyright owner and contributors are NOT LIABLE for any damages
+caused by using this program.
+
+----------------------------------------------------------------------------*/
 #include "bsp/board.h"
 #include "tusb.h"
 #include "pico/stdlib.h"
 #include "pico/multicore.h"
 #include "usbkeyboard.h"
-
-#ifdef USBKBDEBUG
-#include "../lcd-lib/LCDdriver.h"
-#include "../lcd-lib/graphlib.h"
-#endif
-
-//#define USBKBDEBUG
 
 //--------------------------------------------------------------------+
 // MACRO TYPEDEF CONSTANT ENUM DECLARATION
@@ -76,17 +86,10 @@ void shiftkeycheck(uint8_t const modifier){
 	if(usbkb_shiftkey_a & (CHK_WIN_L | CHK_WIN_R)) usbkb_shiftkey|=CHK_WIN;
 }
 
-#ifdef USBKBDEBUG
-void dispkeys(hid_keyboard_report_t const *p_report);
-#endif
-
 // hid keyboard reportをusbkb_reportに取り込む
 // 実際の処理は別途定期的に行う
 // 複数キー同時押下エラー（キーコード=1が含まれる）場合無視する
 void process_kbd_report(hid_keyboard_report_t const *p_new_report) {
-#ifdef USBKBDEBUG
-	dispkeys(p_new_report);
-#endif
 	if(p_new_report->keycode[0]!=1) usbkb_report=*p_new_report;
 }
 
@@ -190,65 +193,10 @@ void usbkbled_task(void){
 	if(lockkeychanged){
 		// Set Lock keys LED
 		tuh_hid_set_report(USBKB_dev_addr,USBKB_instance,0,HID_REPORT_TYPE_OUTPUT,&lockkey,sizeof(lockkey));
-#ifdef USBKBDEBUG
-		printnum(lockkey);
-		printstr("Set LED completed\n");
-#endif
 		lockkeychanged=false;
 		usbkbled_timer=board_millis()+USBKBLED_TIMER_INTERVAL;
 	}
 }
-
-#ifdef USBKBDEBUG
-static void printhex2(int i){
-	int h=(i>>4)&0xf;
-	if(h<10) printchar('0'+h);
-	else printchar('A'+h-10);
-	h=i&0xf;
-	if(h<10) printchar('0'+h);
-	else printchar('A'+h-10);
-}
-void dispkeys(hid_keyboard_report_t const *p_report){
-	unsigned char *cursor2;
-	cursor2=cursor;
-	setcursor(0,0,7);
-	for(int i=0;i<6;i++){
-			printchar('[');
-			printhex2(p_report->keycode[i]);
-			printchar(']');
-	}
-
-	setcursor(0,1,7);
-	uint8_t sh=p_report->modifier;
-	if(sh & KEYBOARD_MODIFIER_LEFTCTRL) printstr("LCTR ");
-	else printstr("     ");
-	if(sh & KEYBOARD_MODIFIER_LEFTSHIFT) printstr("LSFT ");
-	else printstr("     ");
-	if(sh & KEYBOARD_MODIFIER_LEFTALT) printstr("LALT ");
-	else printstr("     ");
-	if(sh & KEYBOARD_MODIFIER_LEFTGUI) printstr("LWIN ");
-	else printstr("     ");
-	if(sh & KEYBOARD_MODIFIER_RIGHTCTRL) printstr("RCTR ");
-	else printstr("     ");
-	if(sh & KEYBOARD_MODIFIER_RIGHTSHIFT) printstr("RSFT ");
-	else printstr("     ");
-	if(sh & KEYBOARD_MODIFIER_RIGHTALT) printstr("RALT ");
-	else printstr("     ");
-	if(sh & KEYBOARD_MODIFIER_RIGHTGUI) printstr("RWIN ");
-	else printstr("     ");
-
-	setcursor(0,2,4);
-	if(lockkey & KEYBOARD_LED_NUMLOCK) printstr("NUM ");
-	else printstr("    ");
-	if(lockkey & KEYBOARD_LED_CAPSLOCK) printstr("CAP ");
-	else printstr("    ");
-	if(lockkey & KEYBOARD_LED_SCROLLLOCK) printstr("SCR ");
-	else printstr("    ");
-
-	cursor=cursor2;
-	setcursorcolor(7);
-}
-#endif
 
 //--------------------------------------------------------------------+
 // Mouse
@@ -256,43 +204,10 @@ void dispkeys(hid_keyboard_report_t const *p_report){
 
 void cursor_movement(int8_t x, int8_t y, int8_t wheel)
 {
-#if USE_ANSI_ESCAPE
-	// Move X using ansi escape
-	if ( x < 0)
-	{
-		printf(ANSI_CURSOR_BACKWARD(%d), (-x)); // move left
-	}else if ( x > 0)
-	{
-		printf(ANSI_CURSOR_FORWARD(%d), x); // move right
-	}
-
-	// Move Y using ansi escape
-	if ( y < 0)
-	{
-		printf(ANSI_CURSOR_UP(%d), (-y)); // move up
-	}else if ( y > 0)
-	{
-		printf(ANSI_CURSOR_DOWN(%d), y); // move down
-	}
-
-	// Scroll using ansi escape
-	if (wheel < 0)
-	{
-		printf(ANSI_SCROLL_UP(%d), (-wheel)); // scroll up
-	}else if (wheel > 0)
-	{
-		printf(ANSI_SCROLL_DOWN(%d), wheel); // scroll down
-	}
-
-	printf("\r\n");
-#else
-//  printstr("(%d %d %d)\r\n", x, y, wheel);
-#endif
 }
 
 static void process_mouse_report(hid_mouse_report_t const * report)
 {
-
 }
 
 // Each HID instance can has multiple reports
@@ -354,13 +269,11 @@ static void process_generic_report(uint8_t dev_addr, uint8_t instance, uint8_t c
 		switch (rpt_info->usage)
 		{
 			case HID_USAGE_DESKTOP_KEYBOARD:
-				TU_LOG1("HID receive keyboard report\r\n");
 				// Assume keyboard follow boot report layout
 				process_kbd_report( (hid_keyboard_report_t const*) report );
 			break;
 
 			case HID_USAGE_DESKTOP_MOUSE:
-				TU_LOG1("HID receive mouse report\r\n");
 				// Assume mouse follow boot report layout
 				process_mouse_report( (hid_mouse_report_t const*) report );
 			break;
@@ -379,17 +292,15 @@ void tuh_hid_report_received_cb(uint8_t dev_addr, uint8_t instance, uint8_t cons
 {
 	uint8_t const itf_protocol = tuh_hid_interface_protocol(dev_addr, instance);
 
-if(!usbkb_mounted()) return;
+	if(!usbkb_mounted()) return;
 
 	switch (itf_protocol)
 	{
 		case HID_ITF_PROTOCOL_KEYBOARD:
-			TU_LOG2("HID receive boot keyboard report\r\n");
 			process_kbd_report( (hid_keyboard_report_t const*) report );
 		break;
 
 		case HID_ITF_PROTOCOL_MOUSE:
-			TU_LOG2("HID receive boot mouse report\r\n");
 			process_mouse_report( (hid_mouse_report_t const*) report );
 		break;
 
@@ -400,12 +311,7 @@ if(!usbkb_mounted()) return;
 	}
 
 	// continue to request to receive report
-	if ( !tuh_hid_receive_report(dev_addr, instance) )
-	{
-#ifdef USBKBDEBUG
-		printstr("Error: cannot request to receive report\n");
-#endif
-	}
+	tuh_hid_receive_report(dev_addr, instance);
 }
 
 // Invoked when device with hid interface is mounted
@@ -416,26 +322,7 @@ void tuh_hid_mount_cb(uint8_t dev_addr, uint8_t instance, uint8_t const* desc_re
 	// Interface protocol (hid_interface_protocol_enum_t)
 	uint8_t const itf_protocol = tuh_hid_interface_protocol(dev_addr, instance);
 
-#ifdef USBKBDEBUG
-	printstr("tuh_hid_mount_cb invoked\n");
-	printstr("HID device address = ");
-	printnum(dev_addr);
-	printstr(", instance = ");
-	printnum(instance);
-	printstr(", HID protocol = ");
-	printnum(itf_protocol);
-	printstr(" is mounted\n");
-#endif
-
 	hid_info[instance].report_count = tuh_hid_parse_report_descriptor(hid_info[instance].report_info, MAX_REPORT, desc_report, desc_len);
-#ifdef USBKBDEBUG
-	const char* protocol_str[] = { "None", "Keyboard", "Mouse" };
-	printstr("HID has ");
-	printnum(hid_info[instance].report_count);
-	printstr("reports and interface protocol = ");
-	printstr((unsigned char *)protocol_str[itf_protocol]);
-	printchar('\n');
-#endif
 
 	if(itf_protocol==1){ //HIDキーボードの場合
 		USBKB_dev_addr=dev_addr;
@@ -454,26 +341,9 @@ void tuh_hid_mount_cb(uint8_t dev_addr, uint8_t instance, uint8_t const* desc_re
 
 void tuh_hid_set_report_complete_cb(uint8_t dev_addr, uint8_t instance, uint8_t report_id, uint8_t report_type, uint16_t len)
 {
-#ifdef USBKBDEBUG
-	printstr("HID set report completed\n");
-	printstr("dev_addr ");printnum(dev_addr);printchar('\n');
-	printstr("instance ");printnum(instance);printchar('\n');
-	printstr("report_id ");printnum(report_id);printchar('\n');
-	printstr("report_type");printnum(report_type);printchar('\n');
-	printstr("len ");printnum(len);printchar('\n');
-#endif
 }
 void tuh_hid_report_sent_cb(uint8_t dev_addr, uint8_t instance, uint8_t const* report, uint16_t len)
 {
-#ifdef USBKBDEBUG
-	printstr("HID report sent\n");
-	printstr("dev_addr ");printnum(dev_addr);printchar('\n');
-	printstr("instance ");printnum(instance);printchar('\n');
-	printstr("len ");printnum(len);printchar('\n');
-	printstr("report ");
-	for(int i=0;i<len;i++) {printhex2(*report++);printchar(' ');}
-	printchar('\n');
-#endif
 }
 
 
@@ -483,13 +353,6 @@ void tuh_hid_umount_cb(uint8_t dev_addr, uint8_t instance)
 	if(dev_addr==USBKB_dev_addr){
 		USBKB_dev_addr=0xFF;
 	}
-#ifdef USBKBDEBUG
-	printstr("HID device address = ");
-	printnum(dev_addr);
-	printstr(", instance = ");
-	printnum(instance);
-	printstr(" is unmounted\n");
-#endif
 }
 
 // USBとキーボード関連初期化
