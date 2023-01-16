@@ -276,6 +276,11 @@ int compile_line(unsigned char* code){
 	}
 	// Compile the statement(s)
 	skip_blank();
+	if (g_before_classcode) {
+		// Compiling a class file as the same file as BASIC main file
+		// The codes before "OPTION CLASSCODE" will be ignored
+		if (strncmp(source,"OPTION ",7)) return 0;
+	}
 	if (0x00!=source[0]) while(1){
 		e=compile_statement();
 		if (e) break; // An error occured
@@ -296,10 +301,11 @@ int compile_line(unsigned char* code){
 			// No error
 			break;
 		case ERROR_COMPILE_CLASS:
+		case ERROR_OPTION_CLASSCODE:
 			return e;
 		default:
 			// Error happened
-			if (!g_before_classcode) show_error(e,source-before);
+			show_error(e,source-before);
 			return e;
 	}
 	// Error didn't happen
