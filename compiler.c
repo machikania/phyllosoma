@@ -62,6 +62,7 @@ void begin_file_compiler(void){
 	g_error_linenum=0;
 	g_multiple_statement=0;
 	g_before_classcode=0;
+	g_after_classcode=0;
 }
 
 int end_file_compiler(void){

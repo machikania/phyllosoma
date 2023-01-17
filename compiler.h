@@ -365,6 +365,7 @@ extern unsigned short* g_class_id_list;
 extern int* g_class_list;
 extern int* g_empty_object_list;
 extern char g_before_classcode;
+extern char g_after_classcode;
 
 extern char g_disable_printf;
 extern char g_disable_lcd_out;

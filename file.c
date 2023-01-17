@@ -92,6 +92,7 @@ int compile_file(unsigned char* fname, char isclass){
 			// The codes before "OPTION CLASSCODE" will be ignored
 			if (ERROR_OPTION_CLASSCODE==e) {
 				g_before_classcode=0;
+				g_after_classcode=1;
 				e=0;
 			} else if (e) {
 				// Ignore the error before reaching "OPTION CLASSCODE"
