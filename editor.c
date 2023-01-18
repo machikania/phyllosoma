@@ -148,7 +148,7 @@ _tbuf * postobpix(int pos,unsigned short *pix){
 }
 
 // テキスト全体の先頭からline行目のテキストバッファ上の位置を返す
-// 戻り値　テキストバッファポインタ
+// 戻り値　テキストバッファポインタ、line不正の場合NULL
 // *pix（戻り値）：戻り値テキストバッファの先頭からの位置（ポインタ渡し）
 _tbuf * linetobpix(int line,unsigned short *pix){
 	_tbuf *bp,*bp2;
@@ -157,10 +157,11 @@ _tbuf * linetobpix(int line,unsigned short *pix){
 	bp2=TBufstart;
 	ix=0;
 	ix2=0;
+	if(line<1) return NULL;
 	while(line>1){
 		while(1){
 			if(ix>=bp->n){
-				if(bp->next==NULL) break;
+				if(bp->next==NULL) return NULL;
 				bp=bp->next;
 				ix=0;
 				continue;
@@ -2066,16 +2067,9 @@ void run(int test){
 		break;
 	}
 
-	if(!er || g_error_linenum==0){
-		//正常終了またはファイルエラーまたはリンクエラーの場合
-		//カーソルを元の位置に設定
-		disptopbp=postobpix(disptoppos,&disptopix);
-		cursorbp=postobpix(cursorpos,&cursorix);
-	}
-	else{
+	if(er && (g_after_classcode || !g_class_id) && (disptopbp=linetobpix(g_error_linenum,&disptopix))){
 		//コンパイルエラーの場合
-		//カーソルをエラー行で画面トップに移動
-		disptopbp=linetobpix(g_error_linenum,&disptopix);
+		//カーソルをエラー行で画面トップに移動(classファイルでのエラー除く)
 		cursorbp=disptopbp;
 		cursorix=disptopix;
 		cx=0;
@@ -2091,6 +2085,11 @@ void run(int test){
 			if(bp==disptopbp && ix==disptopix) break; //最上行で移動できなかった場合抜ける
 		}
 		for(;i>0;i--) cursor_down(); //元のY座標までカーソルを下に移動
+	}
+	else{
+		//カーソルを元の位置に設定
+		disptopbp=postobpix(disptoppos,&disptopix);
+		cursorbp=postobpix(cursorpos,&cursorix);
 	}
 	cursorbp1=NULL; //範囲選択モード解除
 	clipsize=0; //クリップボードクリア
