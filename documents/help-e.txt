@@ -21,6 +21,8 @@ Multiple commands can be processed on a single line by separating them with ":".
 
 BGCOLOR r,g,b
 	Specifies background color.
+ALIGN4
+	In the compile object, the lower two bits of the address of the code of the next instruction are set to zero. Available in Type P only.
 BREAK
 	Breaks out of FOR-NEXT, DO-LOOP, and WHILE-WEND loops.
 CDATA x[,y[,z[...]]]
@@ -142,8 +144,12 @@ ASC(x$)
 	Returns the ASCII code of the first character of a string.
 CREAD()
 	Reads data (8-bit integer value) one by one after the DATA statement. See also READ() function.
+DATAADDRESS(xxx)
+	Returns the physical address of the label indicated by xxx, which can be used with Type P.
 DRAWCOUNT()
 	Obtains the DRAWCOUNT value, which is a 16-bit integer value that increases by 1 every 1/60th of a second.
+FUNCADDRESS(xxx)
+	Returns the code address of the label indicated by xxx, which can be used with Type P.
 GOSUB(xxx [, y [, z [, ... ]]])
 	Same as the GOSUB instruction, but with a return value (see RETURN). xxx is a label or line number. yyyy, zzz, etc. are arguments that are passed on to the subroutine (see ARGS() function).
 INKEY([x])
@@ -653,7 +659,7 @@ SPISWAPDATA x,y[,z1[,z2[,z3...]]]
 	SPI multi-word send/receive. x is a pointer to the buffer that stores the contents to be sent/received. y is the number of words to be sent/received. z1, z2, z3, etc. are optional transmission codes, which are sent first. Then, after sending the contents of buffer x, data is received and stored back into buffer x. This operation is repeated over y words.
 
 <Option>
-Type Z and Type M allow various options to be specified at compile-time or run-time using the OPTION statement. The following options are available
+Type Z and Type M allow various options to be specified at compile-time or run-time using the OPTION statement. For Type P, only "OPTION CLASSCODE" is valid. The following options are available
 
 OPTION NOLINENUM
 	Do not insert a line numbering instruction at compile time. This option is expected to reduce program size and increase execution speed. However, if an error occurs, it will not be clear which line the error occurred on.
@@ -699,6 +705,14 @@ If strings are handled consecutively in a line, an error message "String too com
 Be careful when accessing global variables in interrupt functions. If a variable of the same name is specified as a VAR in one of the subroutines and is also used as a local variable, depending on when the interrupt is triggered, the value of the variable may or may not belong to the global or local variable. Therefore, if you want to handle a global variable in an interrupt function, do not specify a variable of the same name as a VAR.
 
 <Version history>
+KM-1502 Released in January 2022.
+　Fixed a bug that occurred in some environments when compiling class files.
+　Added ALIGN4 statement, DATAADDRESS() function, and FUNCADDRESS() function
+　Fixed a slight timing discrepancy in timer interrupt.
+　Added memory allocation related functions to SYSTEM().
+　Added a function related to memory allocation to SYSTEM().
+　Supported OPTION CLASSCODE.
+　Card can be inserted and removed during BASIC program execution.
 KM-1501 Released in October 2022.
 　The NOT#() function was added.
 　Fixed a bug that prevented compiling when using another class in a class.
