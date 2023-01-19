@@ -157,14 +157,14 @@ INKEY([x])
 INT(x#)
 	Converts the real value x# to an integer and returns it.
 KEYS([x])
-	Obtains the key input. x values are as follows. if x is not specified, x=63 is equivalent.
+	Obtains the button input. x values are as follows. if x is not specified, x=63 is equivalent.
 		KEYUP: 1
 		KEYDOWN: 2
 		KEYLEFT: 4
 		KEYRIGHT: 8
 		KEYSTART: 16
 		KEYFIRE: 32
-	Note that using this function on Type Z will disable keyboard-based functions such as INKEY interrupt and READKEY(), etc. This is not the case on Type M.
+	Note that using this function on Type Z will disable keyboard-based functions such as INKEY interrupt and READKEY(), etc. This is not the case on Type M and Type P.
 LEN(x$)
 	Returns the length of the string.
 MUSIC()
@@ -706,6 +706,7 @@ Be careful when accessing global variables in interrupt functions. If a variable
 
 <Version history>
 KM-1502 Released in January 2022.
+　Three functions, INKEY(), READKEY(), and INPUT$(), and INKEY interrupt function, have been added to support USB keyboards and editors.
 　Fixed a bug that occurred in some environments when compiling class files.
 　Added ALIGN4 statement, DATAADDRESS() function, and FUNCADDRESS() function
 　Fixed a slight timing discrepancy in timer interrupt.
