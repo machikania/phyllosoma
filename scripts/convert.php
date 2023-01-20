@@ -2,9 +2,13 @@
 
 date_default_timezone_set('America/Los_Angeles');
 
+if (!defined('FILENAME')) {
+	define('FILENAME','phyllosoma.uf2');
+}
+
 // Initializations
-$phyllosoma=@file_get_contents("./phyllosoma.uf2");
-if (!@strlen($phyllosoma)) exit("phyllosoma.uf2 not found in current directory");
+$phyllosoma=@file_get_contents('./'.FILENAME);
+if (!@strlen($phyllosoma)) exit(FILENAME.' not found in current directory');
 $embedded=$phyllosoma;
 $maxlengths=array();
 
