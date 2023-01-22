@@ -252,5 +252,15 @@ FRESULT debug_f_chdir (const TCHAR* path){
 	return FR_OK;
 }
 
+int debug_file_exists(unsigned char* fname){
+	int i;
+	const TCHAR* file;
+	for(i=0;file=debug_files[i];i+=2){
+		if (strcmp(file,fname)) continue;
+		return 1;
+	}
+	return 0;
+}
+
 #endif // DEBUG_MODE
 

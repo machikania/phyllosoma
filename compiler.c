@@ -202,7 +202,7 @@ unsigned char* code2upper(unsigned char* code){
 				instring=1;
 			} else if (0x09==c) {
 				c=0x20;
-			} else if (0x0d==c || 0x0a==c) {
+			} else if (0x0d==c || 0x0a==c || 0x00==c) {
 				result[i]=0;
 				break;
 			} else if (1023==i) {
