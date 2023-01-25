@@ -47,3 +47,6 @@ GP27 I/O bit14 / ADC1
 GP28 I/O bit15 / SOUND OUT / ADC2
 GP29 ADC3
 ```
+## Using Keyboard
+The phyllosoma_kb.uf2 firmware supports using USB keyboard. Connect the USB keyboard to micro B socket of Raspberry Pi pico through an USB-OTG cable, and supply 5V power to VBUS pin (#40).  
+Alternatevely, as before, the phyllosoma.uf2 firmware supports the USB serial connection between MachiKania and PC.
