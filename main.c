@@ -13,8 +13,9 @@
 #include "./debug.h"
 #include "./display.h"
 #include "./config.h"
+#include "./interface/usbkeyboard.h"
 
-char g_autoexec[12]="MACHIKAP.BAS";
+char g_autoexec[13]="MACHIKAP.BAS";
 
 void read_ini(void){
 	int i;
@@ -66,6 +67,18 @@ void read_ini(void){
 		} else if (!strncmp(str,"STARTWAIT=",10)) {
 			sscanf(str+10,"%d",&g_wait_at_begin);
 			if (g_wait_at_begin<500) g_wait_at_begin=500;
+		} else if (!strncmp(str,"106KEY",6)) {
+			keytype=0;
+		} else if (!strncmp(str,"101KEY",6)) {
+			keytype=1;
+		} else if (!strncmp(str,"NUMLOCK",7)) {
+			lockkey|=1;
+		} else if (!strncmp(str,"CAPSLOCK",8)) {
+			lockkey|=2;
+		} else if (!strncmp(str,"SCRLLOCK",8)) {
+			lockkey|=4;
+		} else if (!strncmp(str,"WAIT4KEYBOARD=",14)) {
+			sscanf(str+14,"%d",&g_wait_for_keyboard);
 		}
 	}
 	// Close file
@@ -92,17 +105,25 @@ int main() {
 	// Read MACHIKAP.INI
 	read_ini();
 	sleep_ms(g_wait_at_begin-500);
-	// Connect to PC
-	connect2pc();
+	
+	// Connect to USB keyboard or to PC
+	post_inifile();
+	
 	// Get filename to compile
-	if (file_exists(g_autoexec)) str=&g_autoexec[0];
-	else str=fileselect();
+	if (file_exists(g_autoexec)) {
+		str=&g_autoexec[0];
+	} else {
+		// Open text editor if USB keyboard mode
+		pre_fileselect();
+		// Open file selector
+		str=fileselect();
+	}
+	
 	// Start
-	printstr("MachiKania BASIC System\n");
-	printstr(" Ver "SYSVER1" "SYSVER2"\n");
-	printstr("BASIC Compiler "BASVER" by Katsumi\n");
-	printstr("LCD and File systems by KENKEN\n");
-	printstr("\n");
+	printstr(INTRODUCE_MACHIKANIA);
+	// Run application if HEX file
+	for(i=0;str[i];i++);
+	if (!strncmp(&str[i-4],".HEX",4)) runHex(str);
 	// Compile the code
 	s=time_us_32();
 	init_compiler();

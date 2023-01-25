@@ -21,6 +21,8 @@ Multiple commands can be processed on a single line by separating them with ":".
 
 BGCOLOR r,g,b
 	Specifies background color.
+ALIGN4
+	In the compile object, the lower two bits of the address of the code of the next instruction are set to zero. Available in Type P only.
 BREAK
 	Breaks out of FOR-NEXT, DO-LOOP, and WHILE-WEND loops.
 CDATA x[,y[,z[...]]]
@@ -142,8 +144,12 @@ ASC(x$)
 	Returns the ASCII code of the first character of a string.
 CREAD()
 	Reads data (8-bit integer value) one by one after the DATA statement. See also READ() function.
+DATAADDRESS(xxx)
+	Returns the physical address of the label indicated by xxx, which can be used with Type P.
 DRAWCOUNT()
 	Obtains the DRAWCOUNT value, which is a 16-bit integer value that increases by 1 every 1/60th of a second.
+FUNCADDRESS(xxx)
+	Returns the code address of the label indicated by xxx, which can be used with Type P.
 GOSUB(xxx [, y [, z [, ... ]]])
 	Same as the GOSUB instruction, but with a return value (see RETURN). xxx is a label or line number. yyyy, zzz, etc. are arguments that are passed on to the subroutine (see ARGS() function).
 INKEY([x])
@@ -151,14 +157,14 @@ INKEY([x])
 INT(x#)
 	Converts the real value x# to an integer and returns it.
 KEYS([x])
-	Obtains the key input. x values are as follows. if x is not specified, x=63 is equivalent.
+	Obtains the button input. x values are as follows. if x is not specified, x=63 is equivalent.
 		KEYUP: 1
 		KEYDOWN: 2
 		KEYLEFT: 4
 		KEYRIGHT: 8
 		KEYSTART: 16
 		KEYFIRE: 32
-	Note that using this function on Type Z will disable keyboard-based functions such as INKEY interrupt and READKEY(), etc. This is not the case on Type M.
+	Note that using this function on Type Z will disable keyboard-based functions such as INKEY interrupt and READKEY(), etc. This is not the case on Type M and Type P.
 LEN(x$)
 	Returns the length of the string.
 MUSIC()
@@ -585,6 +591,10 @@ SYSTEM(105)
 	Returns a pointer to the graphic display area.
 SYSTEM 200,x
 	Stops (when x is 0) or starts (when x is non-zero) the display.
+SYSTEM(250,x)
+	Allocates memory in an x-byte area initialized with zeros and returns an address (equivalent to calloc).
+SYSTEM(251,x)
+	Allocates memory for an area of x bytes and returns an address (equivalent to malloc).
 
 <Input/output commands and functions>
 Input/output functions are available for Type M and Type P.
@@ -649,7 +659,7 @@ SPISWAPDATA x,y[,z1[,z2[,z3...]]]
 	SPI multi-word send/receive. x is a pointer to the buffer that stores the contents to be sent/received. y is the number of words to be sent/received. z1, z2, z3, etc. are optional transmission codes, which are sent first. Then, after sending the contents of buffer x, data is received and stored back into buffer x. This operation is repeated over y words.
 
 <Option>
-Type Z and Type M allow various options to be specified at compile-time or run-time using the OPTION statement. The following options are available
+Type Z and Type M allow various options to be specified at compile-time or run-time using the OPTION statement. For Type P, only "OPTION CLASSCODE" is valid. The following options are available
 
 OPTION NOLINENUM
 	Do not insert a line numbering instruction at compile time. This option is expected to reduce program size and increase execution speed. However, if an error occurs, it will not be clear which line the error occurred on.
@@ -695,6 +705,15 @@ If strings are handled consecutively in a line, an error message "String too com
 Be careful when accessing global variables in interrupt functions. If a variable of the same name is specified as a VAR in one of the subroutines and is also used as a local variable, depending on when the interrupt is triggered, the value of the variable may or may not belong to the global or local variable. Therefore, if you want to handle a global variable in an interrupt function, do not specify a variable of the same name as a VAR.
 
 <Version history>
+KM-1502 Released in January 2022.
+　Three functions, INKEY(), READKEY(), and INPUT$(), and INKEY interrupt function, have been added to support USB keyboards and editors.
+　Fixed a bug that occurred in some environments when compiling class files.
+　Added ALIGN4 statement, DATAADDRESS() function, and FUNCADDRESS() function
+　Fixed a slight timing discrepancy in timer interrupt.
+　Added memory allocation related functions to SYSTEM().
+　Added a function related to memory allocation to SYSTEM().
+　Supported OPTION CLASSCODE.
+　Card can be inserted and removed during BASIC program execution.
 KM-1501 Released in October 2022.
 　The NOT#() function was added.
 　Fixed a bug that prevented compiling when using another class in a class.

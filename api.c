@@ -88,13 +88,13 @@ void _printnum2(unsigned int n,unsigned char e){
 void _cls(void){
 	int i;
 	if (!g_disable_lcd_out) cls();
+	g_cursor=0;
 	if (g_disable_printf) return;
 	printf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
 	for(i=0;i<23;i++) {
 		// Go up
 		putchar(0x1b); putchar(0x5b); putchar(0x41);
 	}
-	g_cursor=0;
 }
 
 /*

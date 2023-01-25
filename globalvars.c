@@ -17,7 +17,7 @@ unsigned short* object;
 	KM-BASIC related global areas
 */
 
-unsigned short kmbasic_object[512*192]; // 192K bytes RAM area
+unsigned short __attribute__((section(".kmbasicobject"))) kmbasic_object[512*192]; // 192K bytes RAM area
 int kmbasic_data[32];
 int kmbasic_variables[ALLOC_BLOCK_NUM];
 unsigned short kmbasic_var_size[ALLOC_BLOCK_NUM];
@@ -36,6 +36,7 @@ const int g_file_buffer_size=ALLOC_BLOCK_NUM*2;
 
 // Line number
 int g_linenum;
+int g_error_linenum;
 
 // Function to call when multipe line statement
 void* g_multiple_statement;
@@ -85,6 +86,8 @@ int g_class_mode;
 unsigned short* g_class_id_list;
 int* g_class_list;
 int* g_empty_object_list;
+char g_before_classcode;
+char g_after_classcode;
 
 // printf() ON/OFF, LCD out ON/OFF
 
@@ -111,11 +114,16 @@ int g_wait_at_begin=500;
 
 char g_interrupt_code=0;
 
+// How long time for waiting keyboard connection
+
+unsigned int g_wait_for_keyboard=2000;
+
 // Reserved words
 
-const char* const g_reserved_words[167]={
+const char* const g_reserved_words[170]={
 	"ABS",
 	"ACOS",
+	"ALIGN4",
 	"ANALOG",
 	"ARGS",
 	"ASC",
@@ -141,6 +149,7 @@ const char* const g_reserved_words[167]={
 	"CREAD",
 	"CURSOR",
 	"DATA",
+	"DATAADDRESS",
 	"DEBUG",
 	"DEC",
 	"DELAYMS",
@@ -174,6 +183,7 @@ const char* const g_reserved_words[167]={
 	"FPUTC",
 	"FREMOVE",
 	"FSEEK",
+	"FUNCADDRESS",
 	"GCLS",
 	"GCOLOR",
 	"GETDIR",
@@ -282,9 +292,10 @@ const char* const g_reserved_words[167]={
 	"WHILE",
 	"WIDTH",
 };
-const int const g_hash_resereved_words[167]={
+const int const g_hash_resereved_words[170]={
 	0x000400d3, //ABS
 	0x01002393, //ACOS
+	0x0d2063a4, //ALIGN4
 	0x0f00d397, //ANALOG
 	0x01013193, //ARGS
 	0x00040483, //ASC
@@ -310,6 +321,7 @@ const int const g_hash_resereved_words[167]={
 	0x424c4004, //CREAD
 	0x944d2382, //CURSOR
 	0x01140541, //DATA
+	0x15594496, //DATAADDRESS
 	0x45103507, //DEBUG
 	0x00045103, //DEC
 	0x0d018742, //DELAYMS
@@ -343,6 +355,7 @@ const int const g_hash_resereved_words[167]={
 	0x47454543, //FPUTC
 	0x3bcf1e71, //FREMOVE
 	0x4748410b, //FSEEK
+	0x0fbcbca9, //FUNCADDRESS
 	0x01182353, //GCLS
 	0x8238d383, //GCOLOR
 	0x84545203, //GETDIR

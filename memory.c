@@ -187,6 +187,7 @@ void* alloc_memory(int size, int var_num){
 	// A free area found
 	kmbasic_var_size[var_num]=size;
 	kmbasic_variables[var_num]=(int)candidate;
+	g_last_var_num=var_num;
 	return candidate;
 }
 

@@ -25,11 +25,13 @@ FRESULT debug_f_close (FIL* fp);
 TCHAR* debug_f_gets (TCHAR* buff, int len, FIL* fp);
 FRESULT debug_f_getcwd (TCHAR* buff, UINT len);
 FRESULT debug_f_chdir (const TCHAR* path);
+int debug_file_exists(unsigned char* fname);
 #define f_open debug_f_open
 #define f_close debug_f_close
 #define f_gets debug_f_gets
 #define f_getcwd debug_f_getcwd
 #define f_chdir debug_f_chdir
+#define file_exists debug_file_exists
 
 unsigned char* debug_fileselect(void);
 #define fileselect debug_fileselect

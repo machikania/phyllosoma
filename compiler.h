@@ -50,6 +50,7 @@
 #define ERROR_INVALID _throw_error(-20)
 #define ERROR_MUSIC (-21)
 #define ERROR_PATH_TOO_LONG _throw_error(-22)
+#define ERROR_OPTION_CLASSCODE (-23)
 
 /*
 	Libraries
@@ -93,6 +94,7 @@
 #define LIB_OBJ_METHOD 29
 #define LIB_PRE_METHOD 30
 #define LIB_POST_METHOD 31
+#define LIB_READKEY 32
 
 #define LIB_DEBUG 128
 #define LIB_PRINT 129
@@ -121,6 +123,12 @@
 #define LIB_MUSIC 152
 #define LIB_DELAYUS 153
 #define LIB_DELAYMS 154
+
+/*
+	Gereral option used for intializing static variables
+*/
+
+#define RESET_STATIC_VARS 32767
 
 /*
 	LIB MUSIC options
@@ -255,6 +263,7 @@
 #define CMPDATA_STRSTACK      0x0F
 #define CMPDATA_CLASS_ADDRESS 0x10
 #define CMPDATA_STATIC        0x11
+#define CMPDATA_DATA_LABEL_BL 0x12
 #define CMPDATA_ALL           0xFF
 
 /*
@@ -319,6 +328,7 @@ extern const int g_file_buffer_size;
 
 extern void* g_multiple_statement;
 extern int g_linenum;
+extern int g_error_linenum;
 extern int g_next_varnum;
 extern int g_sdepth;
 extern int g_maxsdepth;
@@ -331,8 +341,8 @@ extern volatile short* g_scratch_short;
 extern volatile float* g_scratch_float;
 extern volatile char* g_scratch_char;
 
-extern const char* const g_reserved_words[167];
-extern const int const g_hash_resereved_words[167];
+extern const char* const g_reserved_words[170];
+extern const int const g_hash_resereved_words[170];
 
 extern char g_constant_value_flag;
 extern int g_constant_int;
@@ -354,6 +364,8 @@ extern int g_class_mode;
 extern unsigned short* g_class_id_list;
 extern int* g_class_list;
 extern int* g_empty_object_list;
+extern char g_before_classcode;
+extern char g_after_classcode;
 
 extern char g_disable_printf;
 extern char g_disable_lcd_out;
@@ -361,8 +373,11 @@ extern char g_disable_debugwait2500;
 extern char g_enable_button_rotation;
 extern char g_reset_at_end;
 extern int g_wait_at_begin;
+extern unsigned int g_wait_for_keyboard;
 
 extern char g_interrupt_code;
+
+extern const char g_active_usb_keyboard;
 
 /*
 	Prototypes
@@ -401,6 +416,7 @@ int lib_read(int r0, int r1, int r2);
 int kmbasic_library(int r0, int r1, int r2, int r3);
 
 // statement.c
+int get_label_id(void);
 int goto_label(void);
 int gosub_arguments(void);
 int gosub_statement(void);
@@ -408,6 +424,19 @@ int post_gosub_statement(int i);
 int compile_statement(void);
 int end_of_statement(void);
 int restore_statement(void);
+
+// withoutkeyboard.c
+// withkeyboard.c
+void post_inifile(void);
+void pre_fileselect(void);
+int lib_inkey(int r0, int r1, int r2);
+int lib_input(int r0, int r1, int r2);
+int lib_readkey(int r0, int r1, int r2);
+int check_break(void);
+int check_keypress(void);
+
+// editor.c
+void texteditor(void);
 
 // string.c
 int string_char(void);
@@ -527,6 +556,9 @@ int fseek_function(void);
 int finput_function(void);
 int getdir_function(void);
 
+// display.c
+int lib_display(int r0, int r1, int r2);
+
 // timer.c
 int interrupt_statement(void);
 int drawcount_statement(void);
@@ -567,6 +599,9 @@ int playwave_function(void);
 
 // pcconnect.c
 void connect2pc(void);
+
+// hexfile.c
+void runHex(char* filename);
 
 // For debugging
 void dump_cmpdata(void);

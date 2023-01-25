@@ -349,6 +349,10 @@ int lib_spi(int r0, int r1, int r2){
 	static unsigned char bit_num;
 	int i;
 	unsigned int* sp=(unsigned int*)r1;
+	if (RESET_STATIC_VARS==r2) {
+		cs_port=-1;
+		return 0;
+	}
 	// Set control registers for IO
 	IO_SPI_SSPCR0[0]=io_spi_sspcr[0];
 	IO_SPI_SSPCR0[1]=io_spi_sspcr[1];

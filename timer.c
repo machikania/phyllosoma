@@ -133,6 +133,8 @@ bool repeating_drawcount_callback(struct repeating_timer *t) {
 		keys=lib_keys(63,0,0);
 		if (0<=s_keys && s_keys!=keys) call_interrupt_function(g_interrupt_vector[INTERRUPT_KEYS]);
 		s_keys=keys;
+	} else {
+		s_keys=-1;
 	}
 	musicint();
 	if (g_interrupt_vector[INTERRUPT_MUSIC]) {
@@ -144,6 +146,10 @@ bool repeating_drawcount_callback(struct repeating_timer *t) {
 			call_interrupt_function(g_interrupt_vector[INTERRUPT_WAVE]);
 		}
 		drop_interrupt_flag(INTERRUPT_WAVE);
+	}
+	if (g_interrupt_vector[INTERRUPT_INKEY]) {
+		if (check_keypress()) call_interrupt_function(g_interrupt_vector[INTERRUPT_INKEY]);
+		drop_interrupt_flag(INTERRUPT_INKEY);
 	}
 	return true;
 }
@@ -163,7 +169,7 @@ void timer_init(void){
 	for(i=0;i<(sizeof g_interrupt_vector)/(sizeof g_interrupt_vector[0]);i++) g_interrupt_vector[i]=0;
 	g_interrupt_flags=0;
 	// Start drawcount interrupt (every 1/60 sec)
-	add_repeating_timer_us(16667, repeating_drawcount_callback, NULL, &g_drawcount_timer);
+	add_repeating_timer_us(-16667, repeating_drawcount_callback, NULL, &g_drawcount_timer);
 }
 
 int lib_timer(int r0, int r1, int r2){
@@ -175,7 +181,7 @@ int lib_timer(int r0, int r1, int r2){
 		case TIMER_USETIMER:
 			cancel_repeating_timer(&g_timer);
 			g_timer_counter=0;
-			add_repeating_timer_us(r0, repeating_timer_callback, NULL, &g_timer);
+			add_repeating_timer_us(0-r0, repeating_timer_callback, NULL, &g_timer);
 			break;
 		case TIMER_TIMER:
 			g_timer_counter=r0;

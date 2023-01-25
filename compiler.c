@@ -43,6 +43,8 @@ void init_compiler(void){
 	cmpdata_init();
 	// Initialize variable
 	variable_init();
+	// Start compiling non-class file
+	g_class_id=0;
 }
 
 int post_compile(void){
@@ -57,7 +59,10 @@ void begin_file_compiler(void){
 	g_ifdepth=0;
 	g_fordepth=0;
 	g_linenum=0;
+	g_error_linenum=0;
 	g_multiple_statement=0;
+	g_before_classcode=0;
+	g_after_classcode=0;
 }
 
 int end_file_compiler(void){
@@ -70,6 +75,10 @@ int end_file_compiler(void){
 			break;
 		}
 		if (data=cmpdata_findfirst(CMPDATA_GOTO_LABEL_BL)) {
+			printstr("Label not found");
+			break;
+		}
+		if (data=cmpdata_findfirst(CMPDATA_DATA_LABEL_BL)) {
 			printstr("Label not found");
 			break;
 		}
@@ -193,7 +202,7 @@ unsigned char* code2upper(unsigned char* code){
 				instring=1;
 			} else if (0x09==c) {
 				c=0x20;
-			} else if (0x0d==c || 0x0a==c) {
+			} else if (0x0d==c || 0x0a==c || 0x00==c) {
 				result[i]=0;
 				break;
 			} else if (1023==i) {
@@ -268,6 +277,11 @@ int compile_line(unsigned char* code){
 	}
 	// Compile the statement(s)
 	skip_blank();
+	if (g_before_classcode) {
+		// Compiling a class file as the same file as BASIC main file
+		// The codes before "OPTION CLASSCODE" will be ignored
+		if (strncmp(source,"OPTION ",7)) return 0;
+	}
 	if (0x00!=source[0]) while(1){
 		e=compile_statement();
 		if (e) break; // An error occured
@@ -288,6 +302,7 @@ int compile_line(unsigned char* code){
 			// No error
 			break;
 		case ERROR_COMPILE_CLASS:
+		case ERROR_OPTION_CLASSCODE:
 			return e;
 		default:
 			// Error happened

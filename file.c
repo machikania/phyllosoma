@@ -22,6 +22,7 @@ void init_file_system(void){
 	if (FR_OK!=f_mount(&g_FatFs, "", 0)) printstr("Initializing file system failed\n");
 }
 
+#undef file_exists
 int file_exists(unsigned char* fname){
 	FILINFO fileinfo;
 	fileinfo.fsize=-1;
@@ -85,7 +86,20 @@ int compile_file(unsigned char* fname, char isclass){
 	// Compile the file until EOF
 	while(!f_eof(fp)){
 		if (!f_gets(g_file_buffer,g_file_buffer_size,fp)) break;
+		g_error_linenum++;
 		e=compile_line(g_file_buffer);
+		if (g_before_classcode) {
+			// Compiling a class file as the same file as BASIC main file
+			// The codes before "OPTION CLASSCODE" will be ignored
+			if (ERROR_OPTION_CLASSCODE==e) {
+				g_before_classcode=0;
+				g_after_classcode=1;
+				e=0;
+			} else if (e) {
+				// Ignore the error before reaching "OPTION CLASSCODE"
+				e=0;
+			}
+		}
 		if (ERROR_COMPILE_CLASS==e) {
 			// Compiling a class is needed.
 			// Close current file, first
@@ -113,6 +127,10 @@ int compile_file(unsigned char* fname, char isclass){
 			if (f_open(fp,fname,FA_READ)) return show_error(ERROR_FILE,0);
 			begin_file_compiler();
 			continue;
+		} else if (ERROR_OPTION_CLASSCODE==e) {
+			// "OPTION CLASSCODE" found.
+			// Ignore following codes.
+			break;
 		}
 		if (showfilename) {
 			showfilename=0;
@@ -237,6 +255,7 @@ int lib_fopen(int r0, int r1, int r2){
 	char* filename=(char*)r2;
 	char* modestr=(char*)r1;
 	char mode;
+	static DIR dobj;
 	// Check file mode
 	switch(modestr[0]){
 		case 'r':
@@ -263,9 +282,24 @@ int lib_fopen(int r0, int r1, int r2){
 	if (g_pFileHandles[r0-1]) f_close (g_pFileHandles[r0-1]);
 	// Open file
 	if (f_open(&g_FileHandles[r0-1],filename,mode)){
-		// Cannot open the file. Return zero
-		g_pFileHandles[r0-1]=0;
-		return 0;
+		// Check if directory can be open (or if the card is inserted)
+		if (FR_OK==f_opendir(&dobj,".")) {
+			// The card is inserted, but file cannot be open
+			g_pFileHandles[r0-1]=0;
+			return 0;
+		}
+		// Mount again
+		if (f_mount(&g_FatFs, "", 0)) {
+			// Cannot mount. Return zero
+			g_pFileHandles[r0-1]=0;
+			return 0;
+		}
+		// Open again
+		if (f_open(&g_FileHandles[r0-1],filename,mode)){
+			// Cannot open the file. Return zero
+			g_pFileHandles[r0-1]=0;
+			return 0;
+		}
 	}
 	// File sucessfully opened. Return file handle
 	g_pFileHandles[r0-1]=&g_FileHandles[r0-1];

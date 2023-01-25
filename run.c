@@ -6,6 +6,7 @@
 
 #include "./compiler.h"
 #include "./core1.h"
+#include "./api.h"
 
 const int const g_r6_array[]={
 	0,                         // Pointer to object
@@ -119,6 +120,11 @@ void pre_run(void){
 	io_init();
 	// Init music
 	init_music();
+	// Lower interrupt flag
+	g_interrupt_code=0;
+	// Reset static variables
+	lib_display(0,0,RESET_STATIC_VARS);
+	lib_spi(0,0,RESET_STATIC_VARS);
 }
 
 void post_run(void){
@@ -131,6 +137,10 @@ void post_run(void){
 	timer_init();
 	// Stop music
 	stop_music();
-	// Stop core1
-	stop_core1();
+	// Stop PCG
+	stopPCG();
+	// Stop core1 when not using USB keyboard
+	if (!g_active_usb_keyboard) stop_core1();
+	// Lower interrupt flag
+	g_interrupt_code=0;
 }

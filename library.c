@@ -568,59 +568,6 @@ int lib_delayms(int r0, int r1, int r2){
 	return r0;
 }
 
-int lib_inkey(int r0, int r1, int r2){
-	int i=getchar_timeout_us(0);
-	if (i<0 || 255<i) i=0;
-	if (0==r0) return i;
-	else return r0==i ? 1:0;
-}
-
-int lib_input(int r0, int r1, int r2){
-	int max=15;
-	int num=0;
-	unsigned char* str=alloc_memory(4,-1);
-	unsigned char* str2;
-	int c;
-	while(1){
-		// Get a character from console
-		c=getchar_timeout_us(1000);
-		if (c<0 || 255<c) continue;
-		// Detect special keys
-		switch(c){
-			case '\r': // Enter
-			case '\n': // Enter
-				break;
-			case 0x08: // BS
-			case 0x7f: // BS
-				if (0<num) {
-					printstr("\b \b");
-					num--;
-				}
-				continue;
-			default:
-				if (c<0x20) continue;
-				break;
-		}
-		if ('\r'==c || '\n'==c) break;
-		// Show the character on display
-		printchar(c);
-		// Add a character to buffer
-		str[num++]=c;
-		// If number of string exceeds maximum, increase buffer size
-		if (max<num) {
-			max=(max+1)*2;
-			str2=alloc_memory(max/4,-1);
-			max-=1;
-			memcpy(str2,str,num);
-			garbage_collection(str);
-			str=str2;
-		}
-	}
-	printchar('\n');
-	str[num]=0x00;
-	return (int)str;
-}
-
 int lib_str2obj(int r0, int r1, int r2){
 	int i,j;
 	char* str2;
@@ -646,7 +593,7 @@ int lib_debug(int r0, int r1, int r2){
 	//lib_wait(60,0,0);
 	return r0;
 #else
-	return r0;
+	return r0+1;
 #endif
 }
 
@@ -735,6 +682,21 @@ int lib_system(int r0, int r1, int r2){
 			return 0;
 		case 200:
 		//	ディスプレイの表示を停止(xが0のとき)、もしくは開始(xが0以外の時)する。
+			break;
+		case 250:
+		// void* calloc (int bytes);
+			return (int)calloc_memory((r0+3)/4,get_permanent_block_number());		
+		case 251:
+		// void* malloc (int bytes);
+			return (int)alloc_memory((r0+3)/4,get_permanent_block_number());		
+		case 252:
+		// void free (void* addr);
+			delete_memory((void*)r0);
+			break;
+		case 253:
+		// Garbage collection
+			garbage_collection((void*)r0);
+			break;
 		default:
 			break;
 	}
@@ -774,6 +736,7 @@ static const void* lib_list1[]={
 	lib_resolve_method_address, // #define LIB_OBJ_METHOD 29
 	lib_pre_method,             // #define LIB_PRE_METHOD 30
 	lib_post_method,            // #define LIB_POST_METHOD 31
+	lib_readkey,                // #define LIB_READKEY 32
 };
 
 static const void* lib_list2[]={
@@ -812,7 +775,7 @@ int statement_library(int r0, int r1, int r2, int r3){
 	// Raise garbage collection flag
 	// g_garbage_collection=1; // This feature is disabled. See galbage_collection() function.
 	// Check break key (Ctrl-Z)
-	if (getchar_timeout_us(0)==0x1a) return lib_end(0,0,0);
+	if (check_break()) return lib_end(0,0,0);
 	return r0;
 }
 

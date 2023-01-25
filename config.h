@@ -8,8 +8,15 @@
 
 #define PHYLLOSOMA
 #define SYSVER1 "Phyllosoma"
-#define SYSVER2 "1.1.0"
-#define BASVER "KM-1501"
+#define SYSVER2 "1.2.0"
+#define BASVER "KM-1502"
+
+#define INTRODUCE_MACHIKANIA \
+	"MachiKania BASIC System\n"\
+	" Ver "SYSVER1" "SYSVER2"\n"\
+	"BASIC Compiler "BASVER" by Katsumi\n"\
+	"LCD, File, & Keyboard systems by KENKEN\n"\
+	"\n"
 
 #define IO_SPI_TX SD_SPI_TX
 #define IO_SPI_RX SD_SPI_RX

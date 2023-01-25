@@ -520,6 +520,11 @@ void g_clearscreen(void)
 	LCD_Clear(0);
 }
 
+// カーソル位置の文字をテキストVRAMにしたがって液晶に出力
+void putcursorchar(void){
+	g_putfont(((cursor-TVRAM)%WIDTH_X)*8,((cursor-TVRAM)/WIDTH_X)*8,*(cursor+ATTROFFSET),bgcolor,*cursor);
+}
+
 void textredraw(void){
 // テキスト画面再描画
 // テキストVRAMの内容にしたがって液晶に出力
@@ -712,15 +717,9 @@ void set_bgcolor(unsigned char b,unsigned char r,unsigned char g)
 	bgcolor=((r>>3)<<11)+((g>>2)<<5)+(b>>3);
 	textredraw();
 }
-void init_textgraph(unsigned char align){
-	//テキスト・グラフィックLCDライブラリの使用開始
-	//パレット設定
-	//LCD縦横設定
-
-	int i;
-	fontp=(unsigned char *)FontData;
-	bgcolor=0; //バックグランドカラーは黒
+void init_palette(void){
 	//カラーパレット初期化
+	int i;
 	for(i=0;i<8;i++){
 		set_palette(i,255*(i&1),255*((i>>1)&1),255*(i>>2));
 	}
@@ -730,6 +729,14 @@ void init_textgraph(unsigned char align){
 	for(i=16;i<256;i++){
 		set_palette(i,255,255,255);
 	}
+}
+void init_textgraph(unsigned char align){
+	//テキスト・グラフィックLCDライブラリの使用開始
+	//パレット設定
+	//LCD縦横設定
+	fontp=(unsigned char *)FontData;
+	bgcolor=0; //バックグランドカラーは黒
+	init_palette(); //カラーパレット初期化
 	setcursorcolor(7);
 	LCD_Init();
 	set_lcdalign(align);

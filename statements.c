@@ -13,13 +13,17 @@
 */
 
 int useclass_statement(void){
-	int i,e;
+	int e;
 	do {
 		e=get_class_number();
 		if (e<0) {
 			// Class not found.
 			// Compile it
 			return init_class_compiling();
+		}
+		if (e==g_class_id) {
+			// Compiling a class file as the same file as BASIC main file
+			g_before_classcode=1;
 		}
 		skip_blank();
 	} while (','==(source++)[0]);
@@ -312,29 +316,47 @@ int cdata_statement(void){
 */
 
 int exec_statement(void){
-	int e;
+	int i;
 	char* sbefore;
-	unsigned short* obefore;
 	do {
+		skip_blank();
 		sbefore=source;
-		obefore=object;
-		e=get_integer();
-		if (e) return e;
-		// Rewind object
-		rewind_object(obefore);
-		if (!g_constant_value_flag) {
-			source=sbefore;
-			return ERROR_SYNTAX;
+		// Check if the end of line for multiple EXEC statement
+		if (0x00==source[0]) {
+			g_multiple_statement=exec_statement;
+			return 0;
+		}
+		if ('$'==source[0] || '0'==source[0] && 'X'==source[1]) {
+			// Hex value
+			source+=('$'==source[0]) ? 1:2;
+			i=0;
+			while(1){
+				if ('0'<=source[0] && source[0]<='9') {
+					i=(i<<4)|(source[0]-'0');
+					source++;
+				} else if ('A'<=source[0] && source[0]<='F') {
+					i=(i<<4)|(source[0]-'A'+10);
+					source++;
+				} else {
+					break;
+				}
+			}
+		} else {
+			// Decimal value
+			i=get_positive_decimal_value();
+			if (i<0) return i;
 		}
 		// Check if 16 bit data
-		if (g_constant_int<0 || 65535<g_constant_int) {
+		if (i<0 || 65535<i) {
 			source=sbefore;
 			return ERROR_SYNTAX;
 		}
 		// Got 2 bytes data in g_constant_int
-		(object++)[0]=g_constant_int;
+		(object++)[0]=i;
+		skip_blank();
 	} while (','==(source++)[0]);
 	source--;
+	g_multiple_statement=0;
 	return 0;
 }
 /*
@@ -426,6 +448,16 @@ int label_statement(void){
 		bl=(short*)data[1];
 		// Update it
 		update_bl(bl,object);
+		// Delete the cmpdata record
+		cmpdata_delete(data);
+	}
+	// Resolve all CMPDATA_DATA_LABEL_BL(s)
+	while(data=cmpdata_findfirst_with_id(CMPDATA_DATA_LABEL_BL,id)){
+		// Found a CMPDATA_DATA_LABEL_BL
+		bl=(short*)data[1];
+		// Update it
+		bl[0]=((int)object)&0xffff;
+		bl[1]=((int)object)>>16;
 		// Delete the cmpdata record
 		cmpdata_delete(data);
 	}
@@ -1342,6 +1374,14 @@ int system_statement(void){
 	Misc
 */
 
+int align4_statement(void){
+	if ((int)object&0x03) {
+		check_object(1);
+		(object++)[0]=0x46c0;        // nop
+	}
+	return 0;
+}
+
 int debug_statement(void){
 #ifdef DEBUG_MODE
 	g_default_args[1]=0;
@@ -1416,6 +1456,20 @@ int dim_statement(void){
 	return 0;
 }
 
+int option_statement(void){
+	skip_blank();
+	do {
+		if (instruction_is("CLASSCODE")) {
+			return ERROR_OPTION_CLASSCODE;
+		} else {
+			return ERROR_SYNTAX;
+		}
+		skip_blank();
+	} while (','==(source++)[0]);
+	source--;
+	return 0;
+}
+
 int end_of_statement(void){
 	skip_blank();
 	if (0x00==source[0]) return 1;
@@ -1443,6 +1497,7 @@ int compile_statement(void){
 	rewind_object(bobj);
 	source=bsrc;
 	// It's not LET statement. Let's continue for possibilities of the other statements.
+	if (instruction_is("ALIGN4")) return align4_statement();
 	if (instruction_is("BREAK")) return break_statement();
 	if (instruction_is("CALL")) return call_statement();
 	if (instruction_is("CDATA")) return cdata_statement();
@@ -1468,6 +1523,7 @@ int compile_statement(void){
 	if (instruction_is("LOOP")) return loop_statement();
 	if (instruction_is("METHOD")) return method_statement();
 	if (instruction_is("NEXT")) return next_statement();
+	if (instruction_is("OPTION")) return option_statement();
 	if (instruction_is("POKE")) return poke_statement();
 	if (instruction_is("POKE16")) return poke16_statement();
 	if (instruction_is("POKE32")) return poke32_statement();

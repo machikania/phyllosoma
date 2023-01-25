@@ -27,10 +27,10 @@ caused by using this program.
 #define MAXFILE 256
 
 unsigned char path[256];
-unsigned char filenames[MAXFILE][13];
-unsigned int keystatus, keystatus2, keystatus3, oldkey; //最新のボタン状態と前回のボタン状態
-int keycountUP, keycountLEFT, keycountRIGHT, keycountDOWN, keycountSTART, keycountFIRE;
-int filenum, dirnum;
+static unsigned char filenames[MAXFILE][13];
+static unsigned int keystatus, keystatus2, keystatus3, oldkey; //最新のボタン状態と前回のボタン状態
+static int keycountUP, keycountLEFT, keycountRIGHT, keycountDOWN, keycountSTART, keycountFIRE;
+static int filenum, dirnum;
 
 void init_buttons(void){
 	// ボタン用GPIO設定

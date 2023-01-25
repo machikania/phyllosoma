@@ -92,7 +92,7 @@ void cmpdata_reset(void){
 		unsigned char num:  Length of above data array. If not required, set 0.
 */
 int cmpdata_insert(unsigned char type, short data16, int* data, unsigned char num){
-	unsigned char i;
+	unsigned int i;
 	// Check the type
 	if (CMPDATA_STRSTACK==type) {
 		// Store the new record in the end as stack
@@ -215,9 +215,10 @@ void cmpdata_delete_all(unsigned char type){
 	Delete all records with invalid object positions.
 */
 void cmpdata_delete_invalid(void){
-	const static int const types[6]={
+	const static int const types[7]={
 		CMPDATA_GOTO_NUM_BL,
 		CMPDATA_GOTO_LABEL_BL,
+		CMPDATA_DATA_LABEL_BL,
 		CMPDATA_BREAK_BL,
 		CMPDATA_IF_BL,
 		CMPDATA_ENDIF_BL,
