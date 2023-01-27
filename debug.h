@@ -31,6 +31,7 @@ int debug_file_exists(unsigned char* fname);
 #define f_gets debug_f_gets
 #define f_getcwd debug_f_getcwd
 #define f_chdir debug_f_chdir
+#undef file_exists
 #define file_exists debug_file_exists
 
 unsigned char* debug_fileselect(void);

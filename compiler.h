@@ -534,7 +534,8 @@ int lib_post_method(int r0, int r1, int r2);
 
 // file.c
 void init_file_system(void);
-int file_exists(unsigned char* fname);
+int mmc_file_exists(unsigned char* fname);
+#define file_exists mmc_file_exists
 int compile_file(unsigned char* fname, char isclass);
 void close_all_files(void);
 int lib_file(int r0, int r1, int r2);

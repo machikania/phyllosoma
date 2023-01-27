@@ -22,8 +22,7 @@ void init_file_system(void){
 	if (FR_OK!=f_mount(&g_FatFs, "", 0)) printstr("Initializing file system failed\n");
 }
 
-#undef file_exists
-int file_exists(unsigned char* fname){
+int mmc_file_exists(unsigned char* fname){
 	FILINFO fileinfo;
 	fileinfo.fsize=-1;
 	f_stat(fname,&fileinfo);
