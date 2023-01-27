@@ -10,14 +10,5 @@ MACHIKAP.INI is the initialization file when the boot of MachiKania system. Plac
 ## convert.php, convert_kb.php
 The convert.php and convert_kb.php are used for embeding basic files in MachiKania uf2 file. Place "phyllosoma.uf2" and/or "phyllosoma_kb.uf2" compiled in debug mode (see the line #12 in comiler.h), and *.BAS/*.INI/*.TXT files in the same directory, and execute this script.
 
-## disassembler.php
-The disassembler.php is used for debugging by the team. This script is not needed by the users.
-
-## reserved_names.php
-The reserved_names.php is used for code construction by the team. This script is not needed by the users.
-
-## reservedWords.html
-The reservedWords.html is used for code construction by the team. This script is not needed by the users.
-
-## globalvars.php
-The globalvars.php is used for code construction by the team. This script is not needed by the users.
+## disassembler.php, reserved_names.php, reservedWords.html, globalvars.php, compare_dis.php
+These scripts are used for code construction by the team, and not needed by the users.
