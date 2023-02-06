@@ -628,7 +628,7 @@ void set_wave(char* filename, int start){
 	// Support defined start position here to skip file pointer here.
 	f_lseek(g_fhandle, start+0x2c);
 	// Read first data.
-	if (f_read(g_fhandle,(void*)&g_wavtable[0],WAVE_BUFFER_SIZE/2,NULL)) stop_with_error(ERROR_FILE);
+	if (f_read(g_fhandle,(void*)&g_wavtable[0],WAVE_BUFFER_SIZE/2,(unsigned int*)&g_scratch_int[0])) stop_with_error(ERROR_FILE);
 	g_wave_writepos=WAVE_BUFFER_SIZE/2;
 
 	// Initialize PWM for PCM

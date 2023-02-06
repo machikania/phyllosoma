@@ -211,12 +211,12 @@ int lib_file(int r0, int r1, int r2){
 			return f_eof(fhandle) ? 1:0;
 			break;
 		case FILE_FGETC:
-			if (f_read(fhandle,(char*)&g_scratch[0],1,0) || f_eof(fhandle)) {
-				// Error or EOF
+			if (f_read(fhandle,(char*)&g_scratch[0],1,(unsigned int*)&g_scratch_int[1])) {
+				// Error
 				return -1;
 			} else {
-				// OK
-				return (unsigned char)g_scratch[0];
+				// OK or EOF
+				return g_scratch_int[1] ? (unsigned char)g_scratch[0]:-1;
 			}
 			break;
 		case FILE_FLEN:
