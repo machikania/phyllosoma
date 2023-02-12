@@ -7,12 +7,14 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "pico/stdlib.h"
 #include "./compiler.h"
 #include "./api.h"
 #include "./debug.h"
 #include "./display.h"
 #include "./config.h"
+#include "./io.h"
 #include "./interface/usbkeyboard.h"
 
 char g_autoexec[13]="MACHIKAP.BAS";
@@ -79,6 +81,15 @@ void read_ini(void){
 			lockkey|=4;
 		} else if (!strncmp(str,"WAIT4KEYBOARD=",14)) {
 			sscanf(str+14,"%d",&g_wait_for_keyboard);
+		} else if (!strncmp(str,"SPIMISO=",8)) {
+			i=atoi(str+8);
+			if (0==i || 4==i | 16==i) g_io_spi_rx=i;
+		} else if (!strncmp(str,"SPIMOSI=",8)) {
+			i=atoi(str+8);
+			if (3==i || 7==i | 19==i) g_io_spi_tx=i;
+		} else if (!strncmp(str,"SPICLK=",7)) {
+			i=atoi(str+7);
+			if (2==i || 6==i | 18==i) g_io_spi_sck=i;
 		}
 	}
 	// Close file

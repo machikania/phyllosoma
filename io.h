@@ -5,6 +5,10 @@
    https://github.com/kmorimatsu
 */
 
+extern unsigned char g_io_spi_rx;
+extern unsigned char g_io_spi_tx;
+extern unsigned char g_io_spi_sck;
+
 #define IO_GPIO_8L_MASK (\
 		(1<<IO_GPIO0) | (1<<IO_GPIO1) | (1<<IO_GPIO2) | (1<<IO_GPIO3) | \
 		(1<<IO_GPIO4) | (1<<IO_GPIO5) | (1<<IO_GPIO6) | (1<<IO_GPIO7) \

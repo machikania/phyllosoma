@@ -18,6 +18,10 @@
 #include "./io.h"
 #include "./config.h"
 
+unsigned char g_io_spi_rx=IO_SPI_RX;
+unsigned char g_io_spi_tx=IO_SPI_TX;
+unsigned char g_io_spi_sck=IO_SPI_SCK;
+
 static unsigned char gpio_table[16]={
 	IO_GPIO0,
 	IO_GPIO1,
@@ -384,10 +388,10 @@ int lib_spi(int r0, int r1, int r2){
 			gpio_put(cs_port,1);
 			// Init SPI
 			spi_init(IO_SPI_CH,sp[0]*1000);
-		    gpio_set_function(IO_SPI_RX, GPIO_FUNC_SPI);
-		    gpio_set_function(IO_SPI_TX, GPIO_FUNC_SPI);
-		    gpio_set_function(IO_SPI_SCK, GPIO_FUNC_SPI);
-			gpio_set_pulls(IO_SPI_RX, true, false); // pull-up DO
+		    gpio_set_function(g_io_spi_rx, GPIO_FUNC_SPI);
+		    gpio_set_function(g_io_spi_tx, GPIO_FUNC_SPI);
+		    gpio_set_function(g_io_spi_sck, GPIO_FUNC_SPI);
+			gpio_set_pulls(g_io_spi_rx, true, false); // pull-up DO
 			// Set format
 			// Note: order must be SPI_MSB_FIRST, no other values supported on the PL022 
 			switch(sp[2]){
