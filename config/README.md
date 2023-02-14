@@ -7,3 +7,7 @@ The configuration filess used for MachiKania Phyllosoma are placed in this direc
 ## pico_ili9341.h
 Raspberry Pi Pico + ILI9341 LCD + MMC  
 YD-RP2040 + ILI9341 LCD + MMC
+
+## xiao_embed.h
+Seeed XIAO RP2040 for embedded development  
+Useful for using UART with XIAO RP2040
