@@ -116,9 +116,6 @@ if (TARGET tinyusb_device)
 	# use custom linker script
 	pico_set_linker_script(phyllosoma_kb ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania.ld)
 	pico_set_linker_script(phyllosoma ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania.ld)
-	
-	# disable shared IRQ handlers
-	target_compile_definitions(phyllosoma PUBLIC -DPICO_DISABLE_SHARED_IRQ_HANDLERS=1)
 
 elseif(PICO_ON_DEVICE)
 	message(WARNING "not building kmbasic because TinyUSB submodule is not initialized in the SDK")
