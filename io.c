@@ -643,8 +643,8 @@ int lib_i2c(int r0, int r1, int r2){
 */
 
 int serial_statement(void){
-	g_default_args[1]=0;
 	g_default_args[2]=0;
+	g_default_args[3]=0;
 	return argn_function(LIB_SERIAL,
 		ARG_INTEGER<<ARG1 |
 		ARG_INTEGER_OPTIONAL<<ARG2 |
