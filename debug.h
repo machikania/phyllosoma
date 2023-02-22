@@ -13,6 +13,8 @@
 #error "compiler.h" must be included before "debug.h"
 #endif
 
+void memdump(void);
+
 /*
 	File to compile
 */

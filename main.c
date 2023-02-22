@@ -145,6 +145,8 @@ int main() {
 	printstr("\n");
 	// Show dump
 	// dump();
+	// Dump RAM area to a file
+	memdump();
 	// Run the code if error didn't occur
 	if (!e) {
 		pre_run();

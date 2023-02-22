@@ -9,6 +9,14 @@
 #include "./compiler.h"
 #include "./api.h"
 
+// Memory dump of all RAM area to the file, "MEMDUMP.BIN".
+void memdump(void){
+	FIL fh;
+	if (FR_OK!=f_open(&fh,"MEMDUMP.BIN",FA_WRITE | FA_CREATE_ALWAYS)) return;
+	f_write(&fh,&kmbasic_object[0],256*1024,(UINT*)&g_scratch_int[0]);
+	f_close(&fh);
+}
+
 #ifndef DEBUG_MODE
 void debug_dummy(void){}
 #else // DEBUG_MODE
