@@ -159,6 +159,16 @@ int64_t alarm_coretimer_callback(alarm_id_t id, void *user_data) {
 	return 0;
 }
 
+void cancel_all_interrupts(void){
+	int i;
+	// Cancel timers
+	cancel_repeating_timer(&g_timer);
+	cancel_repeating_timer(&g_coretimer_timer);
+	// Cancel all interrupts
+	for(i=0;i<(sizeof g_interrupt_vector)/(sizeof g_interrupt_vector[0]);i++) g_interrupt_vector[i]=0;
+	g_interrupt_flags=0;
+}
+
 void timer_init(void){
 	int i;
 	// Cancel all timers, first

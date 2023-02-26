@@ -143,8 +143,9 @@ void post_run(void){
 	stopPCG();
 	// Stop core1 when not using USB keyboard
 	if (!g_active_usb_keyboard) stop_core1();
-	// Lower interrupt flag
+	// Lower interrupt flag and cancel all interrupts
 	g_interrupt_code=0;
+	cancel_all_interrupts();
 	// Restore exception handling
 	handle_exception(0);
 }

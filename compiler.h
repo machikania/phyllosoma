@@ -570,6 +570,7 @@ int usetimer_statement(void);
 int coretimer_statement(void);
 int timer_statement(void);
 int timer_function(void);
+void cancel_all_interrupts(void);
 void timer_init(void);
 int lib_timer(int r0, int r1, int r2);
 int lib_interrupt(int r0, int r1, int r2);
