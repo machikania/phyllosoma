@@ -39,6 +39,7 @@ if (TARGET tinyusb_device)
 		hexfile.c
 		debug.c
 		editor.c
+		exception.c
 		interface/fontdata.c
 		interface/graphlib.c
 		interface/ili9341_spi.c
@@ -77,6 +78,7 @@ if (TARGET tinyusb_device)
 		core1.c
 		hexfile.c
 		debug.c
+		exception.c
 		interface/fontdata.c
 		interface/graphlib.c
 		interface/ili9341_spi.c
@@ -99,6 +101,8 @@ if (TARGET tinyusb_device)
 	target_link_libraries(phyllosoma hardware_adc)
 	target_link_libraries(phyllosoma_kb hardware_i2c)
 	target_link_libraries(phyllosoma hardware_i2c)
+	target_link_libraries(phyllosoma_kb hardware_exception)
+	target_link_libraries(phyllosoma hardware_exception)
 	target_link_libraries(phyllosoma_kb tinyusb_board)
 	target_link_libraries(phyllosoma_kb tinyusb_host)
 	target_include_directories(phyllosoma_kb PRIVATE ${CMAKE_CURRENT_LIST_DIR}/interface)

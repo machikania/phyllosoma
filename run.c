@@ -125,6 +125,8 @@ void pre_run(void){
 	// Reset static variables
 	lib_display(0,0,RESET_STATIC_VARS);
 	lib_spi(0,0,RESET_STATIC_VARS);
+	// Exception handling
+	handle_exception(1);
 }
 
 void post_run(void){
@@ -143,4 +145,6 @@ void post_run(void){
 	if (!g_active_usb_keyboard) stop_core1();
 	// Lower interrupt flag
 	g_interrupt_code=0;
+	// Restore exception handling
+	handle_exception(0);
 }

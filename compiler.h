@@ -51,6 +51,7 @@
 #define ERROR_MUSIC (-21)
 #define ERROR_PATH_TOO_LONG _throw_error(-22)
 #define ERROR_OPTION_CLASSCODE (-23)
+#define ERROR_EXCEPTION (-24)
 
 /*
 	Libraries
@@ -603,6 +604,9 @@ void connect2pc(void);
 
 // hexfile.c
 void runHex(char* filename);
+
+// exception.c
+void handle_exception(int set);
 
 // For debugging
 void dump_cmpdata(void);
