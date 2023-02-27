@@ -187,12 +187,10 @@ int lib_timer(int r0, int r1, int r2){
 	switch(r2){
 		case TIMER_CORETIMER:
 			cancel_repeating_timer(&g_coretimer_timer);
-			asm("cpsid i");
-			while(0xfffffffc<time_us_32()) sleep_us(1);
 			ui64=time_us_64()&0xffffffff00000000;
 			ui64|=(unsigned int)r0;
+			while(ui64<time_us_64()) ui64+=0x100000000;
 			add_alarm_at(ui64,alarm_coretimer_callback,NULL,&g_coretimer_timer);
-			asm("cpsie i");
 			break;
 		case TIMER_USETIMER:
 			cancel_repeating_timer(&g_timer);
