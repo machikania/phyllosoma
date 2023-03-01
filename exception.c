@@ -19,11 +19,15 @@ void show_shcsr_dfsr(void){
 
 }
 
-void exception_handler_main(int* sp){
+void exception_handler_main(int* sp, unsigned int icsr){
 	int i;
 	short* pc;
 	printstr("\n\nException: hard fault.\n");
 	// Show the information in stack
+	printstr("\nPSR: ");
+	printhex32(sp[7]);
+	printstr("\nICSR:");
+	printhex32(icsr);
 	printstr("\nSP:  ");
 	printhex32((int)sp);
 	printstr("\nR0:  ");
@@ -51,15 +55,15 @@ void exception_handler_main(int* sp){
 	//show_shcsr_dfsr();
 	// Set PC to kmbasic_data[3] if exception happened in RAM
 	if (((int)&kmbasic_object[0])<=sp[6] && sp[6]<((int)&kmbasic_object[0])+sizeof(kmbasic_object)) kmbasic_data[3]=sp[6];
-	//
-	printstr("\nReset MachiKania to continue.\n");
-	stop_with_error(ERROR_EXCEPTION);
+	// The following code corresponds to "stop_with_error(ERROR_EXCEPTION);".
+	sp[0]=(int)ERROR_EXCEPTION;
+	sp[6]=(int)stop_with_error;
 }
 
 void exception_handler(void){
 	asm("movs r0,sp");
-	//asm("ldr r1,=0x20041000");
-	//asm("movs sp,r1");
+	asm("ldr r1,=0xE000ED04"); // ICSR
+	asm("ldr r1,[r1]");
 	asm("b exception_handler_main");
 }
 
