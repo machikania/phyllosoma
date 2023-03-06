@@ -40,6 +40,7 @@ if (TARGET tinyusb_device)
 		debug.c
 		editor.c
 		exception.c
+		wifi.c
 		interface/fontdata.c
 		interface/graphlib.c
 		interface/ili9341_spi.c
@@ -79,6 +80,7 @@ if (TARGET tinyusb_device)
 		hexfile.c
 		debug.c
 		exception.c
+		wifi.c
 		interface/fontdata.c
 		interface/graphlib.c
 		interface/ili9341_spi.c
@@ -103,9 +105,27 @@ if (TARGET tinyusb_device)
 	target_link_libraries(phyllosoma hardware_i2c)
 	target_link_libraries(phyllosoma_kb hardware_exception)
 	target_link_libraries(phyllosoma hardware_exception)
+	target_link_libraries(phyllosoma_kb pico_cyw43_arch_lwip_threadsafe_background)
+	target_link_libraries(phyllosoma pico_cyw43_arch_lwip_threadsafe_background)
 	target_link_libraries(phyllosoma_kb tinyusb_board)
 	target_link_libraries(phyllosoma_kb tinyusb_host)
-	target_include_directories(phyllosoma_kb PRIVATE ${CMAKE_CURRENT_LIST_DIR}/interface)
+
+	target_include_directories(phyllosoma PRIVATE 
+			${CMAKE_CURRENT_LIST_DIR}
+		)
+	target_include_directories(phyllosoma_kb PRIVATE 
+			${CMAKE_CURRENT_LIST_DIR}/interface
+			${CMAKE_CURRENT_LIST_DIR}
+		)
+
+	target_compile_definitions(phyllosoma PRIVATE
+			WIFI_SSID=\"${WIFI_SSID}\"
+			WIFI_PASSWORD=\"${WIFI_PASSWORD}\"
+		)
+	target_compile_definitions(phyllosoma_kb PRIVATE
+			WIFI_SSID=\"${WIFI_SSID}\"
+			WIFI_PASSWORD=\"${WIFI_PASSWORD}\"
+		)
 
 	# enable usb output, disable uart output
 	pico_enable_stdio_usb(phyllosoma_kb 0)

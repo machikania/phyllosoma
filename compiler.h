@@ -311,7 +311,7 @@
 	Variables
 */
 
-extern unsigned short kmbasic_object[512*192];
+extern unsigned short kmbasic_object[512*180];
 extern int kmbasic_data[32];
 extern int kmbasic_variables[ALLOC_BLOCK_NUM];
 extern unsigned short kmbasic_var_size[ALLOC_BLOCK_NUM];
@@ -608,6 +608,9 @@ void runHex(char* filename);
 
 // exception.c
 void handle_exception(int set);
+
+// wifi.c
+int connect_wifi(char show_progress);
 
 // For debugging
 void dump_cmpdata(void);

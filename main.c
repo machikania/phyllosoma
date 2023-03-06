@@ -117,6 +117,8 @@ int main() {
 	read_ini();
 	sleep_ms(g_wait_at_begin-500);
 	
+	connect_wifi(1);
+	
 	// Connect to USB keyboard or to PC
 	post_inifile();
 	
