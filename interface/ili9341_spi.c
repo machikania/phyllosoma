@@ -183,8 +183,10 @@ void LCD_Read(unsigned char com,unsigned char *b,int n){
 	spi_write_blocking(LCD_SPICH, &com , 1);
 // Read Data
 	lcd_dc_hi();
+	spi_set_baudrate(LCD_SPICH, LCD_SPI_BAUDRATE_R);
 	spi_read_blocking(LCD_SPICH, 0, b, 1); // dummy read
 	spi_read_blocking(LCD_SPICH, 0, b, n);
+	spi_set_baudrate(LCD_SPICH, LCD_SPI_BAUDRATE);
 	lcd_cs_hi();
 }
 
