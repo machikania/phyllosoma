@@ -43,6 +43,7 @@ if (TARGET tinyusb_device)
 		interface/fontdata.c
 		interface/graphlib.c
 		interface/ili9341_spi.c
+#		interface/ili9488_spi.c
 		interface/ff.c
 		interface/pico-sdmm.c
 		interface/fileselect.c
@@ -82,6 +83,7 @@ if (TARGET tinyusb_device)
 		interface/fontdata.c
 		interface/graphlib.c
 		interface/ili9341_spi.c
+#		interface/ili9488_spi.c
 		interface/ff.c
 		interface/pico-sdmm.c
 		interface/fileselect.c

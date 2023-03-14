@@ -4,6 +4,10 @@
 // YD-RP2040 + ILI9341 LCD
 #include "./config/pico_ili9341.h"
 
+// Raspberry Pi Pico + ILI9488 LCD
+// YD-RP2040 + ILI9488 LCD
+// #include "./config/pico_ili9488.h"
+
 // Seeed XIAO RP2040 for embedded development  
 // Useful for using UART with XIAO RP2040
 //#include "./config/xiao_embed.h"
@@ -12,7 +16,7 @@
 
 #define PHYLLOSOMA
 #define SYSVER1 "Phyllosoma"
-#define SYSVER2 "1.2.1.9"
+#define SYSVER2 "1.2.1.10"
 #define BASVER "KM-1502"
 
 #define INTRODUCE_MACHIKANIA \

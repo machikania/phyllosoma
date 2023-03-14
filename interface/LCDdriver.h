@@ -20,9 +20,6 @@ caused by using this program.
 #define LCD0TURN 0
 #define LCD180TURN 2
 
-#define LCD_COLUMN_RES 240
-#define LCD_ROW_RES 320
-
 extern int LCD_ALIGNMENT;
 extern int X_RES; // 横方向解像度
 extern int Y_RES; // 縦方向解像度
@@ -31,8 +28,10 @@ void LCD_WriteComm(unsigned char comm);
 void LCD_WriteData(unsigned char data);
 void LCD_WriteData2(unsigned short data);
 void LCD_WriteDataN(unsigned char *b,int n);
+void LCD_WriteDataColor(unsigned short data);
 void LCD_WriteData_notfinish(unsigned char data);
 void LCD_WriteData2_notfinish(unsigned short data);
+void LCD_WriteDataColor_notfinish(unsigned short data);
 void LCD_WriteDataN_notfinish(unsigned char *b,int n);
 void checkSPIfinish(void);
 void LCD_Init(void);
