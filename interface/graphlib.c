@@ -19,6 +19,7 @@ caused by using this program.
 
 #include "graphlib.h"
 #include "LCDdriver.h"
+#include "../config.h"
 
 unsigned char TVRAM[ATTROFFSET*2+1] __attribute__ ((aligned (4)));
 unsigned char *fontp; //フォント格納アドレス、初期化時はFontData、RAM指定することでPCGを実現

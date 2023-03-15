@@ -15,7 +15,6 @@ PURPOSE. The copyright owner and contributors are NOT LIABLE for any damages
 caused by using this program.
 
 ----------------------------------------------------------------------------*/
-#include "../config.h"
 void clearscreen(void); //テキスト画面クリア
 void set_palette(unsigned char n,unsigned char b,unsigned char r,unsigned char g); //テキストパレット設定
 void set_bgcolor(unsigned char b,unsigned char r,unsigned char g); //バックグランドカラー設定
