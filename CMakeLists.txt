@@ -11,7 +11,8 @@ set(CMAKE_CXX_STANDARD 17)
 pico_sdk_init()
 
 if (TARGET tinyusb_device)
-	add_executable(phyllosoma_kb
+	# Create library including shared files
+	add_library(shared_files
 		main.c
 		api.c
 		library.c
@@ -37,77 +38,47 @@ if (TARGET tinyusb_device)
 		music.c
 		core1.c
 		hexfile.c
-		debug.c
-		editor.c
+		debug.c	
 		exception.c
 		interface/fontdata.c
 		interface/graphlib.c
-		interface/ili9341_spi.c
-#		interface/ili9488_spi.c
 		interface/ff.c
 		interface/pico-sdmm.c
 		interface/fileselect.c
+	)
+	target_link_libraries(shared_files 
+		pico_stdlib
+		pico_multicore
+		hardware_spi
+		hardware_pwm
+		hardware_adc
+		hardware_i2c
+		hardware_exception
+	)
+	
+	# phyllosoma_kb.uf2
+	add_executable(phyllosoma_kb
+		editor.c
+		interface/ili9341_spi.c
+#		interface/ili9488_spi.c
 		interface/usbkeyboard.c
 		interface/hid_virtual_keytable.c
 		interface/keyinput.c
 		withkeyboard.c
 	)
-	add_executable(phyllosoma
-		main.c
-		api.c
-		library.c
-		compiler.c
-		run.c
-		statements.c
-		functions.c
-		integer.c
-		float.c
-		string.c
-		globalvars.c
-		variable.c
-		operators.c
-		value.c
-		cmpdata.c
-		error.c
-		memory.c
-		class.c
-		file.c
-		display.c
-		timer.c
-		io.c
-		music.c
-		core1.c
-		hexfile.c
-		debug.c
-		exception.c
-		interface/fontdata.c
-		interface/graphlib.c
-		interface/ili9341_spi.c
-#		interface/ili9488_spi.c
-		interface/ff.c
-		interface/pico-sdmm.c
-		interface/fileselect.c
-		withoutkeyboard.c
-		pcconnect.c
-	)
-	# Pull in our pico_stdlib which aggregates commonly used features
-	target_link_libraries(phyllosoma_kb pico_stdlib)
-	target_link_libraries(phyllosoma pico_stdlib)
-	target_link_libraries(phyllosoma_kb pico_multicore)
-	target_link_libraries(phyllosoma pico_multicore)
-	target_link_libraries(phyllosoma_kb hardware_spi)
-	target_link_libraries(phyllosoma hardware_spi)
-	target_link_libraries(phyllosoma_kb hardware_pwm)
-	target_link_libraries(phyllosoma hardware_pwm)
-	target_link_libraries(phyllosoma_kb hardware_adc)
-	target_link_libraries(phyllosoma hardware_adc)
-	target_link_libraries(phyllosoma_kb hardware_i2c)
-	target_link_libraries(phyllosoma hardware_i2c)
-	target_link_libraries(phyllosoma_kb hardware_exception)
-	target_link_libraries(phyllosoma hardware_exception)
+	target_link_libraries(phyllosoma_kb shared_files)
 	target_link_libraries(phyllosoma_kb tinyusb_board)
 	target_link_libraries(phyllosoma_kb tinyusb_host)
 	target_include_directories(phyllosoma_kb PRIVATE ${CMAKE_CURRENT_LIST_DIR}/interface)
+
+	# phyllosoma.uf2
+	add_executable(phyllosoma
+		interface/ili9341_spi.c
+#		interface/ili9488_spi.c
+		withoutkeyboard.c
+		pcconnect.c
+	)
+	target_link_libraries(phyllosoma shared_files)
 
 	# enable usb output, disable uart output
 	pico_enable_stdio_usb(phyllosoma_kb 0)
