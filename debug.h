@@ -19,7 +19,7 @@ void memdump(void);
 	File to compile
 */
 
-#ifdef DEBUG_MODE
+#ifdef MACHIKANIA_DEBUG_MODE
 #ifdef FF_DEFINED
 
 FRESULT debug_f_open (FIL* fp, const TCHAR* path, BYTE mode);
@@ -40,23 +40,23 @@ unsigned char* debug_fileselect(void);
 #define fileselect debug_fileselect
 
 #endif // FF_DEFINED
-#endif // DEBUG_MODE
+#endif // MACHIKANIA_DEBUG_MODE
 
 
 /*
 	Dump code and cmpdata
 */
 
-#ifdef DEBUG_MODE
+#ifdef MACHIKANIA_DEBUG_MODE
 
 void dump(void);
 
-#else // DEBUG_MODE
+#else // MACHIKANIA_DEBUG_MODE
 
 void debug_dummy(void);
 #define dump() debug_dummy()
 #define dump_cmpdata() debug_dummy()
 #define dump_variables() debug_dummy()
 
-#endif // DEBUG_MODE
+#endif // MACHIKANIA_DEBUG_MODE
 

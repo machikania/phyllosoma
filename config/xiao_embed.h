@@ -20,8 +20,8 @@
 #error Including multiple congigure headers.
 #endif
 #ifdef KMBASIC_COMPILER_H
-#ifndef DEBUG_MODE
-#error "xiao_embed.h" must be used in DEBUG_MODE.
+#ifndef MACHIKANIA_DEBUG_MODE
+#error "xiao_embed.h" must be used in MACHIKANIA_DEBUG_MODE.
 #endif
 #endif
 

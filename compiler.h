@@ -9,7 +9,7 @@
 	Configration
 */
 
-//#define DEBUG_MODE
+//#define MACHIKANIA_DEBUG_MODE
 #define TEMPVAR_NUMBER 10
 #define ALLOC_BLOCK_NUM 256
 
@@ -22,7 +22,7 @@
 /*
 	Error codes
 */
-#ifdef DEBUG_MODE
+#ifdef MACHIKANIA_DEBUG_MODE
 	int throw_error(int e,int line, char* file);
 	#define _throw_error(e) throw_error(e,__LINE__,__FILE__)
 #else

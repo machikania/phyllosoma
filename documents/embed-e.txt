@@ -14,7 +14,7 @@ If an MMC (SD) card is connected, save the BASIC program as MACHIKAP.BAS in the 
 Even if an MMC(SD) card is not connected, you can embed a file into a uf2 file as follows. 1.
 
 1. Prepare an environment where PHP can be executed.
-2. Prepare an embed-only phyllosoma.uf2 file (included in the distribution in the embed directory or built with the DEBUG_MODE option).
+2. Prepare an embed-only phyllosoma.uf2 file (included in the distribution in the embed directory or built with the MACHIKANIA_DEBUG_MODE option).
 3. Place convert.php in the same directory as phyllosoma.uf2.
 4. Place the text files (BAS/TXT/INI files) you wish to embed in the same directory. At this time, name the file MACHIKAP.BAS as the name of the file you want to automatically execute. 5.
 5. Execute convert.php in PHP.

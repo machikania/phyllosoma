@@ -41,7 +41,7 @@ static const char* g_error_text[25]={
 int show_error(int e, int pos){
 	e=-e;
 	printstr("\n");
-#ifdef DEBUG_MODE
+#ifdef MACHIKANIA_DEBUG_MODE
 	if (g_error_file) printstr(g_error_file);
 	printstr(" at ");
 	if (g_error_line) printint(g_error_line);

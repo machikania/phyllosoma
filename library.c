@@ -585,7 +585,7 @@ int lib_str2obj(int r0, int r1, int r2){
 }
 
 int lib_debug(int r0, int r1, int r2){
-#ifdef DEBUG_MODE
+#ifdef MACHIKANIA_DEBUG_MODE
 	//M0PLUS 0xe0000000
 	//SYST_CVR 0xe018
 	//asm("ldr	r0, [r5, r0]");

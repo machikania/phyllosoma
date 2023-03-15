@@ -1383,7 +1383,7 @@ int align4_statement(void){
 }
 
 int debug_statement(void){
-#ifdef DEBUG_MODE
+#ifdef MACHIKANIA_DEBUG_MODE
 	g_default_args[1]=0;
 	g_default_args[2]=0;
 	g_default_args[3]=0;

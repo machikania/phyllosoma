@@ -17,9 +17,9 @@ void memdump(void){
 	f_close(&fh);
 }
 
-#ifndef DEBUG_MODE
+#ifndef MACHIKANIA_DEBUG_MODE
 void debug_dummy(void){}
-#else // DEBUG_MODE
+#else // MACHIKANIA_DEBUG_MODE
 
 #warning DEBOG_MODE is active
 
@@ -270,5 +270,5 @@ int debug_file_exists(unsigned char* fname){
 	return 0;
 }
 
-#endif // DEBUG_MODE
+#endif // MACHIKANIA_DEBUG_MODE
 
