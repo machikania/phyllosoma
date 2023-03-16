@@ -7,6 +7,9 @@ project(lcd-lib C CXX ASM)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
+# include configure file for specifying target
+include(config.cmake)
+
 # Initialize the SDK
 pico_sdk_init()
 
@@ -40,6 +43,7 @@ if (TARGET tinyusb_device)
 		hexfile.c
 		debug.c	
 		exception.c
+		interface/${MACHIKANIA_GRAPH_LIB}.c
 		interface/fontdata.c
 		interface/graphlib.c
 		interface/ff.c
@@ -59,8 +63,6 @@ if (TARGET tinyusb_device)
 	# phyllosoma_kb.uf2
 	add_executable(phyllosoma_kb
 		editor.c
-		interface/ili9341_spi.c
-#		interface/ili9488_spi.c
 		interface/usbkeyboard.c
 		interface/hid_virtual_keytable.c
 		interface/keyinput.c
@@ -73,8 +75,6 @@ if (TARGET tinyusb_device)
 
 	# phyllosoma.uf2
 	add_executable(phyllosoma
-		interface/ili9341_spi.c
-#		interface/ili9488_spi.c
 		withoutkeyboard.c
 		pcconnect.c
 	)
@@ -93,7 +93,13 @@ if (TARGET tinyusb_device)
 	# use custom linker script
 	pico_set_linker_script(phyllosoma_kb ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania.ld)
 	pico_set_linker_script(phyllosoma ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania.ld)
-
+	
+	# set compile definitions
+	target_compile_definitions(shared_files PUBLIC MACHIKANIA_CONFIG="./config/${MACHIKANIA_BUILD}.h")
+	if (MACHIKANIA_DEBUG_MODE)
+		target_compile_definitions(shared_files PRIVATE MACHIKANIA_DEBUG_MODE)
+	endif()
+	
 elseif(PICO_ON_DEVICE)
 	message(WARNING "not building kmbasic because TinyUSB submodule is not initialized in the SDK")
 endif()
