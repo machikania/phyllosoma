@@ -19,6 +19,8 @@
 #define KMBASIC_COMPILER_H
 #endif
 
+#include "./config.h"
+
 /*
 	Error codes
 */
@@ -311,7 +313,7 @@
 	Variables
 */
 
-extern unsigned short kmbasic_object[512*192];
+extern unsigned short kmbasic_object[512*KMBASIC_OBJECT_KBYTES];
 extern int kmbasic_data[32];
 extern int kmbasic_variables[ALLOC_BLOCK_NUM];
 extern unsigned short kmbasic_var_size[ALLOC_BLOCK_NUM];
@@ -608,6 +610,12 @@ void runHex(char* filename);
 
 // exception.c
 void handle_exception(int set);
+
+// wifi
+void set_wifi_id(char* wifi_id);
+void set_wifi_passwd(char* wifi_passwd);
+void set_wifi_country(char* country);
+int connect_wifi(char show_progress);
 
 // For debugging
 void dump_cmpdata(void);

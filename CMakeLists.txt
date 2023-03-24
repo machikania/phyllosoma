@@ -49,6 +49,7 @@ if (TARGET tinyusb_device)
 		interface/ff.c
 		interface/pico-sdmm.c
 		interface/fileselect.c
+		wifi/${MACHIKANIA_WIFI}.c
 	)
 	target_link_libraries(shared_files 
 		pico_stdlib
@@ -59,6 +60,21 @@ if (TARGET tinyusb_device)
 		hardware_i2c
 		hardware_exception
 	)
+	if (MACHIKANIA_WIFI STREQUAL "withwifi") 
+		target_link_libraries(shared_files
+			pico_cyw43_arch_lwip_threadsafe_background
+		)
+	endif()
+	target_include_directories(shared_files PUBLIC
+		${CMAKE_CURRENT_LIST_DIR}
+		${CMAKE_CURRENT_LIST_DIR}/wifi
+	)
+	if (WIFI_SSID)
+		target_compile_definitions(shared_files PRIVATE WIFI_SSID=\"${WIFI_SSID}\")
+	endif()
+	if (WIFI_PASSWORD)
+			target_compile_definitions(shared_files PRIVATE WIFI_PASSWORD=\"${WIFI_PASSWORD}\")
+	endif()
 	
 	# phyllosoma_kb.uf2
 	add_executable(phyllosoma_kb
@@ -91,8 +107,13 @@ if (TARGET tinyusb_device)
 	pico_add_extra_outputs(phyllosoma)
 
 	# use custom linker script
-	pico_set_linker_script(phyllosoma_kb ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania.ld)
-	pico_set_linker_script(phyllosoma ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania.ld)
+	if (MACHIKANIA_WIFI STREQUAL "withwifi") 
+		pico_set_linker_script(phyllosoma_kb ${CMAKE_CURRENT_SOURCE_DIR}/wifi/memmap_machikania.ld)
+		pico_set_linker_script(phyllosoma ${CMAKE_CURRENT_SOURCE_DIR}/wifi/memmap_machikania.ld)
+	else()
+		pico_set_linker_script(phyllosoma_kb ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania.ld)
+		pico_set_linker_script(phyllosoma ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania.ld)
+	endif()
 	
 	# set compile definitions
 	target_compile_definitions(shared_files PUBLIC MACHIKANIA_CONFIG="./config/${MACHIKANIA_BUILD}.h")

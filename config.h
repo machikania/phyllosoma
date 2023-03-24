@@ -1,3 +1,6 @@
+#ifndef MACHIKANIA_CONFIG_H
+#define MACHIKANIA_CONFIG_H
+
 // Selection of environment-specific header must be done in config.cmake
 // One of the header files in config directry is selected by following include directive.
 #ifdef MACHIKANIA_CONFIG
@@ -19,6 +22,10 @@
 	"BASIC Compiler "BASVER" by Katsumi\n"\
 	"LCD, File, & Keyboard systems by KENKEN\n"\
 	"\n"
+
+#ifndef KMBASIC_OBJECT_KBYTES
+#define KMBASIC_OBJECT_KBYTES 192
+#endif
 
 #define IO_SPI_TX SD_SPI_TX
 #define IO_SPI_RX SD_SPI_RX
@@ -43,3 +50,5 @@ extern int LCD_ALIGNMENT;
 		((a)&KEYSTART)|\
 		((a)&KEYFIRE)\
 	):(a))
+
+#endif //MACHIKANIA_CONFIG_H
