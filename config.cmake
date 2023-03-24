@@ -6,7 +6,7 @@
 
 # Raspberry Pi Pico + ILI9341 LCD
 # YD-RP2040 + ILI9341 LCD
-#set(MACHIKANIA_BUILD pico_ili9341)
+set(MACHIKANIA_BUILD pico_ili9341)
 
 # Raspberry Pi Pico + ILI9488 LCD
 # YD-RP2040 + ILI9488 LCD
@@ -17,7 +17,7 @@
 #set(MACHIKANIA_BUILD xiao_embed)
 
 # Raspberry Pi Pico W + ILI9341 LCD + Wifi
-set(MACHIKANIA_BUILD pico_w_ili9341)
+#set(MACHIKANIA_BUILD pico_w_ili9341)
 
 # Do not touch the lines below
 
