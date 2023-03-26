@@ -27,7 +27,9 @@ void read_ini(void){
 	if (f_open(&fpo,"MACHIKAP.INI",FA_READ)) return;
 	// Read each line
 	while(f_gets(str,g_file_buffer_size,&fpo)){
-		if (!strncmp(str,"AUTOEXEC=",9)) {
+		if (ini_file_rtc(str)) {
+			continue;
+		} else if (!strncmp(str,"AUTOEXEC=",9)) {
 			// Get file name
 			for(i=0;i<12;i++){
 				if (str[i+9]<0x21) break;

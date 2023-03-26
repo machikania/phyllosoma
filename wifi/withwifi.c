@@ -141,7 +141,10 @@ int connect_wifi(char show_progress){
 	return 0;
 }
 
+void init_machikania_rtc(void);
+char* get_time_now(void);
 void wifi_test(void){
+	int i;
 	// DNS test
 	ip_addr_t* ipaddr=dns_lookup("abehiroshi.la.coocan.jp");
 	if (ipaddr) {
@@ -149,5 +152,11 @@ void wifi_test(void){
 		printstr(ip4addr_ntoa(ipaddr));
 		printstr("\n");
 	}
-	sleep_ms(10000);
+	// RTC test
+	init_machikania_rtc();
+	for(i=0;i<10;i++){
+		printstr(get_time_now());
+		printstr("\n");
+		sleep_ms(1000);
+	}
 }

@@ -126,12 +126,21 @@
 #define LIB_MUSIC 152
 #define LIB_DELAYUS 153
 #define LIB_DELAYMS 154
+#define LIB_RTC 155
 
 /*
 	Gereral option used for intializing static variables
 */
 
 #define RESET_STATIC_VARS 32767
+
+/*
+	LIB RTC options
+*/
+
+#define LIB_RTC_GETTIME  1
+#define LIB_RTC_SETTIME  2
+#define LIB_RTC_STRFTIME 3
 
 /*
 	LIB MUSIC options
@@ -616,6 +625,13 @@ void set_wifi_id(char* wifi_id);
 void set_wifi_passwd(char* wifi_passwd);
 void set_wifi_country(char* country);
 int connect_wifi(char show_progress);
+
+// rtc.c
+int ini_file_rtc(char* line);
+int lib_rtc(int r0, int r1, int r2);
+int gettime_function(void);
+int settime_statement(void);
+int strftime_function(void);
 
 // For debugging
 void dump_cmpdata(void);

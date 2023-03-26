@@ -43,6 +43,7 @@ if (TARGET tinyusb_device)
 		hexfile.c
 		debug.c	
 		exception.c
+		rtc.c
 		interface/${MACHIKANIA_GRAPH_LIB}.c
 		interface/fontdata.c
 		interface/graphlib.c
@@ -59,6 +60,7 @@ if (TARGET tinyusb_device)
 		hardware_adc
 		hardware_i2c
 		hardware_exception
+		hardware_rtc
 	)
 	if (MACHIKANIA_WIFI STREQUAL "withwifi") 
 		target_link_libraries(shared_files

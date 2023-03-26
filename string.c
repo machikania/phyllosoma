@@ -57,6 +57,9 @@ int string_functions(void){
 	// File functions
 	if (instruction_is("FINPUT$(")) return finput_function();
 	if (instruction_is("GETDIR$(")) return getdir_function();
+	// RTC functions
+	if (instruction_is("GETTIME$(")) return gettime_function();
+	if (instruction_is("STRFTIME$(")) return strftime_function();
 	return ERROR_SYNTAX;
 }
 
