@@ -14,30 +14,18 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
 #include "lwip/dns.h"
 #include "../compiler.h"
 #include "../api.h"
 
-
-#ifdef WIFI_SSID
-#define MACHIKANIA_DEFAULT_WIFI_SSID WIFI_SSID
-#else
-#define MACHIKANIA_DEFAULT_WIFI_SSID "MACHIKANIA_DEFAULT_WIFI_SSID\0\0\0"
-#endif
-
-#ifdef WIFI_PASSWORD
-#define MACHIKANIA_DEFAULT_WIFI_PASSWORD WIFI_PASSWORD
-#else
-#define MACHIKANIA_DEFAULT_WIFI_PASSWORD "MACHIKANIA_DEFAULT_WIFI_PASSWD\0"
-#endif
-
-
-static char g_wifi_id[128]=MACHIKANIA_DEFAULT_WIFI_SSID;
-static char g_wifi_passwd[128]=MACHIKANIA_DEFAULT_WIFI_PASSWORD;
+static char g_wifi_id[128]="MACHIKANIA_DEFAULT_WIFI_SSID\0\0\0";
+static char g_wifi_passwd[128]="MACHIKANIA_DEFAULT_WIFI_PASSWD\0";
 static char g_cyw43_country_char1='U';
 static char g_cyw43_country_char2='S';
+static char g_ntp_server[64]="pool.ntp.org";
 
 #define printf wifi_set_error
 static char* g_err_str_wifi;
@@ -53,25 +41,38 @@ int wifi_error(void){
 	return g_err_wifi;
 }
 
-void set_wifi_id(char* wifi_id){
-	int i;
-	for(i=0;i<(sizeof g_wifi_id)-1;i++){
-		if ((g_wifi_id[i]=wifi_id[i])<=0x20) break;
-	}
-	g_wifi_id[i]=0;
-}
+static char g_usewifi=0;
 
-void set_wifi_passwd(char* wifi_passwd){
+int ini_file_wifi(char* line){
 	int i;
-	for(i=0;i<(sizeof g_wifi_passwd)-1;i++){
-		if ((g_wifi_passwd[i]=wifi_passwd[i])<=0x20) break;
+	if (!strncmp(line,"USEWIFI",7)) {
+		g_usewifi=1;
+	} else if (!strncmp(line,"WIFISSID=",9)) {
+		line+=9;
+		for(i=0;i<(sizeof g_wifi_id)-1;i++){
+			if ((g_wifi_id[i]=line[i])<=0x20) break;
+		}
+		g_wifi_id[i]=0;
+	} else if (!strncmp(line,"WIFIPASSWD=",11)) {
+		line+=11;
+		for(i=0;i<(sizeof g_wifi_passwd)-1;i++){
+			if ((g_wifi_passwd[i]=line[i])<=0x20) break;
+		}
+		g_wifi_passwd[i]=0;
+	} else if (!strncmp(line,"WIFICOUNTRY=",12)) {
+		line+=12;
+		g_cyw43_country_char1=line[0];
+		g_cyw43_country_char2=line[1];
+	} else if (!strncmp(line,"NTPSERVER=",10)) {
+		line+=10;
+		for(i=0;i<(sizeof g_ntp_server)-1;i++){
+			if ((g_ntp_server[i]=line[i])<=0x20) break;
+		}
+		g_ntp_server[i]=0;
+	} else {
+		return 0;
 	}
-	g_wifi_passwd[i]=0;
-}
-
-void set_wifi_country(char* country){
-	g_cyw43_country_char1=country[0];
-	g_cyw43_country_char2=country[1];
+	return 1;
 }
 
 static ip_addr_t g_server_address;
@@ -116,6 +117,12 @@ ip_addr_t* dns_lookup(char* server_name){
 void wifi_test(void);
 int connect_wifi(char show_progress){
 	int i;
+	if (!g_usewifi) {
+		// First time calling this function. This must be done in main().
+		// Second time calling this function must be from BASIC code.
+		g_usewifi=1;
+		return 0;
+	}
 	if (show_progress) printstr("\nInitialising wifi ... ");
 	if (cyw43_arch_init_with_country(CYW43_COUNTRY(g_cyw43_country_char1, g_cyw43_country_char2, 0))) {
 		if (show_progress) printstr("failed to initialise\n");
@@ -141,7 +148,6 @@ int connect_wifi(char show_progress){
 	return 0;
 }
 
-void init_machikania_rtc(void);
 char* get_time_now(void);
 void wifi_test(void){
 	int i;
@@ -153,7 +159,6 @@ void wifi_test(void){
 		printstr("\n");
 	}
 	// RTC test
-	init_machikania_rtc();
 	for(i=0;i<10;i++){
 		printstr(get_time_now());
 		printstr("\n");

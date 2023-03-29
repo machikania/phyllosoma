@@ -621,12 +621,11 @@ void runHex(char* filename);
 void handle_exception(int set);
 
 // wifi
-void set_wifi_id(char* wifi_id);
-void set_wifi_passwd(char* wifi_passwd);
-void set_wifi_country(char* country);
+int ini_file_wifi(char* line);
 int connect_wifi(char show_progress);
 
 // rtc.c
+void init_machikania_rtc(void);
 int ini_file_rtc(char* line);
 int lib_rtc(int r0, int r1, int r2);
 int gettime_function(void);

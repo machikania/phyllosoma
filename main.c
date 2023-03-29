@@ -29,6 +29,8 @@ void read_ini(void){
 	while(f_gets(str,g_file_buffer_size,&fpo)){
 		if (ini_file_rtc(str)) {
 			continue;
+		} else if (ini_file_wifi(str)) {
+			continue;
 		} else if (!strncmp(str,"AUTOEXEC=",9)) {
 			// Get file name
 			for(i=0;i<12;i++){
@@ -115,6 +117,7 @@ int main() {
 	init_buttons();
 	init_file_system();
 	fileselect_init();
+	init_machikania_rtc();
 	// Read MACHIKAP.INI
 	read_ini();
 	sleep_ms(g_wait_at_begin-500);

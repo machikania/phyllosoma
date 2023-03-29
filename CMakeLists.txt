@@ -71,12 +71,6 @@ if (TARGET tinyusb_device)
 		${CMAKE_CURRENT_LIST_DIR}
 		${CMAKE_CURRENT_LIST_DIR}/wifi
 	)
-	if (WIFI_SSID)
-		target_compile_definitions(shared_files PRIVATE WIFI_SSID=\"${WIFI_SSID}\")
-	endif()
-	if (WIFI_PASSWORD)
-			target_compile_definitions(shared_files PRIVATE WIFI_PASSWORD=\"${WIFI_PASSWORD}\")
-	endif()
 	
 	# phyllosoma_kb.uf2
 	add_executable(phyllosoma_kb

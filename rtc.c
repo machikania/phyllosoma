@@ -25,8 +25,11 @@ int ini_file_rtc(char* line){
 	if (!strncmp(line,"RTCFILE",7)) {
 		g_rtc4file=1;
 	} else if (!strncmp(line,"TIMEZONE=",9)) {
+		// TIMEZONE value is between -12.0 to +14.0
 		line+=9;
+		if ('+'==line[0]) line++;
 		f=strtof(line,NULL);
+		// g_timezone is 4xTIMEZONE, which is between -48 to 56
 		g_timezome=(char)(f*4);
 	} else if (!strncmp(line,"DAYLIGHTSAVING=",15)) {
 		// Support daylight saving time (not supported yet)
