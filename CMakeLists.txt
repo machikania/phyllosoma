@@ -50,7 +50,6 @@ if (TARGET tinyusb_device)
 		interface/ff.c
 		interface/pico-sdmm.c
 		interface/fileselect.c
-		wifi/${MACHIKANIA_WIFI}.c
 	)
 	target_link_libraries(shared_files 
 		pico_stdlib
@@ -62,16 +61,29 @@ if (TARGET tinyusb_device)
 		hardware_exception
 		hardware_rtc
 	)
-	if (MACHIKANIA_WIFI STREQUAL "withwifi") 
-		target_link_libraries(shared_files
+	
+	# Create wifi library
+	if (MACHIKANIA_WIFI STREQUAL "withwifi")
+		add_library(wifi_files
+			wifi/withwifi.c
+			wifi/wifierror.c
+		)
+		target_link_libraries(wifi_files
 			pico_cyw43_arch_lwip_threadsafe_background
 		)
+		target_include_directories(wifi_files PUBLIC
+			${CMAKE_CURRENT_LIST_DIR}
+			${CMAKE_CURRENT_LIST_DIR}/wifi
+		)
+		target_link_libraries(wifi_files 
+			pico_stdlib
+		)
+	else()
+		add_library(wifi_files
+			wifi/withoutwifi.c
+		)
 	endif()
-	target_include_directories(shared_files PUBLIC
-		${CMAKE_CURRENT_LIST_DIR}
-		${CMAKE_CURRENT_LIST_DIR}/wifi
-	)
-	
+		
 	# phyllosoma_kb.uf2
 	add_executable(phyllosoma_kb
 		editor.c
@@ -81,6 +93,7 @@ if (TARGET tinyusb_device)
 		withkeyboard.c
 	)
 	target_link_libraries(phyllosoma_kb shared_files)
+	target_link_libraries(phyllosoma_kb wifi_files)
 	target_link_libraries(phyllosoma_kb tinyusb_board)
 	target_link_libraries(phyllosoma_kb tinyusb_host)
 	target_include_directories(phyllosoma_kb PRIVATE ${CMAKE_CURRENT_LIST_DIR}/interface)
@@ -91,6 +104,7 @@ if (TARGET tinyusb_device)
 		pcconnect.c
 	)
 	target_link_libraries(phyllosoma shared_files)
+	target_link_libraries(phyllosoma wifi_files)
 
 	# enable usb output, disable uart output
 	pico_enable_stdio_usb(phyllosoma_kb 0)
@@ -113,6 +127,7 @@ if (TARGET tinyusb_device)
 	
 	# set compile definitions
 	target_compile_definitions(shared_files PUBLIC MACHIKANIA_CONFIG="./config/${MACHIKANIA_BUILD}.h")
+	target_compile_definitions(wifi_files PUBLIC MACHIKANIA_CONFIG="./config/${MACHIKANIA_BUILD}.h")
 	if (MACHIKANIA_DEBUG_MODE)
 		target_compile_definitions(shared_files PRIVATE MACHIKANIA_DEBUG_MODE)
 	endif()

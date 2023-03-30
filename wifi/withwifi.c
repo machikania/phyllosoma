@@ -20,27 +20,13 @@
 #include "lwip/dns.h"
 #include "../compiler.h"
 #include "../api.h"
+#include "./wifi.h"
 
 static char g_wifi_id[128]="MACHIKANIA_DEFAULT_WIFI_SSID\0\0\0";
 static char g_wifi_passwd[128]="MACHIKANIA_DEFAULT_WIFI_PASSWD\0";
 static char g_cyw43_country_char1='U';
 static char g_cyw43_country_char2='S';
 static char g_ntp_server[64]="pool.ntp.org";
-
-#define printf wifi_set_error
-static char* g_err_str_wifi;
-void wifi_set_error(char* err_str,...){
-	g_err_str_wifi=err_str;
-}
-char* wifi_error_str(void){
-	return g_err_str_wifi;
-}
-
-static int g_err_wifi;
-int wifi_error(void){
-	return g_err_wifi;
-}
-
 static char g_usewifi=0;
 
 int ini_file_wifi(char* line){
@@ -88,6 +74,7 @@ static void dns_lookup_callback(const char *hostname, const ip_addr_t *ipaddr, v
 
 ip_addr_t* dns_lookup(char* server_name){
 	int i;
+	int err_wifi;
 	volatile int err;
 	cyw43_arch_lwip_begin();
 	int err2=dns_gethostbyname(server_name, &g_server_address, dns_lookup_callback, (void*)&err);
@@ -102,15 +89,16 @@ ip_addr_t* dns_lookup(char* server_name){
 				if (ERR_INPROGRESS!=err) break;
 				sleep_ms(10);
 			}
-			g_err_wifi=err;
+			err_wifi=err;
 			break;
 		case ERR_OK:
 			// DNS look-up isn't needed. The server_name shows the IP address
 		default:
-			g_err_wifi=err2;
+			err_wifi=err2;
 			break;
 	}
-	if (ERR_OK==g_err_wifi) return &g_server_address;
+	wifi_set_error(err_wifi);
+	if (ERR_OK==err_wifi) return &g_server_address;
 	return 0;
 }
 
