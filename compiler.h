@@ -127,12 +127,19 @@
 #define LIB_DELAYUS 153
 #define LIB_DELAYMS 154
 #define LIB_RTC 155
+#define LIB_WIFI 156
 
 /*
 	Gereral option used for intializing static variables
 */
 
 #define RESET_STATIC_VARS 32767
+
+/*
+	LIB WIFI options
+*/
+
+#define LIB_WIFI_IFCONFIG 1
 
 /*
 	LIB RTC options
@@ -623,6 +630,10 @@ void handle_exception(int set);
 // wifi
 int ini_file_wifi(char* line);
 int connect_wifi(char show_progress);
+int wifi_statements(void);
+int wifi_int_functions(void);
+int wifi_str_functions(void);
+int lib_wifi(int r0, int r1, int r2);
 
 // rtc.c
 void init_machikania_rtc(void);
