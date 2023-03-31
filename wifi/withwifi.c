@@ -160,6 +160,12 @@ int ifconfig_function(void){
 		LIB_WIFI_IFCONFIG<<LIBOPTION);
 }
 
+int dns_function(void){
+	return argn_function(LIB_WIFI,
+		ARG_STRING<<ARG1 |
+		LIB_WIFI_DNS<<LIBOPTION);
+}
+
 int wifi_statements(void){
 	return ERROR_STATEMENT_NOT_DETECTED;
 }
@@ -168,15 +174,10 @@ int wifi_int_functions(void){
 }
 int wifi_str_functions(void){
 	if (instruction_is("IFCONFIG$(")) return ifconfig_function();
+	if (instruction_is("DNS$(")) return dns_function();
 	return ERROR_STATEMENT_NOT_DETECTED;
 }
 int lib_wifi(int r0, int r1, int r2){
-/*
-	printf("connected as %s\n",ip4addr_ntoa(&ip));
-	printf("subnetmask: %s\n",ip4addr_ntoa(&cyw43_state.netif[0].netmask));
-	printf("gateway: %s\n",ip4addr_ntoa((ip_addr_t*)&cyw43_state.netif[0].gw.addr));
-	printf("DNS: %s\n",ip4addr_ntoa(dns_getserver(0)));
-*/
 	switch(r2){
 		case LIB_WIFI_IFCONFIG:
 			switch(r0){
@@ -190,6 +191,8 @@ int lib_wifi(int r0, int r1, int r2){
 				case 3:
 					return (int)ip4addr_ntoa(dns_getserver(0));
 			}
+		case LIB_WIFI_DNS:
+			return (int)ip4addr_ntoa(dns_lookup((char*)r0));
 		default:
 			break;
 	}

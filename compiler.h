@@ -140,6 +140,7 @@
 */
 
 #define LIB_WIFI_IFCONFIG 1
+#define LIB_WIFI_DNS      2
 
 /*
 	LIB RTC options
