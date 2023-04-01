@@ -28,11 +28,14 @@ static char g_cyw43_country_char1='U';
 static char g_cyw43_country_char2='S';
 static char g_ntp_server[64]="pool.ntp.org";
 static char g_usewifi=0;
+static char g_initial_ntp=0;
 
 int ini_file_wifi(char* line){
 	int i;
 	if (!strncmp(line,"USEWIFI",7)) {
 		g_usewifi=1;
+	} else if (!strncmp(line,"INITIALNTP",10)) {
+		g_initial_ntp=1;
 	} else if (!strncmp(line,"WIFISSID=",9)) {
 		line+=9;
 		for(i=0;i<(sizeof g_wifi_id)-1;i++){
@@ -131,6 +134,14 @@ int connect_wifi(char show_progress){
 		printstr("connected as ");
 		printstr(ip4addr_ntoa(&cyw43_state.netif[0].ip_addr));
 		printstr("\n");
+	}
+	if (g_initial_ntp) {
+		if (show_progress) printstr("Connecting to NTP... ");
+		if (lib_wifi(0,0,LIB_WIFI_NTP)) {
+			if (show_progress) printstr("failed.\n");
+		} else {
+			if (show_progress) printstr("OK \n");
+		}
 	}
 	sleep_ms(1000);
 	return 0;

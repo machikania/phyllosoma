@@ -137,7 +137,6 @@ static NTP_T* ntp_init(void) {
 }
 
 time_t* get_ntp_time(char* ntp_server){
-printf(ntp_server);
 	NTP_T *state = ntp_init();
 	if (!state) return 0;
 	// g_ntp_result will be set if sucessful result will be got
