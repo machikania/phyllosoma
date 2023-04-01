@@ -18,7 +18,7 @@
 static char g_rtc4file=0;
 
 // Timezone value * 4
-static char g_timezome=0;
+static int g_timezome=0;
 
 int ini_file_rtc(char* line){
 	float f;
@@ -30,7 +30,7 @@ int ini_file_rtc(char* line){
 		if ('+'==line[0]) line++;
 		f=strtof(line,NULL);
 		// g_timezone is 4xTIMEZONE, which is between -48 to 56
-		g_timezome=(char)(f*4);
+		g_timezome=(int)(f*4);
 	} else if (!strncmp(line,"DAYLIGHTSAVING=",15)) {
 		// Support daylight saving time (not supported yet)
 		line+=15;
@@ -128,6 +128,16 @@ struct tm* iso8601str2tm(char* iso8601){
 	t.tm_yday = 0; // not used
 	t.tm_isdst = -1; // not used
 	return &t;
+}
+
+void set_time_from_utc(time_t t){
+	if (0<g_timezome) {
+		t+=(3600/4)*g_timezome;
+	} else if (g_timezome<0) {
+		t-=(3600/4)*(0-g_timezome);
+	}
+	struct tm* tm=localtime(&t);
+	rtc_set_datetime(tm2datetime(tm));
 }
 
 int lib_rtc(int r0, int r1, int r2){

@@ -141,6 +141,9 @@
 
 #define LIB_WIFI_IFCONFIG 1
 #define LIB_WIFI_DNS      2
+#define LIB_WIFI_NTP      3
+#define LIB_WIFI_ERR_INT  4
+#define LIB_WIFI_ERR_STR  5
 
 /*
 	LIB RTC options

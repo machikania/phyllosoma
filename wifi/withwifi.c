@@ -132,26 +132,8 @@ int connect_wifi(char show_progress){
 		printstr(ip4addr_ntoa(&cyw43_state.netif[0].ip_addr));
 		printstr("\n");
 	}
-	wifi_test();
+	sleep_ms(1000);
 	return 0;
-}
-
-char* get_time_now(void);
-void wifi_test(void){
-	int i;
-	// DNS test
-	ip_addr_t* ipaddr=dns_lookup("abehiroshi.la.coocan.jp");
-	if (ipaddr) {
-		printstr("abehiroshi.la.coocan.jp: ");
-		printstr(ip4addr_ntoa(ipaddr));
-		printstr("\n");
-	}
-	// RTC test
-	for(i=0;i<10;i++){
-		printstr(get_time_now());
-		printstr("\n");
-		sleep_ms(1000);
-	}
 }
 
 int ifconfig_function(void){
@@ -166,19 +148,45 @@ int dns_function(void){
 		LIB_WIFI_DNS<<LIBOPTION);
 }
 
+int ntp_function(void){
+	return argn_function(LIB_WIFI,
+		LIB_WIFI_NTP<<LIBOPTION);
+}
+
+int wifierr_int_function(void){
+	return argn_function(LIB_WIFI,
+		LIB_WIFI_ERR_INT<<LIBOPTION);
+}
+
+int wifierr_str_function(void){
+	return argn_function(LIB_WIFI,
+		LIB_WIFI_ERR_STR<<LIBOPTION);
+}
+
 int wifi_statements(void){
+	if (instruction_is("NTP")) return ntp_function();
 	return ERROR_STATEMENT_NOT_DETECTED;
 }
 int wifi_int_functions(void){
+	if (instruction_is("NTP(")) return ntp_function();
+	if (instruction_is("WIFIERR(")) return wifierr_int_function();
 	return ERROR_STATEMENT_NOT_DETECTED;
 }
 int wifi_str_functions(void){
 	if (instruction_is("IFCONFIG$(")) return ifconfig_function();
 	if (instruction_is("DNS$(")) return dns_function();
+	if (instruction_is("WIFIERR$(")) return wifierr_str_function();
 	return ERROR_STATEMENT_NOT_DETECTED;
 }
+
 int lib_wifi(int r0, int r1, int r2){
+	static char iso8601str[]="YYYY-MM-DDThh:mm:ss";
+	time_t* now;
 	switch(r2){
+		case LIB_WIFI_ERR_INT:
+			return wifi_error();
+		case LIB_WIFI_ERR_STR:
+			return (int)wifi_error_str();
 		case LIB_WIFI_IFCONFIG:
 			switch(r0){
 				case 0:
@@ -193,6 +201,14 @@ int lib_wifi(int r0, int r1, int r2){
 			}
 		case LIB_WIFI_DNS:
 			return (int)ip4addr_ntoa(dns_lookup((char*)r0));
+		case LIB_WIFI_NTP:
+			now=get_ntp_time(g_ntp_server);
+			if (!now) {
+				r0=wifi_error();
+				return r0 ? r0:1;
+			}
+			 set_time_from_utc(now[0]);
+			 return 0;
 		default:
 			break;
 	}

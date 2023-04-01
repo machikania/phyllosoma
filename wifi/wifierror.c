@@ -5,14 +5,15 @@
    https://github.com/kmorimatsu
 */
 
-#include "./wifi.h"
-
-static char* g_err_str_wifi;
+static char g_err_str_wifi[32];
 void wifi_set_error_str(char* err_str,...){
-	g_err_str_wifi=err_str;
+	int i;
+	for(i=0;i<31;i++) {
+		if (0==(g_err_str_wifi[i]=err_str[i])) break;
+	}
 }
 char* wifi_error_str(void){
-	return g_err_str_wifi;
+	return &g_err_str_wifi[0];
 }
 
 static int g_err_wifi;

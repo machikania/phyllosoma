@@ -67,6 +67,7 @@ if (TARGET tinyusb_device)
 		add_library(wifi_files
 			wifi/withwifi.c
 			wifi/wifierror.c
+			wifi/picow_ntp_client.c
 		)
 		target_link_libraries(wifi_files
 			pico_cyw43_arch_lwip_threadsafe_background
