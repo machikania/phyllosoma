@@ -174,15 +174,27 @@ int wifierr_str_function(void){
 		LIB_WIFI_ERR_STR<<LIBOPTION);
 }
 
+int tcpclient_function(void){
+	g_default_args[2]=80;
+	return argn_function(LIB_WIFI,
+		ARG_STRING<<ARG1 |
+		ARG_INTEGER_OPTIONAL<<ARG2 |
+		LIB_WIFI_TCPCLIENT<<LIBOPTION);
+}
+
 int wifi_statements(void){
 	if (instruction_is("NTP")) return ntp_function();
+	if (instruction_is("TCPCLIENT")) return tcpclient_function();
 	return ERROR_STATEMENT_NOT_DETECTED;
 }
+
 int wifi_int_functions(void){
 	if (instruction_is("NTP(")) return ntp_function();
 	if (instruction_is("WIFIERR(")) return wifierr_int_function();
+	if (instruction_is("TCPCLIENT(")) return tcpclient_function();
 	return ERROR_STATEMENT_NOT_DETECTED;
 }
+
 int wifi_str_functions(void){
 	if (instruction_is("IFCONFIG$(")) return ifconfig_function();
 	if (instruction_is("DNS$(")) return dns_function();
@@ -190,6 +202,7 @@ int wifi_str_functions(void){
 	return ERROR_STATEMENT_NOT_DETECTED;
 }
 
+void run_tcp_client_test(const char* ipaddr, int tcp_port);
 int lib_wifi(int r0, int r1, int r2){
 	static char iso8601str[]="YYYY-MM-DDThh:mm:ss";
 	time_t* now;
@@ -218,8 +231,11 @@ int lib_wifi(int r0, int r1, int r2){
 				r0=wifi_error();
 				return r0 ? r0:1;
 			}
-			 set_time_from_utc(now[0]);
-			 return 0;
+			set_time_from_utc(now[0]);
+			return 0;
+		case LIB_WIFI_TCPCLIENT:
+			run_tcp_client_test(ip4addr_ntoa(dns_lookup((char*)r1)),r0);
+			return 0;
 		default:
 			break;
 	}
