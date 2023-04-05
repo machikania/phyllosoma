@@ -139,12 +139,18 @@
 	LIB WIFI options
 */
 
-#define LIB_WIFI_IFCONFIG 1
-#define LIB_WIFI_DNS      2
-#define LIB_WIFI_NTP      3
-#define LIB_WIFI_ERR_INT  4
-#define LIB_WIFI_ERR_STR  5
-#define LIB_WIFI_TCPCLIENT 6
+#define LIB_WIFI_IFCONFIG   1
+#define LIB_WIFI_DNS        2
+#define LIB_WIFI_NTP        3
+#define LIB_WIFI_ERR_INT    4
+#define LIB_WIFI_ERR_STR    5
+#define LIB_WIFI_TCPCLIENT  6
+#define LIB_WIFI_TLSCLIENT  7
+#define LIB_WIFI_TCPSERVER  8
+#define LIB_WIFI_TCPCLOSE   9
+#define LIB_WIFI_TCPSTATUS  10
+#define LIB_WIFI_TCPSEND    11
+#define LIB_WIFI_TCPRECEIVE 12
 
 /*
 	LIB RTC options

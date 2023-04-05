@@ -35,7 +35,7 @@ static const char g_request[]=
 ;
 
 #define TCP_PORT 80
-#define BUF_SIZE 2048
+#define BUF_SIZE WIFI_BUFF_SIZE
 
 #define TEST_ITERATIONS 10
 #define POLL_TIME_S 5
@@ -91,6 +91,7 @@ static err_t tcp_client_close(void *arg) {
 		}
 		state->tcp_pcb = NULL;
 	}
+	set_connection_flag(0);
 	return err;
 }
 
@@ -100,7 +101,7 @@ static err_t tcp_result(void *arg, int status) {
 	if (status == 0) {
 		DEBUG_printf("test success\n");
 	} else {
-		DEBUG_printf("test failed %d\n", status);
+		//DEBUG_printf("test failed %d\n", status);
 	}
 	state->complete = true;
 	return tcp_client_close(arg);
@@ -136,9 +137,12 @@ static err_t tcp_client_connected(void *arg, struct tcp_pcb *tpcb, err_t err) {
 	}
 	state->connected = true;
 	DEBUG_printf("Waiting for buffer from server\n");
+	register_tcp_pcb(state->tcp_pcb);
+	set_connection_flag(1);
 
 	err_t e;
-	e=tcp_write(state->tcp_pcb, g_request, sizeof g_request-1,0);
+	//e=tcp_write(state->tcp_pcb, g_request, sizeof g_request-1,0);
+	e=machikania_tcp_write(g_request, sizeof g_request-1);
 	if (ERR_OK==e) {
 		DEBUG_printf("Request was sent\n%s\n",g_request);
 	} else {
@@ -149,7 +153,7 @@ static err_t tcp_client_connected(void *arg, struct tcp_pcb *tpcb, err_t err) {
 }
 
 static err_t tcp_client_poll(void *arg, struct tcp_pcb *tpcb) {
-	DEBUG_printf("tcp_client_poll\n");
+	DEBUG_printf("Connection time out\n");
 	return tcp_result(arg, -1); // no response is an error?
 }
 
@@ -163,6 +167,7 @@ static void tcp_client_err(void *arg, err_t err) {
 err_t tcp_client_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err) {
 	TCP_CLIENT_T *state = (TCP_CLIENT_T*)arg;
 	if (!p) {
+		DEBUG_printf("null pbuf (connection closed?)");
 		return tcp_result(arg, -1);
 	}
 	// this method is callback from lwIP, so cyw43_arch_lwip_begin is not required, however you
@@ -172,7 +177,8 @@ err_t tcp_client_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err
 	if (p->tot_len > 0) {
 		DEBUG_printf("recv %d err %d\n", p->tot_len, err);
 		for (struct pbuf *q = p; q != NULL; q = q->next) {
-			DUMP_BYTES(q->payload, q->len);
+			//DUMP_BYTES(q->payload, q->len);
+			tcp_receive_in_buff(q->payload,q->len);
 		}
 		// Receive the buffer
 		const uint16_t buffer_left = BUF_SIZE - state->buffer_len;
@@ -234,32 +240,25 @@ static TCP_CLIENT_T* tcp_client_init(const char* ipaddr) {
 	return state;
 }
 
-void run_tcp_client_test(const char* ipaddr, int tcp_port) {
+void start_tcp_client(const char* ipaddr, int tcp_port) {
+	// Initialize socket
+	init_tcp_socket();
+	// Create state structure
 	TCP_CLIENT_T *state = tcp_client_init(ipaddr);
 	if (!state) {
+		wifi_set_error(__LINE__);
 		return;
 	}
+	// Open the client socket
 	if (!tcp_client_open(state, tcp_port)) {
+		delete_memory(state);
 		tcp_result(state, -1);
+		wifi_set_error(__LINE__);
 		return;
 	}
-	while(!state->complete) {
-		// the following #ifdef is only here so this same example can be used in multiple modes;
-		// you do not need it in your code
-#if PICO_CYW43_ARCH_POLL
-		// if you are using pico_cyw43_arch_poll, then you must poll periodically from your
-		// main loop (not from a timer) to check for Wi-Fi driver or lwIP work that needs to be done.
-		cyw43_arch_poll();
-		// you can poll as often as you like, however if you have nothing else to do you can
-		// choose to sleep until either a specified time, or cyw43_arch_poll() has work to do:
-		cyw43_arch_wait_for_work_until(make_timeout_time_ms(1000));
-#else
-		// if you are not using pico_cyw43_arch_poll, then WiFI driver and lwIP work
-		// is done via interrupt in the background. This sleep is just an example of some (blocking)
-		// work you might be doing.
-		sleep_ms(1000);
-#endif
-	}
-	//free(state);
-	delete_memory(state);
+	// Resister state and closing function
+	register_state(state);
+	register_closing_function(tcp_client_close);
+	// No error
+	wifi_set_error(ERR_OK);
 }

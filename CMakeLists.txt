@@ -67,6 +67,7 @@ if (TARGET tinyusb_device)
 		add_library(wifi_files
 			wifi/withwifi.c
 			wifi/wifierror.c
+			wifi/socket.c
 			wifi/picow_ntp_client.c
 			wifi/picow_tcp_client.c
 		)

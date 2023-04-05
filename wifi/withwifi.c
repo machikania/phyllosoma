@@ -182,9 +182,52 @@ int tcpclient_function(void){
 		LIB_WIFI_TCPCLIENT<<LIBOPTION);
 }
 
+int tcpstatus_function(void){
+	return argn_function(LIB_WIFI,
+		ARG_INTEGER<<ARG1 |
+		LIB_WIFI_TCPSTATUS<<LIBOPTION);
+}
+
+int tcpsend_function(void){
+	// Test if string
+	char* sbefore=source;
+	unsigned short* obefore=object;
+	int e=get_string();
+	source=sbefore;
+	rewind_object(obefore);
+	// The 1st argument can be string or integer
+	g_default_args[2]=-1;
+	if (e) {
+		return argn_function(LIB_WIFI,
+			ARG_INTEGER<<ARG1 |
+			ARG_INTEGER_OPTIONAL<<ARG2 |
+			LIB_WIFI_TCPSEND<<LIBOPTION);
+	} else {
+		return argn_function(LIB_WIFI,
+			ARG_STRING<<ARG1 |
+			ARG_INTEGER_OPTIONAL<<ARG2 |
+			LIB_WIFI_TCPSEND<<LIBOPTION);
+	}
+}
+
+int tcpreceive_function(void){
+	return argn_function(LIB_WIFI,
+		ARG_INTEGER<<ARG1 |
+		ARG_INTEGER<<ARG2 |
+		LIB_WIFI_TCPRECEIVE<<LIBOPTION);
+}
+
+int tcpclose_function(void){
+	return argn_function(LIB_WIFI,
+		LIB_WIFI_TCPCLOSE<<LIBOPTION);
+}
+
 int wifi_statements(void){
 	if (instruction_is("NTP")) return ntp_function();
 	if (instruction_is("TCPCLIENT")) return tcpclient_function();
+	if (instruction_is("TCPSEND")) return tcpsend_function();
+	if (instruction_is("TCPRECEIVE")) return tcpreceive_function();
+	if (instruction_is("TCPCLOSE")) return tcpclose_function();
 	return ERROR_STATEMENT_NOT_DETECTED;
 }
 
@@ -192,6 +235,10 @@ int wifi_int_functions(void){
 	if (instruction_is("NTP(")) return ntp_function();
 	if (instruction_is("WIFIERR(")) return wifierr_int_function();
 	if (instruction_is("TCPCLIENT(")) return tcpclient_function();
+	if (instruction_is("TCPSTATUS(")) return tcpstatus_function();
+	if (instruction_is("TCPSEND(")) return tcpsend_function();
+	if (instruction_is("TCPRECEIVE(")) return tcpreceive_function();
+	if (instruction_is("TCPCLOSE(")) return tcpclose_function();
 	return ERROR_STATEMENT_NOT_DETECTED;
 }
 
@@ -202,7 +249,6 @@ int wifi_str_functions(void){
 	return ERROR_STATEMENT_NOT_DETECTED;
 }
 
-void run_tcp_client_test(const char* ipaddr, int tcp_port);
 int lib_wifi(int r0, int r1, int r2){
 	static char iso8601str[]="YYYY-MM-DDThh:mm:ss";
 	time_t* now;
@@ -234,8 +280,19 @@ int lib_wifi(int r0, int r1, int r2){
 			set_time_from_utc(now[0]);
 			return 0;
 		case LIB_WIFI_TCPCLIENT:
-			run_tcp_client_test(ip4addr_ntoa(dns_lookup((char*)r1)),r0);
+			start_tcp_client(ip4addr_ntoa(dns_lookup((char*)r1)),r0);
 			return 0;
+		case LIB_WIFI_TCPSTATUS:
+			return machikania_tcp_status(r0);
+		case LIB_WIFI_TCPSEND:
+			if (r0<0) r0=strlen((char*)r1);
+			return machikania_tcp_write((char*)r1,r0);
+		case LIB_WIFI_TCPRECEIVE:
+			return tcp_read_from_buffer((char*)r1,r0);
+		case LIB_WIFI_TCPCLOSE:
+			return machikania_tcp_close();
+		case LIB_WIFI_TLSCLIENT:
+		case LIB_WIFI_TCPSERVER:
 		default:
 			break;
 	}
