@@ -639,6 +639,7 @@ void runHex(char* filename);
 void handle_exception(int set);
 
 // wifi
+void board_led(int led_on);
 int ini_file_wifi(char* line);
 int connect_wifi(char show_progress);
 int wifi_statements(void);

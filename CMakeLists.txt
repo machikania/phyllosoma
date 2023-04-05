@@ -85,6 +85,9 @@ if (TARGET tinyusb_device)
 		add_library(wifi_files
 			wifi/withoutwifi.c
 		)
+		target_link_libraries(wifi_files 
+			pico_stdlib
+		)
 	endif()
 		
 	# phyllosoma_kb.uf2

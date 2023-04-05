@@ -30,6 +30,10 @@ static char g_ntp_server[64]="pool.ntp.org";
 static char g_usewifi=0;
 static char g_initial_ntp=0;
 
+void board_led(int led_on){
+	cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, led_on ? 1:0);
+}
+
 int ini_file_wifi(char* line){
 	int i;
 	if (!strncmp(line,"USEWIFI",7)) {
