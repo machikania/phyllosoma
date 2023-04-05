@@ -77,16 +77,17 @@ int tcp_read_from_buffer(char* dest, int bytes){
 		buffer_len=g_socket_buffer[1];
 		buffer_point=((char*)&g_socket_buffer[2])+g_read_point_in_buffer;
 		if (bytes<=buffer_len-g_read_point_in_buffer) {
-			// Current buffer contains all the data
+			// Data size is equal to or larger than buffer size
 			memcpy(dest,buffer_point,bytes);
 			valid_bytes+=bytes;
 			g_read_point_in_buffer+=bytes;
 			bytes=0;
 		} else {
-			// Current buffer contains part of data needed
+			// Data size is smaller than buffer size
 			memcpy(dest,buffer_point,buffer_len-g_read_point_in_buffer);
 			bytes-=buffer_len-g_read_point_in_buffer;
 			dest+=buffer_len-g_read_point_in_buffer;
+			valid_bytes+=buffer_len-g_read_point_in_buffer;
 			g_read_point_in_buffer=buffer_len;
 		}
 		// Shift buffer
@@ -125,14 +126,14 @@ err_t machikania_tcp_write(const void* arg, u16_t len){
 	while (0<len) {
 		// Maximim sending size is WIFI_BUFF_SIZE
 		if (len<=WIFI_BUFF_SIZE) len_sent=len;
-		else len=WIFI_BUFF_SIZE;
+		else len_sent=WIFI_BUFF_SIZE;
 		// Wait until buffer is clear, then send
 		if (g_tls_mode) {
 			while(ERR_OK!=altcp_output(g_pcb)) sleep_ms(1);
-			err=altcp_write(g_pcb,arg,len,TCP_WRITE_FLAG_COPY);
+			err=altcp_write(g_pcb,arg,len_sent,TCP_WRITE_FLAG_COPY);
 		} else { 
 			while(ERR_OK!=tcp_output(g_pcb)) sleep_ms(1);
-			err=tcp_write(g_pcb,arg,len,TCP_WRITE_FLAG_COPY);
+			err=tcp_write(g_pcb,arg,len_sent,TCP_WRITE_FLAG_COPY);
 		}
 		if (ERR_OK!=err) return err;
 		len-=len_sent;
@@ -143,8 +144,11 @@ err_t machikania_tcp_write(const void* arg, u16_t len){
 err_t machikania_tcp_close(void){
 	err_t e;
 	err_t (*f)(void* state)=g_close_func;
-	e=f(g_state);
+	if (g_close_func) e=f(g_state);
 	init_tcp_socket();
+	// Wait for 100 msec
+	// This is to prevent exception happening in <__wrap_putchar> by unknown mechanism
+	sleep_ms(100);
 	return e;
 }
 
