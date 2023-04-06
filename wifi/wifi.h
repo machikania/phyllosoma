@@ -17,6 +17,7 @@ time_t* get_ntp_time(char* ntp_server);
 void init_tcp_socket(void);
 char* tcp_receive_in_buff(char* data, int bytes);
 int tcp_read_from_buffer(char* dest, int bytes);
+err_t send_header_if_exists(void);
 err_t machikania_tcp_write(const void* arg, u16_t len);
 int machikania_tcp_status(int mode);
 err_t machikania_tcp_close(void);

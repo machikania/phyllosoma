@@ -26,14 +26,6 @@
 #include "../compiler.h"
 #include "../api.h"
 
-static const char g_request[]=
-	"GET / HTTP/1.0" "\r\n"
-	"Connection: Close" "\r\n"
-	"Accept: */*" "\r\n"
-	"Host: abehiroshi.la.coocan.jp" "\r\n"
-	"" "\r\n"
-;
-
 #define TCP_PORT 80
 #define BUF_SIZE WIFI_BUFF_SIZE
 
@@ -138,17 +130,16 @@ static err_t tcp_client_connected(void *arg, struct tcp_pcb *tpcb, err_t err) {
 	state->connected = true;
 	DEBUG_printf("Waiting for buffer from server\n");
 	register_tcp_pcb(state->tcp_pcb);
-	set_connection_flag(1);
 
 	err_t e;
-	//e=tcp_write(state->tcp_pcb, g_request, sizeof g_request-1,0);
-	e=machikania_tcp_write(g_request, sizeof g_request-1);
+	e=send_header_if_exists();
 	if (ERR_OK==e) {
-		DEBUG_printf("Request was sent\n%s\n",g_request);
+		DEBUG_printf("Request header was sent\n%s\n");
 	} else {
-		DEBUG_printf("failed to write request, err=%d\n",e);
+		DEBUG_printf("failed to send header\n");
 	}
- 
+
+	set_connection_flag(1);
 	return ERR_OK;
 }
 

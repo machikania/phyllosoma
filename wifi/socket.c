@@ -28,6 +28,7 @@ static void* g_state;
 static char g_tls_mode;
 static char g_connected;
 static void* g_close_func;
+static int* g_header_lines=0;
 
 void init_tcp_socket(void){
 	int* next;
@@ -119,10 +120,32 @@ void set_connection_flag(int flag){
 	g_connected=flag ? 1:0;
 }
 
+err_t send_header_if_exists(void){
+	err_t err;
+	if (!g_header_lines) return ERR_OK;
+	err=machikania_tcp_write(&g_header_lines[1],g_header_lines[0]);
+	delete_memory(g_header_lines);
+	g_header_lines=0;
+	return err;
+}
+
 err_t machikania_tcp_write(const void* arg, u16_t len){
 	err_t err;
 	int len_sent;
-	if (!g_pcb) return ERR_CONN;
+	if (!g_pcb) {
+		if (g_state) {
+			// TCPSEND is called after starting TCP connection, so this is an error
+			return ERR_CONN;
+		} else {
+			// TCPSEND is called before starting TCP connection
+			// This is for registering header lines that will be sent just after connection
+			if (g_header_lines) delete_memory(g_header_lines);
+			g_header_lines=alloc_memory(1+(3+len)/4,get_permanent_block_number());
+			g_header_lines[0]=len;
+			memcpy(&g_header_lines[1],arg,len);
+			return ERR_OK;
+		}
+	}
 	while (0<len) {
 		// Maximim sending size is WIFI_BUFF_SIZE
 		if (len<=WIFI_BUFF_SIZE) len_sent=len;
@@ -143,12 +166,17 @@ err_t machikania_tcp_write(const void* arg, u16_t len){
 
 err_t machikania_tcp_close(void){
 	err_t e;
+	// Execute registered closing function
 	err_t (*f)(void* state)=g_close_func;
 	if (g_close_func) e=f(g_state);
+	// Initialize socket
 	init_tcp_socket();
+	// Delete string buffer to be sent as header
+	if (g_header_lines) delete_memory(g_header_lines);
+	g_header_lines=0;
 	// Wait for 100 msec
 	// This is to prevent exception happening in <__wrap_putchar> by unknown mechanism
-	sleep_ms(100);
+	sleep_ms(200);
 	return e;
 }
 
