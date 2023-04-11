@@ -13,6 +13,7 @@
 #include "lwip/altcp.h"
 #include "./wifi.h"
 #include "../compiler.h"
+#include "../api.h"
 
 /*
 	The structure of buffer used in this file:
@@ -58,14 +59,22 @@ void init_tls_socket(void){
 }
 
 char* tcp_receive_in_buff(char* data, int bytes){
+	int* buff;
 	int* new_buffer=alloc_memory(2+(3+bytes)/4,get_permanent_block_number());
 	if (!new_buffer) return 0;
-	if (g_socket_buffer) g_socket_buffer[0]=(int)new_buffer;
-	g_socket_buffer=new_buffer;
-	g_socket_buffer[0]=0;
-	g_socket_buffer[1]=bytes;
-	memcpy(&g_socket_buffer[2],data,bytes);
-	return (char*)&g_socket_buffer[2];
+	if (g_socket_buffer) {
+		// Add to the end of buffer arrays
+		buff=g_socket_buffer;
+		while(buff[0]) buff=(int*)buff[0];
+		buff[0]=(int)new_buffer;
+	} else {
+		// The first buffer array
+		g_socket_buffer=new_buffer;
+	}
+	new_buffer[0]=0;
+	new_buffer[1]=bytes;
+	memcpy(&new_buffer[2],data,bytes);
+	return (char*)&new_buffer[2];
 }
 
 int tcp_read_from_buffer(char* dest, int bytes){
@@ -93,12 +102,14 @@ int tcp_read_from_buffer(char* dest, int bytes){
 		}
 		// Shift buffer
 		if (buffer_len<=g_read_point_in_buffer) {
+			asm("cpsid i");
 			prev_socket_buffer=g_socket_buffer;
 			// Reached at the end point of buffer
 			g_read_point_in_buffer=0;
-			g_socket_buffer=(int*)g_socket_buffer[0];
+			g_socket_buffer=(int*)prev_socket_buffer[0];
 			// Delete previous buffer
 			delete_memory(prev_socket_buffer);
+			asm("cpsie i");
 		}
 	}
 	return valid_bytes;
@@ -182,15 +193,21 @@ err_t machikania_tcp_close(void){
 
 int machikania_tcp_status(int mode){
 	int i;
+	int* buff;
 	switch(mode){
 		case 0: // Connected (1 or 0)
 		default:
 			return g_connected;
 		case 1: // Received bytes numnber
 			i=0;
-			while(g_socket_buffer){
-				i+=g_socket_buffer[1]-g_read_point_in_buffer;
-				g_socket_buffer=(int*)g_socket_buffer[0];
+			buff=g_socket_buffer;
+			if (buff) {
+				i+=buff[1]-g_read_point_in_buffer;
+				buff=(int*)buff[0];
+			}
+			while(buff){
+				i+=buff[1];
+				buff=(int*)buff[0];
 			}
 			return i;
 		case 2: // Sending data remaining (non-zero or 0)

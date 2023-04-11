@@ -118,7 +118,7 @@ int connect_wifi(char show_progress){
 		g_usewifi=1;
 		return 0;
 	}
-	if (show_progress) printstr("\nInitialising wifi ... ");
+	if (show_progress) printstr("\nInitialising wifi... ");
 	if (cyw43_arch_init_with_country(CYW43_COUNTRY(g_cyw43_country_char1, g_cyw43_country_char2, 0))) {
 		if (show_progress) printstr("failed to initialise\n");
 		return 1;
@@ -140,11 +140,15 @@ int connect_wifi(char show_progress){
 		printstr("\n");
 	}
 	if (g_initial_ntp) {
-		if (show_progress) printstr("Connecting to NTP... ");
-		if (lib_wifi(0,0,LIB_WIFI_NTP)) {
-			if (show_progress) printstr("failed.\n");
-		} else {
-			if (show_progress) printstr("OK \n");
+		if (show_progress) printstr("Connecting to NTP server... ");
+		for(i=0;i<5;i++){
+			if (lib_wifi(0,0,LIB_WIFI_NTP)) {
+				if (show_progress) printstr("failed.\n");
+				if (show_progress) printstr("Try it again... ");
+			} else {
+				if (show_progress) printstr("OK \n");
+				break;
+			}
 		}
 	}
 	sleep_ms(1000);

@@ -58,8 +58,6 @@ static void dump_bytes(const uint8_t *bptr, uint32_t len) {
 typedef struct TCP_CLIENT_T_ {
 	struct tcp_pcb *tcp_pcb;
 	ip_addr_t remote_addr;
-	uint8_t buffer[BUF_SIZE];
-	int buffer_len;
 	int sent_len;
 	bool complete;
 	int run_count;
@@ -113,7 +111,6 @@ static err_t tcp_client_sent(void *arg, struct tcp_pcb *tpcb, u16_t len) {
 		}
 
 		// We should receive a new buffer from the server
-		state->buffer_len = 0;
 		state->sent_len = 0;
 		DEBUG_printf("Waiting for buffer from server\n");
 	}
@@ -166,28 +163,16 @@ err_t tcp_client_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err
 	// cyw43_arch_lwip_begin IS needed
 	cyw43_arch_lwip_check();
 	if (p->tot_len > 0) {
+// TODO: here
 		DEBUG_printf("recv %d err %d\n", p->tot_len, err);
 		for (struct pbuf *q = p; q != NULL; q = q->next) {
 			//DUMP_BYTES(q->payload, q->len);
 			tcp_receive_in_buff(q->payload,q->len);
 		}
-		// Receive the buffer
-		const uint16_t buffer_left = BUF_SIZE - state->buffer_len;
-		state->buffer_len += pbuf_copy_partial(p, state->buffer + state->buffer_len,
-											   p->tot_len > buffer_left ? buffer_left : p->tot_len, 0);
 		tcp_recved(tpcb, p->tot_len);
 	}
 	pbuf_free(p);
 
-	// If we have received the whole buffer, send it back to the server
-	if (state->buffer_len == BUF_SIZE) {
-		DEBUG_printf("Writing %d bytes to server\n", state->buffer_len);
-		err_t err = tcp_write(tpcb, state->buffer, state->buffer_len, TCP_WRITE_FLAG_COPY);
-		if (err != ERR_OK) {
-			DEBUG_printf("Failed to write data %d\n", err);
-			return tcp_result(arg, -1);
-		}
-	}
 	return ERR_OK;
 }
 
@@ -205,8 +190,6 @@ static bool tcp_client_open(void *arg, int tcp_port) {
 	tcp_sent(state->tcp_pcb, tcp_client_sent);
 	tcp_recv(state->tcp_pcb, tcp_client_recv);
 	tcp_err(state->tcp_pcb, tcp_client_err);
-
-	state->buffer_len = 0;
 
 	// cyw43_arch_lwip_begin/end should be used around calls into lwIP to ensure correct locking.
 	// You can omit them if you are in a callback from lwIP. Note that when using pico_cyw_arch_poll
