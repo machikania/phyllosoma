@@ -163,7 +163,6 @@ err_t tcp_client_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err
 	// cyw43_arch_lwip_begin IS needed
 	cyw43_arch_lwip_check();
 	if (p->tot_len > 0) {
-// TODO: here
 		DEBUG_printf("recv %d err %d\n", p->tot_len, err);
 		for (struct pbuf *q = p; q != NULL; q = q->next) {
 			//DUMP_BYTES(q->payload, q->len);
