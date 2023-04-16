@@ -31,6 +31,8 @@ static char g_connected;
 static void* g_close_func;
 static int* g_header_lines=0;
 
+void null_callback(void){ }
+
 void init_tcp_socket(void){
 	int* next;
 	// Delete all allocated memories, first
@@ -187,7 +189,7 @@ err_t machikania_tcp_close(void){
 	g_header_lines=0;
 	// Wait for 100 msec
 	// This is to prevent exception happening in <__wrap_putchar> by unknown mechanism
-	sleep_ms(200);
+//	sleep_ms(200);
 	return e;
 }
 

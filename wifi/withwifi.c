@@ -309,7 +309,8 @@ int lib_wifi(int r0, int r1, int r2){
 		case LIB_WIFI_TCPCLOSE:
 			return machikania_tcp_close();
 		case LIB_WIFI_TCPSERVER:
-			run_tcp_server_test();
+			start_tcp_server(r0);
+			return 0;
 		case LIB_WIFI_TLSCLIENT:
 		default:
 			break;

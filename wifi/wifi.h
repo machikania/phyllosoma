@@ -3,6 +3,8 @@
 #define printf wifi_set_error(__LINE__); wifi_set_error_str
 #define DEBUG_printf wifi_set_error(__LINE__); wifi_set_error_str
 
+#define NULL_CALLBACK null_callback
+
 // wifierror.c
 void wifi_set_error_str(char* err_str,...);
 char* wifi_error_str(void);
@@ -25,20 +27,13 @@ void set_connection_flag(int flag);
 void register_state(void* state);
 void register_tcp_pcb(void* pcb);
 void register_closing_function(void* func);
+void null_callback(void);
 
 // picow_tcp_client.c
 void start_tcp_client(const char* ipaddr, int tcp_port);
 
+// picow_tcp_server.c
+void start_tcp_server(int tcp_port);
+
 // See lwip/err.h for error values, like ERR_OK=0, ERR_INPROGRESS=-5, etc
 
-// NTP test follows
-//run_ntp_test();
-
-// TCP client test follows
-//run_tcp_client_test(ip4addr_ntoa(&server_address));
-
-// TCP server test follows
-//run_tcp_server_test();
-
-// HTTPS client test follows
-//run_tls_client_test();
