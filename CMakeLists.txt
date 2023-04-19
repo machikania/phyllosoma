@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.13)
 
 # Pull in SDK (must be before project)
 include(pico_sdk_import.cmake)
@@ -137,6 +137,10 @@ if (TARGET tinyusb_device)
 	target_compile_definitions(wifi_files PUBLIC MACHIKANIA_CONFIG="./config/${MACHIKANIA_BUILD}.h")
 	if (MACHIKANIA_DEBUG_MODE)
 		target_compile_definitions(shared_files PRIVATE MACHIKANIA_DEBUG_MODE)
+	endif()
+	if (MACHIKANIA_WIFI STREQUAL "withwifi")
+		target_compile_definitions(wifi_files PUBLIC PICO_STACK_SIZE=4096)
+		target_compile_definitions(wifi_files PUBLIC PICO_HEAP_SIZE=4096)
 	endif()
 	
 elseif(PICO_ON_DEVICE)

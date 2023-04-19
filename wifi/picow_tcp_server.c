@@ -65,6 +65,7 @@ static err_t tcp_server_close(void *arg) {
 			tcp_abort(state->client_pcb);
 			err = ERR_ABRT;
 		}
+		tcp_abort(state->client_pcb);
 		state->client_pcb = NULL;
 	}
 	if (state->server_pcb) {
@@ -163,7 +164,14 @@ static bool tcp_server_open(void *arg, int tcp_port) {
 	TCP_SERVER_T *state = (TCP_SERVER_T*)arg;
 	DEBUG_printf("Starting server at %s on port %u\n", ip4addr_ntoa(netif_ip4_addr(netif_list)), tcp_port);
 
-	struct tcp_pcb *pcb = tcp_new_ip_type(IPADDR_TYPE_ANY);
+	static struct tcp_pcb *pcb=0;
+	if (!pcb) {
+		pcb = tcp_new_ip_type(IPADDR_TYPE_ANY);
+	} else {
+		tcp_close(pcb);
+		tcp_abort(pcb);
+		pcb = tcp_new_ip_type(IPADDR_TYPE_ANY);
+	}
 	if (!pcb) {
 		DEBUG_printf("failed to create pcb\n");
 		return false;
@@ -196,11 +204,17 @@ void start_tcp_server(int tcp_port) {
 		wifi_set_error(__LINE__);
 		return;
 	}
-	if (!tcp_server_open(state, tcp_port)) {
-		tcp_server_result(state, -1);
-		wifi_set_error(__LINE__);
-		return;
+	int i;
+	for(i=0;i<10;i++){
+		if (!tcp_server_open(state, tcp_port)) {
+			tcp_server_result(state, -1);
+			wifi_set_error(__LINE__);
+			sleep_ms(300);
+			continue;
+		}
+		break;
 	}
+	if (10<=i) return;
 	// Resister state and closing function
 	register_state(state);
 	register_closing_function(tcp_server_close);

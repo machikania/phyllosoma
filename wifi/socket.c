@@ -187,9 +187,9 @@ err_t machikania_tcp_close(void){
 	// Delete string buffer to be sent as header
 	if (g_header_lines) delete_memory(g_header_lines);
 	g_header_lines=0;
-	// Wait for 100 msec
-	// This is to prevent exception happening in <__wrap_putchar> by unknown mechanism
-//	sleep_ms(200);
+	// Wait for 300 msec
+	// This is to prevent exception in <__wrap_putchar> by unknown mechanism
+	sleep_ms(300);
 	return e;
 }
 
