@@ -155,12 +155,24 @@ void* alloc_memory(int size, int var_num){
 			break;
 		}
 		// Check between blocks
-		candidate=HEAP_BEGIN-1;
-		for(i=0;i<ALLOC_BLOCK_NUM;i++){
-			if (!kmbasic_var_size[i]) continue;
-			// Candidate is after this block.
-			var=(int*)kmbasic_variables[i];
-			candidate=var+kmbasic_var_size[i];
+		for(i=-1;i<ALLOC_BLOCK_NUM;i++){
+			if (i<0) {
+				// First candidate is beginning address
+				candidate=HEAP_BEGIN;
+			} else {
+				if (!kmbasic_var_size[i]) {
+					candidate=HEAP_BEGIN-1;
+					continue;
+				}
+				// Candidate is after this block.
+				var=(int*)kmbasic_variables[i];
+				// Check if valid area
+				if (var<HEAP_BEGIN || HEAP_END<var) {
+					candidate=HEAP_BEGIN-1;
+					continue;
+				}
+				candidate=var+kmbasic_var_size[i];
+			}
 			// Check if there is an overlap.
 			for(j=0;j<ALLOC_BLOCK_NUM;j++){
 				if (!kmbasic_var_size[j]) continue;

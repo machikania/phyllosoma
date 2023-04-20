@@ -21,7 +21,7 @@
 
 // Use 1016 bytes stack area dedicated for library
 // This routine is required to prevent mulfunctions of some library call
-#define use_lib_stack(funcname) \
+/*#define use_lib_stack(funcname) \
 	asm("push {r4,lr}");\
 	asm("mov r4,sp");\
 	asm("ldr r3,[r7,#0]");\
@@ -29,6 +29,12 @@
 	asm("bl "funcname);\
 	asm("mov sp,r4");\
 	asm("pop {r4,pc}")
+//*/
+#define use_lib_stack(funcname) \
+	asm("push {r4,lr}");\
+	asm("bl "funcname);\
+	asm("pop {r4,pc}")
+//*/
 
 int lib_add_string(int r0, int r1, int r2){
 	int i,j;
