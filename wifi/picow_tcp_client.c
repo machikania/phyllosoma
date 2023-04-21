@@ -69,10 +69,10 @@ static err_t tcp_client_close(void *arg) {
 	err_t err = ERR_OK;
 	if (state->tcp_pcb != NULL) {
 		tcp_arg(state->tcp_pcb, NULL);
-		tcp_poll(state->tcp_pcb, (err_t (*)(void *arg, struct tcp_pcb *tpcb))NULL_CALLBACK, 0);
-		tcp_sent(state->tcp_pcb, (err_t (*)(void *arg, struct tcp_pcb *tpcb, u16_t len))NULL_CALLBACK);
-		tcp_recv(state->tcp_pcb, (err_t(*)(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err))NULL_CALLBACK);
-		tcp_err(state->tcp_pcb, (void (*)(void *arg, err_t err))NULL_CALLBACK);
+		tcp_poll(state->tcp_pcb, NULL, 0);
+		tcp_sent(state->tcp_pcb, NULL);
+		tcp_recv(state->tcp_pcb, NULL);
+		tcp_err(state->tcp_pcb, NULL);
 		err = tcp_close(state->tcp_pcb);
 		if (err != ERR_OK) {
 			DEBUG_printf("close failed %d, calling abort\n", err);
@@ -166,7 +166,7 @@ err_t tcp_client_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err
 		DEBUG_printf("recv %d err %d\n", p->tot_len, err);
 		for (struct pbuf *q = p; q != NULL; q = q->next) {
 			//DUMP_BYTES(q->payload, q->len);
-			tcp_receive_in_buff(q->payload,q->len);
+			tcp_receive_in_buff(q->payload,q->len,state->tcp_pcb);
 		}
 		tcp_recved(tpcb, p->tot_len);
 	}

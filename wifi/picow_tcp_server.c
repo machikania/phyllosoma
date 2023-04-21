@@ -55,10 +55,10 @@ static err_t tcp_server_close(void *arg) {
 	err_t err = ERR_OK;
 	if (state->client_pcb != NULL) {
 		tcp_arg(state->client_pcb, NULL);
-		tcp_poll(state->client_pcb, (err_t (*)(void *arg, struct tcp_pcb *tpcb))NULL_CALLBACK, 0);
-		tcp_sent(state->client_pcb, (err_t (*)(void *arg, struct tcp_pcb *tpcb, u16_t len))NULL_CALLBACK);
-		tcp_recv(state->client_pcb, (err_t(*)(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err))NULL_CALLBACK);
-		tcp_err(state->client_pcb, (void (*)(void *arg, err_t err))NULL_CALLBACK);
+		tcp_poll(state->client_pcb, NULL, 0);
+		tcp_sent(state->client_pcb, NULL);
+		tcp_recv(state->client_pcb, NULL);
+		tcp_err(state->client_pcb, NULL);
 		err = tcp_close(state->client_pcb);
 		if (err != ERR_OK) {
 			DEBUG_printf("close failed %d, calling abort\n", err);
@@ -96,7 +96,6 @@ static err_t tcp_server_sent(void *arg, struct tcp_pcb *tpcb, u16_t len) {
 	if (state->sent_len >= BUF_SIZE) {
 
 		// We should get the data back from the client
-		state->recv_len = 0;
 		DEBUG_printf("Waiting for buffer from client\n");
 	}
 
@@ -118,9 +117,10 @@ err_t tcp_server_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err
 		DEBUG_printf("recv %d err %d\n", p->tot_len, err);
 		for (struct pbuf *q = p; q != NULL; q = q->next) {
 			//DUMP_BYTES(q->payload, q->len);
-			tcp_receive_in_buff(q->payload,q->len);
+			tcp_receive_in_buff(q->payload,q->len,state->client_pcb);
 		}
 		tcp_recved(tpcb, p->tot_len);
+		state->recv_len += p->tot_len;
 	}
 	pbuf_free(p);
 
@@ -129,6 +129,7 @@ err_t tcp_server_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err
 
 static err_t tcp_server_poll(void *arg, struct tcp_pcb *tpcb) {
 	DEBUG_printf("tcp_server_poll_fn\n");
+	connection_error();
 	return tcp_server_result(arg, -1); // no response is an error?
 }
 

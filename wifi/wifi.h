@@ -3,8 +3,6 @@
 #define printf wifi_set_error(__LINE__); wifi_set_error_str
 #define DEBUG_printf wifi_set_error(__LINE__); wifi_set_error_str
 
-#define NULL_CALLBACK null_callback
-
 // wifierror.c
 void wifi_set_error_str(char* err_str,...);
 char* wifi_error_str(void);
@@ -17,17 +15,17 @@ time_t* get_ntp_time(char* ntp_server);
 
 // socket.c
 void init_tcp_socket(void);
-char* tcp_receive_in_buff(char* data, int bytes);
+char* tcp_receive_in_buff(char* data, int bytes, void* tcp_pcb);
 int tcp_read_from_buffer(char* dest, int bytes);
 err_t send_header_if_exists(void);
 err_t machikania_tcp_write(const void* arg, u16_t len);
 int machikania_tcp_status(int mode);
 err_t machikania_tcp_close(void);
-void set_connection_flag(int flag);
 void register_state(void* state);
 void register_tcp_pcb(void* pcb);
 void register_closing_function(void* func);
-void null_callback(void);
+void set_connection_flag(int flag);
+void connection_error(void);
 
 // picow_tcp_client.c
 void start_tcp_client(const char* ipaddr, int tcp_port);

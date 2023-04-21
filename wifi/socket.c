@@ -16,22 +16,22 @@
 #include "../api.h"
 
 /*
-	The structure of buffer used in this file:
-		first 4 bytes (32 bits): pointer to next buffer,
-		next 4 bytes (32 bits): length of following data in bytes,
-		then main data (frexible length)
+	The structure of buffer (int*) used in this file:
+		buff[0]: pointer to next buffer
+		buff[1]: length of following data in bytes
+		buff[2]: read point in buffer in bytes
+		buff[3]: void* tcp_pcb
+		buff[4-]then main data (frexible length)
 */
 
 static int* g_socket_buffer=0;
-static int g_read_point_in_buffer=0;
 static struct tcp_pcb* g_pcb;
 static void* g_state;
 static char g_tls_mode;
 static char g_connected;
+static char g_connection_error;
 static void* g_close_func;
 static int* g_header_lines=0;
-
-void null_callback(void){ }
 
 void init_tcp_socket(void){
 	int* next;
@@ -41,12 +41,11 @@ void init_tcp_socket(void){
 		delete_memory(g_socket_buffer);
 		g_socket_buffer=next;
 	}
-	// Set the read point to zero
-	g_read_point_in_buffer=0;
 	// Disable TLS mode
 	g_tls_mode=0;
 	// Flags
 	g_connected=0;
+	g_connection_error=0;
 	// Free memory
 	if (g_state) delete_memory(g_state);
 	// Reset some pointers
@@ -60,9 +59,9 @@ void init_tls_socket(void){
 	g_tls_mode=1;
 }
 
-char* tcp_receive_in_buff(char* data, int bytes){
+char* tcp_receive_in_buff(char* data, int bytes, void* tcp_pcb){
 	int* buff;
-	int* new_buffer=alloc_memory(2+(3+bytes)/4,get_permanent_block_number());
+	int* new_buffer=alloc_memory(4+(3+bytes)/4,get_permanent_block_number());
 	if (!new_buffer) return 0;
 	if (g_socket_buffer) {
 		// Add to the end of buffer arrays
@@ -75,39 +74,44 @@ char* tcp_receive_in_buff(char* data, int bytes){
 	}
 	new_buffer[0]=0;
 	new_buffer[1]=bytes;
-	memcpy(&new_buffer[2],data,bytes);
-	return (char*)&new_buffer[2];
+	new_buffer[2]=0;
+	new_buffer[3]=(int)tcp_pcb;
+	memcpy(&new_buffer[4],data,bytes);
+	return (char*)&new_buffer[4];
 }
 
 int tcp_read_from_buffer(char* dest, int bytes){
 	int* prev_socket_buffer;
-	int buffer_len;
+	int buffer_len,read_point;
 	char* buffer_point;
 	int valid_bytes=0;
 	while(0<bytes){
 		if (!g_socket_buffer) break; // No buffer remaining
+		// Check tcp_pcb
+		
 		buffer_len=g_socket_buffer[1];
-		buffer_point=((char*)&g_socket_buffer[2])+g_read_point_in_buffer;
-		if (bytes<=buffer_len-g_read_point_in_buffer) {
+		read_point=g_socket_buffer[2];
+		buffer_point=((char*)&g_socket_buffer[4])+read_point;
+		if (bytes<=buffer_len-read_point) {
 			// Data size is equal to or larger than buffer size
 			memcpy(dest,buffer_point,bytes);
 			valid_bytes+=bytes;
-			g_read_point_in_buffer+=bytes;
+			read_point+=bytes;
 			bytes=0;
 		} else {
 			// Data size is smaller than buffer size
-			memcpy(dest,buffer_point,buffer_len-g_read_point_in_buffer);
-			bytes-=buffer_len-g_read_point_in_buffer;
-			dest+=buffer_len-g_read_point_in_buffer;
-			valid_bytes+=buffer_len-g_read_point_in_buffer;
-			g_read_point_in_buffer=buffer_len;
+			memcpy(dest,buffer_point,buffer_len-read_point);
+			bytes-=buffer_len-read_point;
+			dest+=buffer_len-read_point;
+			valid_bytes+=buffer_len-read_point;
+			read_point=buffer_len;
 		}
+		g_socket_buffer[2]=read_point;
 		// Shift buffer
-		if (buffer_len<=g_read_point_in_buffer) {
+		if (buffer_len<=read_point) {
 			asm("cpsid i");
 			prev_socket_buffer=g_socket_buffer;
 			// Reached at the end point of buffer
-			g_read_point_in_buffer=0;
 			g_socket_buffer=(int*)prev_socket_buffer[0];
 			// Delete previous buffer
 			delete_memory(prev_socket_buffer);
@@ -131,6 +135,10 @@ void register_closing_function(void* func){
 
 void set_connection_flag(int flag){
 	g_connected=flag ? 1:0;
+}
+
+void connection_error(void){
+	g_connection_error=1;
 }
 
 err_t send_header_if_exists(void){
@@ -187,9 +195,9 @@ err_t machikania_tcp_close(void){
 	// Delete string buffer to be sent as header
 	if (g_header_lines) delete_memory(g_header_lines);
 	g_header_lines=0;
-	// Wait for 300 msec
+	// Wait for 500 msec
 	// This is to prevent exception in <__wrap_putchar> by unknown mechanism
-	sleep_ms(300);
+	sleep_ms(500);
 	return e;
 }
 
@@ -203,17 +211,15 @@ int machikania_tcp_status(int mode){
 		case 1: // Received bytes numnber
 			i=0;
 			buff=g_socket_buffer;
-			if (buff) {
-				i+=buff[1]-g_read_point_in_buffer;
-				buff=(int*)buff[0];
-			}
 			while(buff){
-				i+=buff[1];
+				i+=buff[1]-buff[2];
 				buff=(int*)buff[0];
 			}
 			return i;
 		case 2: // Sending data remaining (non-zero or 0)
 			if (g_tls_mode) return altcp_output(g_pcb);
 			else return altcp_output(g_pcb);
+		case 3: // Which connection error occured or not
+			return g_connection_error;
 	}
 }
