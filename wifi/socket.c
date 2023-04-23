@@ -249,17 +249,21 @@ err_t machikania_tcp_write(const void* arg, u16_t len, void** connection_id){
 	return ERR_OK;
 }
 
-err_t machikania_tcp_close(void){
+err_t machikania_tcp_close(void** connection_id){
 	err_t e;
 	// Execute registered closing function
 	err_t (*f)(void* state)=g_close_func;
-	if (g_close_func) e=f(g_state);
-	// TODO: determine if this is client close or server close
+	if (connection_id) {
+		// Close connection to client as server
+	} else {
+		// Close connection to server
+		if (g_close_func) e=f(g_state);
 		// Initialize socket
 		init_tcp_socket();
 		// Delete string buffer to be sent as header
 		if (g_header_lines) delete_memory(g_header_lines);
 		g_header_lines=0;
+	}
 	return e;
 }
 

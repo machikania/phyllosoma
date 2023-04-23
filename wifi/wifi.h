@@ -23,7 +23,7 @@ int tcp_read_from_buffer(char* dest, int bytes, void** connection_id);
 err_t send_header_if_exists(void);
 err_t machikania_tcp_write(const void* arg, u16_t len, void** connection_id);
 int machikania_tcp_status(int mode, void** connection_id);
-err_t machikania_tcp_close(void);
+err_t machikania_tcp_close(void** connection_id);
 void register_state(void* state);
 void register_tcp_pcb(void* pcb);
 void register_closing_function(void* func);

@@ -247,7 +247,9 @@ int tcpreceive_function(void){
 }
 
 int tcpclose_function(void){
+	g_default_args[1]=0;
 	return argn_function(LIB_WIFI,
+		ARG_INTEGER_OPTIONAL<<ARG1 |
 		LIB_WIFI_TCPCLOSE<<LIBOPTION);
 }
 
@@ -321,7 +323,7 @@ int lib_wifi(int r0, int r1, int r2){
 		case LIB_WIFI_TCPRECEIVE:
 			return tcp_read_from_buffer((char*)sp[0],sp[1],(void**)r0);
 		case LIB_WIFI_TCPCLOSE:
-			return machikania_tcp_close();
+			return machikania_tcp_close((void**)r0);
 		case LIB_WIFI_TCPSERVER:
 			start_tcp_server(r0);
 			return 0;
