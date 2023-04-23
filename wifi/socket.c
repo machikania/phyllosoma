@@ -32,9 +32,20 @@ static char g_connected;
 static char g_connection_error;
 static void* g_close_func;
 static int* g_header_lines=0;
+static void* g_pcb_fifo[10];
+static void** g_connection_id=0;
+static unsigned char g_connection_id_number=0;
+
+void init_socket_system(void){
+	// TODO: call this routine before running BASIC code
+	// Reset connection id
+	g_connection_id=0;
+	g_connection_id_number=0;
+}
 
 void init_tcp_socket(void){
 	int* next;
+	int i;
 	// Delete all allocated memories, first
 	while(g_socket_buffer){
 		next=(int*)g_socket_buffer[0];
@@ -52,11 +63,43 @@ void init_tcp_socket(void){
 	g_state=0;
 	g_pcb=0;
 	g_close_func=0;
+	// Reset FIFO buffer
+	for(i=0;i<(sizeof g_pcb_fifo)/(sizeof sizeof g_pcb_fifo[0]);i++) g_pcb_fifo[i]=0;
 }
 
 void init_tls_socket(void){
 	init_tcp_socket();
 	g_tls_mode=1;
+}
+
+void* new_connection_id(void* tcp_pcb){
+	if (!g_connection_id) {
+		g_connection_id=(void**)alloc_memory(256,get_permanent_block_number());
+	}
+	g_connection_id[g_connection_id_number]=tcp_pcb;
+	return &g_connection_id[g_connection_id_number++];
+}
+
+char add_pcb_to_fifo(void* tcp_pcb){
+	int i;
+	// If this is first data, register it to g_pcb
+	if (!g_pcb_fifo[0]) g_pcb=tcp_pcb;
+	for(i=0;i<(sizeof g_pcb_fifo)/(sizeof sizeof g_pcb_fifo[0]);i++){
+		if (g_pcb_fifo[i]) continue;
+		g_pcb_fifo[i]=tcp_pcb;
+		return 1;
+	}
+	return 0;
+}
+
+void* shift_pcb_fifo(void){
+	int i;
+	for(i=1;i<(sizeof g_pcb_fifo)/(sizeof sizeof g_pcb_fifo[0]);i++){
+		g_pcb_fifo[i-1]=g_pcb_fifo[i];
+	}
+	g_pcb_fifo[(sizeof g_pcb_fifo)/(sizeof sizeof g_pcb_fifo[0])-1]=0;
+	g_pcb=g_pcb_fifo[0];
+	return g_pcb;
 }
 
 char* tcp_receive_in_buff(char* data, int bytes, void* tcp_pcb){
@@ -80,18 +123,28 @@ char* tcp_receive_in_buff(char* data, int bytes, void* tcp_pcb){
 	return (char*)&new_buffer[4];
 }
 
-int tcp_read_from_buffer(char* dest, int bytes){
+int tcp_read_from_buffer(char* dest, int bytes, void** connection_id){
 	int* prev_socket_buffer;
+	int* buff;
 	int buffer_len,read_point;
 	char* buffer_point;
 	int valid_bytes=0;
+	void* pcb=connection_id ? (void*)connection_id:g_pcb;
 	while(0<bytes){
 		if (!g_socket_buffer) break; // No buffer remaining
 		// Check tcp_pcb
-		
-		buffer_len=g_socket_buffer[1];
-		read_point=g_socket_buffer[2];
-		buffer_point=((char*)&g_socket_buffer[4])+read_point;
+		prev_socket_buffer=0;
+		buff=g_socket_buffer;
+		while(buff[3]!=(int)pcb){
+			prev_socket_buffer=buff;
+			buff=(int*)buff[0];
+			if (!buff) break;
+		}
+		if (!buff) break;
+		// Buffer designated for tcp_pcb found 
+		buffer_len=buff[1];
+		read_point=buff[2];
+		buffer_point=((char*)&buff[4])+read_point;
 		if (bytes<=buffer_len-read_point) {
 			// Data size is equal to or larger than buffer size
 			memcpy(dest,buffer_point,bytes);
@@ -106,15 +159,25 @@ int tcp_read_from_buffer(char* dest, int bytes){
 			valid_bytes+=buffer_len-read_point;
 			read_point=buffer_len;
 		}
-		g_socket_buffer[2]=read_point;
+		buff[2]=read_point;
 		// Shift buffer
 		if (buffer_len<=read_point) {
+			// Stop interrupt before staring deletion process
 			asm("cpsid i");
-			prev_socket_buffer=g_socket_buffer;
-			// Reached at the end point of buffer
-			g_socket_buffer=(int*)prev_socket_buffer[0];
-			// Delete previous buffer
-			delete_memory(prev_socket_buffer);
+			if (prev_socket_buffer) { // Current buff is not the first one
+				// Skip a buffer
+				prev_socket_buffer[0]=buff[0];
+				// Delete the current buffer
+				delete_memory(buff);
+			} else { // Current buff is the first one (the same as g_socket_buffer)
+				// Delete the first buffer
+				prev_socket_buffer=g_socket_buffer;
+				// Reached at the end point of buffer
+				g_socket_buffer=(int*)prev_socket_buffer[0];
+				// Delete previous buffer
+				delete_memory(prev_socket_buffer);
+			}
+			// Restart interrupt
 			asm("cpsie i");
 		}
 	}
@@ -144,16 +207,17 @@ void connection_error(void){
 err_t send_header_if_exists(void){
 	err_t err;
 	if (!g_header_lines) return ERR_OK;
-	err=machikania_tcp_write(&g_header_lines[1],g_header_lines[0]);
+	err=machikania_tcp_write(&g_header_lines[1],g_header_lines[0],0);
 	delete_memory(g_header_lines);
 	g_header_lines=0;
 	return err;
 }
 
-err_t machikania_tcp_write(const void* arg, u16_t len){
+err_t machikania_tcp_write(const void* arg, u16_t len, void** connection_id){
 	err_t err;
 	int len_sent;
-	if (!g_pcb) {
+	void* pcb=connection_id ? connection_id[0]:g_pcb;
+	if (!pcb) {
 		if (g_state) {
 			// TCPSEND is called after starting TCP connection, so this is an error
 			return ERR_CONN;
@@ -173,11 +237,11 @@ err_t machikania_tcp_write(const void* arg, u16_t len){
 		else len_sent=WIFI_BUFF_SIZE;
 		// Wait until buffer is clear, then send
 		if (g_tls_mode) {
-			while(ERR_OK!=altcp_output(g_pcb)) sleep_ms(1);
-			err=altcp_write(g_pcb,arg,len_sent,TCP_WRITE_FLAG_COPY);
+			while(ERR_OK!=altcp_output(pcb)) sleep_ms(1);
+			err=altcp_write(pcb,arg,len_sent,TCP_WRITE_FLAG_COPY);
 		} else { 
-			while(ERR_OK!=tcp_output(g_pcb)) sleep_ms(1);
-			err=tcp_write(g_pcb,arg,len_sent,TCP_WRITE_FLAG_COPY);
+			while(ERR_OK!=tcp_output(pcb)) sleep_ms(1);
+			err=tcp_write(pcb,arg,len_sent,TCP_WRITE_FLAG_COPY);
 		}
 		if (ERR_OK!=err) return err;
 		len-=len_sent;
@@ -190,36 +254,57 @@ err_t machikania_tcp_close(void){
 	// Execute registered closing function
 	err_t (*f)(void* state)=g_close_func;
 	if (g_close_func) e=f(g_state);
-	// Initialize socket
-	init_tcp_socket();
-	// Delete string buffer to be sent as header
-	if (g_header_lines) delete_memory(g_header_lines);
-	g_header_lines=0;
-	// Wait for 500 msec
-	// This is to prevent exception in <__wrap_putchar> by unknown mechanism
-	sleep_ms(500);
+	// TODO: determine if this is client close or server close
+		// Initialize socket
+		init_tcp_socket();
+		// Delete string buffer to be sent as header
+		if (g_header_lines) delete_memory(g_header_lines);
+		g_header_lines=0;
 	return e;
 }
 
-int machikania_tcp_status(int mode){
+int machikania_tcp_status(int mode, void** connection_id){
 	int i;
 	int* buff;
-	switch(mode){
-		case 0: // Connected (1 or 0)
-		default:
-			return g_connected;
-		case 1: // Received bytes numnber
-			i=0;
-			buff=g_socket_buffer;
-			while(buff){
-				i+=buff[1]-buff[2];
-				buff=(int*)buff[0];
-			}
-			return i;
-		case 2: // Sending data remaining (non-zero or 0)
-			if (g_tls_mode) return altcp_output(g_pcb);
-			else return altcp_output(g_pcb);
-		case 3: // Which connection error occured or not
-			return g_connection_error;
+	if (connection_id) {
+		// Server mode
+		switch(mode){
+			case 0: // Connected (1 or 0)
+			default:
+				return connection_id[0] ? 1:0;
+			case 1: // Received total bytes numnber
+				i=0;
+				buff=g_socket_buffer;
+				while(buff){
+					if (buff[3]!=(int)connection_id) continue;
+					i+=buff[1]-buff[2];
+					buff=(int*)buff[0];
+				}
+				return i;
+			case 2: // Sending data remaining (non-zero or 0)
+				return connection_id[0] ? tcp_output(connection_id[0]) : 0;
+			case 3: // Which connection error occured or not
+				return g_connection_error;
+		}
+	} else {
+		// Client mode
+		switch(mode){
+			case 0: // Connected (1 or 0)
+			default:
+				return g_connected;
+			case 1: // Received total bytes numnber
+				i=0;
+				buff=g_socket_buffer;
+				while(buff){
+					i+=buff[1]-buff[2];
+					buff=(int*)buff[0];
+				}
+				return i;
+			case 2: // Sending data remaining (non-zero or 0)
+				if (g_tls_mode) return altcp_output(g_pcb);
+				else return tcp_output(g_pcb);
+			case 3: // Which connection error occured or not
+				return g_connection_error;
+		}
 	}
 }

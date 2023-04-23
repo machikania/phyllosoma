@@ -127,6 +127,8 @@ void pre_run(void){
 	lib_spi(0,0,RESET_STATIC_VARS);
 	// Exception handling
 	handle_exception(1);
+	// Wifi
+	pre_run_wifi();
 }
 
 void post_run(void){
@@ -148,4 +150,6 @@ void post_run(void){
 	cancel_all_interrupts();
 	// Restore exception handling
 	handle_exception(0);
+	// Wifi
+	post_run_wifi();
 }

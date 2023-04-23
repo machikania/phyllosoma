@@ -68,6 +68,14 @@ int ini_file_wifi(char* line){
 	return 1;
 }
 
+void pre_run_wifi(void){
+	void init_socket_system();
+}
+
+void post_run_wifi(void){
+	// TODO: close all connections if running here
+}
+
 static ip_addr_t g_server_address;
 static void dns_lookup_callback(const char *hostname, const ip_addr_t *ipaddr, void *arg) {
 	int *err=(int*)arg;
@@ -109,7 +117,6 @@ ip_addr_t* dns_lookup(char* server_name){
 	return 0;
 }
 
-void wifi_test(void);
 int connect_wifi(char show_progress){
 	int i;
 	if (!g_usewifi) {
@@ -198,8 +205,10 @@ int tcpserver_statement(void){
 }
 
 int tcpstatus_function(void){
+	g_default_args[2]=0;
 	return argn_function(LIB_WIFI,
 		ARG_INTEGER<<ARG1 |
+		ARG_INTEGER_OPTIONAL<<ARG2 |
 		LIB_WIFI_TCPSTATUS<<LIBOPTION);
 }
 
@@ -212,23 +221,28 @@ int tcpsend_function(void){
 	rewind_object(obefore);
 	// The 1st argument can be string or integer
 	g_default_args[2]=-1;
+	g_default_args[3]=0;
 	if (e) {
 		return argn_function(LIB_WIFI,
 			ARG_INTEGER<<ARG1 |
 			ARG_INTEGER_OPTIONAL<<ARG2 |
+			ARG_INTEGER_OPTIONAL<<ARG3 |
 			LIB_WIFI_TCPSEND<<LIBOPTION);
 	} else {
 		return argn_function(LIB_WIFI,
 			ARG_STRING<<ARG1 |
 			ARG_INTEGER_OPTIONAL<<ARG2 |
+			ARG_INTEGER_OPTIONAL<<ARG3 |
 			LIB_WIFI_TCPSEND<<LIBOPTION);
 	}
 }
 
 int tcpreceive_function(void){
+	g_default_args[3]=0;
 	return argn_function(LIB_WIFI,
 		ARG_INTEGER<<ARG1 |
 		ARG_INTEGER<<ARG2 |
+		ARG_INTEGER_OPTIONAL<<ARG3 |
 		LIB_WIFI_TCPRECEIVE<<LIBOPTION);
 }
 
@@ -265,8 +279,8 @@ int wifi_str_functions(void){
 	return ERROR_STATEMENT_NOT_DETECTED;
 }
 
-void run_tcp_server_test(void);
 int lib_wifi(int r0, int r1, int r2){
+	int* sp=(int*)r1;
 	static char iso8601str[]="YYYY-MM-DDThh:mm:ss";
 	time_t* now;
 	switch(r2){
@@ -300,12 +314,12 @@ int lib_wifi(int r0, int r1, int r2){
 			start_tcp_client(ip4addr_ntoa(dns_lookup((char*)r1)),r0);
 			return 0;
 		case LIB_WIFI_TCPSTATUS:
-			return machikania_tcp_status(r0);
+			return machikania_tcp_status(r1,(void**)r0);
 		case LIB_WIFI_TCPSEND:
-			if (r0<0) r0=strlen((char*)r1);
-			return machikania_tcp_write((char*)r1,r0);
+			if (sp[1]<0) return machikania_tcp_write((char*)sp[0],strlen((char*)sp[0]),(void**)r0);
+			return machikania_tcp_write((char*)sp[0],sp[1],(void**)r0);
 		case LIB_WIFI_TCPRECEIVE:
-			return tcp_read_from_buffer((char*)r1,r0);
+			return tcp_read_from_buffer((char*)sp[0],sp[1],(void**)r0);
 		case LIB_WIFI_TCPCLOSE:
 			return machikania_tcp_close();
 		case LIB_WIFI_TCPSERVER:

@@ -646,6 +646,8 @@ int wifi_statements(void);
 int wifi_int_functions(void);
 int wifi_str_functions(void);
 int lib_wifi(int r0, int r1, int r2);
+void pre_run_wifi(void);
+void post_run_wifi(void);
 
 // rtc.c
 void init_machikania_rtc(void);

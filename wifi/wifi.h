@@ -14,12 +14,15 @@ void set_time_from_utc(time_t t);
 time_t* get_ntp_time(char* ntp_server);
 
 // socket.c
+void init_socket_system(void);
 void init_tcp_socket(void);
+char add_pcb_to_fifo(void* tcp_pcb);
+void* shift_pcb_fifo(void);
 char* tcp_receive_in_buff(char* data, int bytes, void* tcp_pcb);
-int tcp_read_from_buffer(char* dest, int bytes);
+int tcp_read_from_buffer(char* dest, int bytes, void** connection_id);
 err_t send_header_if_exists(void);
-err_t machikania_tcp_write(const void* arg, u16_t len);
-int machikania_tcp_status(int mode);
+err_t machikania_tcp_write(const void* arg, u16_t len, void** connection_id);
+int machikania_tcp_status(int mode, void** connection_id);
 err_t machikania_tcp_close(void);
 void register_state(void* state);
 void register_tcp_pcb(void* pcb);
