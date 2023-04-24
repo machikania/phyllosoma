@@ -64,7 +64,7 @@ void init_tcp_socket(void){
 	g_pcb=0;
 	g_close_func=0;
 	// Reset FIFO buffer
-	for(i=0;i<(sizeof g_pcb_fifo)/(sizeof sizeof g_pcb_fifo[0]);i++) g_pcb_fifo[i]=0;
+	for(i=0;i<(sizeof g_pcb_fifo)/(sizeof g_pcb_fifo[0]);i++) g_pcb_fifo[i]=0;
 }
 
 void init_tls_socket(void){
@@ -82,9 +82,7 @@ void* new_connection_id(void* tcp_pcb){
 
 char add_pcb_to_fifo(void* tcp_pcb){
 	int i;
-	// If this is first data, register it to g_pcb
-	if (!g_pcb_fifo[0]) g_pcb=tcp_pcb;
-	for(i=0;i<(sizeof g_pcb_fifo)/(sizeof sizeof g_pcb_fifo[0]);i++){
+	for(i=0;i<(sizeof g_pcb_fifo)/(sizeof g_pcb_fifo[0]);i++){
 		if (g_pcb_fifo[i]) continue;
 		g_pcb_fifo[i]=tcp_pcb;
 		return 1;
@@ -94,12 +92,12 @@ char add_pcb_to_fifo(void* tcp_pcb){
 
 void* shift_pcb_fifo(void){
 	int i;
-	for(i=1;i<(sizeof g_pcb_fifo)/(sizeof sizeof g_pcb_fifo[0]);i++){
+	void* ret=g_pcb_fifo[0];
+	for(i=1;i<(sizeof g_pcb_fifo)/(sizeof g_pcb_fifo[0]);i++){
 		g_pcb_fifo[i-1]=g_pcb_fifo[i];
 	}
-	g_pcb_fifo[(sizeof g_pcb_fifo)/(sizeof sizeof g_pcb_fifo[0])-1]=0;
-	g_pcb=g_pcb_fifo[0];
-	return g_pcb;
+	g_pcb_fifo[(sizeof g_pcb_fifo)/(sizeof g_pcb_fifo[0])-1]=0;
+	return ret;
 }
 
 char* tcp_receive_in_buff(char* data, int bytes, void* tcp_pcb){
@@ -124,6 +122,7 @@ char* tcp_receive_in_buff(char* data, int bytes, void* tcp_pcb){
 }
 
 int tcp_read_from_buffer(char* dest, int bytes, void** connection_id){
+	// The third parameter is either connection_id or tcp_pcb (depend on which used by server or client mode)
 	int* prev_socket_buffer;
 	int* buff;
 	int buffer_len,read_point;
@@ -255,6 +254,7 @@ err_t machikania_tcp_close(void** connection_id){
 	err_t (*f)(void* state)=g_close_func;
 	if (connection_id) {
 		// Close connection to client as server
+		e=tcp_server_client_close(connection_id);
 	} else {
 		// Close connection to server
 		if (g_close_func) e=f(g_state);

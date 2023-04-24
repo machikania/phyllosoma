@@ -29,12 +29,14 @@ void register_tcp_pcb(void* pcb);
 void register_closing_function(void* func);
 void set_connection_flag(int flag);
 void connection_error(void);
+void* new_connection_id(void* tcp_pcb);
 
 // picow_tcp_client.c
 void start_tcp_client(const char* ipaddr, int tcp_port);
 
 // picow_tcp_server.c
 void start_tcp_server(int tcp_port);
+err_t tcp_server_client_close(void* arg);
 
 // See lwip/err.h for error values, like ERR_OK=0, ERR_INPROGRESS=-5, etc
 

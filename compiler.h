@@ -151,6 +151,7 @@
 #define LIB_WIFI_TCPSTATUS  10
 #define LIB_WIFI_TCPSEND    11
 #define LIB_WIFI_TCPRECEIVE 12
+#define LIB_WIFI_TCPACCEPT  13
 
 /*
 	LIB RTC options

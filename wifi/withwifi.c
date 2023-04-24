@@ -69,11 +69,12 @@ int ini_file_wifi(char* line){
 }
 
 void pre_run_wifi(void){
-	void init_socket_system();
+	init_socket_system();
 }
 
 void post_run_wifi(void){
-	// TODO: close all connections if running here
+	// Close all connection if running
+	machikania_tcp_close(0);
 }
 
 static ip_addr_t g_server_address;
@@ -253,6 +254,11 @@ int tcpclose_function(void){
 		LIB_WIFI_TCPCLOSE<<LIBOPTION);
 }
 
+int tcpaccept_function(void){
+	return argn_function(LIB_WIFI,
+		LIB_WIFI_TCPACCEPT<<LIBOPTION);
+}
+
 int wifi_statements(void){
 	if (instruction_is("NTP")) return ntp_function();
 	if (instruction_is("TCPCLIENT")) return tcpclient_function();
@@ -271,6 +277,7 @@ int wifi_int_functions(void){
 	if (instruction_is("TCPSEND(")) return tcpsend_function();
 	if (instruction_is("TCPRECEIVE(")) return tcpreceive_function();
 	if (instruction_is("TCPCLOSE(")) return tcpclose_function();
+	if (instruction_is("TCPACCEPT(")) return tcpaccept_function();
 	return ERROR_STATEMENT_NOT_DETECTED;
 }
 
@@ -327,6 +334,8 @@ int lib_wifi(int r0, int r1, int r2){
 		case LIB_WIFI_TCPSERVER:
 			start_tcp_server(r0);
 			return 0;
+		case LIB_WIFI_TCPACCEPT:
+			return (int)shift_pcb_fifo();
 		case LIB_WIFI_TLSCLIENT:
 		default:
 			break;
