@@ -92,11 +92,15 @@ char add_pcb_to_fifo(void* tcp_pcb){
 
 void* shift_pcb_fifo(void){
 	int i;
+	asm("cpsid i");
 	void* ret=g_pcb_fifo[0];
-	for(i=1;i<(sizeof g_pcb_fifo)/(sizeof g_pcb_fifo[0]);i++){
-		g_pcb_fifo[i-1]=g_pcb_fifo[i];
+	if (ret) {
+		for(i=1;i<(sizeof g_pcb_fifo)/(sizeof g_pcb_fifo[0]);i++){
+			g_pcb_fifo[i-1]=g_pcb_fifo[i];
+		}
+		g_pcb_fifo[(sizeof g_pcb_fifo)/(sizeof g_pcb_fifo[0])-1]=0;
 	}
-	g_pcb_fifo[(sizeof g_pcb_fifo)/(sizeof g_pcb_fifo[0])-1]=0;
+	asm("cpsie i");
 	return ret;
 }
 
