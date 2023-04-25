@@ -199,13 +199,17 @@ int lib_file(int r0, int r1, int r2){
 			return (1==f_putc((TCHAR)r0,fhandle)) ? 1:0;
 			break;
 		case FILE_FREMOVE:
-			return f_unlink((TCHAR*)r0) ? -1:0;
+			r2=f_unlink((TCHAR*)r0) ? -1:0;
+			garbage_collection((char*)r0);
+			return r2;
 			break;
 		case FILE_FSEEK:
 			f_lseek(fhandle,r0);
 			break;
 		case FILE_SETDIR:
-			return f_chdir((char*)r0);
+			r2=f_chdir((char*)r0);
+			garbage_collection((char*)r0);
+			return r2;
 			break;
 		case FILE_FEOF:
 			return f_eof(fhandle) ? 1:0;
@@ -250,7 +254,7 @@ int lib_file(int r0, int r1, int r2){
 	return 0;
 }
 
-int lib_fopen(int r0, int r1, int r2){
+int lib_fopen_main(int r0, int r1, int r2){
 	char* filename=(char*)r2;
 	char* modestr=(char*)r1;
 	char mode;
@@ -302,6 +306,14 @@ int lib_fopen(int r0, int r1, int r2){
 	}
 	// File sucessfully opened. Return file handle
 	g_pFileHandles[r0-1]=&g_FileHandles[r0-1];
+	return r0;
+}
+int lib_fopen(int r0, int r1, int r2){
+	char* filename=(char*)r2;
+	char* modestr=(char*)r1;
+	r0=lib_fopen_main(r0,r1,r2);
+	garbage_collection((char*)r1);
+	garbage_collection((char*)r2);
 	return r0;
 }
 
