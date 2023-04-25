@@ -200,8 +200,10 @@ int tcpclient_function(void){
 
 int tcpserver_statement(void){
 	g_default_args[1]=80;
+	g_default_args[2]=1;
 	return argn_function(LIB_WIFI,
 		ARG_INTEGER_OPTIONAL<<ARG1 |
+		ARG_INTEGER_OPTIONAL<<ARG2 |
 		LIB_WIFI_TCPSERVER<<LIBOPTION);
 }
 
@@ -332,7 +334,7 @@ int lib_wifi(int r0, int r1, int r2){
 		case LIB_WIFI_TCPCLOSE:
 			return machikania_tcp_close((void**)r0);
 		case LIB_WIFI_TCPSERVER:
-			start_tcp_server(r0);
+			start_tcp_server(r1,r0);
 			return 0;
 		case LIB_WIFI_TCPACCEPT:
 			return (int)shift_pcb_fifo();

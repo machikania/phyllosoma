@@ -30,6 +30,7 @@
 #define POLL_TIME_S 5
 
 static struct tcp_pcb* g_server_pcb;
+static char g_tcp_accept_mode;
 
 err_t tcp_server_client_close(void* arg){
 	struct tcp_pcb *client_pcb;
@@ -87,6 +88,15 @@ err_t tcp_server_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err
 	}
 	pbuf_free(p);
 
+	// Register connection_id in FIFO buffer if mode 1
+	if (1==g_tcp_accept_mode) {
+		if (!add_pcb_to_fifo(arg)) {
+			// FIFO buffer is full
+			tcp_close(arg);
+			return ERR_ABRT;
+		}
+	}
+
 	return ERR_OK;
 }
 
@@ -112,11 +122,13 @@ static err_t tcp_server_accept(void *arg, struct tcp_pcb *client_pcb, err_t err)
 	// Assign new connection ID with tcp_pcb
 	void* connection_id=new_connection_id(client_pcb);
 	
-	// Register connection_id in FIFO buffer
-	if (!add_pcb_to_fifo(connection_id)) {
-		// FIFO buffer is full
-		tcp_close(client_pcb);
-		return ERR_ABRT;
+	// Register connection_id in FIFO buffer if mode 0
+	if (0==g_tcp_accept_mode) {
+		if (!add_pcb_to_fifo(connection_id)) {
+			// FIFO buffer is full
+			tcp_close(client_pcb);
+			return ERR_ABRT;
+		}
 	}
 
 	tcp_arg(client_pcb, connection_id);
@@ -158,11 +170,15 @@ static bool tcp_server_open(int tcp_port) {
 	return true;
 }
 
-void start_tcp_server(int tcp_port) {
+void start_tcp_server(int tcp_port, int tcp_accept_mode) {
 	if (!tcp_server_open(tcp_port)) return;
 	// Resister state and closing function
 	register_state(g_server_pcb);
 	register_closing_function(tcp_server_close);
+	// Set tcp_accept mode
+	// 0: TCPACCEPT() returns connection-accepted IDs
+	// 1: TCPACCEPT() returns data-received IDs
+	g_tcp_accept_mode=tcp_accept_mode;
 	// No error
 	wifi_set_error(ERR_OK);
 }
