@@ -101,6 +101,7 @@ static err_t tcp_client_sent(void *arg, struct tcp_pcb *tpcb, u16_t len) {
 	TCP_CLIENT_T *state = (TCP_CLIENT_T*)arg;
 	DEBUG_printf("tcp_client_sent %u\n", len);
 	state->sent_len += len;
+	sent_bytes(len);
 
 	if (state->sent_len >= BUF_SIZE) {
 

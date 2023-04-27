@@ -64,7 +64,7 @@ static err_t tcp_server_close(void *arg) {
 
 static err_t tcp_server_sent(void *arg, struct tcp_pcb *tpcb, u16_t len) {
 	DEBUG_printf("tcp_server_sent %u\n", len);
-	// TODO: register sent bytes
+	sent_bytes(len);
 	return ERR_OK;
 }
 

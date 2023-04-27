@@ -16,6 +16,7 @@ time_t* get_ntp_time(char* ntp_server);
 // socket.c
 void init_socket_system(void);
 void init_tcp_socket(void);
+void sent_bytes(int bytes);
 char add_pcb_to_fifo(void* tcp_pcb);
 void* shift_pcb_fifo(void);
 char* tcp_receive_in_buff(char* data, int bytes, void* tcp_pcb);

@@ -72,6 +72,12 @@ void init_tls_socket(void){
 	g_tls_mode=1;
 }
 
+static volatile int g_sent_bytes;
+
+void sent_bytes(int bytes){
+	g_sent_bytes+=bytes;
+}
+
 void* new_connection_id(void* tcp_pcb){
 	if (!g_connection_id) {
 		g_connection_id=(void**)alloc_memory(256,get_permanent_block_number());
@@ -218,7 +224,7 @@ err_t send_header_if_exists(void){
 
 err_t machikania_tcp_write(const void* arg, u16_t len, void** connection_id){
 	err_t err;
-	int len_sent;
+	int len_sent,i;
 	void* pcb=connection_id ? connection_id[0]:g_pcb;
 	if (!pcb) {
 		if (g_state) {
@@ -238,13 +244,19 @@ err_t machikania_tcp_write(const void* arg, u16_t len, void** connection_id){
 		// Maximim sending size is WIFI_BUFF_SIZE
 		if (len<=WIFI_BUFF_SIZE) len_sent=len;
 		else len_sent=WIFI_BUFF_SIZE;
-		// Wait until buffer is clear, then send
+		// Send data
+		g_sent_bytes=0;
 		if (g_tls_mode) {
-			while(ERR_OK!=altcp_output(pcb)) sleep_ms(1);
 			err=altcp_write(pcb,arg,len_sent,TCP_WRITE_FLAG_COPY);
-		} else { 
-			while(ERR_OK!=tcp_output(pcb)) sleep_ms(1);
+			altcp_output(pcb);
+		} else {
 			err=tcp_write(pcb,arg,len_sent,TCP_WRITE_FLAG_COPY);
+			tcp_output(pcb);
+		}
+		// Wait until all data will be sent (maximum waiting time = 100 msec)
+		for(i=0;i<100;i++){
+			if (len_sent<=g_sent_bytes) break;
+			sleep_ms(1);
 		}
 		if (ERR_OK!=err) return err;
 		len-=len_sent;
