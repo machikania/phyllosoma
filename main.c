@@ -31,6 +31,8 @@ void read_ini(void){
 			continue;
 		} else if (ini_file_wifi(str)) {
 			continue;
+		} else if (ini_file_exception(str)) {
+			continue;
 		} else if (!strncmp(str,"AUTOEXEC=",9)) {
 			// Get file name
 			for(i=0;i<12;i++){

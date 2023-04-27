@@ -414,6 +414,9 @@ extern const char g_active_usb_keyboard;
 	Prototypes
 */
 
+// main.c
+void software_reset(void);
+
 // variable.c
 void variable_init(void);
 short get_new_varnum(void);
@@ -637,6 +640,7 @@ void connect2pc(void);
 void runHex(char* filename);
 
 // exception.c
+int ini_file_exception(char* line);
 void handle_exception(int set);
 
 // wifi

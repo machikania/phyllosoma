@@ -5,23 +5,72 @@
    https://github.com/kmorimatsu
 */
 
+#include <string.h>
 #include "hardware/exception.h"
 #include "./compiler.h"
 #include "./api.h"
 
-void show_shcsr_dfsr(void){
+static unsigned char g_exception_mode=0;
+#define EXCEPTION_MODE_RESTART    1
+#define EXCEPTION_MODE_SCREENSHOT 2
+#define EXCEPTION_MODE_DUMP       4
+static char g_screenshot_file[13];
+static char g_dump_file[13];
+
+int ini_file_exception(char* line){
+	int i;
+	if (!strncmp(line,"EXCRESET",8)) {
+		g_exception_mode|=EXCEPTION_MODE_RESTART;
+	} else if (!strncmp(line,"EXCSCREENSHOT=",14)) {
+		line+=14;
+		g_exception_mode|=EXCEPTION_MODE_SCREENSHOT;
+		for(i=0;i<12;i++){
+			if (line[0]<0x21) break;
+			g_screenshot_file[i]=line[i];
+		}
+		g_screenshot_file[i]=0;
+	} else if (!strncmp(line,"EXCDUMP=",8)) {
+		line+=8;
+		g_exception_mode|=EXCEPTION_MODE_DUMP;
+		for(i=0;i<12;i++){
+			if (line[0]<0x21) break;
+			g_dump_file[i]=line[i];
+		}
+		g_dump_file[i]=0;
+	} else {
+		return 0;
+	}
+	return 1;
+}
+
+static void dump2file(char* fname, char* mem, int len){
+	FIL fhandle;
+	printstr("\nSave ");
+	printstr(fname);
+	f_chdir("/");
+	printstr("...");
+	f_open(&fhandle,fname,FA_CREATE_ALWAYS | FA_WRITE);
+	f_write(&fhandle,mem,len,(int*)&g_scratch_int[0]);
+	f_close(&fhandle);
+	if (len==g_scratch_int[0]) printstr("OK");
+	else printstr("failed");
+	busy_wait_us(1000000);
+}
+
+static void show_shcsr_dfsr(void){
 	int* shcsr=(int*)0xE000ED24;
 	int* dfsr=(int*)0xE000ED30;
 	printstr("\nSHCSR: ");
 	printhex32(shcsr[0]);
 	printstr("\nDFSR:  ");
 	printhex32(dfsr[0]);
-
 }
 
 void exception_handler_main(int* sp, unsigned int icsr){
 	int i;
 	short* pc;
+	if (EXCEPTION_MODE_RESTART==g_exception_mode) software_reset();
+	g_interrupt_code=1;
 	printstr("\n\nException: hard fault.\n");
 	// Show the information in stack
 	printstr("\nPSR: ");
@@ -51,6 +100,11 @@ void exception_handler_main(int* sp, unsigned int icsr){
 		printhex16(pc[i]);
 		printchar(' ');
 	}
+	// Save memory dumps
+	if (g_exception_mode&EXCEPTION_MODE_SCREENSHOT) dump2file(&g_screenshot_file[0],&TVRAM[0],WIDTH_X*WIDTH_Y);
+	if (g_exception_mode&EXCEPTION_MODE_DUMP) dump2file(&g_dump_file[0],(char*)0x20000000,0x00042000);
+	// Restart
+	if (g_exception_mode&EXCEPTION_MODE_RESTART) software_reset();	
 	// Show SHCSR and DHSR
 	//show_shcsr_dfsr();
 	// Set PC to kmbasic_data[3] if exception happened in RAM
