@@ -71,9 +71,12 @@ if (TARGET tinyusb_device)
 			wifi/picow_ntp_client.c
 			wifi/picow_tcp_client.c
 			wifi/picow_tcp_server.c
+			wifi/picow_tls_client.c
 		)
 		target_link_libraries(wifi_files
 			pico_cyw43_arch_lwip_threadsafe_background
+			pico_lwip_mbedtls
+			pico_mbedtls
 		)
 		target_include_directories(wifi_files PUBLIC
 			${CMAKE_CURRENT_LIST_DIR}

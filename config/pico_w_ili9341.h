@@ -7,4 +7,4 @@
 
 #include "./pico_ili9341.h"
 
-#define KMBASIC_OBJECT_KBYTES 180
+#define KMBASIC_OBJECT_KBYTES 176

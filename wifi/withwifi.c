@@ -198,6 +198,14 @@ int tcpclient_function(void){
 		LIB_WIFI_TCPCLIENT<<LIBOPTION);
 }
 
+int tlsclient_function(void){
+	g_default_args[2]=443;
+	return argn_function(LIB_WIFI,
+		ARG_STRING<<ARG1 |
+		ARG_INTEGER_OPTIONAL<<ARG2 |
+		LIB_WIFI_TLSCLIENT<<LIBOPTION);
+}
+
 int tcpserver_statement(void){
 	g_default_args[1]=80;
 	g_default_args[2]=1;
@@ -264,6 +272,7 @@ int tcpaccept_function(void){
 int wifi_statements(void){
 	if (instruction_is("NTP")) return ntp_function();
 	if (instruction_is("TCPCLIENT")) return tcpclient_function();
+	if (instruction_is("TLSCLIENT")) return tlsclient_function();
 	if (instruction_is("TCPSERVER")) return tcpserver_statement();
 	if (instruction_is("TCPSEND")) return tcpsend_function();
 	if (instruction_is("TCPRECEIVE")) return tcpreceive_function();
@@ -275,6 +284,7 @@ int wifi_int_functions(void){
 	if (instruction_is("NTP(")) return ntp_function();
 	if (instruction_is("WIFIERR(")) return wifierr_int_function();
 	if (instruction_is("TCPCLIENT(")) return tcpclient_function();
+	if (instruction_is("TLSCLIENT(")) return tlsclient_function();
 	if (instruction_is("TCPSTATUS(")) return tcpstatus_function();
 	if (instruction_is("TCPSEND(")) return tcpsend_function();
 	if (instruction_is("TCPRECEIVE(")) return tcpreceive_function();
@@ -339,6 +349,7 @@ int lib_wifi(int r0, int r1, int r2){
 		case LIB_WIFI_TCPACCEPT:
 			return (int)shift_pcb_fifo();
 		case LIB_WIFI_TLSCLIENT:
+			return (int)run_tls_client_test();
 		default:
 			break;
 	}
