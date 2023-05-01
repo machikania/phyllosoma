@@ -132,6 +132,8 @@ void pre_run(void){
 }
 
 void post_run(void){
+	// Reset memory allocation
+	reset_memory();
 	// Close all files
 	close_all_files();
 	// Reset I/O and activate buttons

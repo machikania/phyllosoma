@@ -1,6 +1,14 @@
 /* Workaround for some mbedtls source files using INT_MAX without including limits.h */
 #include <limits.h>
 
+// Use machikania_calloc and machikania_free for mbedtls
+#define MBEDTLS_PLATFORM_C
+#define MBEDTLS_PLATFORM_MEMORY
+#define MBEDTLS_PLATFORM_CALLOC_MACRO machikania_calloc
+#define MBEDTLS_PLATFORM_FREE_MACRO machikania_free
+void* machikania_calloc(int nmemb, int size);
+void machikania_free(void *ptr);
+
 #define MBEDTLS_NO_PLATFORM_ENTROPY
 #define MBEDTLS_ENTROPY_HARDWARE_ALT
 

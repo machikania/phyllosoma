@@ -536,6 +536,7 @@ void stop_with_error(int e);
 
 // memory.c
 void init_memory(void);
+void reset_memory(void);
 void* alloc_memory(int size, int var_num);
 void* calloc_memory(int size, int var_num);
 void delete_memory(void* data);
@@ -543,6 +544,9 @@ int move_from_temp(int vn, int pdata);
 void garbage_collection(void* data);
 int get_permanent_block_number(void);
 void var2permanent(int var_num);
+void* machikania_malloc(int size);
+void machikania_free(void *ptr);
+void* machikania_calloc(int nmemb, int size);
 
 // class.c
 int init_class_compiling(void);

@@ -73,6 +73,10 @@ void init_memory(void){
 	g_deleted_num=0;
 }
 
+void reset_memory(void){
+	g_heap_begin=g_heap_end;
+}
+
 void* calloc_memory(int size, int var_num){
 	int i;
 	void* ret;
@@ -295,4 +299,20 @@ void var2permanent(int var_num){
 		kmbasic_var_size[i]=kmbasic_var_size[var_num];
 		kmbasic_var_size[var_num]=0;
 	}
+}
+
+/*
+	Wrappers for malloc/calloc/free
+*/
+
+void* machikania_malloc(int size){
+	if (g_heap_begin<g_heap_end) return alloc_memory((3+size)/4,get_permanent_block_number());
+	else return 0;
+}
+void machikania_free(void *ptr){
+	if (g_heap_begin<g_heap_end) delete_memory(ptr);
+}
+void* machikania_calloc(int nmemb, int size){
+	if (g_heap_begin<g_heap_end) return calloc_memory((3+nmemb*size)/4,get_permanent_block_number());
+	else return 0;
 }
