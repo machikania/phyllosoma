@@ -14,16 +14,15 @@
 #include "lwip/altcp_tls.h"
 #include "lwip/dns.h"
 
-#define TLS_CLIENT_SERVER        "worldtimeapi.org"
-#define TLS_CLIENT_HTTP_REQUEST  "GET /api/ip HTTP/1.1\r\n" \
-                                 "Host: " TLS_CLIENT_SERVER "\r\n" \
-                                 "Connection: close\r\n" \
-                                 "\r\n"
-#define TLS_CLIENT_TIMEOUT_SECS  15
+#include "./wifi.h"
+#include "../compiler.h"
+#include "../api.h"
 
+#define TLS_CLIENT_TIMEOUT_SECS  15
 
 typedef struct TLS_CLIENT_T_ {
 	struct altcp_pcb *pcb;
+	u16_t port;
 	bool complete;
 } TLS_CLIENT_T;
 
@@ -47,6 +46,9 @@ static err_t tls_client_close(void *arg) {
 		}
 		state->pcb = NULL;
 	}
+	machikania_free(state);
+	state=0;
+	set_connection_flag(0);
 	return err;
 }
 
@@ -57,14 +59,18 @@ static err_t tls_client_connected(void *arg, struct altcp_pcb *pcb, err_t err) {
 		return tls_client_close(state);
 	}
 
-	printf("connected to server, sending request\n");
-	err = altcp_write(state->pcb, TLS_CLIENT_HTTP_REQUEST, strlen(TLS_CLIENT_HTTP_REQUEST), TCP_WRITE_FLAG_COPY);
-	if (err != ERR_OK) {
-		printf("error writing data, err=%d", err);
-		return tls_client_close(state);
+	register_tcp_pcb(state->pcb);
+
+	err_t e;
+	e=send_header_if_exists();
+	if (ERR_OK==e) {
+		DEBUG_printf("Request header was sent\n%s\n");
+	} else {
+		DEBUG_printf("failed to send header\n");
 	}
 
-	return ERR_OK;
+	set_connection_flag(1);
+	return e;
 }
 
 static err_t tls_client_poll(void *arg, struct altcp_pcb *pcb) {
@@ -90,12 +96,16 @@ static err_t tls_client_recv(void *arg, struct altcp_pcb *pcb, struct pbuf *p, e
 		   and copies all the data to it in one go.
 		   Do be aware that the amount of data can potentially be a bit large (TLS record size can be 16 KB),
 		   so you may want to use a smaller fixed size buffer and copy the data to it using a loop, if memory is a concern */
-		char buf[p->tot_len + 1];
+		/*char buf[p->tot_len + 1];
 
 		pbuf_copy_partial(p, buf, p->tot_len, 0);
 		buf[p->tot_len] = 0;
 
-		printf("***\nnew data received from server:\n***\n\n%s\n", buf);
+		printf("***\nnew data received from server:\n***\n\n%s\n", buf);//*/
+		
+		for (struct pbuf *q = p; q != NULL; q = q->next) {
+			tcp_receive_in_buff(q->payload,q->len,state->pcb);
+		}
 
 		altcp_recved(pcb, p->tot_len);
 	}
@@ -107,10 +117,9 @@ static err_t tls_client_recv(void *arg, struct altcp_pcb *pcb, struct pbuf *p, e
 static void tls_client_connect_to_server_ip(const ip_addr_t *ipaddr, TLS_CLIENT_T *state)
 {
 	err_t err;
-	u16_t port = 443;
 
-	printf("connecting to server IP %s port %d\n", ipaddr_ntoa(ipaddr), port);
-	err = altcp_connect(state->pcb, ipaddr, port, tls_client_connected);
+	printf("connecting to server IP %s port %d\n", ipaddr_ntoa(ipaddr), state->port);
+	err = altcp_connect(state->pcb, ipaddr, state->port, tls_client_connected);
 	if (err != ERR_OK)
 	{
 		fprintf(stderr, "error initiating connect, err=%d\n", err);
@@ -179,7 +188,7 @@ static bool tls_client_open(const char *hostname, void *arg) {
 
 // Perform initialisation
 static TLS_CLIENT_T* tls_client_init(void) {
-	TLS_CLIENT_T *state = calloc(1, sizeof(TLS_CLIENT_T));
+	TLS_CLIENT_T *state = machikania_calloc(1, sizeof(TLS_CLIENT_T));
 	if (!state) {
 		printf("failed to allocate state\n");
 		return NULL;
@@ -188,34 +197,23 @@ static TLS_CLIENT_T* tls_client_init(void) {
 	return state;
 }
 
-void run_tls_client_test(void) {
+void start_tls_client(const char* servername, int tcp_port) {
+	// Initialize socket
+	init_tls_socket();
 	/* No CA certificate checking */
-	tls_config = altcp_tls_create_config_client(NULL, 0);
+	if (!tls_config) tls_config = altcp_tls_create_config_client(NULL, 0);
 
 	TLS_CLIENT_T *state = tls_client_init();
 	if (!state) {
 		return;
 	}
-	if (!tls_client_open(TLS_CLIENT_SERVER, state)) {
+	state->port=tcp_port;
+	if (!tls_client_open(servername, state)) {
 		return;
 	}
-	while(!state->complete) {
-		// the following #ifdef is only here so this same example can be used in multiple modes;
-		// you do not need it in your code
-#if PICO_CYW43_ARCH_POLL
-		// if you are using pico_cyw43_arch_poll, then you must poll periodically from your
-		// main loop (not from a timer) to check for Wi-Fi driver or lwIP work that needs to be done.
-		cyw43_arch_poll();
-		// you can poll as often as you like, however if you have nothing else to do you can
-		// choose to sleep until either a specified time, or cyw43_arch_poll() has work to do:
-		cyw43_arch_wait_for_work_until(make_timeout_time_ms(1000));
-#else
-		// if you are not using pico_cyw43_arch_poll, then WiFI driver and lwIP work
-		// is done via interrupt in the background. This sleep is just an example of some (blocking)
-		// work you might be doing.
-		sleep_ms(1000);
-#endif
-	}
-	free(state);
-	altcp_tls_free_config(tls_config);
+	// Resister state and closing function
+	register_state(state);
+	register_closing_function(tls_client_close);
+	// No error
+	wifi_set_error(ERR_OK);
 }

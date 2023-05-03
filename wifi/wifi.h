@@ -16,6 +16,7 @@ time_t* get_ntp_time(char* ntp_server);
 // socket.c
 void init_socket_system(void);
 void init_tcp_socket(void);
+void init_tls_socket(void);
 void sent_bytes(int bytes);
 char add_pcb_to_fifo(void* tcp_pcb);
 void* shift_pcb_fifo(void);
@@ -38,6 +39,9 @@ void start_tcp_client(const char* ipaddr, int tcp_port);
 // picow_tcp_server.c
 void start_tcp_server(int tcp_port, int tcp_accept_mode);
 err_t tcp_server_client_close(void* arg);
+
+// picow_tls_server.c
+void start_tls_client(const char* servername, int tcp_port);
 
 // See lwip/err.h for error values, like ERR_OK=0, ERR_INPROGRESS=-5, etc
 

@@ -349,7 +349,8 @@ int lib_wifi(int r0, int r1, int r2){
 		case LIB_WIFI_TCPACCEPT:
 			return (int)shift_pcb_fifo();
 		case LIB_WIFI_TLSCLIENT:
-			return (int)run_tls_client_test();
+			start_tls_client((char*)r1,r0);
+			return 0;
 		default:
 			break;
 	}

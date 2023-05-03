@@ -69,6 +69,7 @@ void init_tcp_socket(void){
 
 void init_tls_socket(void){
 	init_tcp_socket();
+	// Enable TLS mode
 	g_tls_mode=1;
 }
 
@@ -265,7 +266,7 @@ err_t machikania_tcp_write(const void* arg, u16_t len, void** connection_id){
 }
 
 err_t machikania_tcp_close(void** connection_id){
-	err_t e;
+	err_t e=ERR_OK;
 	// Execute registered closing function
 	err_t (*f)(void* state)=g_close_func;
 	if (connection_id) {
@@ -320,8 +321,8 @@ int machikania_tcp_status(int mode, void** connection_id){
 					buff=(int*)buff[0];
 				}
 				return i;
-			case 2: // Sending data remaining (non-zero or 0)
-				if (g_tls_mode) return altcp_output(g_pcb);
+			case 2: // Sending data remaining (non-zero or 0) (currently, not valid function; will be deleted probably)
+				if (g_tls_mode) return altcp_output((struct altcp_pcb *)g_pcb);
 				else return tcp_output(g_pcb);
 			case 3: // Which connection error occured or not
 				return g_connection_error;

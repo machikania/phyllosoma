@@ -144,7 +144,7 @@ if (TARGET tinyusb_device)
 	if (MACHIKANIA_WIFI STREQUAL "withwifi")
 		target_compile_definitions(wifi_files PUBLIC PICO_STACK_SIZE=4096)
 		target_compile_definitions(wifi_files PUBLIC PICO_HEAP_SIZE=4096)
-		target_compile_definitions(wifi_files PRIVATE machikania_dummy=6)
+		#target_compile_definitions(wifi_files PRIVATE machikania_dummy=6)
 	endif()
 	
 elseif(PICO_ON_DEVICE)

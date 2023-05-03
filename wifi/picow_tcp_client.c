@@ -138,7 +138,7 @@ static err_t tcp_client_connected(void *arg, struct tcp_pcb *tpcb, err_t err) {
 	}
 
 	set_connection_flag(1);
-	return ERR_OK;
+	return e;
 }
 
 static err_t tcp_client_poll(void *arg, struct tcp_pcb *tpcb) {
