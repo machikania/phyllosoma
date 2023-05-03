@@ -17,6 +17,7 @@
 #include "./wifi.h"
 #include "../compiler.h"
 #include "../api.h"
+#include "../core1.h"
 
 #define TLS_CLIENT_TIMEOUT_SECS  15
 
@@ -24,6 +25,7 @@ typedef struct TLS_CLIENT_T_ {
 	struct altcp_pcb *pcb;
 	u16_t port;
 	bool complete;
+	bool core1;
 } TLS_CLIENT_T;
 
 static struct altcp_tls_config *tls_config = NULL;
@@ -46,6 +48,9 @@ static err_t tls_client_close(void *arg) {
 		}
 		state->pcb = NULL;
 	}
+	// Restart core1
+	if (state->core1) start_core1();
+	// Free memory
 	machikania_free(state);
 	state=0;
 	set_connection_flag(0);
@@ -198,6 +203,9 @@ static TLS_CLIENT_T* tls_client_init(void) {
 }
 
 void start_tls_client(const char* servername, int tcp_port) {
+	// Stop core1 first
+	bool core1=is_core1_started();
+	if (core1) stop_core1();
 	// Initialize socket
 	init_tls_socket();
 	/* No CA certificate checking */
@@ -208,6 +216,7 @@ void start_tls_client(const char* servername, int tcp_port) {
 		return;
 	}
 	state->port=tcp_port;
+	state->core1=core1;
 	if (!tls_client_open(servername, state)) {
 		return;
 	}

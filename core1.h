@@ -48,3 +48,10 @@ void request_core1_callback_at(void* func, unsigned int at);
 
 */
 void wait_core1_busy(void);
+
+/*
+	char is_core1_started(void);
+	
+	To know if core1_entry is started.
+*/
+char is_core1_started(void);

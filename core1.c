@@ -47,7 +47,16 @@ void core1_entry(void) {
 	int now32,i,j;
 	uint64_t now;
 	g_1w0r_core1_busy=1;
+	// Call already registered functions, first
+	// This happened when restarting core1_entry by calling start_core1() after calling stop_core1()
+	for(i=0;i<CALLBACK_BUFFER_NUM;i++){
+		if (!g_core1_callback[i]) continue;
+		void(*f)(void)=g_core1_callback[i];
+		g_core1_callback[i]=0;
+		f();
+	}
 	g_1w0r_core1_started=1;
+	// Main loop follows
 	while(g_0w1r_core1_enabled){
 		// Wait until next timing
 		now32=time_us_32();
@@ -75,7 +84,10 @@ void core1_entry(void) {
 
 void start_core1(void){
 	g_0w1r_core1_enabled=1;
-	if (!g_1w0r_core1_started) multicore_launch_core1(core1_entry);
+	if (!g_1w0r_core1_started) {
+		multicore_reset_core1();
+		multicore_launch_core1(core1_entry);
+	}
 	while(!g_1w0r_core1_started) sleep_us(1);
 }
 
@@ -100,4 +112,8 @@ void request_core1_callback_at(void* func, unsigned int at){
 		g_core1_callback_at[i]=at;
 		break;
 	}
+}
+
+char is_core1_started(void){
+	return g_1w0r_core1_started;
 }
