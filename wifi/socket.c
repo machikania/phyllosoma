@@ -293,7 +293,7 @@ int machikania_tcp_status(int mode, void** connection_id){
 			case 0: // Connected (1 or 0)
 			default:
 				return connection_id[0] ? 1:0;
-			case 1: // Received total bytes numnber
+			case 1: // Received total bytes number
 				i=0;
 				buff=g_socket_buffer;
 				while(buff){
