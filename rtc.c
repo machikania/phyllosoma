@@ -87,7 +87,7 @@ struct tm* datetime2tm(datetime_t* dt){
 	t.tm_mday = dt->day;
 	t.tm_mon = dt->month - 1; // 0-11
 	t.tm_year = dt->year - 1900; // year since 1900
-	t.tm_wday = 0; // not used
+	t.tm_wday = dt->dotw;
 	t.tm_yday = 0; // not used
 	t.tm_isdst = -1; // not used
 	return &t;
@@ -98,7 +98,7 @@ datetime_t* tm2datetime(struct tm* t){
 	dt.sec = t->tm_sec;
 	dt.min = t->tm_min;
 	dt.hour = t->tm_hour;
-	dt.dotw = 0;  // Week setting will be ignored
+	dt.dotw = t->tm_wday;
 	dt.day = t->tm_mday;
 	dt.month = t->tm_mon + 1; // 0-11 to 1-12
 	dt.year = t->tm_year + 1900; // year-1900 to year
@@ -167,8 +167,9 @@ int lib_rtc(int r0, int r1, int r2){
 			// r1 (1st argument): format for strftime
 			// r0 (2nd argument): ISO-8601 string (optional)
 			if (r0) {
-				tm=iso8601str2tm((char*)r0);
+				t=mktime(iso8601str2tm((char*)r0));
 				garbage_collection((char*)r0);
+				tm=localtime(&t);
 			} else {
 				rtc_get_datetime(&now);
 				tm=datetime2tm(&now);
