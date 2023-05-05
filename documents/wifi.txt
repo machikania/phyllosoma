@@ -10,6 +10,30 @@ WIFIPASSWD=xxxx
 MachiKaniaを用いて、クライアントアプリケーションとサーバーアプリケーションのどちらでも構築することができます。インターネットではHTTPプロトコル（http, https, web, www, htmlなどと表記されるもの）が多用されますが、MachiKaniaでは、WGETクラスやHTTPDクラスを用いて、http/httpsクライアントアプリケーションやhttpサーバーアプリケーションを容易に構築できます。
 
 
+＜Wi-Fi関連のMACHIKAP.INI設定＞
+
+関連したMACHIKAP.INIの設定は、次の物があります。
+
+USEWIFI
+	指定すると、起動時にWi-Fiに接続する。
+
+WIFICOUNTRY=
+	アルファベット2文字の、国識別コードを指定する。日本は「JP」アメリカは「US」。cyw43-driveのソースコード(https://github.com/georgerobotics/cyw43-driver)の「src/cyw43_country.h」を参照のこと。
+
+WIFISSID=
+WIFIPASSWD=
+	Wi-Fi接続時のSSIDとパスワードを指定。
+
+HOSTNAME=
+	Wi-Fi接続時のホスト名を指定（デフォルト: PicoW）。ドメイン名は使用するルーターによって異なる。フルネームを知りたいときは「ping -a <IPアドレス>」などの方法で調べることができる。
+
+NTPSERVER=
+	使用するNTPサーバーのホスト名を指定（デフォルト: pool.ntp.org）。
+
+INITIALNTP
+	起動時にNTPサーバーに接続してリアルタイムクロック(RTC)の設定を行いたいときに指定。
+
+
 ＜ネット接続用のクラス＞
 
 クライアントアプリケーション用のクラスとして、WGETをライブラリーに用意しました。これを用いると、URLを文字列として指定するだけで、webサイトから情報を取得することができます。httpsサイトにも対応しています。使い方は、WGETクラスのhelp.txtを参照してください。
@@ -32,7 +56,7 @@ IFCONFIG$(x)
 		xが3の時、DNSサーバーアドレス
 
 NTP, NTP()
-	NTPサーバーに接続し、RTC(リアルタイムクロック)を設定する。関数として呼ばれた場合は、エラー番号(エラーが無いときは0)を返す。
+	NTPサーバーに接続し、RTC(リアルタイムクロック)を設定する。関数として呼ばれた場合は、エラー番号(エラーが無いときは0)を返す。NTPサーバーの設定は、MACHIKAP.INIの「NTPSERVER=」で行う（上記参照）。
 
 TCPACCEPT()
 	TCPサーバーを開始している時、クライアントからの接続もしくは受信があった時、コネクションIDを整数値で返す。接続か受信のどちらを返すかは、TCPSERVERの使い方を参照。コネクションIDはこの関数から一度だけしか返されないので、保存しておく必要がある。

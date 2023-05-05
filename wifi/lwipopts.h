@@ -17,3 +17,6 @@
 
 #endif
 
+#undef CYW43_HOST_NAME
+#define CYW43_HOST_NAME (machikania_hostname())
+char* machikania_hostname(void);

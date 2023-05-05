@@ -24,6 +24,7 @@
 
 static char g_wifi_id[128]="MACHIKANIA_DEFAULT_WIFI_SSID\0\0\0";
 static char g_wifi_passwd[128]="MACHIKANIA_DEFAULT_WIFI_PASSWD\0";
+static char g_wifi_hostname[64]="PicoW";
 static char g_cyw43_country_char1='U';
 static char g_cyw43_country_char2='S';
 static char g_ntp_server[64]="pool.ntp.org";
@@ -56,6 +57,12 @@ int ini_file_wifi(char* line){
 		line+=12;
 		g_cyw43_country_char1=line[0];
 		g_cyw43_country_char2=line[1];
+	} else if (!strncmp(line,"HOSTNAME=",9)) {
+		line+=9;
+		for(i=0;i<(sizeof g_wifi_hostname)-1;i++){
+			if ((g_wifi_hostname[i]=line[i])<=0x20) break;
+		}
+		g_wifi_hostname[i]=0;		
 	} else if (!strncmp(line,"NTPSERVER=",10)) {
 		line+=10;
 		for(i=0;i<(sizeof g_ntp_server)-1;i++){
@@ -66,6 +73,10 @@ int ini_file_wifi(char* line){
 		return 0;
 	}
 	return 1;
+}
+
+char* machikania_hostname(void){
+	return &g_wifi_hostname[0];
 }
 
 void pre_run_wifi(void){
@@ -312,7 +323,6 @@ int lib_wifi(int r0, int r1, int r2){
 		case LIB_WIFI_IFCONFIG:
 			switch(r0){
 				case 0:
-				default:
 					return (int)ip4addr_ntoa(&cyw43_state.netif[0].ip_addr);
 				case 1:
 					return (int)ip4addr_ntoa(&cyw43_state.netif[0].netmask);
@@ -320,6 +330,8 @@ int lib_wifi(int r0, int r1, int r2){
 					return (int)ip4addr_ntoa((ip_addr_t*)&cyw43_state.netif[0].gw.addr);
 				case 3:
 					return (int)ip4addr_ntoa(dns_getserver(0));
+				default:
+					return (int)"-";
 			}
 		case LIB_WIFI_DNS:
 			return (int)ip4addr_ntoa(dns_lookup((char*)r0));
