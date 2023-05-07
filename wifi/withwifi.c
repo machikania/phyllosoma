@@ -315,6 +315,8 @@ int lib_wifi(int r0, int r1, int r2){
 	int* sp=(int*)r1;
 	static char iso8601str[]="YYYY-MM-DDThh:mm:ss";
 	time_t* now;
+	uint8_t mac[6]; 
+	char* str;
 	switch(r2){
 		case LIB_WIFI_ERR_INT:
 			return wifi_error();
@@ -330,6 +332,11 @@ int lib_wifi(int r0, int r1, int r2){
 					return (int)ip4addr_ntoa((ip_addr_t*)&cyw43_state.netif[0].gw.addr);
 				case 3:
 					return (int)ip4addr_ntoa(dns_getserver(0));
+				case 16:
+					cyw43_wifi_get_mac(&cyw43_state,CYW43_ITF_STA,mac);
+					str=alloc_memory(5,-1);
+					sprintf(str,"%02x-%02x-%02x-%02x-%02x-%02x",mac[0],mac[1],mac[2],mac[3],mac[4],mac[5]);
+					return (int)str;
 				default:
 					return (int)"-";
 			}
