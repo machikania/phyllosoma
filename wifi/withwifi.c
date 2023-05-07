@@ -164,6 +164,7 @@ int connect_wifi(char show_progress){
 		// Use static IP if set
 		dhcp_stop(&cyw43_state.netif[0]);
 		IP_ADDR4(&cyw43_state.netif[0].ip_addr,g_static_ip[0],g_static_ip[1],g_static_ip[2],g_static_ip[3]);
+		dhcp_start(&cyw43_state.netif[0]);
 	}
 	if (show_progress) {
 		printstr("connected as ");
