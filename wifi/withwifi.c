@@ -30,6 +30,7 @@ static char g_cyw43_country_char2='S';
 static char g_ntp_server[64]="pool.ntp.org";
 static char g_usewifi=0;
 static char g_initial_ntp=0;
+static char g_static_ip[4]={0,0,0,0};
 
 void board_led(int led_on){
 	cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, led_on ? 1:0);
@@ -63,6 +64,12 @@ int ini_file_wifi(char* line){
 			if ((g_wifi_hostname[i]=line[i])<=0x20) break;
 		}
 		g_wifi_hostname[i]=0;		
+	} else if (!strncmp(line,"STATICIP=",9)) {
+		line+=9;
+		for(i=0;i<4;i++){
+			g_static_ip[i]=strtol(line,&line,10);
+			if ('.'!=(line++)[0]) break;
+		}
 	} else if (!strncmp(line,"NTPSERVER=",10)) {
 		line+=10;
 		for(i=0;i<(sizeof g_ntp_server)-1;i++){
@@ -153,6 +160,10 @@ int connect_wifi(char show_progress){
 			break;
 		}
 	}	
+	if (g_static_ip[0]) {
+		// Use static IP if set
+		IP_ADDR4(&cyw43_state.netif[0].ip_addr,g_static_ip[0],g_static_ip[1],g_static_ip[2],g_static_ip[3]);
+	}
 	if (show_progress) {
 		printstr("connected as ");
 		printstr(ip4addr_ntoa(&cyw43_state.netif[0].ip_addr));
