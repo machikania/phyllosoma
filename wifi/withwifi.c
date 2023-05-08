@@ -64,7 +64,7 @@ int ini_file_wifi(char* line){
 			if ((g_wifi_hostname[i]=line[i])<=0x20) break;
 		}
 		g_wifi_hostname[i]=0;		
-	} else if (!strncmp(line,"STATICIP=",9)) {
+	} else if (!strncmp(line,"STATICIP=",9)) { // experimental
 		line+=9;
 		for(i=0;i<4;i++){
 			g_static_ip[i]=strtol(line,&line,10);
@@ -161,10 +161,9 @@ int connect_wifi(char show_progress){
 		}
 	}	
 	if (g_static_ip[0]) {
-		// Use static IP if set
+		// Use static IP if set (experimental)
 		dhcp_stop(&cyw43_state.netif[0]);
 		IP_ADDR4(&cyw43_state.netif[0].ip_addr,g_static_ip[0],g_static_ip[1],g_static_ip[2],g_static_ip[3]);
-		dhcp_start(&cyw43_state.netif[0]);
 	}
 	if (show_progress) {
 		printstr("connected as ");
