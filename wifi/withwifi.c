@@ -168,6 +168,11 @@ int connect_wifi(char show_progress){
 	if (show_progress) {
 		printstr("connected as ");
 		printstr(ip4addr_ntoa(&cyw43_state.netif[0].ip_addr));
+		if (cyw43_state.netif[0].hostname) {
+			printchar('(');
+			printstr((char*)cyw43_state.netif[0].hostname);
+			printchar(')');
+		}
 		printstr("\n");
 	}
 	if (g_initial_ntp) {
