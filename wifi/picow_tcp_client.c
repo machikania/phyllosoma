@@ -26,42 +26,12 @@
 #include "../compiler.h"
 #include "../api.h"
 
-#define TCP_PORT 80
-#define BUF_SIZE WIFI_BUFF_SIZE
-
-#define TEST_ITERATIONS 10
 #define POLL_TIME_S 5
-
-#if 1
-static void dump_bytes(const uint8_t *bptr, uint32_t len) {
-	unsigned int i = 0;
-
-	printf("dump_bytes %d", len);
-	for (i = 0; i < len;) {
-		if ((i & 0x0f) == 0) {
-			//printf("\n");
-		} else if ((i & 0x07) == 0) {
-			//printf(" ");
-		}
-		//printf("%02x ", bptr[i++]);
-		//printf("%c", bptr[i++]);
-		printchar(bptr[i++]);
-	}
-	//printf("\n");
-	printstr("\n");
-}
-#define DUMP_BYTES dump_bytes
-#else
-#define DUMP_BYTES(A,B)
-#endif
 
 typedef struct TCP_CLIENT_T_ {
 	struct tcp_pcb *tcp_pcb;
 	ip_addr_t remote_addr;
 	int sent_len;
-	bool complete;
-	int run_count;
-	bool connected;
 } TCP_CLIENT_T;
 
 static err_t tcp_client_close(void *arg) {
@@ -93,7 +63,6 @@ static err_t tcp_result(void *arg, int status) {
 	} else {
 		//DEBUG_printf("test failed %d\n", status);
 	}
-	state->complete = true;
 	return tcp_client_close(arg);
 }
 
@@ -102,20 +71,6 @@ static err_t tcp_client_sent(void *arg, struct tcp_pcb *tpcb, u16_t len) {
 	DEBUG_printf("tcp_client_sent %u\n", len);
 	state->sent_len += len;
 	sent_bytes(len);
-
-	if (state->sent_len >= BUF_SIZE) {
-
-		state->run_count++;
-		if (state->run_count >= TEST_ITERATIONS) {
-			tcp_result(arg, 0);
-			return ERR_OK;
-		}
-
-		// We should receive a new buffer from the server
-		state->sent_len = 0;
-		DEBUG_printf("Waiting for buffer from server\n");
-	}
-
 	return ERR_OK;
 }
 
@@ -125,7 +80,6 @@ static err_t tcp_client_connected(void *arg, struct tcp_pcb *tpcb, err_t err) {
 		printf("connect failed %d\n", err);
 		return tcp_result(arg, err);
 	}
-	state->connected = true;
 	DEBUG_printf("Waiting for buffer from server\n");
 	register_tcp_pcb(state->tcp_pcb);
 
@@ -166,7 +120,6 @@ err_t tcp_client_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err
 	if (p->tot_len > 0) {
 		DEBUG_printf("recv %d err %d\n", p->tot_len, err);
 		for (struct pbuf *q = p; q != NULL; q = q->next) {
-			//DUMP_BYTES(q->payload, q->len);
 			tcp_receive_in_buff(q->payload,q->len,state->tcp_pcb);
 		}
 		tcp_recved(tpcb, p->tot_len);
@@ -204,12 +157,8 @@ static bool tcp_client_open(void *arg, int tcp_port) {
 
 // Perform initialisation
 static TCP_CLIENT_T* tcp_client_init(const char* ipaddr) {
-	//TCP_CLIENT_T *state = calloc(1, sizeof(TCP_CLIENT_T)); 
-	TCP_CLIENT_T *state = calloc_memory((3+(sizeof(TCP_CLIENT_T)))/4,get_permanent_block_number());
-	if (!state) {
-		DEBUG_printf("failed to allocate state\n");
-		return NULL;
-	}
+	static TCP_CLIENT_T s_state;
+	TCP_CLIENT_T *state =memset(&s_state,0,sizeof(TCP_CLIENT_T));
 	ip4addr_aton(ipaddr, &state->remote_addr);
 	return state;
 }
