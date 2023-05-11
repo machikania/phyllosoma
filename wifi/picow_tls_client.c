@@ -50,9 +50,7 @@ static err_t tls_client_close(void *arg) {
 	}
 	// Restart core1
 	if (state->core1) start_core1();
-	// Free memory
-	machikania_free(state);
-	state=0;
+	// Put down the connection flag
 	set_connection_flag(0);
 	return err;
 }
@@ -193,12 +191,8 @@ static bool tls_client_open(const char *hostname, void *arg) {
 
 // Perform initialisation
 static TLS_CLIENT_T* tls_client_init(void) {
-	TLS_CLIENT_T *state = machikania_calloc(1, sizeof(TLS_CLIENT_T));
-	if (!state) {
-		printf("failed to allocate state\n");
-		return NULL;
-	}
-
+	static TLS_CLIENT_T s_state;
+	TLS_CLIENT_T *state =memset(&s_state,0,sizeof(TLS_CLIENT_T));
 	return state;
 }
 
@@ -212,9 +206,7 @@ void start_tls_client(const char* servername, int tcp_port) {
 	if (!tls_config) tls_config = altcp_tls_create_config_client(NULL, 0);
 
 	TLS_CLIENT_T *state = tls_client_init();
-	if (!state) {
-		return;
-	}
+
 	state->port=tcp_port;
 	state->core1=core1;
 	if (!tls_client_open(servername, state)) {

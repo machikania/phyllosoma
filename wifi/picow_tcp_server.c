@@ -26,7 +26,6 @@
 #include "../compiler.h"
 #include "../api.h"
 
-#define BUF_SIZE WIFI_BUFF_SIZE
 #define POLL_TIME_S 5
 
 static struct tcp_pcb* g_server_pcb;
@@ -80,7 +79,6 @@ err_t tcp_server_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err
 	if (p->tot_len > 0) {
 		DEBUG_printf("tcp_server_recv %d err %d\n", p->tot_len, err);
 		for (struct pbuf *q = p; q != NULL; q = q->next) {
-			//DUMP_BYTES(q->payload, q->len);
 			tcp_receive_in_buff(q->payload,q->len,arg);
 		}
 		tcp_recved(tpcb, p->tot_len);
