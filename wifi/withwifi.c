@@ -22,8 +22,8 @@
 #include "../api.h"
 #include "./wifi.h"
 
-static char g_wifi_id[128]="MACHIKANIA_DEFAULT_WIFI_SSID\0\0\0";
-static char g_wifi_passwd[128]="MACHIKANIA_DEFAULT_WIFI_PASSWD\0";
+static char g_wifi_id[128]=MACHIKANIA_DEFAULT_WIFI_SSID128;
+static char g_wifi_passwd[128]=MACHIKANIA_DEFAULT_WIFI_PASSWD128;
 static char g_wifi_hostname[64]="PicoW";
 static char g_cyw43_country_char1='U';
 static char g_cyw43_country_char2='S';
