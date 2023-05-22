@@ -99,6 +99,7 @@ static void ntp_dns_found(const char *hostname, const ip_addr_t *ipaddr, void *a
 
 // NTP data received
 static void ntp_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_addr_t *addr, u16_t port) {
+	static time_t epoch;
 	NTP_T *state = (NTP_T*)arg;
 	uint8_t mode = pbuf_get_at(p, 0) & 0x7;
 	uint8_t stratum = pbuf_get_at(p, 1);
@@ -108,9 +109,11 @@ static void ntp_recv(void *arg, struct udp_pcb *pcb, struct pbuf *p, const ip_ad
 		mode == 0x4 && stratum != 0) {
 		uint8_t seconds_buf[4] = {0};
 		pbuf_copy_partial(p, seconds_buf, sizeof(seconds_buf), 40);
-		uint32_t seconds_since_1900 = seconds_buf[0] << 24 | seconds_buf[1] << 16 | seconds_buf[2] << 8 | seconds_buf[3];
+		uint64_t seconds_since_1900 = seconds_buf[0] << 24 | seconds_buf[1] << 16 | seconds_buf[2] << 8 | seconds_buf[3];
+		// Following test will return a date of 2106-02-06
+		// seconds_since_1900=6503956095ULL;
 		uint32_t seconds_since_1970 = seconds_since_1900 - NTP_DELTA;
-		time_t epoch = seconds_since_1970;
+		epoch = seconds_since_1970;
 		ntp_result(state, 0, &epoch);
 	} else {
 		printf("invalid ntp response\n");
@@ -164,6 +167,7 @@ time_t* get_ntp_time(char* ntp_server){
 		ntp_result(state, -1, NULL);
 	}
 
+	udp_remove(state->ntp_pcb);
 	free(state);
 	return g_ntp_result;
 }
