@@ -32,7 +32,7 @@ print_r($vardata);
 
 function variable_address($var_name){
 	global $map_file;
-	if (!preg_match('/\.'.$var_name.'\r?\n?[\s^\r\n]+0x([0-9a-fA-F]{8}).*\.obj[\r\n]/',$map_file,$m)) exit('Error at '.__LINE__);
+	if (!preg_match('/\.'.$var_name.'\r?\n?[\s^\r\n]+0x([0-9a-fA-F]{8}).*\.obj\)?[\r\n]/',$map_file,$m)) exit('Error at '.__LINE__);
 	return $m[1];
 }
 

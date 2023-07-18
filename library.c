@@ -14,6 +14,7 @@
 #include "./display.h"
 #include "./config.h"
 #include "./sleep.h"
+#include "./debug.h"
 
 /*
 	Local macros
@@ -706,6 +707,10 @@ int lib_system(int r0, int r1, int r2){
 		case 253:
 		// Garbage collection
 			garbage_collection((void*)r1);
+			break;
+		case 300:
+		// memory dump
+			memdump();
 			break;
 		default:
 			break;
