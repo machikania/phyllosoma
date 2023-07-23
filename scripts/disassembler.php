@@ -130,7 +130,8 @@ function inst1800($i,$inst,$inst2){
 	return $i;
 }
 function inst1C00($i,$inst,$inst2){
-	echo "inst1C00\n";
+	//echo "inst1C00\n";
+	echo 'MOVS R',$inst&7,',R',($inst>>3)&7,',#',($inst>>6)&7,"\n";
 	return $i;
 }
 function inst2000($i,$inst,$inst2){
@@ -454,10 +455,11 @@ function instF000($i,$inst,$inst2,$addr){
 	$jump=(($inst&0x07ff)<<11) | (($inst2&0x07ff)<<0);
 	if ($jump&(1<<21)) {
 		echo 'BL -',(1<<22)-$jump;
+		echo ' (',dechex($addr+($i+2+$jump-(1<<22))*2),")\n";
 	} else {
 		echo 'BL +',$jump;
+		echo ' (',dechex($addr+($i+2+$jump)*2),")\n";
 	}
-	echo ' (',dechex($addr+($i+2+$jump)*2),")\n";
 	return $i+1;
 }
 function instF400($i,$inst,$inst2,$addr){

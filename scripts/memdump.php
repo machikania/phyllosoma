@@ -2,7 +2,11 @@
 
 ob_start();
 
-$ram=file_get_contents('./MEMDUMP.BIN');
+$dumpfile='MEMDUMP.BIN';
+$resultfile='result.txt';
+if (preg_match('/^MEMDUMP_(.*)\.BIN/',$dumpfile,$m)) $resultfile='result_'.$m[1].'.txt';
+
+$ram=file_get_contents('./'.$dumpfile);
 $map_file=file_get_contents('./phyllosoma.elf.map');
 $compilerh=file_get_contents('../phyllosoma/compiler.h');
 
@@ -131,4 +135,5 @@ require('./disassembler.php');
 
 // All done
 // Save the result
-file_put_contents('./result.txt',ob_get_flush());
+file_put_contents('./'.$resultfile,ob_get_flush());
+echo "\n",'./'.$resultfile,' was created';
