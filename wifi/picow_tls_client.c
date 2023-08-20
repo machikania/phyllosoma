@@ -1,4 +1,13 @@
 /*
+   This program is provided under the LGPL license ver 2.1
+   KM-BASIC for ARM, written by Katsumi.
+   http://hp.vector.co.jp/authors/VA016157/
+   https://github.com/kmorimatsu
+
+   Some part of this file came from codes with following license,
+   and the license has been changed to LGPL
+
+/*
  * Copyright (c) 2023 Raspberry Pi (Trading) Ltd.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -139,7 +148,8 @@ static void tls_client_dns_found(const char* hostname, const ip_addr_t *ipaddr, 
 	}
 	else
 	{
-		printf("error resolving hostname %s\n", hostname);
+		//printf("error resolving hostname %s\n", hostname);
+		wifi_set_error(WIFI_ERROR_DNS_ERROR);
 		tls_client_close(arg);
 	}
 }
@@ -182,6 +192,7 @@ static bool tls_client_open(const char *hostname, void *arg) {
 	{
 		printf("error initiating DNS resolving, err=%d\n", err);
 		tls_client_close(state->pcb);
+		wifi_set_error(WIFI_ERROR_DNS_ERROR);
 	}
 
 	cyw43_arch_lwip_end();

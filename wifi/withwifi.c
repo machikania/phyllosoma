@@ -334,11 +334,17 @@ int lib_wifi(int r0, int r1, int r2){
 	time_t* now;
 	uint8_t mac[6]; 
 	char* str;
+	ip_addr_t* ipaddr;
 	switch(r2){
 		case LIB_WIFI_ERR_INT:
 			return wifi_error();
 		case LIB_WIFI_ERR_STR:
 			return (int)wifi_error_str();
+		default:
+			wifi_set_error(WIFI_ERROR_NO_ERROR);
+			break;
+	}
+	switch(r2){
 		case LIB_WIFI_IFCONFIG:
 			switch(r0){
 				case 0:
@@ -358,7 +364,10 @@ int lib_wifi(int r0, int r1, int r2){
 					return (int)"-";
 			}
 		case LIB_WIFI_DNS:
-			return (int)ip4addr_ntoa(dns_lookup((char*)r0));
+			ipaddr=dns_lookup((char*)r0);
+			if (ipaddr) return (int)ip4addr_ntoa(ipaddr);
+			wifi_set_error(WIFI_ERROR_DNS_ERROR);
+			return (int)"";
 		case LIB_WIFI_NTP:
 			now=get_ntp_time(g_ntp_server);
 			if (!now) {
@@ -368,8 +377,10 @@ int lib_wifi(int r0, int r1, int r2){
 			set_time_from_utc(now[0]);
 			return 0;
 		case LIB_WIFI_TCPCLIENT:
-			start_tcp_client(ip4addr_ntoa(dns_lookup((char*)r1)),r0);
-			return 0;
+			ipaddr=dns_lookup((char*)r1);
+			if (ipaddr) start_tcp_client(ip4addr_ntoa(ipaddr),r0);
+			else wifi_set_error(WIFI_ERROR_DNS_ERROR);
+			return wifi_error();
 		case LIB_WIFI_TCPSTATUS:
 			return machikania_tcp_status(r1,(void**)r0);
 		case LIB_WIFI_TCPSEND:
@@ -386,7 +397,7 @@ int lib_wifi(int r0, int r1, int r2){
 			return (int)shift_pcb_fifo();
 		case LIB_WIFI_TLSCLIENT:
 			start_tls_client((char*)r1,r0);
-			return 0;
+			return wifi_error();
 		default:
 			break;
 	}

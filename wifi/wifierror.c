@@ -5,7 +5,10 @@
    https://github.com/kmorimatsu
 */
 
-static char g_err_str_wifi[32];
+#include "pico/cyw43_arch.h"
+#include "./wifi.h"
+
+static char g_err_str_wifi[32]="No error";
 void wifi_set_error_str(char* err_str,...){
 	int i;
 	for(i=0;i<31;i++) {
@@ -18,8 +21,27 @@ char* wifi_error_str(void){
 
 static int g_err_wifi;
 void wifi_set_error(int err){
+	if (err!=g_err_wifi) {
+		switch(err){
+			case WIFI_ERROR_NO_ERROR:
+				wifi_set_error_str("No error");
+				break;
+			case WIFI_ERROR_DNS_ERROR:
+				wifi_set_error_str("DNS error");
+				break;
+			case WIFI_ERROR_CONNECTION_ERROR:
+				wifi_set_error_str("Connection error");
+				break;
+			case WIFI_ERROR_WIFI_ERROR:
+				wifi_set_error_str("WiFi not connected");
+				break;
+			default:
+				break;
+		}
+	}
 	g_err_wifi=err;
 }
+
 int wifi_error(void){
 	return g_err_wifi;
 }

@@ -45,6 +45,13 @@ void start_tls_client(const char* servername, int tcp_port);
 
 // See lwip/err.h for error values, like ERR_OK=0, ERR_INPROGRESS=-5, etc
 
+// Definitions
+
+#define WIFI_ERROR_NO_ERROR 0
+#define WIFI_ERROR_DNS_ERROR 1
+#define WIFI_ERROR_CONNECTION_ERROR 2
+#define WIFI_ERROR_WIFI_ERROR 3
+
 // Macros
 
 #define MACHIKANIA_DEFAULT_WIFI_SSID "MACHIKANIA_DEFAULT_WIFI_SSID\0\0\0"
