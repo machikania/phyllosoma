@@ -29,6 +29,7 @@ static char g_cyw43_country_char1='U';
 static char g_cyw43_country_char2='S';
 static char g_ntp_server[64]="pool.ntp.org";
 static char g_usewifi=0;
+static char g_wifi_enabled=0;
 static char g_initial_ntp=0;
 static char g_static_ip[4]={0,0,0,0};
 
@@ -144,6 +145,7 @@ int connect_wifi(char show_progress){
 		g_usewifi=1;
 		return 0;
 	}
+	g_wifi_enabled=0;
 	if (show_progress) printstr("\nInitialising wifi... ");
 	if (cyw43_arch_init_with_country(CYW43_COUNTRY(g_cyw43_country_char1, g_cyw43_country_char2, 0))) {
 		if (show_progress) printstr("failed to initialise\n");
@@ -160,6 +162,7 @@ int connect_wifi(char show_progress){
 			break;
 		}
 	}	
+	g_wifi_enabled=1;
 	if (g_static_ip[0]) {
 		// Use static IP if set (experimental)
 		dhcp_stop(&cyw43_state.netif[0]);
@@ -341,9 +344,30 @@ int lib_wifi(int r0, int r1, int r2){
 		case LIB_WIFI_ERR_STR:
 			return (int)wifi_error_str();
 		default:
-			wifi_set_error(WIFI_ERROR_NO_ERROR);
 			break;
 	}
+	if (!g_wifi_enabled) {
+		wifi_set_error(WIFI_ERROR_WIFI_ERROR);
+		switch(r2){
+			case LIB_WIFI_IFCONFIG:
+			case LIB_WIFI_DNS:
+				return (int)"";
+			case LIB_WIFI_NTP:
+			case LIB_WIFI_TCPCLIENT:
+			case LIB_WIFI_TCPSEND:
+			case LIB_WIFI_TCPCLOSE:
+			case LIB_WIFI_TCPSERVER:
+			case LIB_WIFI_TLSCLIENT:
+				return WIFI_ERROR_WIFI_ERROR;
+			case LIB_WIFI_TCPSTATUS:
+			case LIB_WIFI_TCPRECEIVE:
+			case LIB_WIFI_TCPACCEPT:
+				return 0;
+			default:
+				return r0;
+		}
+	}
+	wifi_set_error(WIFI_ERROR_NO_ERROR);
 	switch(r2){
 		case LIB_WIFI_IFCONFIG:
 			switch(r0){
