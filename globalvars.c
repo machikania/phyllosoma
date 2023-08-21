@@ -120,7 +120,9 @@ unsigned int g_wait_for_keyboard=2000;
 
 // Reserved words
 
-const char* const g_reserved_words[170]={
+
+
+const char* const g_reserved_words[187]={
 	"ABS",
 	"ACOS",
 	"ALIGN4",
@@ -139,6 +141,7 @@ const char* const g_reserved_words[170]={
 	"CHR",
 	"CIRCLE",
 	"CIRCLEFILL",
+	"CLASSCODE",
 	"CLEAR",
 	"CLS",
 	"COLOR",
@@ -156,6 +159,7 @@ const char* const g_reserved_words[170]={
 	"DELAYUS",
 	"DELETE",
 	"DIM",
+	"DNS",
 	"DO",
 	"DRAWCOUNT",
 	"ELSE",
@@ -187,6 +191,7 @@ const char* const g_reserved_words[170]={
 	"GCLS",
 	"GCOLOR",
 	"GETDIR",
+	"GETTIME",
 	"GOSUB",
 	"GOTO",
 	"GPALETTE",
@@ -200,6 +205,7 @@ const char* const g_reserved_words[170]={
 	"I2CWRITEDATA",
 	"IDLE",
 	"IF",
+	"IFCONFIG",
 	"IN",
 	"IN16",
 	"IN8H",
@@ -222,6 +228,7 @@ const char* const g_reserved_words[170]={
 	"NEW",
 	"NEXT",
 	"NOT",
+	"NTP",
 	"OPTION",
 	"OUT",
 	"OUT16",
@@ -246,6 +253,7 @@ const char* const g_reserved_words[170]={
 	"PUTBMP",
 	"PWM",
 	"READ",
+	"READKEY",
 	"REM",
 	"RESTORE",
 	"RETURN",
@@ -255,6 +263,7 @@ const char* const g_reserved_words[170]={
 	"SERIALIN",
 	"SERIALOUT",
 	"SETDIR",
+	"SETTIME",
 	"SGN",
 	"SIN",
 	"SINH",
@@ -270,12 +279,21 @@ const char* const g_reserved_words[170]={
 	"STATIC",
 	"STEP",
 	"STOP",
+	"STRFTIME",
 	"STRNCMP",
 	"SYSTEM",
 	"TAN",
 	"TANH",
+	"TCPACCEPT",
+	"TCPCLIENT",
+	"TCPCLOSE",
+	"TCPRECEIVE",
+	"TCPSEND",
+	"TCPSERVER",
+	"TCPSTATUS",
 	"THEN",
 	"TIMER",
+	"TLSCLIENT",
 	"TO",
 	"TVRAM",
 	"UNTIL",
@@ -291,8 +309,9 @@ const char* const g_reserved_words[170]={
 	"WEND",
 	"WHILE",
 	"WIDTH",
+	"WIFIERR",
 };
-const int const g_hash_resereved_words[170]={
+const int const g_hash_resereved_words[187]={
 	0x000400d3, //ABS
 	0x01002393, //ACOS
 	0x0d2063a4, //ALIGN4
@@ -311,6 +330,7 @@ const int const g_hash_resereved_words[170]={
 	0x00042252, //CHR
 	0x884c2355, //CIRCLE
 	0xab94cf50, //CIRCLEFILL
+	0x92492a81, //CLASSCODE
 	0x42344012, //CLEAR
 	0x00042353, //CLS
 	0x4238d392, //COLOR
@@ -328,6 +348,7 @@ const int const g_hash_resereved_words[170]={
 	0x0d018142, //DELAYUS
 	0x44344554, //DELETE
 	0x0004520d, //DIM
+	0x000453d3, //DNS
 	0x0000114f, //DO
 	0x827c002e, //DRAWCOUNT
 	0x0110d485, //ELSE
@@ -359,6 +380,7 @@ const int const g_hash_resereved_words[170]={
 	0x01182353, //GCLS
 	0x8238d383, //GCOLOR
 	0x84545203, //GETDIR
+	0xeaab78a4, //GETTIME
 	0x46392502, //GOSUB
 	0x0118e54f, //GOTO
 	0x0d1043aa, //GPALETTE
@@ -372,6 +394,7 @@ const int const g_hash_resereved_words[170]={
 	0xb47db71c, //I2CWRITEDATA
 	0x01205345, //IDLE
 	0x00001206, //IF
+	0x71c2adb7, //IFCONFIG
 	0x0000120e, //IN
 	0x0120ec76, //IN16
 	0x0120ee48, //IN8H
@@ -394,6 +417,7 @@ const int const g_hash_resereved_words[170]={
 	0x0004f117, //NEW
 	0x013c4654, //NEXT
 	0x0004f394, //NOT
+	0x0004f550, //NTP
 	0x9154839d, //OPTION
 	0x0004e514, //OUT
 	0x4e514c76, //OUT16
@@ -418,6 +442,7 @@ const int const g_hash_resereved_words[170]={
 	0x54543304, //PUTBMP
 	0x0005158d, //PWM
 	0x014c4004, //READ
+	0xffeb5be8, //READKEY
 	0x0005310d, //REM
 	0xedab1e34, //RESTORE
 	0xc45544da, //RETURN
@@ -427,6 +452,7 @@ const int const g_hash_resereved_words[170]={
 	0xc80195b5, //SERIALIN
 	0xff9af426, //SERIALOUT
 	0x84545206, //SETDIR
+	0xeaab79e4, //SETTIME
 	0x0005218e, //SGN
 	0x0005220e, //SIN
 	0x014883c8, //SINH
@@ -442,12 +468,21 @@ const int const g_hash_resereved_words[170]={
 	0x95015217, //STATIC
 	0x01495110, //STEP
 	0x01495390, //STOP
+	0xc755c5ae, //STRFTIME
 	0xacc3d9f5, //STRNCMP
 	0x98495119, //SYSTEM
 	0x0005500e, //TAN
 	0x015403c8, //TANH
+	0x025d42bb, //TCPACCEPT
+	0x8d75453b, //TCPCLIENT
+	0xbdca4f61, //TCPCLOSE
+	0xe8aec0f4, //TCPRECEIVE
+	0x91484694, //TCPSEND
+	0x841877f9, //TCPSERVER
+	0x955453f8, //TCPSTATUS
 	0x0154910e, //THEN
 	0x5520c112, //TIMER
+	0x728a8934, //TLSCLIENT
 	0x0000154f, //TO
 	0x555d300d, //TVRAM
 	0x543d520c, //UNTIL
@@ -463,4 +498,5 @@ const int const g_hash_resereved_words[170]={
 	0x015843c4, //WEND
 	0x56248345, //WHILE
 	0x56205548, //WIDTH
+	0xf8dfbe70, //WIFIERR
 };
