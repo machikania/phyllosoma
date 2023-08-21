@@ -48,9 +48,10 @@ void start_tls_client(const char* servername, int tcp_port);
 // Definitions
 
 #define WIFI_ERROR_NO_ERROR 0
-#define WIFI_ERROR_DNS_ERROR 1
-#define WIFI_ERROR_CONNECTION_ERROR 2
-#define WIFI_ERROR_WIFI_ERROR 3
+#define WIFI_ERROR_CONNECTION_CLOSED 1
+#define WIFI_ERROR_DNS_ERROR 2
+#define WIFI_ERROR_CONNECTION_ERROR 3
+#define WIFI_ERROR_WIFI_ERROR 4
 
 // Macros
 

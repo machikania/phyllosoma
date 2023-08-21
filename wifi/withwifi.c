@@ -343,6 +343,14 @@ int lib_wifi(int r0, int r1, int r2){
 			return wifi_error();
 		case LIB_WIFI_ERR_STR:
 			return (int)wifi_error_str();
+		case LIB_WIFI_TCPSTATUS:
+			return machikania_tcp_status(r1,(void**)r0);
+		case LIB_WIFI_TCPCLOSE:
+			return machikania_tcp_close((void**)r0);
+		case LIB_WIFI_TCPRECEIVE:
+			return tcp_read_from_buffer((char*)sp[0],sp[1],(void**)r0);
+		case LIB_WIFI_TCPACCEPT:
+			return (int)shift_pcb_fifo();
 		default:
 			break;
 	}
@@ -355,14 +363,9 @@ int lib_wifi(int r0, int r1, int r2){
 			case LIB_WIFI_NTP:
 			case LIB_WIFI_TCPCLIENT:
 			case LIB_WIFI_TCPSEND:
-			case LIB_WIFI_TCPCLOSE:
 			case LIB_WIFI_TCPSERVER:
 			case LIB_WIFI_TLSCLIENT:
 				return WIFI_ERROR_WIFI_ERROR;
-			case LIB_WIFI_TCPSTATUS:
-			case LIB_WIFI_TCPRECEIVE:
-			case LIB_WIFI_TCPACCEPT:
-				return 0;
 			default:
 				return r0;
 		}
@@ -405,20 +408,12 @@ int lib_wifi(int r0, int r1, int r2){
 			if (ipaddr) start_tcp_client(ip4addr_ntoa(ipaddr),r0);
 			else wifi_set_error(WIFI_ERROR_DNS_ERROR);
 			return wifi_error();
-		case LIB_WIFI_TCPSTATUS:
-			return machikania_tcp_status(r1,(void**)r0);
 		case LIB_WIFI_TCPSEND:
 			if (sp[1]<0) return machikania_tcp_write((char*)sp[0],strlen((char*)sp[0]),(void**)r0);
 			return machikania_tcp_write((char*)sp[0],sp[1],(void**)r0);
-		case LIB_WIFI_TCPRECEIVE:
-			return tcp_read_from_buffer((char*)sp[0],sp[1],(void**)r0);
-		case LIB_WIFI_TCPCLOSE:
-			return machikania_tcp_close((void**)r0);
 		case LIB_WIFI_TCPSERVER:
 			start_tcp_server(r1,r0);
 			return 0;
-		case LIB_WIFI_TCPACCEPT:
-			return (int)shift_pcb_fifo();
 		case LIB_WIFI_TLSCLIENT:
 			start_tls_client((char*)r1,r0);
 			return wifi_error();

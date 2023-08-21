@@ -97,6 +97,7 @@ static err_t tcp_client_connected(void *arg, struct tcp_pcb *tpcb, err_t err) {
 
 static err_t tcp_client_poll(void *arg, struct tcp_pcb *tpcb) {
 	DEBUG_printf("Connection time out\n");
+	wifi_set_error(WIFI_ERROR_CONNECTION_ERROR);
 	return tcp_result(arg, -1); // no response is an error?
 }
 
@@ -111,6 +112,7 @@ err_t tcp_client_recv(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err
 	TCP_CLIENT_T *state = (TCP_CLIENT_T*)arg;
 	if (!p) {
 		DEBUG_printf("null pbuf (connection closed?)");
+		wifi_set_error(WIFI_ERROR_CONNECTION_CLOSED);
 		return tcp_result(arg, -1);
 	}
 	// this method is callback from lwIP, so cyw43_arch_lwip_begin is not required, however you

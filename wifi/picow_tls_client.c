@@ -87,6 +87,7 @@ static err_t tls_client_connected(void *arg, struct altcp_pcb *pcb, err_t err) {
 
 static err_t tls_client_poll(void *arg, struct altcp_pcb *pcb) {
 	printf("timed out");
+	wifi_set_error(WIFI_ERROR_CONNECTION_ERROR);
 	return tls_client_close(arg);
 }
 
@@ -100,6 +101,7 @@ static err_t tls_client_recv(void *arg, struct altcp_pcb *pcb, struct pbuf *p, e
 	TLS_CLIENT_T *state = (TLS_CLIENT_T*)arg;
 	if (!p) {
 		printf("connection closed\n");
+		wifi_set_error(WIFI_ERROR_CONNECTION_CLOSED);
 		return tls_client_close(state);
 	}
 

@@ -26,6 +26,9 @@ void wifi_set_error(int err){
 			case WIFI_ERROR_NO_ERROR:
 				wifi_set_error_str("No error");
 				break;
+			case WIFI_ERROR_CONNECTION_CLOSED:
+				wifi_set_error_str("Connection closed");
+				break;
 			case WIFI_ERROR_DNS_ERROR:
 				wifi_set_error_str("DNS error");
 				break;
