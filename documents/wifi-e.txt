@@ -67,8 +67,8 @@ NTP, NTP()
 TCPACCEPT()
 	When a TCP server is started and a connection is made or received from a client, return the connection ID as an integer value. See TCPSERVER Usage for details on whether to return a connection or a reception. The connection ID is returned only once from this function and must be saved.
 
-TCPCLIENT x$[,y].
-	TCP connection to the server indicated by x$ on the port indicated by y. If y is omitted, the port is 80.
+TCPCLIENT x$[,y], TCPCLIENT(x$[,y])
+	TCP connection to the server indicated by x$ on the port indicated by y. If y is omitted, the port is 80. If called as a function, returns an error number.
 
 TCPCLOSE [x], TCPCLOSE([x])
 	Close the TCP connection. If x is specified, disconnects from the specified connection ID; if x is not specified, shuts down the server.
@@ -89,9 +89,19 @@ TCPSTATUS(x[,y])
 		If x is 0, whether or not a connection is being made. If it is connected, 1 is returned; if not, 0 is returned.
 		When x is 1, returns the number of bytes of communication received.
 
-TLSCLIENTx$[,y].
-	Connects to the server indicated by x$ on the port indicated by y. If y is omitted, 443 is returned.
+TLSCLIENT x$[,y], TLSCLIENT(x$[,y])
+	Connects to the server indicated by x$ on the port indicated by y. If y is omitted, the port is 443. If called as a function, returns an error number.
 
+WIFIERR()
+	Returns the error number of the execution of a WiFi related instruction. The main error numbers are listed below, but other error numbers may be returned. Note, however, that error numbers other than those listed below may vary from one version of MachiKania to another.
+		0: No error
+		1: Connection disconnected from the destination (normal termination when connecting as a client)
+		2: IP address resolution by DNS server failed
+		3: Connection timeout
+		4: No WiFi connection
+
+WIFIERR$()
+	Returns the contents of the error message from the execution of a WiFi-related instruction as a string.
 
 <To obtain the fixed URL of a server>
 
