@@ -690,6 +690,22 @@ DELETE x[,y[,z[, ... ]]]
 CALL x
 	Calls the method of the object specified by x. CALL" can be omitted.
 
+<Real-time clock>
+The real-time clock can be used with Type P. When using it with Type P that supports WiFi, set MACHIKAP.INI to connect to an NTP server at startup, or use the NTP command to connect to an NTP server to set the current time. If you are using Type P that does not support WiFi, use the SETTIME command to set the current time. The ISO-8601 string used in the sequence of instructions and functions is formatted as shown in the following example (with a "T" between the date and time).
+
+	2023-09-01T13:00:00 (for September 1, 2023, 1:00:0 PM)
+
+GETTIME$([x$[,y]])
+	Returns the (current) time as a string; if x$ is not specified, the current time is used; if y is specified, the time after y seconds is returned (negative seconds can also be specified).
+
+SETTIME x$
+	Sets the current time, where x$ is the current time as an ISO-8601 string.
+
+STRFTIME$(x$[,y$]])
+	Extracts the given information from the (current) time and returns it as a string. x$ is a string specifying which information to extract. if y$ is not specified, the current time is used; if y$ is specified as an ISO-8601 string, the specified time is used. the format of the string specified for x$ is as in the document strftime. html, but for Japanese documentation, see C language strftime(). For example
+		https://www.ibm.com/docs/ja/i/7.1?topic=ssw_ibm_i_71/rtref/strfti.html
+		https://linuxjm.osdn.jp/html/LDP_man-pages/man3/strftime.3.html
+
 <Hints>
 Since MachiKania ver 1.2, the RETURN statement can be used in the middle of the FOR-NEXT loop, WHILE-WEND loop, and DO-LOOP loop. However, jumping outside the loop with the GOTO statement will cause unexpected results (e.g., equipment reset). It is also possible to use the GOSUB statement to call a subroutine or nest another loop.
 
