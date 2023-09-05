@@ -421,10 +421,42 @@ Up to two files can be open at the same time.
 
 FCLOSE [x].
 	Closes a file. If there is an argument (x), the file specified by the file handle is closed.
+FFIND$([x$[,y$]))
+	Returns the filename of the file indicated by the string x$ (e.g., "*.BAS") in the directory. Returns the first filename if x$ is specified and the second or later filenames if x$ is not specified. If no file is found, an empty string is returned. If y$ is specified, the specified directory is searched, otherwise, the current directory is searched.
 FGET x,y
 	Reads y bytes into the buffer (specified as an array in x). If called as a function, returns the number of bytes successfully read.
 FILE x
 	Specify the active file handle (1 or 2) in x.
+FINFO(x)
+	Returns information on files found by FFIND$().
+		When x=0: returns the size of the file in bytes.
+		When x=1: Returns the date and time the file was created as a 16-bit integer.
+			bit 15:9 The year starting in 1980 is 0..127 and
+			bit 8:5  The month is 1..12, and
+			bit 4:0  The day of the month is entered as a value of 1..31, respectively. 
+		When x=2: The creation time of the file is returned as a 16-bit integer.
+			bit 15:11 hours with a value of 0..23,
+			bit 10:5  minutes with a value of 0..59,
+    		bit 4:0   seconds/2 with a value of 0..29. respectively.
+		When x=3: The attribute flag is returned.
+			bit 0: Read-only
+			bit 1: Hidden file
+			bit 2: System file
+			bit 4: Directory
+			bit 5: Archive
+FINFO$(x)
+	Returns information about the file found by FFIND$().
+		When x=0: Returns the date and time of creation of the file as an ISO-8601 string.
+		When x=1: Returns the date of file creation as a string.
+		When x=2: Returns the time of file creation as a string.
+		When x=3: Attribute flag information is returned as a string.
+			"r" for read-only, "w" otherwise
+			"h" for hidden files, "-" otherwise
+			"s" for system files, "-" otherwise
+			"d" for directory, "-" otherwise
+			"a" for archive, "-" otherwise
+		When x=4:
+			Returns the file name.
 FOPEN x$,y$[,z].
 	Opens the file whose name is indicated by x$ in the mode indicated by y$. The number of files that can be opened simultaneously is limited to two. If called as a function, a file handle is returned.
 		"r": Opens a file in read mode.

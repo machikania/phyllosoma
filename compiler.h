@@ -217,6 +217,8 @@
 #define FILE_FINPUT 13
 #define FILE_GETDIR 14
 #define FILE_FFIND 15
+#define FILE_FINFO 16
+#define FILE_FINFOSTR 17
 
 /*
 	LIB TIMER options
@@ -373,8 +375,8 @@ extern volatile short* g_scratch_short;
 extern volatile float* g_scratch_float;
 extern volatile char* g_scratch_char;
 
-extern const char* const g_reserved_words[187];
-extern const int const g_hash_resereved_words[187];
+extern const char* const g_reserved_words[189];
+extern const int const g_hash_resereved_words[189];
 
 extern char g_constant_value_flag;
 extern int g_constant_int;
@@ -596,6 +598,8 @@ int fseek_function(void);
 int finput_function(void);
 int getdir_function(void);
 int ffind_function(void);
+int finfo_function(void);
+int finfostr_function(void);
 
 // display.c
 int lib_display(int r0, int r1, int r2);

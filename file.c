@@ -265,7 +265,59 @@ int lib_file(int r0, int r1, int r2){
 			}
 			// No file found
 			return (int)"";
-			// TODO: support return fno.xxxx (see ff.h)
+		case FILE_FINFO:
+			switch(r0){
+				case 0: // File size
+					return fno.fsize;
+				case 1: // Modified date
+					return fno.fdate;
+				case 2: // Modified time
+					return fno.ftime;
+				case 3: // File attribute
+					return (unsigned int)fno.fattrib;
+				default:
+					return 0;
+			}
+		case FILE_FINFOSTR:
+			switch(r0){
+				case 0: // ISO-8601 string, YYYY-MM-DDThh:mm:ss
+					str=alloc_memory(5,-1);
+					sprintf(str,"%04d-%02d-%02dT%02d:%02d:%02d",
+						((fno.fdate>>9)&127)+1980,
+						(fno.fdate>>5)&15,
+						(fno.fdate>>0)&31,
+						(fno.ftime>>11)&31,
+						(fno.ftime>>5)&63,
+						(fno.ftime<<1)&63 );
+					return (int)str;
+				case 1: // Date string, YYYY-MM-DD
+					str=alloc_memory(3,-1);
+					sprintf(str,"%04d-%02d-%02d",
+						((fno.fdate>>9)&127)+1980,
+						(fno.fdate>>5)&15,
+						(fno.fdate>>0)&31 );
+					return (int)str;
+				case 2: // Time string, hh:mm:ss
+					str=alloc_memory(3,-1);
+					sprintf(str,"%02d:%02d:%02d",
+						(fno.ftime>>11)&31,
+						(fno.ftime>>5)&63,
+						(fno.ftime<<1)&63 );
+					return (int)str;
+				case 3: // Attribute string, "rhsda"
+					str=alloc_memory(2,-1);
+					if (AM_RDO & fno.fattrib) str[0]='r'; else str[0]='w'; // Read only 
+					if (AM_HID & fno.fattrib) str[1]='h'; else str[1]='-'; // Hidden 
+					if (AM_SYS & fno.fattrib) str[2]='s'; else str[2]='-'; // System 
+					if (AM_DIR & fno.fattrib) str[3]='d'; else str[3]='-'; // Directory 
+					if (AM_ARC & fno.fattrib) str[4]='a'; else str[4]='-'; // Archive 
+					str[5]=0;
+					return (int)str;
+				case 4: // File name
+					return (int)&fno.fname[0];
+				default:
+					return (int)"";
+			}
 		default:
 			break;
 	}
@@ -468,4 +520,14 @@ int ffind_function(void){
 		ARG_STRING_OPTIONAL<<ARG1 |
 		ARG_STRING_OPTIONAL<<ARG2 |
 		FILE_FFIND<<LIBOPTION);	
+}
+int finfo_function(void){
+	return argn_function(LIB_FILE,
+		ARG_INTEGER<<ARG1 |
+		FILE_FINFO<<LIBOPTION);
+}
+int finfostr_function(void){
+	return argn_function(LIB_FILE,
+		ARG_INTEGER<<ARG1 |
+		FILE_FINFOSTR<<LIBOPTION);
 }

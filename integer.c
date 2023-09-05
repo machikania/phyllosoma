@@ -206,6 +206,7 @@ int integer_functions(void){
 	if (instruction_is("FEOF(")) return feof_function();
 	if (instruction_is("FGET(")) return fget_function();
 	if (instruction_is("FGETC(")) return fgetc_function();
+	if (instruction_is("FINFO(")) return finfo_function();
 	if (instruction_is("FLEN(")) return flen_function();
 	if (instruction_is("FPUT(")) return fput_function();
 	if (instruction_is("FPUTC(")) return fputc_function();

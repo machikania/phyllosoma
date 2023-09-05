@@ -120,9 +120,7 @@ unsigned int g_wait_for_keyboard=2000;
 
 // Reserved words
 
-
-
-const char* const g_reserved_words[187]={
+const char* const g_reserved_words[189]={
 	"ABS",
 	"ACOS",
 	"ALIGN4",
@@ -171,10 +169,12 @@ const char* const g_reserved_words[187]={
 	"FABS",
 	"FCLOSE",
 	"FEOF",
+	"FFIND",
 	"FGET",
 	"FGETC",
 	"FIELD",
 	"FILE",
+	"FINFO",
 	"FINPUT",
 	"FLEN",
 	"FLOAT",
@@ -311,7 +311,7 @@ const char* const g_reserved_words[187]={
 	"WIDTH",
 	"WIFIERR",
 };
-const int const g_hash_resereved_words[187]={
+const int const g_hash_resereved_words[189]={
 	0x000400d3, //ABS
 	0x01002393, //ACOS
 	0x0d2063a4, //ALIGN4
@@ -360,10 +360,12 @@ const int const g_hash_resereved_words[187]={
 	0x011c00d3, //FABS
 	0xc234e494, //FCLOSE
 	0x011c4386, //FEOF
+	0x471c83c4, //FFIND
 	0x011c6114, //FGET
 	0x47184543, //FGETC
 	0x47204344, //FIELD
 	0x011c8345, //FILE
+	0x4720f1cf, //FINFO
 	0xc83d1505, //FINPUT
 	0x011cd10e, //FLEN
 	0x4734e014, //FLOAT
