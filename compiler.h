@@ -216,6 +216,7 @@
 #define FILE_FSEEKFUNC 12
 #define FILE_FINPUT 13
 #define FILE_GETDIR 14
+#define FILE_FFIND 15
 
 /*
 	LIB TIMER options
@@ -594,6 +595,7 @@ int flen_function(void);
 int fseek_function(void);
 int finput_function(void);
 int getdir_function(void);
+int ffind_function(void);
 
 // display.c
 int lib_display(int r0, int r1, int r2);

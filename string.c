@@ -56,6 +56,7 @@ int string_functions(void){
 	if (instruction_is("SPRINTF$(")) return sprintf_function();
 	if (instruction_is("SYSTEM$(")) return system_function();
 	// File functions
+	if (instruction_is("FFIND$(")) return ffind_function();
 	if (instruction_is("FINPUT$(")) return finput_function();
 	if (instruction_is("GETDIR$(")) return getdir_function();
 	// RTC functions

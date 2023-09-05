@@ -168,6 +168,8 @@ void close_all_files(void){
 int lib_file(int r0, int r1, int r2){
 	FIL* fhandle=g_pFileHandles[g_active_handle-1];
 	unsigned char* str;
+	static DIR dj;      // Directory object
+	static FILINFO fno; // File information
 	switch(r2){
 		case FILE_FCLOSE:
 			if (1==r0 || 2==r0) {
@@ -248,6 +250,22 @@ int lib_file(int r0, int r1, int r2){
 			}
 			return (int)str;
 			break;
+		case FILE_FFIND:
+			// r1: pattern
+			// r0: path
+			if (0==r1) {
+				// find next mode
+				if (FR_OK==f_findnext(&dj, &fno)) return (int)fno.fname;
+			} else if (0==r0) {
+				// find first mode with current directory
+				if (FR_OK==f_findfirst(&dj, &fno, ".", (char*)r1)) return (int)&fno.fname[0];
+			} else {
+				// find first mode with specified directory
+				if (FR_OK==f_findfirst(&dj, &fno, (char*)r0, (char*)r1)) return (int)&fno.fname[0];
+			}
+			// No file found
+			return (int)"";
+			// TODO: support return fno.xxxx (see ff.h)
 		default:
 			break;
 	}
@@ -442,4 +460,12 @@ int getdir_function(void){
 	return argn_function(LIB_FILE,
 		ARG_NONE | 
 		FILE_GETDIR<<LIBOPTION);
+}
+int ffind_function(void){
+	g_default_args[1]=0;
+	g_default_args[2]=0;
+	return argn_function(LIB_FILE,
+		ARG_STRING_OPTIONAL<<ARG1 |
+		ARG_STRING_OPTIONAL<<ARG2 |
+		FILE_FFIND<<LIBOPTION);	
 }
