@@ -429,10 +429,10 @@ int static_method_or_property(int cn, char stringorfloat){
 		// data[2] is the pointer to empty object of specified class; set it to data
 		data=(int*)data[2];
 		// Find the field id in class structure
-		for(i=1;i<class[0];i++){
+		for(i=1;i<=class[0];i++){
 			if ((class[i]&0xffff) == fid) break;
 		}
-		if (class[0]<=i) return ERROR_UNKNOWN;
+		if (class[0]<i) return ERROR_UNKNOWN;
 		// Compile method. data[i] is the address of method
 		i=static_method(data[i]);
 		if (i) return i;
