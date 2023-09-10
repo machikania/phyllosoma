@@ -753,7 +753,24 @@ If strings are handled consecutively in a line, an error message "String too com
 Be careful when accessing global variables in interrupt functions. If a variable of the same name is specified as a VAR in one of the subroutines and is also used as a local variable, depending on when the interrupt is triggered, the value of the variable may or may not belong to the global or local variable. Therefore, if you want to handle a global variable in an interrupt function, do not specify a variable of the same name as a VAR.
 
 <Version history>
-KM-1502 Released in January 2022.
+KM-1503 Released in September 2023.
+　Added support for WiFi connection using Raspberry Pi Pico W.
+　FGETC() function returns -1 when EOF.
+　Supported XIAO RP2040, RP2040-Zero, and Tiny-2040 for embedding.
+　Fixed a bug when the third argument of SERIAL statement is omitted.
+　Exceptions are now trapped and displayed on the screen.
+　Fixed a bug that CORETIMER starts to fail about 2000 seconds after power-on.
+　Support ILI9488.
+　Support RTC(Real Time Clock).
+　Supports date/time setting when saving files.
+　Supports RTC setting by NTP server.
+　Supports turning on/off the LEDs attached to the board by calling SYSTEM 201.
+　Fixed a memory allocation bug.
+　Fixed a garbage collection bug when using file-related commands such as FREMOVE/SETDIR.
+　Improved stability of the WAVE player.
+　Fixed a static method call bug in a class.
+　Three functions, FFINGD$(), FINFO(), and FINFO$(), are added. Enabled to create file list.
+KM-1502 Released in January 2023.
 　Three functions, INKEY(), READKEY(), and INPUT$(), and INKEY interrupt function, have been added to support USB keyboards and editors.
 　Fixed a bug that occurred in some environments when compiling class files.
 　Added ALIGN4 statement, DATAADDRESS() function, and FUNCADDRESS() function

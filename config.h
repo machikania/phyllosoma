@@ -14,7 +14,7 @@
 #define PHYLLOSOMA
 #define SYSVER1 "Phyllosoma"
 #define SYSVER2 "1.2.3.9"
-#define BASVER "KM-1502"
+#define BASVER "KM-1503"
 
 #define INTRODUCE_MACHIKANIA \
 	"MachiKania BASIC System\n"\
