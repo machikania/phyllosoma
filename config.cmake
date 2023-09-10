@@ -19,6 +19,9 @@
 # Raspberry Pi Pico W + ILI9341 LCD + Wifi
 set(MACHIKANIA_BUILD pico_w_ili9341)
 
+# Raspberry Pi Pico W + ILI9488 LCD + Wifi
+#set(MACHIKANIA_BUILD pico_w_ili9488)
+
 # Do not touch the lines below
 
 # Force DEBUG_MODE for XIAO board
@@ -29,11 +32,16 @@ endif()
 # Select graphic library
 if (MACHIKANIA_BUILD STREQUAL "pico_ili9488")
 	set(MACHIKANIA_GRAPH_LIB ili9488_spi)
+elseif (MACHIKANIA_BUILD STREQUAL "pico_w_ili9488")
+	set(MACHIKANIA_GRAPH_LIB ili9488_spi)
 else()
 	set(MACHIKANIA_GRAPH_LIB ili9341_spi)
 endif()
 
 if (MACHIKANIA_BUILD STREQUAL "pico_w_ili9341")
+	set(MACHIKANIA_WIFI withwifi)
+	set(PICO_BOARD pico_w)
+elseif (MACHIKANIA_BUILD STREQUAL "pico_w_ili9488")
 	set(MACHIKANIA_WIFI withwifi)
 	set(PICO_BOARD pico_w)
 else()

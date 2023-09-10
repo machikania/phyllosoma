@@ -6,10 +6,12 @@ MachiKania Phyllosoma is a BASIC compiler for ARMv6-M, especially for Raspberry 
 
 ## how to compile
 cmake and make. The pico-sdk (ver 1.5.0 is confirmed for building) with tinyusb submodule (ver 0.15.0 is confirmed for building) is required. In config.cmake, select configuration option to build by enabling "set()" command. Currently, there are following options:  
+  
 1. set(MACHIKANIA_BUILD pico_ili9341) : for Raspberry Pi Pico + ILI9341 LCD  
 2. set(MACHIKANIA_BUILD pico_ili9488) : for Raspberry Pi Pico + ILI9488 LCD  
 3. set(MACHIKANIA_BUILD xiao_embed) : for Seeed XIAO RP2040 for embedded development  
 4. set(MACHIKANIA_BUILD pico_w_ili9341) : for Raspberry Pi Pico W + ILI9341 LCD + Wifi  
+5. set(MACHIKANIA_BUILD pico_w_ili9488) : for Raspberry Pi Pico W + ILI9488 LCD + Wifi
 
 ## how to use
 Copy "phyllosoma.uf2" to the RPI-RP2 drive of Raspberry Pi Pico. Immediately connect to COMx port (com number depends on environment) by serial console at 115200 baud rate, if needed. Alternatively, copy "phyllosoma_kb.uf2" to the RPI-RP2 drive of Raspberry Pi Pico for using USB keyboard directly connected to Raspberry Pi Pico.
