@@ -754,14 +754,17 @@ Be careful when accessing global variables in interrupt functions. If a variable
 
 <Version history>
 KM-1503 Released in September 2023.
-　Added support for WiFi connection using Raspberry Pi Pico W.
+　Added support for WiFi connection using Raspberry Pi Pico W. Following statements/functions are added: DNS$(), IFCONFIG$(), NTP, TCPACCEPT(), TCPCLIENT, TCPCLOSE, TCPRECEIVE, TCPSEND, TCPSERVER, TCPSTATUS, TLSCLIENT, WIFIERR(), WIFIERR$()
+　Fixed a bug in GCOLOR() function.
+　Fixed a key input bug with some USB keyboards.
 　FGETC() function returns -1 when EOF.
 　Supported XIAO RP2040, RP2040-Zero, and Tiny-2040 for embedding.
+　SPI ports can now be specified in the INI file.
 　Fixed a bug when the third argument of SERIAL statement is omitted.
 　Exceptions are now trapped and displayed on the screen.
 　Fixed a bug that CORETIMER starts to fail about 2000 seconds after power-on.
 　Support ILI9488.
-　Support RTC(Real Time Clock).
+　Support RTC(Real Time Clock). Follosing statement/functions are added: GETTIME$(), SETTIME. STRFTIME$()
 　Supports date/time setting when saving files.
 　Supports RTC setting by NTP server.
 　Supports turning on/off the LEDs attached to the board by calling SYSTEM 201.
@@ -770,6 +773,7 @@ KM-1503 Released in September 2023.
 　Improved stability of the WAVE player.
 　Fixed a static method call bug in a class.
 　Three functions, FFINGD$(), FINFO(), and FINFO$(), are added. Enabled to create file list.
+　Fixed a compile-time bug when the REM statement contains double quotation.
 KM-1502 Released in January 2023.
 　Three functions, INKEY(), READKEY(), and INPUT$(), and INKEY interrupt function, have been added to support USB keyboards and editors.
 　Fixed a bug that occurred in some environments when compiling class files.
