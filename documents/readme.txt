@@ -1,0 +1,174 @@
+　　　　　　　　　　　　　　　　　　　　　　　　　　2023.1.28
+　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
+　　　　　　　　「MachiKania type P」
+　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
+
+MachiKania（マチカニア）はBASICコンパイラを搭載したマイコン用
+オープンプラットフォームです。
+MachiKania type PではRaspberry Pi Picoと小型液晶モジュールを
+搭載し、ポータブルなBASIC実行環境を実現しています。
+汎用I/OやSPI、I2Cといった外部機器の制御もBASICから簡単に行う
+ことが可能です。
+
+搭載しているBASICコンパイラはKM-BASICです。KM-BASICは32bit
+整数型のBASICです。
+また、単精度浮動小数点演算もサポートしています。
+構造化プログラミング、オブジェクト指向対応も行っています。
+BASICプログラムはPC等で作成し、MMCまたはSDカード経由で転送する
+ことや、USBケーブルと専用ソフトを用いて転送することが可能です。
+また、USBキーボードを接続し、直接プログラムを編集して実行する
+ことも可能です。
+
+動作回路やその他の詳細は、下記のWebサイトを参照してください。
+http://www.ze.em-net.ne.jp/~kenken/machikania/typep.html
+
+
+同梱される実行形式ファイル（uf2ファイル）は非商用利用に限り
+無償で自由に利用することが可能です。
+また、利用した作品を一般に公開することも可能です。その場合、
+MachiKaniaシリーズを利用していることについてもWebサイトや
+説明書等、いずれかの場所に記載してください。
+なお、ご利用によって生じた被害や損害については責任を負いかねます。
+
+
+＜machikania-p.zipファイルコンテンツ＞
+
+[documents]ディレクトリ
+　ドキュメント類を格納
+　- help.txt
+　- help-e.txt
+　　KM-BASICのリファレンスマニュアル
+
+　- class.txt
+　- class-e.txt
+　　KM-BASICでオブジェクト指向化プログラミングのリファレンスマニュアル
+
+　- embed.txt
+　- embed-e.txt
+　　ファイル埋め込み実行ファイル作成方法について
+
+　- pcconnect.txt
+　- pcconnect-e.txt
+　　PCからMachiKaniaにファイルを転送するための方法について
+
+　- shematic.png
+　　MachiKania type P回路図
+
+[embed]ディレクトリ
+　組み込み用途などSDカードなしでもBASICプログラムを実行することが
+　できるようなツール類を格納
+
+[pcconnect]ディレクトリ
+　USBケーブルを介してPC内のファイルをMachiKaniaに転送するためのツール類
+　を格納
+
+phyllosoma.uf2
+　MachiKania type P BASICシステム本体（PC connect機能対応版）
+　PCとRaspberry Pi PicoをUSB接続し書き込む
+　PC connect機能により、USBケーブルで接続したPCからBASICプログラムを転送可能
+
+phyllosoma_kb.uf2
+　MachiKania type P BASICシステム本体（USBキーボード接続対応版）
+　PCとRaspberry Pi PicoをUSB接続し書き込む
+　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
+
+readme.txt
+　このファイル
+
+readmeLib.txt
+　LIB ディレクトリー内のライブラリー説明書
+
+＜ここより下のファイルおよびディレクトリ全てをSDカードのルートディレクトリにコピーしてください＞
+
+MACHIKAP.INI
+　MachiKania type Pの初期設定ファイル
+
+[LIB]ディレクトリ
+　BASICプログラムから簡単に利用可能なクラスライブラリ
+　SDカードのルートにLIBディレクトリごとコピーして利用
+
+[samples]ディレクトリ
+　BASICサンプルプログラム。これらのファイルをSDカードのルートディレクトリにコピーする
+　（または任意のサブディレクトリを作成してコピー）
+
+　3DWAVE.BAS
+　　波紋の3Dグラフィック
+
+　BLOCK.BAS
+　　初代MachiKania向けに作成したブロック崩しゲーム
+
+　INVADE.BAS
+　　MachiKania type Z向けに作成したインベーダーゲーム
+
+　LCHIKA.BAS
+　　LEDを点滅させるサンプルプログラム
+
+　MANDELBR.BAS
+　　テキストでマンデルブローを出力するプログラム
+
+　MAZE3D.BAS
+　　立体迷路脱出ゲーム
+
+　MUSIC.BAS
+　　MUSIC命令使用のサンプルプログラム
+
+　NIHONGO.BAS
+　　ライブラリーのCKNJ16クラスを利用して日本語を表示するプログラム
+
+　PCG.BAS
+　　PCGを利用したサンプルプログラム
+
+　PEGSOL-G.BAS
+　　ペグソリテアゲームプログラム
+
+　PHOTO.BAS
+　　BMPファイルを液晶表示するプログラム
+
+　RAYTRACE.BAS
+　　レイトレーシングプログラム
+
+　STARTREK.BAS
+　　スタートレックゲームプログラム
+
+　SOUND.BAS
+　　SOUND命令使用のサンプルプログラム
+
+　TIME-INT.BAS
+　　タイマー割り込みのサンプルプログラム
+
+　WFRAME.BAS
+　　ワイヤーフレームグラフィックプログラム
+
+　COSMOS.BMP（PHOTO.BASで使用）
+
+
+------------------------------------------------------------------------
+MachiKania type P BASICシステム改版履歴
+
+Phyllosoma 1.00/KM-1500（2022.8.27）
+　・最初の公開バージョン
+
+Phyllosoma 1.10/KM-1501（2022.10.1）
+　・PC connect機能を追加
+　・NOT#()関数を追加
+　・クラス中で別のクラスを使うとコンパイルできない不具合を修正
+　・クラスのスタティック関数呼び出しの不具合を修正
+　・オブジェクトのフィールドに、文字列・配列を割り当てることを許可
+　・一定時間後にWAVEファイルの再生が止まる不具合を修正
+　・割り込み中でのWAIT・DELAYMS・DELAYUSステートメントの使用を許可
+　・MUSICステートメントが一部の環境でエラーで停止する不具合を修正
+　・ファイル選択画面の表示改善
+　・WS2812B・STRDIM・STRD2・MAの４つのクラスを、ライブラリーに追加
+
+Phyllosoma 1.20/KM-1502（2022.1.28）
+　・USBキーボード及びエディターをサポート
+　・INKEY()・READKEY()・INPUT$()の3つの関数と、INKEY割り込み機能を整備
+　・クラスファイルコンパイル時に一部の環境で生じる不具合を修正
+　・ALIGN4ステートメント・DATAADDRESS()関数・FUNCADDRESS()関数を追加
+　・タイマー割り込みのタイミングが少しずれていたのを修正
+　・SYSTEM()に、メモリーアロケーション関連の機能を追加
+　・文字列で「\r」「\t」のエスケープシークエンスが使用可能に
+　・OPTION CLASSCODEに対応
+　・BASICプログラム実行中でのカードの抜き差しが可能に
+　・ファイル選択画面でC言語で作成したHEXファイルのロードが可能に
+　・CRDINI・CLDHEX・REGEXP・STRINGの４つのクラスを、ライブラリーに追加
