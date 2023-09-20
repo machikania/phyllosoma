@@ -31,6 +31,18 @@ CRDINI
 CSWTIF
 	Class for displaying TIFF images.
 
+HTTPD
+	Class to construct http server
+
+JSON
+	Class to analyze JSON string
+
+IR_RX
+	Class to use IR receiver
+
+IR_TX
+	Class to use IR transmitter
+
 REGEXP
 	Class for using regular expressions with MachiKania type P.
 

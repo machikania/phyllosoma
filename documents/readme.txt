@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2023.1.28
+　　　　　　　　　　　　　　　　　　　　　　　　　　2023.9.30
 　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
 　　　　　　　　「MachiKania type P」
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -54,23 +54,47 @@ MachiKaniaシリーズを利用していることについてもWebサイトや
 　- shematic.png
 　　MachiKania type P回路図
 
-[embed]ディレクトリ
-　組み込み用途などSDカードなしでもBASICプログラムを実行することが
+　- wifi.txt
+　- wifi-e.txt
+　　Raspberry Pi Pico Wを使ってWiFi接続を行うときのリファレンスマニュアル 
+
+
+[pico_ili9341]ディレクトリ
+　Raspberry Pi Pico と ILI9341 液晶の組み合わせのときに使うバイナリー
+　を格納
+　-phyllosoma.uf2
+　　MachiKania type P BASICシステム本体（PC connect機能対応版）
+　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　PC connect機能により、USBケーブルで接続したPCからBASICプログラムを転送可能
+
+　-phyllosoma_kb.uf2
+　　MachiKania type P BASICシステム本体（USBキーボード接続対応版）
+　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
+
+[pico_w_ili9341]ディレクトリ
+　Raspberry Pi Pico W と ILI9341 液晶の組み合わせのときに使うバイナリー
+　を格納
+　-phyllosoma.uf2
+　　MachiKania type P BASICシステム本体（PC connect機能対応版）
+　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　PC connect機能により、USBケーブルで接続したPCからBASICプログラムを転送可能
+　　WiFi接続が可能
+
+　-phyllosoma_kb.uf2
+　　MachiKania type P BASICシステム本体（USBキーボード接続対応版）
+　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
+　　WiFi接続が可能
+
+[pico_ili9341/embed]ディレクトリ
+[pico_w_ili9341/embed]ディレクトリ
+　組み込み用途などMMC/SDカードなしでもBASICプログラムを実行することが
 　できるようなツール類を格納
 
 [pcconnect]ディレクトリ
 　USBケーブルを介してPC内のファイルをMachiKaniaに転送するためのツール類
 　を格納
-
-phyllosoma.uf2
-　MachiKania type P BASICシステム本体（PC connect機能対応版）
-　PCとRaspberry Pi PicoをUSB接続し書き込む
-　PC connect機能により、USBケーブルで接続したPCからBASICプログラムを転送可能
-
-phyllosoma_kb.uf2
-　MachiKania type P BASICシステム本体（USBキーボード接続対応版）
-　PCとRaspberry Pi PicoをUSB接続し書き込む
-　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
 
 readme.txt
 　このファイル
@@ -160,7 +184,7 @@ Phyllosoma 1.10/KM-1501（2022.10.1）
 　・ファイル選択画面の表示改善
 　・WS2812B・STRDIM・STRD2・MAの４つのクラスを、ライブラリーに追加
 
-Phyllosoma 1.20/KM-1502（2022.1.28）
+Phyllosoma 1.20/KM-1502（2023.1.28）
 　・USBキーボード及びエディターをサポート
 　・INKEY()・READKEY()・INPUT$()の3つの関数と、INKEY割り込み機能を整備
 　・クラスファイルコンパイル時に一部の環境で生じる不具合を修正
@@ -172,3 +196,28 @@ Phyllosoma 1.20/KM-1502（2022.1.28）
 　・BASICプログラム実行中でのカードの抜き差しが可能に
 　・ファイル選択画面でC言語で作成したHEXファイルのロードが可能に
 　・CRDINI・CLDHEX・REGEXP・STRINGの４つのクラスを、ライブラリーに追加
+
+Phyllosoma 1.30/KM-1503 (2023.9.30)
+　・Raspberry Pi Pico W を用いた WiFi 接続に対応。次の命令・関数を追加： 
+　　DNS$(), IFCONFIG$(), NTP, TCPACCEPT(), TCPCLIENT, TCPCLOSE, TCPRECEIVE, 
+　　TCPSEND, TCPSERVER, TCPSTATUS, TLSCLIENT, WIFIERR(), WIFIERR$()
+　・GCOLOR()関数の不具合を修正
+　・一部USBキーボードでのキー入力不具合に対応
+　・EOFの時、FGETC()関数が-1を返すようにした
+　・embed用にXIAO RP2040, RP2040-Zero, and Tiny-2040に対応
+　・SPIの対応ポートをINIファイルで指定出来るようにした
+　・SERIALステートメントの第3引数を省略した時の不具合を修正
+　・例外をトラップして画面表示するようにした
+　・CORETIMERが電源投入後およそ2000秒後から不具合を起こす事を修正
+　・ILI9488に対応
+　・RTC(Real Time Clock)をサポート。次の命令・関数を追加： 
+　　GETTIME$(), SETTIME. STRFTIME$()
+　・ファイル保存時の日時設定をサポート
+　・NTPサーバーによるRTCのセットをサポート
+　・SYSTEM 201 呼び出しにより、ボード付属のLEDのオン・オフを出来るようにした
+　・メモリーアロケーションの不具合を修正
+　・FREMOVE/SETDIR等のファイル関連命令を使用時の、ガベージコレクション不具合を修正
+　・WAVEプレーヤーの安定性を改善
+　・クラスのスタティックメソッド呼び出し不具合を修正
+　・FFINGD$(), FINFO(), FINFO$()の3つの関数を追加。ファイル一覧の作成が可能に
+　・REM 文に「"」を含む際のコンパイル時の不具合を修正

@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2023.1.28
+　　　　　　　　　　　　　　　　　　　　　　　　　　2023.9.30
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type P
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -44,21 +44,40 @@ Please note that we are not responsible for any damage or loss caused by the use
 　- shematic.png
 　　MachiKania type P schematic
 
-The [embed] directory
+　- wifi.txt
+　- wifi-e.txt
+　　Reference manual to use WiFi connection with Raspberry Pi Pico W
+
+[pico_ili9341] directory
+　- phyllosoma.uf2
+　　MachiKania type P BASIC system (version supporting PC connect function)
+　　Connects the PC and Raspberry Pi Pico via USB and writes
+　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
+
+　- phyllosoma_kb.uf2
+　　MachiKania type P BASIC system main unit (USB keyboard connection version)
+　　Connects a PC and Raspberry Pi Pico via USB cable and writes
+　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
+
+[pico_w_ili9341] directory
+　- phyllosoma.uf2
+　　MachiKania type P BASIC system (version supporting PC connect function)
+　　Connects the PC and Raspberry Pi Pico via USB and writes
+　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
+　　WiFi connection is available.
+
+　- phyllosoma_kb.uf2
+　　MachiKania type P BASIC system main unit (USB keyboard connection version)
+　　Connects a PC and Raspberry Pi Pico via USB cable and writes
+　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
+　　WiFi connection is available.
+
+[pico_ili9341/embed] directory
+[pico_w_ili9341/embed] directory
 　Stores tools that allow you to run BASIC programs without an SD card, e.g. for embedded applications
 
 [pcconnect] directory
 　Contains tools for transferring files in a PC to MachiKania via USB cable
-
-phyllosoma.uf2
-　MachiKania type P BASIC system (version supporting PC connect function)
-　Connects the PC and Raspberry Pi Pico via USB and writes
-　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
-
-phyllosoma_kb.uf2
-　MachiKania type P BASIC system main unit (USB keyboard connection version)
-　Connects a PC and Raspberry Pi Pico via USB cable and writes
-　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
 
 readme.txt
 　This file
@@ -146,7 +165,7 @@ Phyllosoma 1.10/KM-1501 (2022.10.1)
 　Improved the display of the file selection screen.
 　Four classes, WS2812B, STRDIM, STRD2, and MA, have been added to the library.
 
-Phyllosoma 1.20/KM-1502 (2022.1.28)
+Phyllosoma 1.20/KM-1502 (2023.1.28)
 　USB keyboard and editor support
 　Added INKEY(), READKEY(), and INPUT$() functions and INKEY interrupt function.
 　Fixed a bug that occurred in some environments when compiling class files.
@@ -158,3 +177,25 @@ Phyllosoma 1.20/KM-1502 (2022.1.28)
 　Card can be inserted and removed during BASIC program execution.
 　HEX files created in C language can be loaded on the file selection screen.
 　Four classes, CRDINI, CLDHEX, REGEXP, and STRING, are added to the library.
+
+Phyllosoma 1.30/KM-1503 (2023.9.30)
+　Added support for WiFi connection using Raspberry Pi Pico W. Following statements/functions are added: DNS$(), IFCONFIG$(), NTP, TCPACCEPT(), TCPCLIENT, TCPCLOSE, TCPRECEIVE, TCPSEND, TCPSERVER, TCPSTATUS, TLSCLIENT, WIFIERR(), WIFIERR$()
+　Fixed a bug in GCOLOR() function.
+　Fixed a key input bug with some USB keyboards.
+　FGETC() function returns -1 when EOF.
+　Supported XIAO RP2040, RP2040-Zero, and Tiny-2040 for embedding.
+　SPI ports can now be specified in the INI file.
+　Fixed a bug when the third argument of SERIAL statement is omitted.
+　Exceptions are now trapped and displayed on the screen.
+　Fixed a bug that CORETIMER starts to fail about 2000 seconds after power-on.
+　Support ILI9488.
+　Support RTC(Real Time Clock). Follosing statement/functions are added: GETTIME$(), SETTIME. STRFTIME$()
+　Supports date/time setting when saving files.
+　Supports RTC setting by NTP server.
+　Supports turning on/off the LEDs attached to the board by calling SYSTEM 201.
+　Fixed a memory allocation bug.
+　Fixed a garbage collection bug when using file-related commands such as FREMOVE/SETDIR.
+　Improved stability of the WAVE player.
+　Fixed a static method call bug in a class.
+　Three functions, FFINGD$(), FINFO(), and FINFO$(), are added. Enabled to create file list.
+　Fixed a compile-time bug when the REM statement contains double quotation.
