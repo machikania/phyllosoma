@@ -15,6 +15,12 @@
 
 void memdump(void);
 
+#ifdef MACHIKANIA_DEBUG_MODE
+#define MACHIKANIA_DEBOG_MODE_STR " (embed)"
+#else
+#define MACHIKANIA_DEBOG_MODE_STR ""
+#endif
+
 /*
 	File to compile
 */

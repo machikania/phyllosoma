@@ -628,8 +628,8 @@ int lib_system(int r0, int r1, int r2){
 		//	現在実行中のCPUのクロック周波数を返す。
 			return 125000000;
 		case 5:
-		//	コンパイル時のコンフィグ設定、"pico_ili9341.h"などを返す。
-			return 9+(int)MACHIKANIA_CONFIG;
+		//	コンパイル時のコンフィグ設定、"pico_ili9341.h" "pico_ili9341.h (embed)"などを返す。
+			return 9+(int)MACHIKANIA_CONFIG MACHIKANIA_DEBOG_MODE_STR;
 		case 20:
 		//	キャラクターディスプレイ横幅を返す。
 			return WIDTH_X;
