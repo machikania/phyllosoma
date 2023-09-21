@@ -163,6 +163,14 @@ MACHIKAP.INI
 　WFRAME.BAS
 　　ワイヤーフレームグラフィックプログラム
 
+　WEATHER.BAS
+　　WGETクラスとJSONクラスを使った、ネット上のwebページから情報を得るサンプルプログラム
+　　今日の日付と天気予報を表示する
+　
+　HDAEMON.BAS
+　　HTTPDクラスを使って web サーバー構築を構築するサンプルプログラム
+　　PCやスマートフォンから接続して、Pico W の LED をオン・オフできる
+
 　COSMOS.BMP（PHOTO.BASで使用）
 
 

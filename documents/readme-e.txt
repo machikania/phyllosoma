@@ -144,6 +144,14 @@ MACHIKAP.INI
 　WFRAME.BAS
 　　Wireframe graphics program
 
+　WEATHER.BAS
+　　Sample program to get information from web pages on the net using WGET and JSON classes
+　　Display today's date and weather forecast
+　
+　HDAEMON.BAS
+　　Sample program to build a web server construction using the HTTPD class
+　　Connect from PC or smartphone to turn on/off LEDs on Pico W
+
 　COSMOS.BMP (used in PHOTO.BAS)
 
 
