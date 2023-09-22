@@ -193,7 +193,10 @@ unsigned char* code2upper(unsigned char* code){
 	char instring=0;
 	for(i=0;i<1024;i++){
 		c=code[i];
-		if (instring) {
+		if (0x0d==c || 0x0a==c || 0x00==c) {
+				result[i]=0;
+				break;
+		} else if (instring) {
 			if ('"'==c) instring=0;
 		} else {
 			if ('a'<=c && c<='z') {
@@ -202,9 +205,6 @@ unsigned char* code2upper(unsigned char* code){
 				instring=1;
 			} else if (0x09==c) {
 				c=0x20;
-			} else if (0x0d==c || 0x0a==c || 0x00==c) {
-				result[i]=0;
-				break;
 			} else if (1023==i) {
 				c=0x00;
 			}

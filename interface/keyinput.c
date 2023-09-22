@@ -24,6 +24,7 @@ caused by using this program.
 #include "graphlib.h"
 #include "usbkeyboard.h"
 #include "keyinput.h"
+#include "../config.h"
 
 unsigned char lineinputbuf[256]; //lineinput関数用一時バッファ
 unsigned char blinkchar,blinkcolor;

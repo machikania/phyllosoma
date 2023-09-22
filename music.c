@@ -95,7 +95,6 @@ static char g_wave_enable;
 static struct repeating_timer g_wave_timer;
 
 #define WAVE_BUFFER_SIZE 1024
-static unsigned char g_wavtablea[WAVE_BUFFER_SIZE];
 
 #define SOUND_MODE_NONE 0
 #define SOUND_MODE_MUSIC 1
@@ -528,17 +527,22 @@ void set_music(char* str, int flagsLR){
 }
 
 int waveRemaining(int mode){
-	if (!g_fhandle) return 0;
+	int i;
+	i=g_wave_writepos-g_wave_readpos;
+	if (i<0) i+=WAVE_BUFFER_SIZE;
 	switch(mode){
 		case 1: // current position (header excluded)
+			if (!g_fhandle) return 0;
 			return f_tell(g_fhandle)-0x2c;
 			break;
 		case 2: // file size (header excluded)
+			if (!g_fhandle) return 0;
 			return f_size(g_fhandle)-0x2c;
 			break;
 		case 0: // remaining
 		default:
-			return f_size(g_fhandle)-f_tell(g_fhandle);
+			if (!g_fhandle) return i;
+			return f_size(g_fhandle)-f_tell(g_fhandle)+i;
 			break;
 	}
 }
@@ -558,7 +562,7 @@ void wave_core1_readfile(void){
 		return;
 	} else if (i<WAVE_BUFFER_SIZE/2) {
 		// Load from file
-		f_read(g_fhandle,(void*)&g_wavtablea[g_wave_writepos],WAVE_BUFFER_SIZE/2,&i);
+		f_read(g_fhandle,(void*)&g_wavtable[g_wave_writepos],WAVE_BUFFER_SIZE/2,&i);
 		i+=g_wave_writepos;
 		if (i<WAVE_BUFFER_SIZE) g_wave_writepos=i;
 		else g_wave_writepos=i-WAVE_BUFFER_SIZE;
@@ -595,14 +599,18 @@ int checkChars(char* str1, char* str2, int num){
 void set_wave(char* filename, int start){
 	int i;
 	// If previous WAVE is still beeing played, force quit previous one
+	if (g_fhandle) f_close(g_fhandle);
+	g_fhandle=0;
 	g_wave_enable=0;
-	while (g_sound_mode==SOUND_MODE_WAVE) sleep_ms(1);
+	g_wave_writepos=g_wave_readpos=0;
+	do {
+		sleep_ms(1);
+	} while (g_sound_mode==SOUND_MODE_WAVE);
 	// Exit function if null filename
 	if (filename[0]==0x00) return;
-	// Alocate 1024 byte buffer if not assigned
+	// Alocate 1024 or more bytes buffer if not assigned
 	if (!g_wavtable) {
-		g_wavtable=alloc_memory(256,get_permanent_block_number());
-		g_wavtable=&g_wavtablea[0];
+		g_wavtable=alloc_memory(WAVE_BUFFER_SIZE/4,get_permanent_block_number());
 	}
 	// Open file
 	g_fhandle=&g_ofhandle;
@@ -628,7 +636,7 @@ void set_wave(char* filename, int start){
 	// Support defined start position here to skip file pointer here.
 	f_lseek(g_fhandle, start+0x2c);
 	// Read first data.
-	if (f_read(g_fhandle,(void*)&g_wavtable[0],WAVE_BUFFER_SIZE/2,NULL)) stop_with_error(ERROR_FILE);
+	if (f_read(g_fhandle,(void*)&g_wavtable[0],WAVE_BUFFER_SIZE/2,(unsigned int*)&g_scratch_int[0])) stop_with_error(ERROR_FILE);
 	g_wave_writepos=WAVE_BUFFER_SIZE/2;
 
 	// Initialize PWM for PCM

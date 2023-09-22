@@ -10,7 +10,7 @@
 static char* g_error_file;
 static int g_error_line;
 
-static const char* g_error_text[24]={
+static const char* g_error_text[25]={
 	"No error",
 	"Syntax error",                  // #define ERROR_SYNTAX _throw_error(-1)
 	"Unknown error",                 // #define ERROR_UNKNOWN _throw_error(-2)
@@ -35,12 +35,13 @@ static const char* g_error_text[24]={
 	"Music/sound error",             // #define ERROR_MUSIC (-21)
 	"File path too long",            // #define ERROR_PATH_TOO_LONG _throw_error(-22)
 	"",                              // #define ERROR_OPTION_CLASSCODE (-23)
+	"Exception",                     // #define ERROR_EXCEPTION (-24)
 };
 
 int show_error(int e, int pos){
 	e=-e;
 	printstr("\n");
-#ifdef DEBUG_MODE
+#ifdef MACHIKANIA_DEBUG_MODE
 	if (g_error_file) printstr(g_error_file);
 	printstr(" at ");
 	if (g_error_line) printint(g_error_line);

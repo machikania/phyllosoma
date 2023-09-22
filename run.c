@@ -125,9 +125,15 @@ void pre_run(void){
 	// Reset static variables
 	lib_display(0,0,RESET_STATIC_VARS);
 	lib_spi(0,0,RESET_STATIC_VARS);
+	// Exception handling
+	handle_exception(1);
+	// Wifi
+	pre_run_wifi();
 }
 
 void post_run(void){
+	// Reset memory allocation
+	reset_memory();
 	// Close all files
 	close_all_files();
 	// Reset I/O and activate buttons
@@ -141,6 +147,11 @@ void post_run(void){
 	stopPCG();
 	// Stop core1 when not using USB keyboard
 	if (!g_active_usb_keyboard) stop_core1();
-	// Lower interrupt flag
+	// Lower interrupt flag and cancel all interrupts
 	g_interrupt_code=0;
+	cancel_all_interrupts();
+	// Restore exception handling
+	handle_exception(0);
+	// Wifi
+	post_run_wifi();
 }

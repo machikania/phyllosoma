@@ -25,8 +25,8 @@ CLEAR
 */
 
 void display_init(void){
-	// Enable SPI at 32 MHz and connect to GPIOs
-	spi_init(LCD_SPICH, 32000 * 1000);
+	// Enable SPI and connect to GPIOs
+	spi_init(LCD_SPICH, LCD_SPI_BAUDRATE);
 	gpio_set_function(LCD_SPI_RX, GPIO_FUNC_SPI);
 	gpio_set_function(LCD_SPI_TX, GPIO_FUNC_SPI);
 	gpio_set_function(LCD_SPI_SCK, GPIO_FUNC_SPI);

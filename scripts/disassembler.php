@@ -1,66 +1,20 @@
 <?php
 
-date_default_timezone_set('America/Los_Angeles');
+$libs=file_get_contents('../phyllosoma/compiler.h');
 
-$code="
-kmbasic_object:20003964
-F000 F812 2383 47C0 0003 0000 001A 1A02 001B 1B02 001C 1C02 396C 2000 0000 0000 0000 0000 0000 0000 4678 3002 E001 4B4F 0000 2101 2381 47C0 2383 47C0 2383 47C0 0103 0000 396C 2000 397C 2000
-";
-$carray=preg_split("/[\s]+/",trim($code));
-preg_match('/[0-9a-f]{8}/i',array_shift($carray),$m);
-$addr=hexdec($m[0]);
+if (!isset($carray)) {
+	$code="
+	kmbasic_object:20003964
+	F000 F812 2383 47C0 0003 0000 001A 1A02 001B 1B02 001C 1C02 396C 2000 0000 0000 0000 0000 0000 0000 4678 3002 E001 4B4F 0000 2101 2381 47C0 2383 47C0 2383 47C0 0103 0000 396C 2000 397C 2000
+	";
+	$carray=preg_split("/[\s]+/",trim($code));
+	preg_match('/[0-9a-f]{8}/i',array_shift($carray),$m);
+	$addr=hexdec($m[0]);
+}
 
-$libs="
-#define LIB_CALC 0
-#define LIB_CALC_FLOAT 1
-#define LIB_HEX 2
-#define LIB_ADD_STRING 3
-#define LIB_STRNCMP 4
-#define LIB_VAL 5
-#define LIB_LEN 6
-#define LIB_INT 7
-#define LIB_RND 8
-#define LIB_FLOAT 9
-#define LIB_VAL_FLOAT 10
-#define LIB_MATH 11
-#define LIB_MID 12
-#define LIB_CHR 13
-#define LIB_DEC 14
-#define LIB_FLOAT_STRING 15
-#define LIB_SPRINTF 16
-#define LIB_READ 17
-#define LIB_CREAD 18
-#define LIB_READ_STR 19
-#define LIB_ASC 20
-#define LIB_POST_GOSUB 21
-#define LIB_DISPLAY_FUNCTION 22
-#define LIB_INKEY 23
-#define LIB_INPUT 24
-#define LIB_DRAWCOUNT 25
-#define LIB_KEYS 26
-#define LIB_NEW 27
-#define LIB_OBJ_FIELD 28
-#define LIB_OBJ_METHOD 29
-#define LIB_PRE_METHOD 30
-#define LIB_POST_METHOD 31
-
-#define LIB_DEBUG 128
-#define LIB_PRINT 129
-#define LIB_LET_STR 130
-#define LIB_END 131
-#define LIB_LINE_NUM 132
-#define LIB_DIM 133
-#define LIB_RESTORE 134
-#define LIB_VAR_PUSH 135
-#define LIB_VAR_POP 136
-#define LIB_DISPLAY 137
-#define LIB_WAIT 138
-#define LIB_SET_DRAWCOUNT 139
-#define LIB_STR_TO_OBJECT 140
-#define LIB_DELETE 141
-";
+if (!$libs) exit;
 $larray=array();
-preg_replace_callback('/(LIB_\S+)\s+([0-9]+)/',function($m){
+preg_replace_callback('/\n#define\s+(LIB_\S+)\s+([0-9]+)/',function($m){
 		global $larray;
 		$larray[intval($m[2])]=$m[1];
 	},$libs);
@@ -176,14 +130,15 @@ function inst1800($i,$inst,$inst2){
 	return $i;
 }
 function inst1C00($i,$inst,$inst2){
-	echo "inst1C00\n";
+	//echo "inst1C00\n";
+	echo 'MOVS R',$inst&7,',R',($inst>>3)&7,',#',($inst>>6)&7,"\n";
 	return $i;
 }
 function inst2000($i,$inst,$inst2){
 	global $larray;
 	//echo "inst2000\n";
 	echo 'MOVS R',($inst>>8)&7,', #0x',dechex($inst&255);
-	if (0x47c0==$inst2 && 3==(($inst>>8)&7)) echo ' (',$larray[$inst&255],')';
+	if (0x47c0==$inst2 && 3==(($inst>>8)&7)) echo ' (',@$larray[$inst&255],')';
 	echo "\n";
 	return $i;
 }
@@ -349,7 +304,7 @@ function inst9800($i,$inst,$inst2){
 }
 function inst9C00($i,$inst,$inst2){
 	//echo "inst9C00\n";
-	return inst9600($i,$inst,$inst2);
+	return inst9800($i,$inst,$inst2);
 }
 function instA000($i,$inst,$inst2){
 	echo "instA000\n";
@@ -500,10 +455,11 @@ function instF000($i,$inst,$inst2,$addr){
 	$jump=(($inst&0x07ff)<<11) | (($inst2&0x07ff)<<0);
 	if ($jump&(1<<21)) {
 		echo 'BL -',(1<<22)-$jump;
+		echo ' (',dechex($addr+($i+2+$jump-(1<<22))*2),")\n";
 	} else {
 		echo 'BL +',$jump;
+		echo ' (',dechex($addr+($i+2+$jump)*2),")\n";
 	}
-	echo ' (',dechex($addr+($i+2+$jump)*2),")\n";
 	return $i+1;
 }
 function instF400($i,$inst,$inst2,$addr){

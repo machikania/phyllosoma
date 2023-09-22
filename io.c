@@ -18,6 +18,10 @@
 #include "./io.h"
 #include "./config.h"
 
+unsigned char g_io_spi_rx=IO_SPI_RX;
+unsigned char g_io_spi_tx=IO_SPI_TX;
+unsigned char g_io_spi_sck=IO_SPI_SCK;
+
 static unsigned char gpio_table[16]={
 	IO_GPIO0,
 	IO_GPIO1,
@@ -363,22 +367,6 @@ int lib_spi(int r0, int r1, int r2){
 	// r2 is the option number
 	switch(r2){
 		case LIB_SPI_SPI:
-/*
-SPI x[,y[,z1[,z2]]]
-	SPI利用をマスターモードで開始する。xは、クロック数をkHz単位で指定(有効値は、
-	93-47727)。yは、１ワードのビット数を8/16/32で指定(省略した場合は、8)。z1は、
-	SPIクロックの取り扱い方を指定(省略した場合は、0)。詳細は、下記に。z2は、CS
-	ラインにどのポートを使用するかを指定する。省略した場合は、3 (GP3)。
-		z1=0:アイドル時にL、データー変更はLに変化する時(CKP=0,CKE=1; CPOL=0,CPHA=0)
-		z1=1:アイドル時にL、データー変更はHに変化する時(CKP=0,CKE=0; CPOL=0,CPHA=1)
-		z1=2:アイドル時にH、データー変更はHに変化する時(CKP=1,CKE=1; CPOL=1,CPHA=1)
-		z1=3:アイドル時にH、データー変更はLに変化する時(CKP=1,CKE=0; CPOL=1,CPHA=0)
-Note:
-	sp[0]=x
-	sp[1]=y
-	sp[2]=z1
-	r0=Z2
-*/
 			// First, inactivate previous CS port, if set
 		    if (0<=cs_port) gpio_put(cs_port,1);
 			// Store bit number (either 8, 16, or 32)
@@ -400,10 +388,10 @@ Note:
 			gpio_put(cs_port,1);
 			// Init SPI
 			spi_init(IO_SPI_CH,sp[0]*1000);
-		    gpio_set_function(IO_SPI_RX, GPIO_FUNC_SPI);
-		    gpio_set_function(IO_SPI_TX, GPIO_FUNC_SPI);
-		    gpio_set_function(IO_SPI_SCK, GPIO_FUNC_SPI);
-			gpio_set_pulls(IO_SPI_RX, true, false); // pull-up DO
+		    gpio_set_function(g_io_spi_rx, GPIO_FUNC_SPI);
+		    gpio_set_function(g_io_spi_tx, GPIO_FUNC_SPI);
+		    gpio_set_function(g_io_spi_sck, GPIO_FUNC_SPI);
+			gpio_set_pulls(g_io_spi_rx, true, false); // pull-up DO
 			// Set format
 			// Note: order must be SPI_MSB_FIRST, no other values supported on the PL022 
 			switch(sp[2]){
@@ -428,17 +416,6 @@ Note:
 			io_spi_sspcr[1]=IO_SPI_SSPCR0[1];
 			break;
 		case LIB_SPI_SPIREAD:
-/*
-SPIREAD([x[,y[,z[, ... ]]])
-	SPI固定長送信(オプション)の後、１ワードの受信を行ない、返す。x,y,z等は、受信
-	前に送信するコード。
-
-Note:
-	sp[0]=x
-	sp[1]=y
-	sp[2]=z
-	...
-*/
 			spi_send_option(bit_num,sp,r0);
 			switch(bit_num){
 				case 8:
@@ -457,32 +434,9 @@ Note:
 			}
 			break;
 		case LIB_SPI_SPIWRITE:
-/*
-SPIWRITE x[,y[,z[, ... ]]
-	SPI固定長送信を行なう。x, y, z等は送信コード。
-
-Note:
-	sp[0]=x
-	sp[1]=y
-	sp[2]=z
-	...
-*/
 			spi_send_option(bit_num,sp,r0);
 			break;
 		case LIB_SPI_SPIREADDATA:
-/*
-SPIREADDATA x,y[,z1[,z2[,z3...]]]
-	SPI複数ワード受信を行なう。xは受信する内容を格納するバッファーへのポインター。
-	yは受信するワード数。z1,z2,z3等はオプションの送信コードで、これらがまず送信さ
-	れ、続けてyワードのデーターを受信してバッファーxに格納する。
-
-Note:
-	sp[0]=x
-	sp[1]=y
-	sp[2]=z1
-	sp[3]=z2
-	...
-*/
 			spi_send_option(bit_num,&sp[2],r0-2);
 			switch(bit_num){
 				case 8:
@@ -498,19 +452,6 @@ Note:
 			}
 			break;
 		case LIB_SPI_SPIWRITEDATA:
-/*
-SPIWRITEDATA x,y[,z1[,z2[,z3...]]]
-	SPI複数ワード送信を行なう。xは送信する内容を含むバッファーへのポインター。yは
-	バッファーのワード数。z1,z2,z3等はオプションの送信コードで、これらがまず送信
-	され、続けてバッファーxの内容がyワードに渡って送信される。
-
-Note:
-	sp[0]=x
-	sp[1]=y
-	sp[2]=z1
-	sp[3]=z2
-	...
-*/
 			spi_send_option(bit_num,&sp[2],r0-2);
 			switch(bit_num){
 				case 8:
@@ -526,20 +467,6 @@ Note:
 			}
 			break;
 		case LIB_SPI_SPISWAPDATA:
-/*
-SPISWAPDATA x,y[,z1[,z2[,z3...]]]
-	SPI複数ワード送受信を行なう。xは送受信する内容を格納するバッファーへのポイン
-	ター。yは送受信するワード数。z1,z2,z3等はオプションの送信コードで、これらがま
-	ず送信される。続けて、バッファーxの内容を送信した後にデーターを受信してバッ
-	ファーxに格納しなおす動作を、yワードに渡って繰り返す。
-
-Note:
-	sp[0]=x
-	sp[1]=y
-	sp[2]=z1
-	sp[3]=z2
-	...
-*/
 			spi_send_option(bit_num,&sp[2],r0-2);
 			switch(bit_num){
 				case 8:
@@ -716,8 +643,8 @@ int lib_i2c(int r0, int r1, int r2){
 */
 
 int serial_statement(void){
-	g_default_args[1]=0;
 	g_default_args[2]=0;
+	g_default_args[3]=0;
 	return argn_function(LIB_SERIAL,
 		ARG_INTEGER<<ARG1 |
 		ARG_INTEGER_OPTIONAL<<ARG2 |

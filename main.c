@@ -7,12 +7,14 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "pico/stdlib.h"
 #include "./compiler.h"
 #include "./api.h"
 #include "./debug.h"
 #include "./display.h"
 #include "./config.h"
+#include "./io.h"
 #include "./interface/usbkeyboard.h"
 
 char g_autoexec[13]="MACHIKAP.BAS";
@@ -25,7 +27,13 @@ void read_ini(void){
 	if (f_open(&fpo,"MACHIKAP.INI",FA_READ)) return;
 	// Read each line
 	while(f_gets(str,g_file_buffer_size,&fpo)){
-		if (!strncmp(str,"AUTOEXEC=",9)) {
+		if (ini_file_rtc(str)) {
+			continue;
+		} else if (ini_file_wifi(str)) {
+			continue;
+		} else if (ini_file_exception(str)) {
+			continue;
+		} else if (!strncmp(str,"AUTOEXEC=",9)) {
 			// Get file name
 			for(i=0;i<12;i++){
 				if (str[i+9]<0x21) break;
@@ -79,6 +87,15 @@ void read_ini(void){
 			lockkey|=4;
 		} else if (!strncmp(str,"WAIT4KEYBOARD=",14)) {
 			sscanf(str+14,"%d",&g_wait_for_keyboard);
+		} else if (!strncmp(str,"SPIMISO=",8)) {
+			i=atoi(str+8);
+			if (0==i || 4==i | 16==i) g_io_spi_rx=i;
+		} else if (!strncmp(str,"SPIMOSI=",8)) {
+			i=atoi(str+8);
+			if (3==i || 7==i | 19==i) g_io_spi_tx=i;
+		} else if (!strncmp(str,"SPICLK=",7)) {
+			i=atoi(str+7);
+			if (2==i || 6==i | 18==i) g_io_spi_sck=i;
 		}
 	}
 	// Close file
@@ -102,9 +119,13 @@ int main() {
 	init_buttons();
 	init_file_system();
 	fileselect_init();
+	init_machikania_rtc();
 	// Read MACHIKAP.INI
 	read_ini();
 	sleep_ms(g_wait_at_begin-500);
+	
+	// Connect to Wifi
+	connect_wifi(1);
 	
 	// Connect to USB keyboard or to PC
 	post_inifile();
@@ -134,6 +155,8 @@ int main() {
 	printstr("\n");
 	// Show dump
 	// dump();
+	// Dump RAM area to a file
+	//memdump();
 	// Run the code if error didn't occur
 	if (!e) {
 		pre_run();

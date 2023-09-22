@@ -19,6 +19,7 @@ caused by using this program.
 
 #include "graphlib.h"
 #include "LCDdriver.h"
+#include "../config.h"
 
 unsigned char TVRAM[ATTROFFSET*2+1] __attribute__ ((aligned (4)));
 unsigned char *fontp; //フォント格納アドレス、初期化時はFontData、RAM指定することでPCGを実現
@@ -83,7 +84,7 @@ void g_putbmpmn(int x,int y,unsigned char m,unsigned char n,const unsigned char 
 						LCD_setAddrWindow(j,i,m,n);
 						skip=0;
 					}
-					LCD_WriteData2_notfinish(palette[*p]);
+					LCD_WriteDataColor_notfinish(palette[*p]);
 					outflag=1;
 				}
 				else skip=1;
@@ -124,7 +125,7 @@ void g_putbmpmn(int x,int y,unsigned char m,unsigned char n,const unsigned char 
 						LCD_setAddrWindow(j,i,m,n);
 						skip=0;
 					}
-					LCD_WriteData2_notfinish(palette[*p]);
+					LCD_WriteDataColor_notfinish(palette[*p]);
 					outflag=1;
 				}
 				else skip=1;
@@ -166,7 +167,7 @@ void g_clrbmpmn(int x,int y,unsigned char m,unsigned char n)
 	}
 	LCD_setAddrWindow(j,i,dx,dy);
 	dx*=dy;
-	for(i=0;i<dx;i++) LCD_WriteData2_notfinish(0);
+	for(i=0;i<dx;i++) LCD_WriteDataColor_notfinish(0);
 	checkSPIfinish();
 }
 
@@ -358,7 +359,7 @@ void g_putfont(int x,int y,unsigned char c,int bc,unsigned char n)
 							LCD_setAddrWindow(j,i,8,8);
 							skip=0;
 						}
-						LCD_WriteData2_notfinish(c1);
+						LCD_WriteDataColor_notfinish(c1);
 						outflag=1;
 					}
 					else skip=1;
@@ -372,10 +373,10 @@ void g_putfont(int x,int y,unsigned char c,int bc,unsigned char n)
 						break;
 					}
 					if(d&0x80){
-						LCD_WriteData2_notfinish(c1);
+						LCD_WriteDataColor_notfinish(c1);
 					}
 					else{
-						LCD_WriteData2_notfinish(bc);
+						LCD_WriteDataColor_notfinish(bc);
 					}
 					d<<=1;
 				}
@@ -429,7 +430,7 @@ void g_putfont(int x,int y,unsigned char c,int bc,unsigned char n)
 							LCD_setAddrWindow(j,i,8,8);
 							skip=0;
 						}
-						LCD_WriteData2_notfinish(c1);
+						LCD_WriteDataColor_notfinish(c1);
 						outflag=1;
 					}
 					else skip=1;
@@ -442,10 +443,10 @@ void g_putfont(int x,int y,unsigned char c,int bc,unsigned char n)
 						break;
 					}
 					if(*p++ & b){
-						LCD_WriteData2_notfinish(c1);
+						LCD_WriteDataColor_notfinish(c1);
 					}
 					else{
-						LCD_WriteData2_notfinish(bc);
+						LCD_WriteDataColor_notfinish(bc);
 					}
 				}
 			}
@@ -543,8 +544,8 @@ void textredraw(void){
 					c=palette[*(p+ATTROFFSET)];
 					d=*(fontp+(*p++)*8+i);
 					for(j=0;j<8;j++){
-						if(d & 0x80) LCD_WriteData2_notfinish(c);
-						else LCD_WriteData2_notfinish(bgcolor);
+						if(d & 0x80) LCD_WriteDataColor_notfinish(c);
+						else LCD_WriteDataColor_notfinish(bgcolor);
 						d<<=1;
 					}
 				}
@@ -561,8 +562,8 @@ void textredraw(void){
 					p2=fontp+(*p)*8;
 					c=palette[*(p+ATTROFFSET)];
 					for(i=0;i<8;i++){
-						if(*p2++ & b) LCD_WriteData2_notfinish(c);
-						else LCD_WriteData2_notfinish(bgcolor);
+						if(*p2++ & b) LCD_WriteDataColor_notfinish(c);
+						else LCD_WriteDataColor_notfinish(bgcolor);
 					}
 					p+=WIDTH_X;
 				}

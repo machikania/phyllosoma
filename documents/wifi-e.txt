@@ -1,0 +1,163 @@
+<How to use the Wi-Fi function>
+
+If you install the Wi-Fi version of MachiKania type P on your Raspberry Pi Pico W, you can use the Wi-Fi functionality. 2.4 GHz band Wi-Fi router must be used. The SSID and password to connect to the router can be set in MACHIKAP.INI as in the following example
+
+WIFISSID=xxxx
+WIFIPASSWD=xxxxxx
+
+If your router has the ability to automatically assign IP addresses via DHCP (which it does in most cases), you can connect to the network. If your router has an Internet connection, you can also connect to the Internet from MachiKania.
+
+Both client and server applications can be built using MachiKania. The HTTP protocol (denoted as http, https, web, www, html, etc.) is widely used on the Internet. With MachiKania, http/https client applications and http server applications can be easily built using the WGET and HTTPD classes. MachiKania allows you to easily build http/https client applications and http server applications using the WGET and HTTPD classes.
+
+
+<Another way to specify SSID and password for Wi-Fi>
+
+There are cases where saving the Wi-Fi SSID and password as a file on an MMC/SD card may cause security issues. In such cases, you can embed the SSID and password into the Raspberry Pi Pico W itself. To do this, use "embed_ssid_passwd.php" or "embed_ssid_passwd_kb.php" in the "scripts" folder in GitHub repository. Copy "phyllosoma.uf2" or "phyllosoma_kb.uf2" to the same folder, edit "embed_ssid_passwd.php" or "embed_ssid_passwd_kb.php" and specify SSID and password at the beginning of the file. Running these php scripts by PHP will create "result.uf2", copy it to the RPI-RP2 drive of the Raspberry Pi Pico W. You can connect to Wi-Fi without writing the SSID and password in the MACHIKAP.INI file. You do not need to write SSID and password in MACHIKAP.INI to connect to Wi-Fi.
+
+
+<Wi-Fi related MACHIKAP.INI settings>
+
+The following MACHIKAP.INI settings are related to Wi-Fi.
+
+USEWIFI
+	If specified, the device will connect to Wi-Fi at startup.
+
+WIFICOUNTRY=
+	Specify a 2-letter alphabetical country identification code. See "src/cyw43_country.h" in the cyw43-drive source code (https://github.com/georgerobotics/cyw43-driver).
+
+WIFISSID=
+WIFIPASSWD=
+	Specify SSID and password for Wi-Fi connection.
+
+HOSTNAME=
+	Specifies the hostname for the Wi-Fi connection (default: PicoW). The domain name depends on the router used. If you want to know the full name, you can use "ping -a <IP address>" at the console/command prompt.
+
+NTPSERVER=.
+	Specify the hostname of the NTP server to use (default: pool.ntp.org).
+
+INITIALNTP
+	Specify if you want to connect to an NTP server at startup to set the real-time clock (RTC).
+
+
+<Classes for net connection>
+
+WGET is provided in the library as a class for client applications. It can be used to retrieve information from a website by simply specifying the URL as a string. Please refer to the help.txt file of the WGET class for usage.
+
+HTTPD is provided in the library as a class for server applications, and can be used as a general HTTP server by placing html and image files in a directory. It is easy to know which URL is being accessed, so it is easy to control MachiKania from a smartphone. Please refer to the help.txt file of the HTTPD class for details.
+
+
+<Instructions and functions for Wi-Fi>
+
+The following commands and functions are related to Wi-Fi. The usage is as follows: First, call one of TCPCLIENT/TLSCLIENT/TCPSERVER, poll TCPSTATUS() or TCPACCEPT(), if there is a connection, respond with TCPSEND/TCPRECEIVE, and finally, terminate the connection with TCPCLOSE. Finally, the connection is closed with TCPCLOSE. Please refer to the usage examples below and in the WGET and HTTPD classes.
+
+DNS$(x$)
+	Returns the IP address of the computer whose hostname on the Internet is indicated by x$ as a string.
+
+IFCONFIG$(x)
+	Returns Wi-Fi connection information as a string.
+		When x is 0, returns the IP address.
+		When x is 1, the subnet mask is returned.
+		When x is 2, the gateway address
+		When x is 3, DNS server address
+		When x is 16, MAC address
+
+NTP, NTP()
+	Connects to an NTP server and sets the RTC (real time clock). If called as a function, returns an error number (0 if there is no error); the NTP server is configured with "NTPSERVER=" in MACHIKAP.INI (see above).
+
+TCPACCEPT()
+	When a TCP server is started and a connection is made or received from a client, return the connection ID as an integer value. See TCPSERVER Usage for details on whether to return a connection or a reception. The connection ID is returned only once from this function and must be saved.
+
+TCPCLIENT x$[,y], TCPCLIENT(x$[,y])
+	TCP connection to the server indicated by x$ on the port indicated by y. If y is omitted, the port is 80. If called as a function, returns an error number.
+
+TCPCLOSE [x], TCPCLOSE([x])
+	Close the TCP connection. If x is specified, disconnects from the specified connection ID; if x is not specified, shuts down the server.
+
+TCPRECEIVE x,y[,z], TCPRECEIVE(x,y[,z])
+	Receive up to y bytes in the buffer indicated by x. If z is specified when using a server, receive from the specified connection ID. If called as a function, returns the number of bytes received.
+
+TCPSEND x|x$[,y[,z]], TCPSEND (x|x$[,y[,z]])
+	Send y bytes of the buffer indicated by x or the string indicated by x$. If y is omitted or set to -1 for strings, the entire string is sent. If z is specified when a server is used, it is sent for the specified connection ID. When called as a function, an error number (0 if there is no error) is returned. Note that if this instruction is executed before TCPCLIENT/TLSCLIENT, it can be sent immediately upon connection.
+
+TCPSERVER [x[,y]]
+	Starts the TCP server at port x. If x is omitted, it is 80. y specifies the type of information returned by TCPACCEPT(). If y is omitted, it is 1.
+		When y is 0, TCPACCEPT() returns the connection ID when a client connects.
+		When y is 1, TCPACCEPT() returns the connection ID when it receives it from the client.
+
+TCPSTATUS(x[,y])
+	Returns TCP/IP connection status. If y is specified when using a server, information about the specified connection ID is returned.
+		If x is 0, whether or not a connection is being made. If it is connected, 1 is returned; if not, 0 is returned.
+		When x is 1, returns the number of bytes of communication received.
+
+TLSCLIENT x$[,y], TLSCLIENT(x$[,y])
+	Connects to the server indicated by x$ on the port indicated by y. If y is omitted, the port is 443. If called as a function, returns an error number.
+
+WIFIERR()
+	Returns the error number of the execution of a WiFi related instruction. The main error numbers are listed below, but other error numbers may be returned. Note, however, that error numbers other than those listed below may vary from one version of MachiKania to another.
+		0: No error
+		1: Connection disconnected from the destination (normal termination when connecting as a client)
+		2: IP address resolution by DNS server failed
+		3: Connection timeout
+		4: No WiFi connection
+
+WIFIERR$()
+	Returns the contents of the error message from the execution of a WiFi-related instruction as a string.
+
+<To obtain the fixed URL of a server>
+
+	When you build an HTTP server with MachiKania, the IP address is assigned dynamically by the Wi-Fi router's DHCP server, and the IP address is not constant. Therefore, the URL when accessing this HTTP server from a PC or smartphone may change. There are two ways to avoid this.
+	One way is to specify "HOSTNAME=" in MACHIKAP.INI. For example, if you specify "HOSTNAME=macserver", the host name of MachiKania will be "macserver.mshome.net" and so on. In this case, you can connect to MachiKania's HTTP server by accessing "http://macserver.mshome.net/". However, the "mshome.net" part will vary depending on your environment, so please check the full host name using a method such as "ping -a <IP address>" as described above.
+	Another method is to specify a fixed IP for the MAC address assigned to the Raspberry Pi Pico W used for MachiKania in the Wi-Fi router settings. For example, if you set "192.168.1.100", the URL will be fixed to "http://192.168.1.100/". To find out the MAC address, use "PRINT IFCONFIG$(16)" on MachiKania.
+
+
+<About security>
+
+MachiKania is a small program for embedded devices. Therefore, it cannot provide the same level of security as common web browsers (FireFox, Chrome, Edge, etc.) or common servers (Apache, etc.).
+
+If you build a server with MachiKania, please use it only within your local environment (intranet) and do not open it to the public. If you open your server to the outside world, it is vulnerable to various attacks that can take place on the Internet. For example, it is vulnerable to DoS attacks and can be easily shut down. Other possible scenarios include hijacking and information leakage. If the connection is only available in a local environment using private Wi-Fi, there is no need to worry about these issues. Please note that the same problems can occur if you connect to a public Wi-Fi even in a local environment.
+
+Accessing https sites with MachiKania has a lower level of security than accessing https sites with a regular browser. Even if the connection is to an https site, the same problems can occur as with a connection to an http site. For example, personal information to be transmitted (e.g., passwords) can be compromised, or phishing can occur if the connection destination is different from the one specified. This is due to the fact that it is difficult to check the CA certificate and keep the AES cipher as strong as the specification when using TLS connections with small programs, not only MachiKaniania. MachiKania does not check CA certificates, and the difficulty of analogizing the AES encryption key is not high. Therefore, please consider that connecting to https sites can be problematic, although not as problematic as connecting to http sites. Gathering information from a site is not a problem, but if you secure a connection by submitting personal information such as IDs and passwords, you should exercise caution and do so at your own risk.
+
+Also, if you have written your Wi-Fi SSID and password in MACHIKAP.INI, please be careful not to lose or steal your MMC/SD card. If you have embedded the SSID and password in the Raspberry Pi Pico W as described in "Another way to specify the SSID and password for Wi-Fi", please be careful not to lose or have the Raspberry Pi Pico W lost or stolen. If it is lost or stolen, we recommend that you change the password.
+
+
+<Example of use>
+
+An example of using the WGET class to download and display information.
+
+useclass WGET
+print WGET::FORSTRING$("https://machikania.net/")
+
+
+An example of downloading information using the TCPCLIENT instruction, etc., without using the WGET class. Note that by changing "TCPCLIENT" to "TLSCLIENT" in this code, you can connect to https sites instead of http sites.
+
+t$="GET / HTTP/1.0\r\n"
+t$=t$+"Host: machikania.net\r\n"
+t$=t$+"Connection: close\r\n"
+t$=t$+"\r\n"
+dim b(64)
+TCPSEND t$
+TCPCLIENT "machikania.net"
+t$=""
+do until TCPSTATUS(1) : idle : loop
+do
+  i=TCPRECEIVE(b,256)
+  if 0=i then break
+  poke b+i,0
+  t$=t$+b$$
+loop
+TCPCLOSE
+print t$
+
+
+Example of building a server on port 80 using the HTTPD class. Place index.htm in the "/httproot" directory. In this example, "?led=" in the URL is read and displayed.
+
+useclass HTTPD
+h=new(HTTPD,80,"/httproot")
+do
+  u$=h.START$()
+  print u$,"'";h.GETPARAM$("led");"'"
+loop
+
+<Version history>
+KM-1503 Released in September 2023.

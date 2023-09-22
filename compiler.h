@@ -9,7 +9,7 @@
 	Configration
 */
 
-//#define DEBUG_MODE
+//#define MACHIKANIA_DEBUG_MODE
 #define TEMPVAR_NUMBER 10
 #define ALLOC_BLOCK_NUM 256
 
@@ -19,10 +19,12 @@
 #define KMBASIC_COMPILER_H
 #endif
 
+#include "./config.h"
+
 /*
 	Error codes
 */
-#ifdef DEBUG_MODE
+#ifdef MACHIKANIA_DEBUG_MODE
 	int throw_error(int e,int line, char* file);
 	#define _throw_error(e) throw_error(e,__LINE__,__FILE__)
 #else
@@ -51,6 +53,7 @@
 #define ERROR_MUSIC (-21)
 #define ERROR_PATH_TOO_LONG _throw_error(-22)
 #define ERROR_OPTION_CLASSCODE (-23)
+#define ERROR_EXCEPTION (-24)
 
 /*
 	Libraries
@@ -123,12 +126,40 @@
 #define LIB_MUSIC 152
 #define LIB_DELAYUS 153
 #define LIB_DELAYMS 154
+#define LIB_RTC 155
+#define LIB_WIFI 156
 
 /*
 	Gereral option used for intializing static variables
 */
 
 #define RESET_STATIC_VARS 32767
+
+/*
+	LIB WIFI options
+*/
+
+#define LIB_WIFI_IFCONFIG   1
+#define LIB_WIFI_DNS        2
+#define LIB_WIFI_NTP        3
+#define LIB_WIFI_ERR_INT    4
+#define LIB_WIFI_ERR_STR    5
+#define LIB_WIFI_TCPCLIENT  6
+#define LIB_WIFI_TLSCLIENT  7
+#define LIB_WIFI_TCPSERVER  8
+#define LIB_WIFI_TCPCLOSE   9
+#define LIB_WIFI_TCPSTATUS  10
+#define LIB_WIFI_TCPSEND    11
+#define LIB_WIFI_TCPRECEIVE 12
+#define LIB_WIFI_TCPACCEPT  13
+
+/*
+	LIB RTC options
+*/
+
+#define LIB_RTC_GETTIME  1
+#define LIB_RTC_SETTIME  2
+#define LIB_RTC_STRFTIME 3
 
 /*
 	LIB MUSIC options
@@ -185,6 +216,9 @@
 #define FILE_FSEEKFUNC 12
 #define FILE_FINPUT 13
 #define FILE_GETDIR 14
+#define FILE_FFIND 15
+#define FILE_FINFO 16
+#define FILE_FINFOSTR 17
 
 /*
 	LIB TIMER options
@@ -310,7 +344,7 @@
 	Variables
 */
 
-extern unsigned short kmbasic_object[512*192];
+extern unsigned short kmbasic_object[512*KMBASIC_OBJECT_KBYTES];
 extern int kmbasic_data[32];
 extern int kmbasic_variables[ALLOC_BLOCK_NUM];
 extern unsigned short kmbasic_var_size[ALLOC_BLOCK_NUM];
@@ -341,8 +375,8 @@ extern volatile short* g_scratch_short;
 extern volatile float* g_scratch_float;
 extern volatile char* g_scratch_char;
 
-extern const char* const g_reserved_words[170];
-extern const int const g_hash_resereved_words[170];
+extern const char* const g_reserved_words[189];
+extern const int const g_hash_resereved_words[189];
 
 extern char g_constant_value_flag;
 extern int g_constant_int;
@@ -382,6 +416,9 @@ extern const char g_active_usb_keyboard;
 /*
 	Prototypes
 */
+
+// main.c
+void software_reset(void);
 
 // variable.c
 void variable_init(void);
@@ -502,6 +539,7 @@ void stop_with_error(int e);
 
 // memory.c
 void init_memory(void);
+void reset_memory(void);
 void* alloc_memory(int size, int var_num);
 void* calloc_memory(int size, int var_num);
 void delete_memory(void* data);
@@ -509,6 +547,9 @@ int move_from_temp(int vn, int pdata);
 void garbage_collection(void* data);
 int get_permanent_block_number(void);
 void var2permanent(int var_num);
+void* machikania_malloc(int size);
+void machikania_free(void *ptr);
+void* machikania_calloc(int nmemb, int size);
 
 // class.c
 int init_class_compiling(void);
@@ -534,7 +575,8 @@ int lib_post_method(int r0, int r1, int r2);
 
 // file.c
 void init_file_system(void);
-int file_exists(unsigned char* fname);
+int mmc_file_exists(unsigned char* fname);
+#define file_exists mmc_file_exists
 int compile_file(unsigned char* fname, char isclass);
 void close_all_files(void);
 int lib_file(int r0, int r1, int r2);
@@ -555,6 +597,9 @@ int flen_function(void);
 int fseek_function(void);
 int finput_function(void);
 int getdir_function(void);
+int ffind_function(void);
+int finfo_function(void);
+int finfostr_function(void);
 
 // display.c
 int lib_display(int r0, int r1, int r2);
@@ -568,6 +613,7 @@ int usetimer_statement(void);
 int coretimer_statement(void);
 int timer_statement(void);
 int timer_function(void);
+void cancel_all_interrupts(void);
 void timer_init(void);
 int lib_timer(int r0, int r1, int r2);
 int lib_interrupt(int r0, int r1, int r2);
@@ -602,6 +648,29 @@ void connect2pc(void);
 
 // hexfile.c
 void runHex(char* filename);
+
+// exception.c
+int ini_file_exception(char* line);
+void handle_exception(int set);
+
+// wifi
+void board_led(int led_on);
+int ini_file_wifi(char* line);
+int connect_wifi(char show_progress);
+int wifi_statements(void);
+int wifi_int_functions(void);
+int wifi_str_functions(void);
+int lib_wifi(int r0, int r1, int r2);
+void pre_run_wifi(void);
+void post_run_wifi(void);
+
+// rtc.c
+void init_machikania_rtc(void);
+int ini_file_rtc(char* line);
+int lib_rtc(int r0, int r1, int r2);
+int gettime_function(void);
+int settime_statement(void);
+int strftime_function(void);
 
 // For debugging
 void dump_cmpdata(void);

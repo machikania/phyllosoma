@@ -382,7 +382,7 @@ int resolve_var_number_from_id(unsigned short cn, unsigned short id){
 int static_method_or_property(int cn, char stringorfloat){
 	// This function returns variable number for static property
 	// or returns zero when method is compiled
-	int num,len,i;
+	int num,len,i,fid;
 	int* data;
 	int* class;
 	// "::" has not been detected before comming to this line
@@ -408,6 +408,8 @@ int static_method_or_property(int cn, char stringorfloat){
 		break;
 	}
 	if (len<=i) return ERROR_NOT_FIELD;
+	// fid is field id
+	fid=data[0]&0xffff;
 	source+=num;
 	if (stringorfloat) {
 		if (stringorfloat!=source[0]) return ERROR_SYNTAX;
@@ -419,12 +421,19 @@ int static_method_or_property(int cn, char stringorfloat){
 	if (class[i]&CLASS_METHOD) {
 		// This is public class method.
 		if ('('!=source[0]) return ERROR_SYNTAX;
-		// Get method address
+		// The method address must be obtained from class structure and empty object
 		data=cmpdata_findfirst_with_id(CMPDATA_CLASS_ADDRESS,cn);
 		if (!data) return ERROR_UNKNOWN;
-		// data[2] is the pointer to empty object of specified class
+		// data[1] is the pointer to class structure; set it to class
+		class=(int*)data[1];
+		// data[2] is the pointer to empty object of specified class; set it to data
 		data=(int*)data[2];
-		// Compile method. data[i] is the 
+		// Find the field id in class structure
+		for(i=1;i<=class[0];i++){
+			if ((class[i]&0xffff) == fid) break;
+		}
+		if (class[0]<i) return ERROR_UNKNOWN;
+		// Compile method. data[i] is the address of method
 		i=static_method(data[i]);
 		if (i) return i;
 		if (')'!=source[0]) return ERROR_SYNTAX;

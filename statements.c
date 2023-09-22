@@ -1383,7 +1383,7 @@ int align4_statement(void){
 }
 
 int debug_statement(void){
-#ifdef DEBUG_MODE
+#ifdef MACHIKANIA_DEBUG_MODE
 	g_default_args[1]=0;
 	g_default_args[2]=0;
 	g_default_args[3]=0;
@@ -1561,11 +1561,16 @@ int compile_statement(void){
 	if (instruction_is("MUSIC")) return music_statement();
 	if (instruction_is("SOUND")) return sound_statement();
 	if (instruction_is("PLAYWAVE")) return playwave_statement();
+	// RTC statement
+	if (instruction_is("SETTIME")) return settime_statement();
 	// IO statements
 	e=io_statements();
 	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;
 	// Environment statements
 	e=display_statements();
+	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;
+	// Wifi statements
+	e=wifi_statements();
 	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;
 	// Try call statement
 	if (!call_statement()) return 0;

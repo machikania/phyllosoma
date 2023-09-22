@@ -9,9 +9,17 @@
 #include "./compiler.h"
 #include "./api.h"
 
-#ifndef DEBUG_MODE
+// Memory dump of all RAM area to the file, "MEMDUMP.BIN".
+void memdump(void){
+	FIL fh;
+	if (FR_OK!=f_open(&fh,"MEMDUMP.BIN",FA_WRITE | FA_CREATE_ALWAYS)) return;
+	f_write(&fh,&kmbasic_object[0],256*1024,(UINT*)&g_scratch_int[0]);
+	f_close(&fh);
+}
+
+#ifndef MACHIKANIA_DEBUG_MODE
 void debug_dummy(void){}
-#else // DEBUG_MODE
+#else // MACHIKANIA_DEBUG_MODE
 
 #warning DEBOG_MODE is active
 
@@ -262,5 +270,5 @@ int debug_file_exists(unsigned char* fname){
 	return 0;
 }
 
-#endif // DEBUG_MODE
+#endif // MACHIKANIA_DEBUG_MODE
 

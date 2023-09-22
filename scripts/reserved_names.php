@@ -7,6 +7,9 @@ $result=array();
 foreach(glob('../*.c') as $fname){
 	foreach(checkFile($fname) as $words) $result[$words]=true;
 }
+foreach(glob('../wifi/*.c') as $fname){
+	foreach(checkFile($fname) as $words) $result[$words]=true;
+}
 foreach(glob('./*.html') as $fname){
 	foreach(checkFile($fname) as $words) $result[$words]=true;
 }

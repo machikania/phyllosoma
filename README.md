@@ -5,18 +5,24 @@ MachiKania Phyllosoma
 MachiKania Phyllosoma is a BASIC compiler for ARMv6-M, especially for Raspberry Pi Pico.
 
 ## how to compile
-cmake and make. The pico-sdk (ver 1.4 is confirmed for building) with tinyusb submodule (ver 0.14.0 is confirmed for building) is required.
+cmake and make. The pico-sdk (ver 1.5.0 is confirmed for building) with tinyusb (ver 0.15.0 is confirmed for building), cyw43-driver, lwip, and mbedtls submodules is required. In config.cmake, select configuration option to build by enabling "set()" command. Currently, there are following options:  
+  
+1. set(MACHIKANIA_BUILD pico_ili9341) : for Raspberry Pi Pico + ILI9341 LCD  
+2. set(MACHIKANIA_BUILD pico_ili9488) : for Raspberry Pi Pico + ILI9488 LCD  
+3. set(MACHIKANIA_BUILD xiao_embed) : for Seeed XIAO RP2040 for embedded development  
+4. set(MACHIKANIA_BUILD pico_w_ili9341) : for Raspberry Pi Pico W + ILI9341 LCD + Wifi  
+5. set(MACHIKANIA_BUILD pico_w_ili9488) : for Raspberry Pi Pico W + ILI9488 LCD + Wifi
 
 ## how to use
-Copy "phyllosoma.uf2" to the RPI-RP2 drive of Raspberry Pi Pico. Immediately connect to COMx port (com number depends on environment) by serial console at 115200 baud rate, if needed. Alternatively, copy "phyllosoma_kb.uf2" to the RPI-RP2 drive of Raspberry Pi Pico for using USB keyboard directly connected to Raspberry Pi Pico.
+Copy "phyllosoma.uf2" to the RPI-RP2 drive of Raspberry Pi Pico or Pico W. Immediately connect to COMx port (com number depends on environment) by serial console at 115200 baud rate, if needed. Alternatively, copy "phyllosoma_kb.uf2" to the RPI-RP2 drive for using USB keyboard directly connected to Raspberry Pi Pico (or Pico W).
 
 ## License
 Most of codes (written in C) are provided with LGPL 2.1 license, but some codes are provided with the other licenses. See the comment of each file.
 
 ## Connection
-Connect a Raspberry Pi Pico to an ILI9341-based LCD (SPI connection) and an MultiMediaCard (SPI connection) as follows.
+Connect a Raspberry Pi Pico to an ILI9341/ILI9488-based LCD (SPI connection) and an MultiMediaCard (SPI connection) as follows.
 ![schematic.png](documents/shematic.png)
-Note that USB keyboard is connected to micro-USB B port of Raspberry Pi Pico board when required.
+Note that USB keyboard is connected to micro-USB B port of Raspberry Pi Pico (or Pico W) board when required.
 
 ```console
 GP0 I/O bit0 / PWM3
@@ -48,5 +54,5 @@ GP28 I/O bit15 / SOUND OUT / ADC2
 GP29 ADC3
 ```
 ## Using Keyboard
-The phyllosoma_kb.uf2 firmware supports using USB keyboard. Connect the USB keyboard to micro B socket of Raspberry Pi pico through an USB-OTG cable, and supply 5V power to VBUS pin (#40).  
+The phyllosoma_kb.uf2 firmware supports using USB keyboard. Connect the USB keyboard to micro B socket of Raspberry Pi pico (or Pico W) through an USB-OTG cable, and supply 5V power to VBUS pin (#40).  
 Alternatevely, as before, the phyllosoma.uf2 firmware supports the USB serial connection between MachiKania and PC.

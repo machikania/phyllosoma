@@ -14,6 +14,7 @@
 #include "./display.h"
 #include "./config.h"
 #include "./sleep.h"
+#include "./debug.h"
 
 /*
 	Local macros
@@ -21,7 +22,7 @@
 
 // Use 1016 bytes stack area dedicated for library
 // This routine is required to prevent mulfunctions of some library call
-#define use_lib_stack(funcname) \
+/*#define use_lib_stack(funcname) \
 	asm("push {r4,lr}");\
 	asm("mov r4,sp");\
 	asm("ldr r3,[r7,#0]");\
@@ -29,6 +30,12 @@
 	asm("bl "funcname);\
 	asm("mov sp,r4");\
 	asm("pop {r4,pc}")
+//*/
+#define use_lib_stack(funcname) \
+	asm("push {r4,lr}");\
+	asm("bl "funcname);\
+	asm("pop {r4,pc}")
+//*/
 
 int lib_add_string(int r0, int r1, int r2){
 	int i,j;
@@ -585,7 +592,7 @@ int lib_str2obj(int r0, int r1, int r2){
 }
 
 int lib_debug(int r0, int r1, int r2){
-#ifdef DEBUG_MODE
+#ifdef MACHIKANIA_DEBUG_MODE
 	//M0PLUS 0xe0000000
 	//SYST_CVR 0xe018
 	//asm("ldr	r0, [r5, r0]");
@@ -620,6 +627,9 @@ int lib_system(int r0, int r1, int r2){
 		case 4:
 		//	現在実行中のCPUのクロック周波数を返す。
 			return 125000000;
+		case 5:
+		//	コンパイル時のコンフィグ設定、"pico_ili9341.h" "pico_ili9341.h (embed)"などを返す。
+			return 9+(int)MACHIKANIA_CONFIG MACHIKANIA_DEBOG_MODE_STR;
 		case 20:
 		//	キャラクターディスプレイ横幅を返す。
 			return WIDTH_X;
@@ -683,19 +693,27 @@ int lib_system(int r0, int r1, int r2){
 		case 200:
 		//	ディスプレイの表示を停止(xが0のとき)、もしくは開始(xが0以外の時)する。
 			break;
+		case 201:
+		// ボード上のLEDをON/OFFする(type Pのみ)。
+			board_led(r1);
+			break;
 		case 250:
 		// void* calloc (int bytes);
-			return (int)calloc_memory((r0+3)/4,get_permanent_block_number());		
+			return (int)calloc_memory((r1+3)/4,get_permanent_block_number());		
 		case 251:
 		// void* malloc (int bytes);
-			return (int)alloc_memory((r0+3)/4,get_permanent_block_number());		
+			return (int)alloc_memory((r1+3)/4,get_permanent_block_number());		
 		case 252:
 		// void free (void* addr);
-			delete_memory((void*)r0);
+			delete_memory((void*)r1);
 			break;
 		case 253:
 		// Garbage collection
-			garbage_collection((void*)r0);
+			garbage_collection((void*)r1);
+			break;
+		case 300:
+		// memory dump
+			memdump();
 			break;
 		default:
 			break;
@@ -767,6 +785,8 @@ static const void* lib_list2[]={
 	lib_music,      // #define LIB_MUSIC 152
 	lib_delayus,    // #define LIB_DELAYUS 153
 	lib_delayms,    // #define LIB_DELAYMS 154
+	lib_rtc,        // #define LIB_RTC 155
+	lib_wifi,       // #define LIB_WIFI 156
 };
 
 int statement_library(int r0, int r1, int r2, int r3){
@@ -775,7 +795,7 @@ int statement_library(int r0, int r1, int r2, int r3){
 	// Raise garbage collection flag
 	// g_garbage_collection=1; // This feature is disabled. See galbage_collection() function.
 	// Check break key (Ctrl-Z)
-	if (check_break()) return lib_end(0,0,0);
+	if (check_break() && !g_interrupt_code) return lib_end(0,0,0);
 	return r0;
 }
 

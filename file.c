@@ -22,8 +22,7 @@ void init_file_system(void){
 	if (FR_OK!=f_mount(&g_FatFs, "", 0)) printstr("Initializing file system failed\n");
 }
 
-#undef file_exists
-int file_exists(unsigned char* fname){
+int mmc_file_exists(unsigned char* fname){
 	FILINFO fileinfo;
 	fileinfo.fsize=-1;
 	f_stat(fname,&fileinfo);
@@ -169,6 +168,8 @@ void close_all_files(void){
 int lib_file(int r0, int r1, int r2){
 	FIL* fhandle=g_pFileHandles[g_active_handle-1];
 	unsigned char* str;
+	static DIR dj;      // Directory object
+	static FILINFO fno; // File information
 	switch(r2){
 		case FILE_FCLOSE:
 			if (1==r0 || 2==r0) {
@@ -200,24 +201,28 @@ int lib_file(int r0, int r1, int r2){
 			return (1==f_putc((TCHAR)r0,fhandle)) ? 1:0;
 			break;
 		case FILE_FREMOVE:
-			return f_unlink((TCHAR*)r0) ? -1:0;
+			r2=f_unlink((TCHAR*)r0) ? -1:0;
+			garbage_collection((char*)r0);
+			return r2;
 			break;
 		case FILE_FSEEK:
 			f_lseek(fhandle,r0);
 			break;
 		case FILE_SETDIR:
-			return f_chdir((char*)r0);
+			r2=f_chdir((char*)r0);
+			garbage_collection((char*)r0);
+			return r2;
 			break;
 		case FILE_FEOF:
 			return f_eof(fhandle) ? 1:0;
 			break;
 		case FILE_FGETC:
-			if (f_read(fhandle,(char*)&g_scratch[0],1,0)) {
+			if (f_read(fhandle,(char*)&g_scratch[0],1,(unsigned int*)&g_scratch_int[1])) {
 				// Error
 				return -1;
 			} else {
-				// OK
-				return (unsigned char)g_scratch[0];
+				// OK or EOF
+				return g_scratch_int[1] ? (unsigned char)g_scratch[0]:-1;
 			}
 			break;
 		case FILE_FLEN:
@@ -245,13 +250,81 @@ int lib_file(int r0, int r1, int r2){
 			}
 			return (int)str;
 			break;
+		case FILE_FFIND:
+			// r1: pattern
+			// r0: path
+			if (0==r1) {
+				// find next mode
+				if (FR_OK==f_findnext(&dj, &fno)) return (int)fno.fname;
+			} else if (0==r0) {
+				// find first mode with current directory
+				if (FR_OK==f_findfirst(&dj, &fno, ".", (char*)r1)) return (int)&fno.fname[0];
+			} else {
+				// find first mode with specified directory
+				if (FR_OK==f_findfirst(&dj, &fno, (char*)r0, (char*)r1)) return (int)&fno.fname[0];
+			}
+			// No file found
+			return (int)"";
+		case FILE_FINFO:
+			switch(r0){
+				case 0: // File size
+					return fno.fsize;
+				case 1: // Modified date
+					return fno.fdate;
+				case 2: // Modified time
+					return fno.ftime;
+				case 3: // File attribute
+					return (unsigned int)fno.fattrib;
+				default:
+					return 0;
+			}
+		case FILE_FINFOSTR:
+			switch(r0){
+				case 0: // ISO-8601 string, YYYY-MM-DDThh:mm:ss
+					str=alloc_memory(5,-1);
+					sprintf(str,"%04d-%02d-%02dT%02d:%02d:%02d",
+						((fno.fdate>>9)&127)+1980,
+						(fno.fdate>>5)&15,
+						(fno.fdate>>0)&31,
+						(fno.ftime>>11)&31,
+						(fno.ftime>>5)&63,
+						(fno.ftime<<1)&63 );
+					return (int)str;
+				case 1: // Date string, YYYY-MM-DD
+					str=alloc_memory(3,-1);
+					sprintf(str,"%04d-%02d-%02d",
+						((fno.fdate>>9)&127)+1980,
+						(fno.fdate>>5)&15,
+						(fno.fdate>>0)&31 );
+					return (int)str;
+				case 2: // Time string, hh:mm:ss
+					str=alloc_memory(3,-1);
+					sprintf(str,"%02d:%02d:%02d",
+						(fno.ftime>>11)&31,
+						(fno.ftime>>5)&63,
+						(fno.ftime<<1)&63 );
+					return (int)str;
+				case 3: // Attribute string, "rhsda"
+					str=alloc_memory(2,-1);
+					if (AM_RDO & fno.fattrib) str[0]='r'; else str[0]='w'; // Read only 
+					if (AM_HID & fno.fattrib) str[1]='h'; else str[1]='-'; // Hidden 
+					if (AM_SYS & fno.fattrib) str[2]='s'; else str[2]='-'; // System 
+					if (AM_DIR & fno.fattrib) str[3]='d'; else str[3]='-'; // Directory 
+					if (AM_ARC & fno.fattrib) str[4]='a'; else str[4]='-'; // Archive 
+					str[5]=0;
+					return (int)str;
+				case 4: // File name
+					return (int)&fno.fname[0];
+				default:
+					return (int)"";
+			}
 		default:
 			break;
 	}
 	return 0;
 }
 
-int lib_fopen(int r0, int r1, int r2){
+int lib_fopen_main(int r0, int r1, int r2){
 	char* filename=(char*)r2;
 	char* modestr=(char*)r1;
 	char mode;
@@ -303,6 +376,14 @@ int lib_fopen(int r0, int r1, int r2){
 	}
 	// File sucessfully opened. Return file handle
 	g_pFileHandles[r0-1]=&g_FileHandles[r0-1];
+	return r0;
+}
+int lib_fopen(int r0, int r1, int r2){
+	char* filename=(char*)r2;
+	char* modestr=(char*)r1;
+	r0=lib_fopen_main(r0,r1,r2);
+	garbage_collection((char*)r1);
+	garbage_collection((char*)r2);
 	return r0;
 }
 
@@ -431,4 +512,22 @@ int getdir_function(void){
 	return argn_function(LIB_FILE,
 		ARG_NONE | 
 		FILE_GETDIR<<LIBOPTION);
+}
+int ffind_function(void){
+	g_default_args[1]=0;
+	g_default_args[2]=0;
+	return argn_function(LIB_FILE,
+		ARG_STRING_OPTIONAL<<ARG1 |
+		ARG_STRING_OPTIONAL<<ARG2 |
+		FILE_FFIND<<LIBOPTION);	
+}
+int finfo_function(void){
+	return argn_function(LIB_FILE,
+		ARG_INTEGER<<ARG1 |
+		FILE_FINFO<<LIBOPTION);
+}
+int finfostr_function(void){
+	return argn_function(LIB_FILE,
+		ARG_INTEGER<<ARG1 |
+		FILE_FINFOSTR<<LIBOPTION);
 }

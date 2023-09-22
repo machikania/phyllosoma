@@ -115,6 +115,17 @@ void LCD_WriteData2(unsigned short data)
 	lcd_cs_hi();
 }
 
+void LCD_WriteDataColor(unsigned short data)
+{
+// Write Color Data  (Equal to LCD_WriteData2)
+    unsigned short d;
+	lcd_dc_hi();
+	lcd_cs_lo();
+    d=(data>>8) | (data<<8);
+	spi_write_blocking(LCD_SPICH, (unsigned char *)&d, 2);
+	lcd_cs_hi();
+}
+
 void LCD_WriteDataN(unsigned char *b,int n)
 {
 // Write Data N bytes
@@ -144,6 +155,18 @@ void LCD_WriteData2_notfinish(unsigned short data)
 	spi_write_blocking_notfinish(LCD_SPICH, (unsigned char *)&d, 2);
 }
 
+void LCD_WriteDataColor_notfinish(unsigned short data)
+{
+// Write Color Data , without SPI transfer finished check
+// After final data write, you should call checkSPIfinish()
+// Equal to LCD_WriteData2_notfinish
+    unsigned short d;
+	lcd_dc_hi();
+	lcd_cs_lo();
+	d=(data>>8) | (data<<8);
+	spi_write_blocking_notfinish(LCD_SPICH, (unsigned char *)&d, 2);
+}
+
 void LCD_WriteDataN_notfinish(unsigned char *b,int n)
 {
 // Write Data N bytes, without SPI transfer finished check
@@ -160,8 +183,10 @@ void LCD_Read(unsigned char com,unsigned char *b,int n){
 	spi_write_blocking(LCD_SPICH, &com , 1);
 // Read Data
 	lcd_dc_hi();
+	spi_set_baudrate(LCD_SPICH, LCD_SPI_BAUDRATE_R);
 	spi_read_blocking(LCD_SPICH, 0, b, 1); // dummy read
 	spi_read_blocking(LCD_SPICH, 0, b, n);
+	spi_set_baudrate(LCD_SPICH, LCD_SPI_BAUDRATE);
 	lcd_cs_hi();
 }
 

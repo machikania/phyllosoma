@@ -43,6 +43,7 @@ int input_function(void){
 }
 
 int string_functions(void){
+	int e;
 	if (instruction_is("ARGS$(")) return args_function();
 	if (instruction_is("CHR$(")) return chr_function();
 	if (instruction_is("DEBUG$(")) return debug_function();
@@ -55,8 +56,16 @@ int string_functions(void){
 	if (instruction_is("SPRINTF$(")) return sprintf_function();
 	if (instruction_is("SYSTEM$(")) return system_function();
 	// File functions
+	if (instruction_is("FFIND$(")) return ffind_function();
+	if (instruction_is("FINFO$(")) return finfostr_function();
 	if (instruction_is("FINPUT$(")) return finput_function();
 	if (instruction_is("GETDIR$(")) return getdir_function();
+	// RTC functions
+	if (instruction_is("GETTIME$(")) return gettime_function();
+	if (instruction_is("STRFTIME$(")) return strftime_function();
+	// Wifi functions
+	e=wifi_str_functions();
+	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;
 	return ERROR_SYNTAX;
 }
 

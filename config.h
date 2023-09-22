@@ -1,15 +1,20 @@
-// Select environment-specific header below
+#ifndef MACHIKANIA_CONFIG_H
+#define MACHIKANIA_CONFIG_H
 
-// Raspberry Pi Pico + ILI9341 LCD
-// YD-RP2040 + ILI9341 LCD
-#include "./config/pico_ili9341.h"
+// Selection of environment-specific header must be done in config.cmake
+// One of the header files in config directry is selected by following include directive.
+#ifdef MACHIKANIA_CONFIG
+#include MACHIKANIA_CONFIG
+#else
+#error MACHIKANIA_CONFIG not defined
+#endif
 
 // Environment non-specific settings follow
 
 #define PHYLLOSOMA
 #define SYSVER1 "Phyllosoma"
-#define SYSVER2 "1.2.0"
-#define BASVER "KM-1502"
+#define SYSVER2 "1.3.0.0"
+#define BASVER "KM-1503"
 
 #define INTRODUCE_MACHIKANIA \
 	"MachiKania BASIC System\n"\
@@ -17,6 +22,10 @@
 	"BASIC Compiler "BASVER" by Katsumi\n"\
 	"LCD, File, & Keyboard systems by KENKEN\n"\
 	"\n"
+
+#ifndef KMBASIC_OBJECT_KBYTES
+#define KMBASIC_OBJECT_KBYTES 192
+#endif
 
 #define IO_SPI_TX SD_SPI_TX
 #define IO_SPI_RX SD_SPI_RX
@@ -41,3 +50,5 @@ extern int LCD_ALIGNMENT;
 		((a)&KEYSTART)|\
 		((a)&KEYFIRE)\
 	):(a))
+
+#endif //MACHIKANIA_CONFIG_H
