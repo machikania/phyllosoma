@@ -12,7 +12,7 @@ MachiKaniaを用いて、クライアントアプリケーションとサーバ�
 
 ＜Wi-Fi用のSSIDとパスワードを指定するもう一つの方法＞
 
-Wi-Fi用のSSIDとパスワードをMMC/SDカードにファイルとして保存する事がセキュリティー上問題になるケースがあると思います。そのような場合は、Raspberry Pi Pico Wの本体に、SSIDとパスワードを埋め込むことができます。これには、「scripts」フォルダーにある、「embed_ssid_passwd.php」もしくは「embed_ssid_passwd_kb.php」を用います。「phyllosoma.uf2」もしくは「phyllosoma_kb.uf2」を同じフォルダーにコピーし、「embed_ssid_passwd.php」もしくは「embed_ssid_passwd_kb.php」を編集してファイル冒頭でSSIDとパスワードを指定してください。PHPにてこれらのphpスクリプトを実行すれば「result.uf2」が作成されますので、Raspberry Pi Pico WのRPI-RP2ドライブにコピーしてください。MACHIKAP.INIにSSIDやパスワードを記述しなくても、Wi-Fiに接続できます。
+Wi-Fi用のSSIDとパスワードをMMC/SDカードにファイルとして保存する事がセキュリティー上問題になるケースがあると思います。そのような場合は、Raspberry Pi Pico Wの本体に、SSIDとパスワードを埋め込むことができます。これには、GitHubレポジトリーの「scripts」フォルダーにある、「embed_ssid_passwd.php」もしくは「embed_ssid_passwd_kb.php」を用います。「phyllosoma.uf2」もしくは「phyllosoma_kb.uf2」を同じフォルダーにコピーし、「embed_ssid_passwd.php」もしくは「embed_ssid_passwd_kb.php」を編集してファイル冒頭でSSIDとパスワードを指定してください。PHPにてこれらのphpスクリプトを実行すれば「result.uf2」が作成されますので、Raspberry Pi Pico WのRPI-RP2ドライブにコピーしてください。MACHIKAP.INIにSSIDやパスワードを記述しなくても、Wi-Fiに接続できます。
 
 
 ＜Wi-Fi関連のMACHIKAP.INI設定＞
@@ -160,4 +160,4 @@ do
 loop
 
 ＜バージョン履歴＞
-・KM-1503 2023年?月公開。
+・KM-1503 2023年9月公開。

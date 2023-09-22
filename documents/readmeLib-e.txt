@@ -34,14 +34,17 @@ CSWTIF
 HTTPD
 	Class to construct http server
 
-JSON
-	Class to analyze JSON string
-
 IR_RX
 	Class to use IR receiver
 
 IR_TX
 	Class to use IR transmitter
+
+JSON
+	Class to analyze JSON string
+
+MA
+	Class for memory allocation, used in STRDIM.
 
 REGEXP
 	Class for using regular expressions with MachiKania type P.
@@ -54,9 +57,6 @@ STRDIM
 
 STRING
 	Class for handling string objects, similar to Java's String class.
-
-MA
-	Class for memory allocation, used in STRDIM.
 
 WS2812B
 	Class for using serial connection LED WS2812B.

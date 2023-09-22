@@ -40,14 +40,17 @@ CSWTIF
 HTTPD
 	Wifi接続時に、HTTPサーバーを構築するためのクラス。
 
-JSON
-	JSON文字列を解析するためのクラス。
-
 IR_RX
 	赤外線リモコン受信モジュールを使用するためのクラス。
 
 IR_TX
 	赤外線LEDでリモコン信号を送信するためのクラス。
+
+JSON
+	JSON文字列を解析するためのクラス。
+
+MA
+	メモリーアロケーションの為のクラス。STRDIMで使用。
 
 REGEXP
 	MachiKania type Pで正規表現を使うためのクラス。
@@ -60,9 +63,6 @@ STRDIM
 
 STRING
 	JavaのStringクラス様の、文字列オブジェクトを扱うクラス。
-
-MA
-	メモリーアロケーションの為のクラス。STRDIMで使用。
 
 WGET
 	Wifi接続時に、クライアントとして指定のURLから情報を取得するためのクラス。

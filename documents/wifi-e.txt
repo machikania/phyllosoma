@@ -12,7 +12,7 @@ Both client and server applications can be built using MachiKania. The HTTP prot
 
 <Another way to specify SSID and password for Wi-Fi>
 
-There are cases where saving the Wi-Fi SSID and password as a file on an MMC/SD card may cause security issues. In such cases, you can embed the SSID and password into the Raspberry Pi Pico W itself. To do this, use "embed_ssid_passwd.php" or "embed_ssid_passwd_kb.php" in the "scripts" folder. Copy "phyllosoma.uf2" or "phyllosoma_kb.uf2" to the same folder, edit "embed_ssid_passwd.php" or "embed_ssid_passwd_kb.php" and specify SSID and password at the beginning of the file. Running these php scripts by PHP will create "result.uf2", copy it to the RPI-RP2 drive of the Raspberry Pi Pico W. You can connect to Wi-Fi without writing the SSID and password in the MACHIKAP.INI file. You do not need to write SSID and password in MACHIKAP.INI to connect to Wi-Fi.
+There are cases where saving the Wi-Fi SSID and password as a file on an MMC/SD card may cause security issues. In such cases, you can embed the SSID and password into the Raspberry Pi Pico W itself. To do this, use "embed_ssid_passwd.php" or "embed_ssid_passwd_kb.php" in the "scripts" folder in GitHub repository. Copy "phyllosoma.uf2" or "phyllosoma_kb.uf2" to the same folder, edit "embed_ssid_passwd.php" or "embed_ssid_passwd_kb.php" and specify SSID and password at the beginning of the file. Running these php scripts by PHP will create "result.uf2", copy it to the RPI-RP2 drive of the Raspberry Pi Pico W. You can connect to Wi-Fi without writing the SSID and password in the MACHIKAP.INI file. You do not need to write SSID and password in MACHIKAP.INI to connect to Wi-Fi.
 
 
 <Wi-Fi related MACHIKAP.INI settings>
@@ -160,4 +160,4 @@ do
 loop
 
 <Version history>
-KM-1503 Released in ? 2023.
+KM-1503 Released in September 2023.
