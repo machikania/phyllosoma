@@ -28,3 +28,29 @@ MMC(SD)カードが接続されていない場合でも、次のようにして�
 ３．MACHIKAP.INIを埋め込むことで、初期設定を行う事が可能。
 ４．埋め込み可能なのは、ヌル文字(\0)を含まないファイルのみ。
 ５．MACHIKAP.BASを含めて、４つまでのファイルを埋め込み可能。さらに多いファイル、もしくは容量の大きいファイルを埋め込みたい場合は、MachiKaniaシステムのソースコードのうち、debug.cを変更してビルドしなおす必要がある。
+
+＜埋め込むに使用するuf2ファイルの選択＞
+
+Raspberry Pi Picoだけではなく、RP2040を使用している様々なボードに埋め込んで使用することができます。どのuf2ファイルを使用するかは、次のリストを参考にしてください。
+
+１．Raspberry Pi Pico または YD-RP2040
+　　　pico_ili9341/embed/phyllosoma.uf2
+　　　pico_ili9341/embed/phyllosoma_kb.uf2 (USB キーボードを接続する場合)
+２．Raspberry Pi Pico W
+　　　pico_w_ili9341/embed/phyllosoma.uf2
+　　　pico_w_ili9341/embed/phyllosoma_kb.uf2 (USB キーボードを接続する場合)
+３．Seeed XIAO RP2040
+　　　xiao_embed/phyllosoma.uf2
+　　　xiao_embed/phyllosoma_kb.uf2 (USB キーボードを接続する場合)
+　　　ただし、I/Oポートの割り当ては次のようになっており、Pi Pico用のものと異なる事に注意。
+　　　　GP0 I/O bit0 / UART TX / PWM3
+　　　　GP1 I/O bit1 / UART RX / SPI CS / PWM2
+　　　　GP2 I/O bit2 / SPI SCK / PWM1
+　　　　GP3 I/O bit3 / SPI MOSI
+　　　　GP4 I/O bit4 / SPI MISO
+　　　　GP6 I/O bit6 / I2C SDA
+　　　　GP7 I/O bit7 / I2C SCL
+４．RP2040-Zero, Pimoroni Tiny-2040 など
+　　　pico_ili9341/embed/phyllosoma.uf2
+　　　pico_ili9341/embed/phyllosoma_kb.uf2 (USB キーボードを接続する場合)
+　　　ただし、SPI接続の場合にどのポートを使用するかは、MACHIKAP.INIで、"SPIMISO=", "SPIMOSI=", "SPICLK="の値を設定する事で変更することができる。例えば、"SPIMISO=4", "SPIMOSI=7", "SPICLK=6"など。
