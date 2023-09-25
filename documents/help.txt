@@ -734,7 +734,7 @@ SETTIME x$
 	現在時刻をセットする。x$には、現在の時刻を ISO-8601 文字列で指定する。
 
 STRFTIME$(x$[,y$]])
-	(現在)時刻から、所定の情報を抽出して文字列として返す。x$には、どの情報を抽出するかを文字列で指定。y$を指定しない場合は現在時刻、ISO-8601 文字列として指定した場合は、指定時刻が用いられる。x$に指定する文字列の書式ドキュメントの strftime.html の通りだが、日本語ドキュメントはC言語のstrftime()を参照の事。例えば、
+	(現在)時刻から、所定の情報を抽出して文字列として返す。x$には、どの情報を抽出するかを文字列で指定。y$を指定しない場合は現在時刻、ISO-8601 文字列として指定した場合は、指定時刻が用いられる。x$に指定する文字列の書式はドキュメントの strftime.html の通りだが、日本語ドキュメントはC言語のstrftime()を参照の事。例えば、
 		https://www.ibm.com/docs/ja/i/7.1?topic=ssw_ibm_i_71/rtref/strfti.html
 		https://linuxjm.osdn.jp/html/LDP_man-pages/man3/strftime.3.html
 
