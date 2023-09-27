@@ -25,7 +25,7 @@ for($classnum=1;$classnum<=0xf;$classnum++){
 
 // Check BAS files in current directory
 echo "\nInvestigating BASIC files in current directory...\n";
-$d=glob('*.{BAS,INI,TXT,bas,ini,txt}',GLOB_BRACE);
+$d=glob('*.{BAS,INI,TXT,HTM,CSS,JS,XML,bas,ini,txt,htm,css,js,xml}',GLOB_BRACE);
 $basnum=0;
 if (0==count($d)) echo "No file to embed found\n";
 for($i=0;$i<count($d);$i++) {
