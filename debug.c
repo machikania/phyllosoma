@@ -206,6 +206,7 @@ void dump_variables(void){
 FRESULT debug_f_open (FIL* fp, const TCHAR* path, BYTE mode){
 	int i;
 	const TCHAR* file;
+	if (mode&FA_WRITE) return FR_WRITE_PROTECTED;
 	for(i=0;file=debug_files[i];i+=2){
 		if (filename_strcmpi(file,path)) continue;
 		// Found the file
@@ -247,6 +248,17 @@ TCHAR* debug_f_gets (TCHAR* buff, int len, FIL* fp){
 	}
 	buff[i]=0;
 	return buff;
+}
+
+FRESULT debug_f_read (FIL* fp, TCHAR* buff, UINT btr, UINT* br){
+	int i;
+	TCHAR* file=(TCHAR*)fp->dir_ptr;
+	for(i=0;i<btr;i++){
+		if (f_eof(fp)) break;
+		buff[i]=file[fp->fptr++];
+	}
+	br[0]=i;
+	return FR_OK;
 }
 
 FRESULT debug_f_getcwd (TCHAR* buff, UINT len){
