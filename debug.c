@@ -207,7 +207,7 @@ FRESULT debug_f_open (FIL* fp, const TCHAR* path, BYTE mode){
 	int i;
 	const TCHAR* file;
 	for(i=0;file=debug_files[i];i+=2){
-		if (strcmp(file,path)) continue;
+		if (filename_strcmpi(file,path)) continue;
 		// Found the file
 		file=debug_files[i+1];
 		fp->dir_ptr=(TCHAR*)file;
