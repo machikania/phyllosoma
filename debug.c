@@ -36,6 +36,13 @@ unsigned char* debug_fileselect(void){
 	return "MACHIKAP.BAS";
 }
 
+#define rem_repeat1k(a) \
+	rem_repeat3(a "00") \
+	rem_repeat3(a "01") \
+	rem_repeat3(a "02") \
+	rem_repeat3(a "03")
+#define rem_repeat4k(a) \
+	rem_repeat2(a "0")
 #define rem_repeat16k(a) \
 	rem_repeat2(a "0") \
 	rem_repeat2(a "1") \
@@ -105,6 +112,28 @@ static const char* debug_files[]={
 	rem_repeat16k("CLASS003")
 	,"CLASS004.BAS",
 	rem_repeat16k("CLASS004")
+	,"CLASS005.BAS",
+	rem_repeat4k("CLASS005")
+	,"CLASS006.BAS",
+	rem_repeat4k("CLASS006")
+	,"CLASS007.BAS",
+	rem_repeat4k("CLASS007")
+	,"CLASS008.BAS",
+	rem_repeat4k("CLASS008")
+	,"CLASS009.BAS",
+	rem_repeat1k("CLASS009")
+	,"CLASS00A.BAS",
+	rem_repeat1k("CLASS00A")
+	,"CLASS00B.BAS",
+	rem_repeat1k("CLASS00B")
+	,"CLASS00C.BAS",
+	rem_repeat1k("CLASS00C")
+	,"CLASS00D.BAS",
+	rem_repeat1k("CLASS00D")
+	,"CLASS00E.BAS",
+	rem_repeat1k("CLASS00E")
+	,"CLASS00F.BAS",
+	rem_repeat1k("CLASS00F")
 	,0
 };
 
