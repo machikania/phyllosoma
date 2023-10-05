@@ -272,6 +272,41 @@ FRESULT debug_f_chdir (const TCHAR* path){
 	return FR_OK;
 }
 
+FRESULT debug_f_write (FIL* fp, const void* buff, UINT btw, UINT* bw){
+	return FR_WRITE_PROTECTED;
+}
+
+int debug_f_putc (TCHAR c, FIL* fp){
+	return -1;
+}
+
+FRESULT debug_f_unlink (const TCHAR* path){
+	return FR_WRITE_PROTECTED;
+}
+
+FRESULT debug_f_mount (FATFS* fs, const TCHAR* path, BYTE opt){
+	return FR_OK;
+}
+
+FRESULT debug_f_lseek (FIL* fp, FSIZE_t ofs){
+	fp->fptr = ofs<(fp->obj.objsize) ? ofs:(fp->obj.objsize);
+	return FR_OK;
+}
+
+FRESULT debug_f_opendir (DIR* dp, const TCHAR* path){
+	return FR_OK;
+}
+
+FRESULT debug_f_findnext (DIR* dp, FILINFO* fno){
+	fno->fname[0]=0;
+	return FR_NOT_ENABLED;
+}
+
+FRESULT debug_f_findfirst (DIR* dp, FILINFO* fno, const TCHAR* path, const TCHAR* pattern){
+	fno->fname[0]=0;
+	return FR_NOT_ENABLED;
+}
+
 int debug_file_exists(unsigned char* fname){
 	int i;
 	const TCHAR* file;
