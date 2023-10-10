@@ -1,6 +1,6 @@
 # Remove comment in following line for DEBUG_MODE
 # This mode is used also for embedded system
-set(MACHIKANIA_DEBUG_MODE 1)
+#set(MACHIKANIA_DEBUG_MODE 1)
 
 # Select a configuration from following set statements
 
