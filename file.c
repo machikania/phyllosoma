@@ -429,8 +429,8 @@ int lib_fprint_main(int r0, int r1, int r2){
 		case 0x02: // float
 			g_scratch_int[0]=r0;
 			f=g_scratch_float[0];
-			if (0x00 == (r1&0xf0)) i=snprintf(buff,sizeof g_scratch,"%g\n",f);
-			else i=snprintf(buff,sizeof g_scratch,"%g",f);
+			if (0x00 == (r1&0xf0)) i=machikania_snprintf(buff,sizeof g_scratch,"%g\n",f);
+			else i=machikania_snprintf(buff,sizeof g_scratch,"%g",f);
 			printstr(buff);
 			break;
 		default:   // integer
