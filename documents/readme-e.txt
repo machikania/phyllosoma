@@ -207,3 +207,8 @@ Phyllosoma 1.30/KM-1503 (2023.9.30)
 　Fixed a static method call bug in a class.
 　Three functions, FFINGD$(), FINFO(), and FINFO$(), are added. Enabled to create file list.
 　Fixed a compile-time bug when the REM statement contains double quotation.
+
+Phyllosoma 1.31/KM-1504 (2023.10.28)
+　The BASIC program for embed now supports file reading.
+　The number of files that can be embedded for embedding has been increased to 16.
+　Fixed a bug that caused wrong values when displaying floating points and handling strings.
