@@ -1,5 +1,11 @@
 <?php
 
+$version=array(
+	"Phyllosoma",
+	"1.3.1.0",
+	"KM-1504",
+);
+
 $configs=array(
 	'./config/pico_ili9341.h (embed)',
 	'./config/pico_w_ili9341.h (embed)',
@@ -28,8 +34,18 @@ function check_dir($dir,$fullpath){
 }
 
 function check_uf2($filename,$fullpath){
-	global $configs;
+	global $configs,$version;
 	$uf2file=file_get_contents($filename);
+	// Check version
+	for($i=0;$i<count($version);$i++){
+		if (!strpos_ex($uf2file,$version[$i])) {
+			echo "\n***** Version doesn't fit! It must be $version[$i] *****\n\n";
+			return;
+		}
+		echo $version[$i],' ';
+	}
+	echo "OK\n";
+	// Check config
 	if (!preg_match('@/([^/]*)@',$fullpath,$m)) exit ("Error ".__LINE__);
 	$config_file=$m[1];
 	$embed_file=preg_match('@(/embed|xiao_embed)@',$fullpath);
@@ -45,7 +61,7 @@ function check_uf2($filename,$fullpath){
 		echo "\n\n";
 		return;
 	}
-	echo "Config header not found!\n\n";
+	echo "***** Config header not found! *****\n\n";
 }
 
 function strpos_ex($str,$needle){
