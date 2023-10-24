@@ -155,3 +155,26 @@ void post_run(void){
 	// Wifi
 	post_run_wifi();
 }
+
+/*
+	Wrapper of snprintf() for using lib stack (1016 bytes)
+	Note that the lib stack region is used for executing snprintf().
+	When using lib stack, the interrupt is disabled because of the stricted length of stack area.
+*/
+
+int machikania_snprintf_main(char *buffer, size_t n, const char *format_string, float float_value) {
+	return snprintf(buffer,n,format_string,float_value);
+}
+
+int machikania_snprintf(char *buffer, int n, const char *format_string, float float_value) {
+	asm("push {r6,r7,lr}");
+	asm("mov r6,sp");
+	asm("ldr r7,=kmbasic_data");
+	asm("ldr r7,[r7,#0]");
+	asm("cpsid i");
+	asm("mov sp,r7");
+	asm("bl machikania_snprintf_main");
+	asm("mov sp,r6");
+	asm("cpsie i");
+	asm("pop {r6,r7,pc}");
+}

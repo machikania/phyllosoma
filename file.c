@@ -14,6 +14,20 @@
 		FRESULT f_close (FIL* fp);
 		TCHAR* f_gets (TCHAR* buff, int len, FIL* fp);
 		#define f_eof(fp) ((int)((fp)->fptr == (fp)->obj.objsize))
+		FRESULT f_mount (FATFS* fs, const TCHAR* path, BYTE opt);
+		FRESULT f_stat (const TCHAR* path, FILINFO* fno);
+		FRESULT f_getcwd (TCHAR* buff, UINT len);
+		FRESULT f_chdir (const TCHAR* path);
+		FRESULT f_read (FIL* fp, void* buff, UINT btr, UINT* br);
+		FRESULT f_write (FIL* fp, const void* buff, UINT btw, UINT* bw);
+		int f_putc (TCHAR c, FIL* fp);
+		FRESULT f_unlink (const TCHAR* path);
+		FRESULT f_lseek (FIL* fp, FSIZE_t ofs);
+		#define f_size(fp) ((fp)->obj.objsize)
+		#define f_tell(fp) ((fp)->fptr)
+		FRESULT f_findnext (DIR* dp, FILINFO* fno);
+		FRESULT f_findfirst (DIR* dp, FILINFO* fno, const TCHAR* path, const TCHAR* pattern);
+		FRESULT f_opendir (DIR* dp, const TCHAR* path);	
 */
 
 FATFS g_FatFs;
@@ -415,8 +429,8 @@ int lib_fprint_main(int r0, int r1, int r2){
 		case 0x02: // float
 			g_scratch_int[0]=r0;
 			f=g_scratch_float[0];
-			if (0x00 == (r1&0xf0)) i=snprintf(buff,sizeof g_scratch,"%g\n",f);
-			else i=snprintf(buff,sizeof g_scratch,"%g",f);
+			if (0x00 == (r1&0xf0)) i=machikania_snprintf(buff,sizeof g_scratch,"%g\n",f);
+			else i=machikania_snprintf(buff,sizeof g_scratch,"%g",f);
 			printstr(buff);
 			break;
 		default:   // integer

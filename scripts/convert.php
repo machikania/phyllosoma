@@ -7,7 +7,7 @@ if (!defined('FILENAME')) {
 }
 
 // Initializations
-$phyllosoma=@file_get_contents('./'.FILENAME);
+$phyllosoma=@file_get_contents(FILENAME);
 if (!@strlen($phyllosoma)) exit(FILENAME.' not found in current directory');
 $embedded=$phyllosoma;
 $maxlengths=array();
@@ -26,6 +26,17 @@ for($classnum=1;$classnum<=0xf;$classnum++){
 // Check BAS files in current directory
 echo "\nInvestigating BASIC files in current directory...\n";
 $d=glob('*.{BAS,INI,TXT,HTM,CSS,JS,XML,bas,ini,txt,htm,css,js,xml}',GLOB_BRACE);
+
+// Sort files by file size
+$d2=array();
+for($i=0;$i<count($d);$i++) {
+	$d2[$d[$i]]=filesize($d[$i]);
+}
+asort($d2,SORT_NUMERIC);
+$d=array();
+foreach($d2 as $key=>$value) array_unshift($d,$key);
+
+// Embed files found in current directory
 $basnum=0;
 if (0==count($d)) echo "No file to embed found\n";
 for($i=0;$i<count($d);$i++) {
@@ -39,7 +50,7 @@ for($i=0;$i<count($d);$i++) {
 		replace_bas($d[$i],'MACHIKAP');
 	} else {
 		$basnum++;
-		if ($classnum<$basnum) exit('Too many class files!');
+		if ($classnum<=$basnum) exit('   ...   Too many files!');
 		if ($maxlengths[$basnum]<$flen) exit(' file too large!');
 		else echo "(fits to $maxlengths[$basnum] bytes area; CLASS00".strtoupper(dechex($basnum)).")\n";
 		// Replace file name

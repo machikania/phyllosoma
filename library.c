@@ -100,8 +100,8 @@ int lib_print_main(int r0, int r1, int r2){
 		case 0x02: // float
 			g_scratch_int[0]=r0;
 			f=g_scratch_float[0];
-			if (0x00 == (r1&0xf0)) i=snprintf(buff,sizeof g_scratch,"%g\n",f);
-			else i=snprintf(buff,sizeof g_scratch,"%g",f);
+			if (0x00 == (r1&0xf0)) i=machikania_snprintf(buff,sizeof g_scratch,"%g\n",f);
+			else i=machikania_snprintf(buff,sizeof g_scratch,"%g",f);
 			printstr(buff);
 			break;
 		default:   // integer
@@ -358,7 +358,7 @@ int lib_float_str_main(int r0, int r1, int r2){
 	int i;
 	g_scratch_int[0]=r0;
 	res=alloc_memory(4,-1);
-	i=snprintf(res,16,"%g",g_scratch_float[0]);
+	i=machikania_snprintf(res,16,"%g",g_scratch_float[0]);
 	// Adjust the size of memory
 	kmbasic_var_size[g_last_var_num]=(i+4)/4;
 	return (int)res;
@@ -368,18 +368,21 @@ void lib_float_str(){
 	use_lib_stack("lib_float_str_main");
 }
 
-
-int lib_sprintf(int r0, int r1, int r2){
+int lib_sprintf_main(int r0, int r1, int r2){
 	char* res;
 	int i;
 	g_scratch_int[0]=r0;
 	res=alloc_memory(8,-1);
-	i=snprintf(res,32,(char*)r1,g_scratch_float[0]);
+	i=machikania_snprintf(res,32,(char*)r1,g_scratch_float[0]);
 	// Adjust the size of memory
 	kmbasic_var_size[g_last_var_num]=(i+4)/4;
 	// Garbage collection
 	garbage_collection((char*)r1);
 	return (int)res;
+}
+
+void lib_sprintf(){
+	use_lib_stack("lib_sprintf_main");
 }
 
 unsigned short* seek_data(int mode){

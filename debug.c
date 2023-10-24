@@ -36,6 +36,13 @@ unsigned char* debug_fileselect(void){
 	return "MACHIKAP.BAS";
 }
 
+#define rem_repeat1k(a) \
+	rem_repeat3(a "00") \
+	rem_repeat3(a "01") \
+	rem_repeat3(a "02") \
+	rem_repeat3(a "03")
+#define rem_repeat4k(a) \
+	rem_repeat2(a "0")
 #define rem_repeat16k(a) \
 	rem_repeat2(a "0") \
 	rem_repeat2(a "1") \
@@ -105,6 +112,28 @@ static const char* debug_files[]={
 	rem_repeat16k("CLASS003")
 	,"CLASS004.BAS",
 	rem_repeat16k("CLASS004")
+	,"CLASS005.BAS",
+	rem_repeat4k("CLASS005")
+	,"CLASS006.BAS",
+	rem_repeat4k("CLASS006")
+	,"CLASS007.BAS",
+	rem_repeat4k("CLASS007")
+	,"CLASS008.BAS",
+	rem_repeat4k("CLASS008")
+	,"CLASS009.BAS",
+	rem_repeat1k("CLASS009")
+	,"CLASS00A.BAS",
+	rem_repeat1k("CLASS00A")
+	,"CLASS00B.BAS",
+	rem_repeat1k("CLASS00B")
+	,"CLASS00C.BAS",
+	rem_repeat1k("CLASS00C")
+	,"CLASS00D.BAS",
+	rem_repeat1k("CLASS00D")
+	,"CLASS00E.BAS",
+	rem_repeat1k("CLASS00E")
+	,"CLASS00F.BAS",
+	rem_repeat1k("CLASS00F")
 	,0
 };
 
@@ -206,8 +235,9 @@ void dump_variables(void){
 FRESULT debug_f_open (FIL* fp, const TCHAR* path, BYTE mode){
 	int i;
 	const TCHAR* file;
+	if (mode&FA_WRITE) return FR_WRITE_PROTECTED;
 	for(i=0;file=debug_files[i];i+=2){
-		if (strcmp(file,path)) continue;
+		if (filename_strcmpi(file,path)) continue;
 		// Found the file
 		file=debug_files[i+1];
 		fp->dir_ptr=(TCHAR*)file;
@@ -249,6 +279,17 @@ TCHAR* debug_f_gets (TCHAR* buff, int len, FIL* fp){
 	return buff;
 }
 
+FRESULT debug_f_read (FIL* fp, TCHAR* buff, UINT btr, UINT* br){
+	int i;
+	TCHAR* file=(TCHAR*)fp->dir_ptr;
+	for(i=0;i<btr;i++){
+		if (f_eof(fp)) break;
+		buff[i]=file[fp->fptr++];
+	}
+	br[0]=i;
+	return FR_OK;
+}
+
 FRESULT debug_f_getcwd (TCHAR* buff, UINT len){
 	if (len<2) return FR_NOT_ENOUGH_CORE;
 	buff[0]='/';
@@ -258,6 +299,41 @@ FRESULT debug_f_getcwd (TCHAR* buff, UINT len){
 
 FRESULT debug_f_chdir (const TCHAR* path){
 	return FR_OK;
+}
+
+FRESULT debug_f_write (FIL* fp, const void* buff, UINT btw, UINT* bw){
+	return FR_WRITE_PROTECTED;
+}
+
+int debug_f_putc (TCHAR c, FIL* fp){
+	return -1;
+}
+
+FRESULT debug_f_unlink (const TCHAR* path){
+	return FR_WRITE_PROTECTED;
+}
+
+FRESULT debug_f_mount (FATFS* fs, const TCHAR* path, BYTE opt){
+	return FR_OK;
+}
+
+FRESULT debug_f_lseek (FIL* fp, FSIZE_t ofs){
+	fp->fptr = ofs<(fp->obj.objsize) ? ofs:(fp->obj.objsize);
+	return FR_OK;
+}
+
+FRESULT debug_f_opendir (DIR* dp, const TCHAR* path){
+	return FR_OK;
+}
+
+FRESULT debug_f_findnext (DIR* dp, FILINFO* fno){
+	fno->fname[0]=0;
+	return FR_NOT_ENABLED;
+}
+
+FRESULT debug_f_findfirst (DIR* dp, FILINFO* fno, const TCHAR* path, const TCHAR* pattern){
+	fno->fname[0]=0;
+	return FR_NOT_ENABLED;
 }
 
 int debug_file_exists(unsigned char* fname){

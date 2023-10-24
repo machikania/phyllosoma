@@ -439,11 +439,13 @@ int call_lib_code(int lib_number);
 int set_value_in_register(unsigned char r,int val);
 int compile_line(unsigned char* code);
 int instruction_is(unsigned char* instruction);
+int filename_strcmpi(const char *string1, const char *string2);
 
 // run.c
 void pre_run(void);
 void run_code(void);
 void post_run(void);
+int machikania_snprintf(char *buffer, int n, const char *format_string, float float_value);
 
 // library.c
 int lib_end(int r0, int r1, int r2);

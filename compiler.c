@@ -318,3 +318,25 @@ int compile_line(unsigned char* code){
 	// End of string is cr or crlf
 	return 0x0a==code[e+1] ? e+2:e+1;
 }
+
+/*
+	MISC
+*/
+
+int filename_strcmpi(const char *string1, const char *string2){
+	char lcstr1[13];
+	char lcstr2[13];
+	int i;
+	char c;
+	for(i=0;i<12 && (c=string1[i]);i++) {
+		if (0x61<=c && c<=0x7a) lcstr1[i]=c-0x20;
+		else lcstr1[i]=c;
+	}
+	lcstr1[i]=0;
+	for(i=0;i<12 && (c=string2[i]);i++) {
+		if (0x61<=c && c<=0x7a) lcstr2[i]=c-0x20;
+		else lcstr2[i]=c;
+	}
+	lcstr2[i]=0;
+	return strcmp(lcstr1,lcstr2);
+}

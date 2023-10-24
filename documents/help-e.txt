@@ -753,6 +753,10 @@ If strings are handled consecutively in a line, an error message "String too com
 Be careful when accessing global variables in interrupt functions. If a variable of the same name is specified as a VAR in one of the subroutines and is also used as a local variable, depending on when the interrupt is triggered, the value of the variable may or may not belong to the global or local variable. Therefore, if you want to handle a global variable in an interrupt function, do not specify a variable of the same name as a VAR.
 
 <Version history>
+KM-1504 Released in October 2023.
+　The BASIC program for embed now supports file reading.
+　The number of files that can be embedded for embedding has been increased to 16.
+　Fixed a bug that caused wrong values when displaying floating points and handling strings.
 KM-1503 Released in September 2023.
 　Added support for WiFi connection using Raspberry Pi Pico W. Following statements/functions are added: DNS$(), IFCONFIG$(), NTP, TCPACCEPT(), TCPCLIENT, TCPCLOSE, TCPRECEIVE, TCPSEND, TCPSERVER, TCPSTATUS, TLSCLIENT, WIFIERR(), WIFIERR$()
 　Fixed a bug in GCOLOR() function.
