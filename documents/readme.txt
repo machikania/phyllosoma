@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2023.9.30
+　　　　　　　　　　　　　　　　　　　　　　　　　　2023.10.28
 　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
 　　　　　　　　「MachiKania type P」
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi

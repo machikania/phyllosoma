@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2023.9.30
+　　　　　　　　　　　　　　　　　　　　　　　　　　2023.10.28
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type P
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
