@@ -17,6 +17,20 @@ void memdump(void){
 	f_close(&fh);
 }
 
+// Blink the LED on board for debugging
+void blink_led(int num){
+	int i;
+	while(true){
+		for(i=0;i<num;i++){
+			board_led(1);
+			sleep_ms(250);
+			board_led(0);
+			sleep_ms(250);
+		}
+			sleep_ms(750);
+	}
+}
+
 #ifndef MACHIKANIA_DEBUG_MODE
 void debug_dummy(void){}
 #else // MACHIKANIA_DEBUG_MODE

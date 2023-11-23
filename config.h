@@ -13,7 +13,7 @@
 
 #define PHYLLOSOMA
 #define SYSVER1 "Phyllosoma"
-#define SYSVER2 "1.3.1.0"
+#define SYSVER2 "1.3.1.1"
 #define BASVER "KM-1504"
 
 #define INTRODUCE_MACHIKANIA \

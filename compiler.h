@@ -623,6 +623,7 @@ void call_interrupt_function(void* r0);
 void raise_interrupt_flag(int i);
 
 // io.c
+int ini_file_io(char* line);
 void io_init(void);
 int lib_keys(int r0, int r1, int r2);
 int lib_pwm(int r0, int r1, int r2);
@@ -677,6 +678,7 @@ int strftime_function(void);
 // For debugging
 void dump_cmpdata(void);
 void dump(void);
+void blink_led(int num);
 
 /*
 	Macros
