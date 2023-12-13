@@ -43,7 +43,7 @@ void g_pset(int x,int y,unsigned char c)
 		drawPixel(x,y,palette[c]);
 }
 
-void g_putbmpmn(int x,int y,unsigned char m,unsigned char n,const unsigned char bmp[])
+void g_putbmpmn(int x,int y,unsigned short m,unsigned short n,const unsigned char bmp[])
 // 横m*縦nドットのキャラクターを座標x,yに表示
 // unsigned char bmp[m*n]配列に、単純にカラー番号を並べる
 // カラー番号が0の部分は透明色として扱う
@@ -139,7 +139,7 @@ void g_putbmpmn(int x,int y,unsigned char m,unsigned char n,const unsigned char 
 
 // 縦m*横nドットのキャラクター消去
 // カラー0で塗りつぶし
-void g_clrbmpmn(int x,int y,unsigned char m,unsigned char n)
+void g_clrbmpmn(int x,int y,unsigned short m,unsigned short n)
 {
 	int i,j,k,dx,dy;
 	if(x<=-m || x>X_RES || y<=-n || y>=Y_RES) return; //画面外
