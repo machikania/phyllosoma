@@ -356,7 +356,7 @@ void g_putfont(int x,int y,unsigned char c,int bc,unsigned char n)
 					if(d&0x80){
 						if(skip){
 							if(outflag) checkSPIfinish();
-							LCD_setAddrWindow(j,i,8,8);
+							LCD_setAddrWindow(j,i,X_RES-j,1);
 							skip=0;
 						}
 						LCD_WriteDataColor_notfinish(c1);
@@ -427,7 +427,7 @@ void g_putfont(int x,int y,unsigned char c,int bc,unsigned char n)
 					if(*p++ & b){
 						if(skip){
 							if(outflag) checkSPIfinish();
-							LCD_setAddrWindow(j,i,8,8);
+							LCD_setAddrWindow(j,i,1,Y_RES-i);
 							skip=0;
 						}
 						LCD_WriteDataColor_notfinish(c1);
