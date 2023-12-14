@@ -81,7 +81,7 @@ void g_putbmpmn(int x,int y,unsigned short m,unsigned short n,const unsigned cha
 				if(*p!=0){ //カラー番号が0の場合、透明として処理
 					if(skip){
 						if(outflag) checkSPIfinish();
-						LCD_setAddrWindow(j,i,m,n);
+						LCD_setAddrWindow(j,i,X_RES-j,1);
 						skip=0;
 					}
 					LCD_WriteDataColor_notfinish(palette[*p]);
@@ -122,7 +122,7 @@ void g_putbmpmn(int x,int y,unsigned short m,unsigned short n,const unsigned cha
 				if(*p!=0){ //カラー番号が0の場合、透明として処理
 					if(skip){
 						if(outflag) checkSPIfinish();
-						LCD_setAddrWindow(j,i,m,n);
+						LCD_setAddrWindow(j,i,1,Y_RES-i);
 						skip=0;
 					}
 					LCD_WriteDataColor_notfinish(palette[*p]);
