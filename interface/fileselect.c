@@ -17,6 +17,7 @@ caused by using this program.
 ----------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
 #include "LCDdriver.h"
@@ -159,6 +160,11 @@ void dispfiles(int n){
 	}
 }
 
+// ファイル名の大小比較
+static int fnamecmp(const void *s1,const void *s2){
+	return strncmp((const char *)s1,(const char *)s2,12);
+}
+
 // SDカード内のBASICソースプログラム一覧を表示、選択し
 // ファイル名を返す
 unsigned char *fileselect(void){
@@ -194,22 +200,31 @@ unsigned char *fileselect(void){
 				strcpy(filenames[filenum], fno.fname);
 				filenum++;
 				dirnum++;
+				if (filenum >= MAXFILE) break;
 			}
 		}
 		f_closedir(&dj);
-
-		fr = f_findfirst(&dj, &fno, path, "*.*"); // 全てのファイル
-//		fr = f_findfirst(&dj, &fno, path, "*.BAS"); // BASICソースファイル
-		if (fr) disperror("Findfirst Error.", fr);
-		while (fr == FR_OK && fno.fname[0]){ // Repeat while an item is found
-			strcpy(filenames[filenum], fno.fname);
-			filenum++;
-			if (filenum >= MAXFILE) break;
-			fr = f_findnext(&dj, &fno); // Search for next item
-			if (fr) disperror("Findnext Error.", fr);
+		if(dirnum>1){
+			qsort(filenames,dirnum,13,fnamecmp); //ディレクトリ名順に並べ替え
 		}
-		f_closedir(&dj);
+
+		if(filenum < MAXFILE){
+			fr = f_findfirst(&dj, &fno, path, "*.*"); // 全てのファイル
+//			fr = f_findfirst(&dj, &fno, path, "*.BAS"); // BASICソースファイル
+			if (fr) disperror("Findfirst Error.", fr);
+			while (fr == FR_OK && fno.fname[0]){ // Repeat while an item is found
+				strcpy(filenames[filenum], fno.fname);
+				filenum++;
+				if (filenum >= MAXFILE) break;
+				fr = f_findnext(&dj, &fno); // Search for next item
+				if (fr) disperror("Findnext Error.", fr);
+			}
+			f_closedir(&dj);
+		}
 		if (filenum == 0) return NULL;
+		if(filenum-dirnum>1){
+			qsort(&(filenames[dirnum]),filenum-dirnum,13,fnamecmp); //ファイル名順に並べ替え
+		}
 		n = 0;
 		top = 0;
 		x = 0;
@@ -262,6 +277,7 @@ unsigned char *fileselect(void){
 					n--;
 					x--;
 				}
+/*
 				else if (y > 0){
 						n--;
 						x = mx - 1;
@@ -273,11 +289,16 @@ unsigned char *fileselect(void){
 					top -= mx;
 					dispfiles(top);
 				}
+*/
 				break;
 			case KEYRIGHT:
 				if (n + 1 >= filenum) break;
-				n++;
-				x++;
+				if (x + 1 < mx)
+				{
+					n++;
+					x++;
+				}
+/*
 				if (x >= mx){
 					x = 0;
 					y++;
@@ -287,6 +308,7 @@ unsigned char *fileselect(void){
 						dispfiles(top);
 					}
 				}
+*/
 				break;
 			}
 			if (keycountSTART>20){

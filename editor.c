@@ -1523,6 +1523,8 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 	top=-2;//画面一番先頭のファイル番号
 	f=-2;//現在選択中のファイル番号
 	while(1){
+		setcursor(0,WIDTH_Y-1,COLOR_NORMALTEXT);
+		for(x=0;x<WIDTH_X-1;x++) printchar(' '); //最下行のステータス表示を消去
 		setcursor(((f+2)%mx)*13,(f-top)/mx+1,5);
 		printchar(0x1c);// Right Arrow
 		cursor--;
@@ -1532,8 +1534,6 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 			if(vk) break;
 		}
 		printchar(' ');
-		setcursor(0,WIDTH_Y-1,COLOR_NORMALTEXT);
-		for(x=0;x<WIDTH_X-1;x++) printchar(' '); //最下行のステータス表示を消去
 		switch(vk){
 			case VK_UP:
 			case VK_NUMPAD8:
@@ -1591,7 +1591,7 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 			case VK_RIGHT:
 			case VK_NUMPAD6:
 				//右矢印キー
-				if(((f+2)%mx)<mx && f+1<filenum) f++;
+				if(((f+2)%mx+1)<mx && f+1<filenum) f++;
 				break;
 			case VK_RETURN: //Enterキー
 			case VK_SEPARATOR: //テンキーのEnter
@@ -1631,6 +1631,11 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 	}
 }
 
+// ファイル名の大小比較
+static int fnamecmp(const void *s1,const void *s2){
+	return strncmp((const char *)s1,(const char *)s2,12);
+}
+
 // カレントディレクトリでのディレクトリ、.BAS、.TXT、.INIファイル一覧を読み込む
 // *p_num_dir:ディレクトリ数を返す
 // filenames[]:ファイル名およびディレクトリ名一覧
@@ -1666,6 +1671,9 @@ int getfilelist(int *p_num_dir){
 	}
 	f_closedir(&dj);
 	*p_num_dir=filenum;
+	if(filenum>1){
+		qsort(filenames,filenum,13,fnamecmp); //ディレクトリ名順に並べ替え
+	}
 	if(filenum>=MAXFILENUM) return filenum;
 
 	//拡張子 BASファイルのサーチ
@@ -1691,6 +1699,9 @@ int getfilelist(int *p_num_dir){
 		filenum++;
 		if (filenum >= MAXFILENUM) return filenum;
 		fr = f_findnext(&dj, &fno); // Search for next item
+	}
+	if(filenum-*p_num_dir>1){
+		qsort(&(filenames[*p_num_dir]),filenum-*p_num_dir,13,fnamecmp); //ファイル名順に並べ替え
 	}
 	return filenum;
 }
