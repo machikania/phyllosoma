@@ -24,11 +24,14 @@ caused by using this program.
 #include "graphlib.h"
 #include "ff.h"
 #include "../config.h"
+#include "../compiler.h"
 
-#define MAXFILE 256
+#define MAXFILE 512
 
 unsigned char path[256];
-static FILINFO files[MAXFILE];
+static unsigned char filename[13];
+//static FILINFO files[MAXFILE];
+static FILINFO *files=(FILINFO *)kmbasic_object; // ファイルリスト領域、kmbasic_object[]内に確保
 static unsigned int keystatus, keystatus2, keystatus3, oldkey; //最新のボタン状態と前回のボタン状態
 static int keycountUP, keycountLEFT, keycountRIGHT, keycountDOWN, keycountSTART, keycountFIRE;
 static int filenum, dirnum;
@@ -159,15 +162,15 @@ void dispfiles(int n){
 	setcursor(0, 0, 4);
 	printstr("[FIRE]:Exec [START]:View\n");
 	for (i = 0; i < my * mx; i++){
-		if (i % mx == 0) printchar(' ');
 		if (i + n < dirnum){
 			// ディレクトリ
 			setcursorcolor(6);
+			printchar(' ');
 			printchar('[');
 			printstr(files[i + n].fname);
 			printchar(']');
-			//13文字まで空白で埋める
-			for (j = 11 - strlen(files[i + n].fname); j > 0; j--)
+			//12文字まで空白で埋める
+			for (j = 10 - strlen(files[i + n].fname); j > 0; j--)
 				printchar(' ');
 			if(show_timestamp){
 				disptimestamp(&files[i+n]);
@@ -176,9 +179,10 @@ void dispfiles(int n){
 		else if (i + n < filenum){
 			// ファイル
 			setcursorcolor(7);
+			printchar(' ');
 			printstr(files[i + n].fname);
-			//13文字まで空白で埋める
-			for (j = 13 - strlen(files[i + n].fname); j > 0; j--)
+			//12文字まで空白で埋める
+			for (j = 12 - strlen(files[i + n].fname); j > 0; j--)
 				printchar(' ');
 			if(show_timestamp){
 				disptimestamp(&files[i+n]);
@@ -255,7 +259,11 @@ unsigned char *fileselect(void){
 			}
 		}
 		f_closedir(&dj);
-		if(dirnum>1){
+		if(files[0].fname[0]=='.' && dirnum>2){
+			// 親ディレクトリ(..)は並べ替え対象外
+			qsort(&(files[1]),dirnum-1,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
+		}
+		else if(dirnum>1){
 			qsort(files,dirnum,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
 		}
 
@@ -388,7 +396,11 @@ unsigned char *fileselect(void){
 			}
 			else if((keystatus==(KEYSTART | KEYDOWN)) && (keystatus2 & KEYDOWN)){
 				filesortby=(filesortby+1)&3;
-				if(dirnum>1){
+				if(files[0].fname[0]=='.' && dirnum>2){
+					// 親ディレクトリ(..)は並べ替え対象外
+					qsort(&(files[1]),dirnum-1,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
+				}
+				else if(dirnum>1){
 					qsort(files,dirnum,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
 				}
 				if(filenum-dirnum>1){
@@ -434,5 +446,5 @@ unsigned char *fileselect(void){
 	}
 	cls();
 	setcursorcolor(7);
-	return files[n].fname; //選択したファイル名へのポインタを返す
+	return strcpy(filename,files[n].fname); //選択したファイル名へのポインタを返す
 }
