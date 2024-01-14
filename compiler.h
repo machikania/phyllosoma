@@ -412,6 +412,8 @@ extern unsigned int g_wait_for_keyboard;
 extern char g_interrupt_code;
 
 extern const char g_active_usb_keyboard;
+extern unsigned char show_timestamp;
+extern unsigned char filesortby;
 
 /*
 	Prototypes

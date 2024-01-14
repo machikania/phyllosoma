@@ -85,8 +85,8 @@ static unsigned char *temppath; //実体は配列EDITORRAM[]の中に確保す�
 
 static unsigned char currentfile[13],tempfile[13]; //編集中のファイル名、一時ファイル名
 
-//unsigned char filenames[MAXFILENUM][13]; //ロード時のファイル名一覧バッファ
-static unsigned char (*filenames)[13]; //実体は配列EDITORRAM[]の中に確保する
+//FILINFO files[MAXFILENUM]; //ロード時のファイル名一覧バッファ
+static FILINFO *files; //実体は配列EDITORRAM[]の中に確保する
 
 //unsigned char undobuf[UNDOBUFSIZE]; //アンドゥ用バッファ
 static unsigned char *undobuf; //実体は配列EDITORRAM[]の中に確保する
@@ -1463,6 +1463,48 @@ int overwritecheck(char *fn){
 		if(vk==VK_ESCAPE) return -1;
 	}
 }
+
+// ファイルの並べ替え比較関数
+static int fnamecmp(const void *s1,const void *s2){
+	uint32_t t1,t2;
+	t1=(((FILINFO *)s1)->fdate <<16)+((FILINFO *)s1)->ftime;
+	t2=(((FILINFO *)s2)->fdate <<16)+((FILINFO *)s2)->ftime;
+	switch (filesortby)
+	{
+	case 0: // A..Z
+		return strncmp(((FILINFO *)s1)->fname,((FILINFO *)s2)->fname,12);
+	case 1: // NEW..OLD
+		return (int)(t2-t1);
+	case 2: // Z..A
+		return strncmp(((FILINFO *)s2)->fname,((FILINFO *)s1)->fname,12);
+	case 3: // OLD..NEW
+		return (int)(t1-t2);
+	}
+	return 0;
+}
+
+// タイムスタンプ表示
+static void disptimestamp(FILINFO *finfo){
+	int k;
+	printnum(1980+(finfo->fdate>>9));
+	printchar('/');
+	k=(finfo->fdate>>5) & 0x0f;
+	if(k<10) printchar('0');
+	printnum(k);
+	printchar('/');
+	k=finfo->fdate & 0x1f;
+	if(k<10) printchar('0');
+	printnum(k);
+	printchar(' ');
+	k=finfo->ftime>>11;
+	if(k<10) printchar('0');
+	printnum(k);
+	printchar(':');
+	k=(finfo->ftime>>5) & 0x3f;
+	if(k<10) printchar('0');
+	printnum(k);
+}
+
 // x,yの位置にファイル名またはディレクトリ名を表示
 void printfilename(unsigned char x,unsigned char y,int f,int num_dir){
 	if(f==-2){
@@ -1480,31 +1522,29 @@ void printfilename(unsigned char x,unsigned char y,int f,int num_dir){
 	else if(f<num_dir){
 		setcursor(x,y,COLOR_DIR);
 		printchar('[');
-		printstr(filenames[f]);
+		printstr(files[f].fname);
 		printchar(']');
+		if(show_timestamp){
+			setcursor(x+13,y,COLOR_DIR);
+			disptimestamp(&files[f]);
+		}
 	}
 	else{
 		setcursor(x,y,COLOR_NORMALTEXT);
-		printstr(filenames[f]);
+		printstr(files[f].fname);
+		if(show_timestamp){
+			setcursor(x+13,y,COLOR_NORMALTEXT);
+			disptimestamp(&files[f]);
+		}
 	}
 }
-// filenames[]配列に読み込まれたファイルまたはディレクトリを画面表示しキーボードで選択する
-// filenum:ファイル＋ディレクトリ数
-// num_dir:ディレクトリ数（filenames[]は先頭からnum_dir-1までがディレクトリ）
-// msg:画面上部に表示するメッセージ
-// 戻り値
-//　filenames[]の選択されたファイルまたはディレクトリ番号
-//　-1：新規ディレクトリ作成、tempfile[]にディレクトリ名
-//　-2：新規ファイル作成、tempfile[]にファイル名
-//　-3：ESCキーが押された
-int select_dir_file(int filenum,int num_dir, unsigned char* msg){
-	int top,f,f2;
-	unsigned char *ps,*pd;
+
+void disp_dir_file_list(int filenum,int num_dir, unsigned char* msg){
+	int f;
 	int x,y;
-	unsigned char vk;
 	int mx,my;
 
-	mx=WIDTH_X/13;
+	if(show_timestamp) mx=1; else mx=WIDTH_X/13;
 	my=WIDTH_Y-1;
 
 	//ファイル一覧を画面に表示
@@ -1520,6 +1560,27 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 		if(y>=WIDTH_Y-1) break;
 		printfilename(x,y,f,num_dir);
 	}
+}
+// files[]配列に読み込まれたファイルまたはディレクトリを画面表示しキーボードで選択する
+// filenum:ファイル＋ディレクトリ数
+// num_dir:ディレクトリ数（files[]は先頭からnum_dir-1までがディレクトリ）
+// msg:画面上部に表示するメッセージ
+// 戻り値
+//　files[]の選択されたファイルまたはディレクトリ番号
+//　-1：新規ディレクトリ作成、tempfile[]にディレクトリ名
+//　-2：新規ファイル作成、tempfile[]にファイル名
+//　-3：ESCキーが押された
+int select_dir_file(int filenum,int num_dir, unsigned char* msg){
+	int top,f,f2;
+	int x,y;
+	unsigned char vk;
+	int mx,my;
+
+	//ファイル一覧を画面に表示
+	disp_dir_file_list(filenum,num_dir,msg);
+
+	if(show_timestamp) mx=1; else mx=WIDTH_X/13;
+	my=WIDTH_Y-1;
 	top=-2;//画面一番先頭のファイル番号
 	f=-2;//現在選択中のファイル番号
 	while(1){
@@ -1565,7 +1626,7 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 					f+=mx;
 					if(f>=filenum) f=filenum-1;
 					if(f-top>=(WIDTH_Y-2)*mx){
-						//画面最下部の場合、上にスクロールして最下部にファイル名1つor2つ表示
+						//画面最下部の場合、上にスクロールして最下部にファイル名表示
 						setcursor(0,1,COLOR_NORMALTEXT);
 						while(cursor<TVRAM+WIDTH_X*(WIDTH_Y-2)){
 							*cursor=*(cursor+WIDTH_X);
@@ -1592,6 +1653,31 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 			case VK_NUMPAD6:
 				//右矢印キー
 				if(((f+2)%mx+1)<mx && f+1<filenum) f++;
+				break;
+			case VK_F1:
+				//F1キー タイムスタンプ表示切り替え
+				if(WIDTH_X>=30){
+					show_timestamp^=1;
+					//ファイル一覧を画面に表示
+					disp_dir_file_list(filenum,num_dir,msg);
+					if(show_timestamp) mx=1; else mx=WIDTH_X/13;
+					top=-2;//画面一番先頭のファイル番号
+					f=-2;//現在選択中のファイル番号
+				}
+				break;
+			case VK_F2:
+				//F2キー 並び順切り替え
+				filesortby=(filesortby+1)&3;
+				if(num_dir>1){
+					qsort(files,num_dir,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
+				}
+				if(filenum-num_dir>1){
+					qsort(&(files[num_dir]),filenum-num_dir,sizeof(FILINFO),fnamecmp); //ファイル名順に並べ替え
+				}
+				//ファイル一覧を画面に表示
+				disp_dir_file_list(filenum,num_dir,msg);
+				top=-2;//画面一番先頭のファイル番号
+				f=-2;//現在選択中のファイル番号
 				break;
 			case VK_RETURN: //Enterキー
 			case VK_SEPARATOR: //テンキーのEnter
@@ -1621,7 +1707,7 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 				}
 				else{
 					//ファイル名またはディレクトリ名をtempfileにコピー
-					strcpy(tempfile,filenames[f]);
+					strcpy(tempfile,files[f].fname);
 				}
 				return f;
 			case VK_ESCAPE:
@@ -1631,14 +1717,9 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 	}
 }
 
-// ファイル名の大小比較
-static int fnamecmp(const void *s1,const void *s2){
-	return strncmp((const char *)s1,(const char *)s2,12);
-}
-
 // カレントディレクトリでのディレクトリ、.BAS、.TXT、.INIファイル一覧を読み込む
 // *p_num_dir:ディレクトリ数を返す
-// filenames[]:ファイル名およびディレクトリ名一覧
+// files[]:ファイル名およびディレクトリ名一覧
 // 戻り値　ファイル＋ディレクトリ数
 int getfilelist(int *p_num_dir){
 	unsigned char *ps,*pd;
@@ -1658,50 +1739,72 @@ int getfilelist(int *p_num_dir){
 	}
 	if (temppath[1]){ // not root directory
 		// 親ディレクトリ
-		strcpy(filenames[filenum], "..");
+		strcpy(files[filenum].fname, "..");
+		files[filenum].fdate=20513; // 2020/01/01
+		files[filenum].ftime=0;
+		files[filenum].fattrib=AM_DIR;
 		filenum++;
 	}
 	while (filenum<MAXFILENUM){
 		f_readdir(&dj, &fno); // Read a directory item
 		if (fno.fname[0] == 0) break;
-		if (fno.fattrib & AM_DIR){ // It is a directory
-			strcpy(filenames[filenum], fno.fname);
+		if ((fno.fattrib & AM_DIR) && !(fno.fattrib & AM_SYS)){ // It is a directory
+			files[filenum]=fno;
 			filenum++;
 		}
 	}
 	f_closedir(&dj);
 	*p_num_dir=filenum;
 	if(filenum>1){
-		qsort(filenames,filenum,13,fnamecmp); //ディレクトリ名順に並べ替え
+		qsort(files,filenum,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
 	}
-	if(filenum>=MAXFILENUM) return filenum;
 
 	//拡張子 BASファイルのサーチ
-	fr = f_findfirst(&dj, &fno, temppath, "*.BAS"); // BASICソースファイル
-	while (fr == FR_OK && fno.fname[0]){ // Repeat while an item is found
-		strcpy(filenames[filenum], fno.fname);
-		filenum++;
-		if (filenum >= MAXFILENUM) return filenum;
-		fr = f_findnext(&dj, &fno); // Search for next item
+	if(filenum<MAXFILENUM){
+		fr = f_findfirst(&dj, &fno, temppath, "*.BAS"); // BASICソースファイル
+		while (fr == FR_OK && fno.fname[0]){ // Repeat while an item is found
+			files[filenum]=fno;
+			filenum++;
+			if (filenum >= MAXFILENUM) break;
+			fr = f_findnext(&dj, &fno); // Search for next item
+		}
+		f_closedir(&dj);
 	}
 	//拡張子 TXTファイルのサーチ
-	fr = f_findfirst(&dj, &fno, temppath, "*.TXT"); // textファイル
-	while (fr == FR_OK && fno.fname[0]){ // Repeat while an item is found
-		strcpy(filenames[filenum], fno.fname);
-		filenum++;
-		if (filenum >= MAXFILENUM) return filenum;
-		fr = f_findnext(&dj, &fno); // Search for next item
+	if(filenum<MAXFILENUM){
+		fr = f_findfirst(&dj, &fno, temppath, "*.TXT"); // textファイル
+		while (fr == FR_OK && fno.fname[0]){ // Repeat while an item is found
+			files[filenum]=fno;
+			filenum++;
+			if (filenum >= MAXFILENUM) break;
+			fr = f_findnext(&dj, &fno); // Search for next item
+		}
+		f_closedir(&dj);
 	}
 	//拡張子 INIファイルのサーチ
-	fr = f_findfirst(&dj, &fno, temppath, "*.INI"); // INIファイル
-	while (fr == FR_OK && fno.fname[0]){ // Repeat while an item is found
-		strcpy(filenames[filenum], fno.fname);
-		filenum++;
-		if (filenum >= MAXFILENUM) return filenum;
-		fr = f_findnext(&dj, &fno); // Search for next item
+	if(filenum<MAXFILENUM){
+		fr = f_findfirst(&dj, &fno, temppath, "*.INI"); // INIファイル
+		while (fr == FR_OK && fno.fname[0]){ // Repeat while an item is found
+			files[filenum]=fno;
+			filenum++;
+			if (filenum >= MAXFILENUM) break;
+			fr = f_findnext(&dj, &fno); // Search for next item
+		}
+		f_closedir(&dj);
+	}
+	//拡張子 HTMファイルのサーチ
+	if(filenum<MAXFILENUM){
+		fr = f_findfirst(&dj, &fno, temppath, "*.HTM"); // HTMファイル
+		while (fr == FR_OK && fno.fname[0]){ // Repeat while an item is found
+			files[filenum]=fno;
+			filenum++;
+			if (filenum >= MAXFILENUM) break;
+			fr = f_findnext(&dj, &fno); // Search for next item
+		}
+		f_closedir(&dj);
 	}
 	if(filenum-*p_num_dir>1){
-		qsort(&(filenames[*p_num_dir]),filenum-*p_num_dir,13,fnamecmp); //ファイル名順に並べ替え
+		qsort(&(files[*p_num_dir]),filenum-*p_num_dir,sizeof(FILINFO),fnamecmp); //ファイル名順に並べ替え
 	}
 	return filenum;
 }
@@ -1910,11 +2013,11 @@ int fileload(void){
 			relative_chdir(tempfile);
 		}
 		else{
-			er=loadtextfile(filenames[f]); //テキストバッファにファイル読み込み
+			er=loadtextfile(files[f].fname); //テキストバッファにファイル読み込み
 			if(er==0){
 				//cwdpath[]、currenfile[]にパス、ファイル名をコピーして終了
 				f_getcwd(cwdpath,PATHNAMEMAX);
-				strcpy(currentfile,filenames[f]);
+				strcpy(currentfile,files[f].fname);
 				return 0;
 			}
 			setcursor(0,WIDTH_Y-1,COLOR_ERRORTEXT);
@@ -2371,7 +2474,7 @@ void texteditor(void){
 	filebuf=editormalloc(FILEBUFSIZE);
 	cwdpath=editormalloc(PATHNAMEMAX);
 	temppath=editormalloc(PATHNAMEMAX);
-	filenames=(unsigned char (*)[])editormalloc(MAXFILENUM*13);
+	files=(FILINFO *)editormalloc(sizeof(FILINFO)*MAXFILENUM);
 	undobuf=editormalloc(UNDOBUFSIZE);
 
 	inittextbuf(); //テキストバッファ初期化

@@ -89,6 +89,10 @@ void read_ini(void){
 			lockkey|=4;
 		} else if (!strncmp(str,"WAIT4KEYBOARD=",14)) {
 			sscanf(str+14,"%d",&g_wait_for_keyboard);
+		} else if (!strncmp(str,"SHOWTIMESTAMP",13)) {
+			show_timestamp=1;
+		} else if (!strncmp(str,"FILESORTBY=",11)) {
+			sscanf(str+11,"%hhd",&filesortby);
 		}
 	}
 	// Close file

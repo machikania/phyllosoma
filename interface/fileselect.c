@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------
 
-Copyright (C) 2022, KenKen, all right reserved.
+Copyright (C) 2024, KenKen, all right reserved.
 
 This program supplied herewith by KenKen is free software; you can
 redistribute it and/or modify it under the terms of the same license written
@@ -28,10 +28,12 @@ caused by using this program.
 #define MAXFILE 256
 
 unsigned char path[256];
-static unsigned char filenames[MAXFILE][13];
+static FILINFO files[MAXFILE];
 static unsigned int keystatus, keystatus2, keystatus3, oldkey; //最新のボタン状態と前回のボタン状態
 static int keycountUP, keycountLEFT, keycountRIGHT, keycountDOWN, keycountSTART, keycountFIRE;
 static int filenum, dirnum;
+unsigned char show_timestamp=0; // show timestamp
+unsigned char filesortby=0; // 0:A...Z 1:NEW...OLD 2:Z...A 3:OLD...NEW
 
 void init_buttons(void){
 	// ボタン用GPIO設定
@@ -126,12 +128,33 @@ void viewfile(unsigned char *fname){
 	cls();
 }
 
+// タイムスタンプ表示
+static void disptimestamp(FILINFO *finfo){
+	int k;
+	printnum(1980+(finfo->fdate>>9));
+	printchar('/');
+	k=(finfo->fdate>>5) & 0x0f;
+	if(k<10) printchar('0');
+	printnum(k);
+	printchar('/');
+	k=finfo->fdate & 0x1f;
+	if(k<10) printchar('0');
+	printnum(k);
+	printchar(' ');
+	k=finfo->ftime>>11;
+	if(k<10) printchar('0');
+	printnum(k);
+	printchar(':');
+	k=(finfo->ftime>>5) & 0x3f;
+	if(k<10) printchar('0');
+	printnum(k);
+}
 // filenames配列のn番目のファイルから一覧表示
 void dispfiles(int n){
-	int i, j;
+	int i, j,k;
 	int mx,my;
 
-	mx=WIDTH_X/13;
+	if(show_timestamp) mx=1; else mx=WIDTH_X/13;
 	my=WIDTH_Y-1;
 	setcursor(0, 0, 4);
 	printstr("[FIRE]:Exec [START]:View\n");
@@ -141,28 +164,53 @@ void dispfiles(int n){
 			// ディレクトリ
 			setcursorcolor(6);
 			printchar('[');
-			printstr(filenames[i + n]);
+			printstr(files[i + n].fname);
 			printchar(']');
 			//13文字まで空白で埋める
-			for (j = 11 - strlen(filenames[i + n]); j > 0; j--)
+			for (j = 11 - strlen(files[i + n].fname); j > 0; j--)
 				printchar(' ');
+			if(show_timestamp){
+				disptimestamp(&files[i+n]);
+			}
 		}
 		else if (i + n < filenum){
 			// ファイル
 			setcursorcolor(7);
-			printstr(filenames[i + n]);
+			printstr(files[i + n].fname);
 			//13文字まで空白で埋める
-			for (j = 13 - strlen(filenames[i + n]); j > 0; j--)
+			for (j = 13 - strlen(files[i + n].fname); j > 0; j--)
 				printchar(' ');
+			if(show_timestamp){
+				disptimestamp(&files[i+n]);
+			}
 		}
-		else for (j = 0; j < 13; j++) printchar(' '); //画面最後まで空白で埋める
-		if((i+1)%mx==0 && 13*mx+1<WIDTH_X) printchar('\n');
+		else if(show_timestamp){
+			for(j = 0; j < 30; j++) printchar(' '); //画面最後まで空白で埋める
+		}
+		else{
+			for(j = 0; j < 13; j++) printchar(' '); //画面最後まで空白で埋める
+		}
+		if((i+1)%mx==0 && (cursor-TVRAM)%WIDTH_X) printchar('\n');
 	}
 }
 
-// ファイル名の大小比較
+// ファイルの並べ替え比較関数
 static int fnamecmp(const void *s1,const void *s2){
-	return strncmp((const char *)s1,(const char *)s2,12);
+	uint32_t t1,t2;
+	t1=(((FILINFO *)s1)->fdate <<16)+((FILINFO *)s1)->ftime;
+	t2=(((FILINFO *)s2)->fdate <<16)+((FILINFO *)s2)->ftime;
+	switch (filesortby)
+	{
+	case 0: // A..Z
+		return strncmp(((FILINFO *)s1)->fname,((FILINFO *)s2)->fname,12);
+	case 1: // NEW..OLD
+		return (int)(t2-t1);
+	case 2: // Z..A
+		return strncmp(((FILINFO *)s2)->fname,((FILINFO *)s1)->fname,12);
+	case 3: // OLD..NEW
+		return (int)(t1-t2);
+	}
+	return 0;
 }
 
 // SDカード内のBASICソースプログラム一覧を表示、選択し
@@ -178,7 +226,7 @@ unsigned char *fileselect(void){
 	unsigned int key;
 	int mx,my;
 
-	mx=WIDTH_X/13;
+	if(show_timestamp) mx=1; else mx=WIDTH_X/13;
 	my=WIDTH_Y-1;
 	cls();
 	while (1){
@@ -188,7 +236,10 @@ unsigned char *fileselect(void){
 		if (fr) disperror("Open directory Error.", fr);
 		if (path[1]){ // not root directory
 			// 親ディレクトリ
-			strcpy(filenames[filenum], "..");
+			strcpy(files[filenum].fname, "..");
+			files[filenum].fdate=20513; // 2020/01/01
+			files[filenum].ftime=0;
+			files[filenum].fattrib=AM_DIR;
 			filenum++;
 			dirnum++;
 		}
@@ -196,8 +247,8 @@ unsigned char *fileselect(void){
 			fr = f_readdir(&dj, &fno); // Read a directory item
 			if (fr) disperror("Read directory Error.", fr);
 			if (fno.fname[0] == 0) break;
-			if (fno.fattrib & AM_DIR){ // It is a directory
-				strcpy(filenames[filenum], fno.fname);
+			if ((fno.fattrib & AM_DIR) && !(fno.fattrib & AM_SYS)){ // It is a directory
+				files[filenum]=fno;
 				filenum++;
 				dirnum++;
 				if (filenum >= MAXFILE) break;
@@ -205,7 +256,7 @@ unsigned char *fileselect(void){
 		}
 		f_closedir(&dj);
 		if(dirnum>1){
-			qsort(filenames,dirnum,13,fnamecmp); //ディレクトリ名順に並べ替え
+			qsort(files,dirnum,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
 		}
 
 		if(filenum < MAXFILE){
@@ -213,7 +264,7 @@ unsigned char *fileselect(void){
 //			fr = f_findfirst(&dj, &fno, path, "*.BAS"); // BASICソースファイル
 			if (fr) disperror("Findfirst Error.", fr);
 			while (fr == FR_OK && fno.fname[0]){ // Repeat while an item is found
-				strcpy(filenames[filenum], fno.fname);
+				files[filenum]=fno;
 				filenum++;
 				if (filenum >= MAXFILE) break;
 				fr = f_findnext(&dj, &fno); // Search for next item
@@ -223,7 +274,7 @@ unsigned char *fileselect(void){
 		}
 		if (filenum == 0) return NULL;
 		if(filenum-dirnum>1){
-			qsort(&(filenames[dirnum]),filenum-dirnum,13,fnamecmp); //ファイル名順に並べ替え
+			qsort(&(files[dirnum]),filenum-dirnum,sizeof(FILINFO),fnamecmp); //ファイル名順に並べ替え
 		}
 		n = 0;
 		top = 0;
@@ -312,9 +363,17 @@ unsigned char *fileselect(void){
 				break;
 			}
 			if (keycountSTART>20){
-				//画面の縦横変更
-				set_lcdalign(LCD_ALIGNMENT^HORIZONTAL);
-				mx = WIDTH_X/13;
+				if(WIDTH_X>=30 && show_timestamp==0){
+					//タイムスタンプ表示
+					show_timestamp=1;
+					cls();
+				}
+				else{
+					//画面の縦横変更、タイムスタンプ非表示
+					set_lcdalign(LCD_ALIGNMENT^HORIZONTAL);
+					show_timestamp=0;
+				}
+				if(show_timestamp) mx=1; else mx=WIDTH_X/13;
 				my = WIDTH_Y-1;
 				n = 0;
 				top = 0;
@@ -327,16 +386,35 @@ unsigned char *fileselect(void){
 					sleep_ms(16);
 				}
 			}
+			else if((keystatus==(KEYSTART | KEYDOWN)) && (keystatus2 & KEYDOWN)){
+				filesortby=(filesortby+1)&3;
+				if(dirnum>1){
+					qsort(files,dirnum,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
+				}
+				if(filenum-dirnum>1){
+					qsort(&(files[dirnum]),filenum-dirnum,sizeof(FILINFO),fnamecmp); //ファイル名順に並べ替え
+				}
+				n = 0;
+				top = 0;
+				x = 0;
+				y = 0;
+				dispfiles(top); //ファイル番号topから一覧を画面表示
+				//キーを離すまで待つ
+				while(keystatus){
+					keycheck();
+					sleep_ms(16);
+				}
+			}
 			else if(keystatus3==KEYSTART && n >= dirnum){
 				//プログラムソース表示
-				viewfile(filenames[n]);
+				viewfile(files[n].fname);
 				if(keystatus2 == KEYFIRE) break;
 				dispfiles(top);
 			}
 		} while (keystatus2 != KEYFIRE);
 		if (n < dirnum){
 			// ディレクトリの場合
-			if (filenames[n][0] == '.'){
+			if ((files[n].fname)[0] == '.'){
 				// 親ディレクトリの場合、pathから現ディレクトリを削除
 				for (p = path; *p; p++) ;
 				for (p -= 2; *p != '/'; p--) ;
@@ -345,7 +423,7 @@ unsigned char *fileselect(void){
 			else{
 				// pathにディレクトリ名を結合して最後に'/'を付加
 				for (p = path; *p; p++) ;
-				for (p2 = filenames[n]; *p2;) *p++ = *p2++;
+				for (p2 = files[n].fname; *p2;) *p++ = *p2++;
 				*p++ = '/';
 				*p = 0;
 			}
@@ -356,5 +434,5 @@ unsigned char *fileselect(void){
 	}
 	cls();
 	setcursorcolor(7);
-	return filenames[n]; //選択したファイル名へのポインタを返す
+	return files[n].fname; //選択したファイル名へのポインタを返す
 }
