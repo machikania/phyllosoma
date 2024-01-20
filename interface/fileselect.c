@@ -36,7 +36,7 @@ static unsigned int keystatus, keystatus2, keystatus3, oldkey; //最新のボタ
 static int keycountUP, keycountLEFT, keycountRIGHT, keycountDOWN, keycountSTART, keycountFIRE;
 static int filenum, dirnum;
 unsigned char show_timestamp=0; // show timestamp
-unsigned char filesortby=0; // 0:A...Z 1:NEW...OLD 2:Z...A 3:OLD...NEW
+unsigned char filesortby=0; // 0:A...Z 1:Z...A 2:OLD...NEW 3:NEW...OLD
 
 void init_buttons(void){
 	// ボタン用GPIO設定
@@ -101,7 +101,7 @@ void viewfile(unsigned char *fname){
 	setcursorcolor(7);
 	while(1){
 		keycheck();
-		if(keystatus2==KEYFIRE) break;
+		if(keystatus3==KEYFIRE) break;
 		if(keystatus3==KEYSTART) break;
 		while (*p!=0 || !f_eof(&Fil)){
 			while (cursor<vramend || (keystatus2==KEYDOWN || keycountDOWN>20)){
@@ -160,7 +160,24 @@ void dispfiles(int n){
 	if(show_timestamp) mx=1; else mx=WIDTH_X/13;
 	my=WIDTH_Y-1;
 	setcursor(0, 0, 4);
-	printstr("[FIRE]:Exec [START]:View\n");
+	printstr("[FIRE]:Exec [START]:View");
+	if(WIDTH_X>=40) printstr(" (LongPush)");
+	setcursor(WIDTH_X-5,0,5);
+	switch (filesortby)
+	{
+	case 0:
+		printstr("\x1e" "Name");
+		break;
+	case 1:
+		printstr("\x1f" "Name");
+		break;
+	case 2:
+		printstr("\x1e" "Date");
+		break;
+	case 3:
+		printstr("\x1f" "Date");
+		break;
+	}
 	for (i = 0; i < my * mx; i++){
 		if (i + n < dirnum){
 			// ディレクトリ
@@ -207,12 +224,12 @@ static int fnamecmp(const void *s1,const void *s2){
 	{
 	case 0: // A..Z
 		return strncmp(((FILINFO *)s1)->fname,((FILINFO *)s2)->fname,12);
-	case 1: // NEW..OLD
-		return (int)(t2-t1);
-	case 2: // Z..A
+	case 1: // Z..A
 		return strncmp(((FILINFO *)s2)->fname,((FILINFO *)s1)->fname,12);
-	case 3: // OLD..NEW
+	case 2: // OLD..NEW
 		return (int)(t1-t2);
+	case 3: // NEW..OLD
+		return (int)(t2-t1);
 	}
 	return 0;
 }
@@ -289,7 +306,7 @@ unsigned char *fileselect(void){
 		x = 0;
 		y = 0;
 		dispfiles(top); //ファイル番号topから一覧を画面表示
-		do{
+		while(1){
 			setcursor(x * 13, y + 1, 5);
 			printchar(0x1c); // right arrow
 			sleep_ms(25);
@@ -370,7 +387,7 @@ unsigned char *fileselect(void){
 */
 				break;
 			}
-			if (keycountSTART>20){
+			if(keycountSTART>20){
 				if(WIDTH_X>=30 && show_timestamp==0){
 					//タイムスタンプ表示
 					show_timestamp=1;
@@ -388,13 +405,24 @@ unsigned char *fileselect(void){
 				x = 0;
 				y = 0;
 				dispfiles(top); //ファイル番号topから一覧を画面表示
-				//STARTキーを離すまで待つ
-				while(keycountSTART){
+				//キーを離すまで待つ
+				while(keystatus){
 					keycheck();
 					sleep_ms(16);
 				}
 			}
-			else if((keystatus==(KEYSTART | KEYDOWN)) && (keystatus2 & KEYDOWN)){
+			else if(keystatus3==KEYSTART){
+				if(n >= dirnum){
+					//プログラムソース表示
+					viewfile(files[n].fname);
+					//戻り時にSTARTならファイル一覧表示、FIREなら実行
+					if(keystatus3 != KEYFIRE) dispfiles(top);
+					else break;
+				}
+				else break; //ディレクトリ表示へ
+			}
+			else if (keycountFIRE>20){
+				// 並べ替え
 				filesortby=(filesortby+1)&3;
 				if(files[0].fname[0]=='.' && dirnum>2){
 					// 親ディレクトリ(..)は並べ替え対象外
@@ -417,13 +445,9 @@ unsigned char *fileselect(void){
 					sleep_ms(16);
 				}
 			}
-			else if(keystatus3==KEYSTART && n >= dirnum){
-				//プログラムソース表示
-				viewfile(files[n].fname);
-				if(keystatus2 == KEYFIRE) break;
-				dispfiles(top);
-			}
-		} while (keystatus2 != KEYFIRE);
+			else if(keystatus3==KEYFIRE) break;
+		}
+		//FIREボタンを離してループを抜けた
 		if (n < dirnum){
 			// ディレクトリの場合
 			if ((files[n].fname)[0] == '.'){

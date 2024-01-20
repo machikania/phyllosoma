@@ -1473,12 +1473,12 @@ static int fnamecmp(const void *s1,const void *s2){
 	{
 	case 0: // A..Z
 		return strncmp(((FILINFO *)s1)->fname,((FILINFO *)s2)->fname,12);
-	case 1: // NEW..OLD
-		return (int)(t2-t1);
-	case 2: // Z..A
+	case 1: // Z..A
 		return strncmp(((FILINFO *)s2)->fname,((FILINFO *)s1)->fname,12);
-	case 3: // OLD..NEW
+	case 2: // OLD..NEW
 		return (int)(t1-t2);
+	case 3: // NEW..OLD
+		return (int)(t2-t1);
 	}
 	return 0;
 }
@@ -1510,7 +1510,7 @@ void printfilename(unsigned char x,unsigned char y,int f,int num_dir){
 	if(f==-2){
 		setcursor(x,y,COLOR_ERRORTEXT);
 		printchar('<');
-		printstr("New FILE");
+		printstr("New File");
 		printchar('>');
 	}
 	else if(f==-1){
@@ -1551,9 +1551,27 @@ void disp_dir_file_list(int filenum,int num_dir, unsigned char* msg){
 	cls();
 	setcursor(0,0,COLOR_NORMALTEXT);
 	printstr(msg);
-	printstr(": ");
-	setcursorcolor(4);
-	printstr("Select&[Enter] / [ESC]\n");
+	setcursor(5,0,COLOR_ERRORTEXT);
+	if(WIDTH_X>=40)
+		printstr("[Enter]/[Esc] F1:View F2:Sort");
+	else
+		printstr("[Enter][ESC][F1][F2]");
+	setcursor(WIDTH_X-5,0,COLOR_BOTTOMLINE);
+	switch (filesortby)
+	{
+	case 0:
+		printstr("\x1e" "Name");
+		break;
+	case 1:
+		printstr("\x1f" "Name");
+		break;
+	case 2:
+		printstr("\x1e" "Date");
+		break;
+	case 3:
+		printstr("\x1f" "Date");
+		break;
+	}
 	for(f=-2;f<filenum;f++){
 		x=((f+2)%mx)*13+1;
 		y=(f+2)/mx+1;
@@ -1573,7 +1591,7 @@ void disp_dir_file_list(int filenum,int num_dir, unsigned char* msg){
 int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 	int top,f,f2;
 	int x,y;
-	unsigned char vk;
+	unsigned char vk,sh;
 	int mx,my;
 
 	//ファイル一覧を画面に表示
@@ -1591,7 +1609,8 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 		cursor--;
 		while(1){
 			inputchar();
-			vk=vkey & 0xff;
+			vk=vkey & 0xff; //vk:仮想キーコード
+			sh=vkey>>8; //sh:シフト関連キー状態
 			if(vk) break;
 		}
 		printchar(' ');
@@ -1667,7 +1686,8 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 				break;
 			case VK_F2:
 				//F2キー 並び順切り替え
-				filesortby=(filesortby+1)&3;
+				if(sh & CHK_SHIFT) filesortby^=1;
+				else filesortby=(filesortby+1)&3;
 				if(files[0].fname[0]=='.' && num_dir>2){
 					// 親ディレクトリ(..)は並べ替え対象外
 					qsort(&(files[1]),num_dir-1,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
