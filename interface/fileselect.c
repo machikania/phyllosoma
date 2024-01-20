@@ -276,9 +276,11 @@ unsigned char *fileselect(void){
 			}
 		}
 		f_closedir(&dj);
-		if(files[0].fname[0]=='.' && dirnum>2){
+		if(files[0].fname[0]=='.'){
 			// 親ディレクトリ(..)は並べ替え対象外
-			qsort(&(files[1]),dirnum-1,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
+			if(dirnum>2){
+				qsort(&(files[1]),dirnum-1,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
+			}
 		}
 		else if(dirnum>1){
 			qsort(files,dirnum,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
@@ -424,9 +426,11 @@ unsigned char *fileselect(void){
 			else if (keycountFIRE>20){
 				// 並べ替え
 				filesortby=(filesortby+1)&3;
-				if(files[0].fname[0]=='.' && dirnum>2){
+				if(files[0].fname[0]=='.'){
 					// 親ディレクトリ(..)は並べ替え対象外
-					qsort(&(files[1]),dirnum-1,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
+					if(dirnum>2){
+						qsort(&(files[1]),dirnum-1,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
+					}
 				}
 				else if(dirnum>1){
 					qsort(files,dirnum,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え

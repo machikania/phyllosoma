@@ -1688,9 +1688,11 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 				//F2キー 並び順切り替え
 				if(sh & CHK_SHIFT) filesortby^=1;
 				else filesortby=(filesortby+1)&3;
-				if(files[0].fname[0]=='.' && num_dir>2){
+				if(files[0].fname[0]=='.'){
 					// 親ディレクトリ(..)は並べ替え対象外
-					qsort(&(files[1]),num_dir-1,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
+					if(num_dir>2){
+						qsort(&(files[1]),num_dir-1,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
+					}
 				}
 				else if(num_dir>1){
 					qsort(files,num_dir,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
@@ -1779,9 +1781,11 @@ int getfilelist(int *p_num_dir){
 	}
 	f_closedir(&dj);
 	*p_num_dir=filenum;
-	if(files[0].fname[0]=='.' && filenum>2){
+	if(files[0].fname[0]=='.'){
 		// 親ディレクトリ(..)は並べ替え対象外
-		qsort(&(files[1]),filenum-1,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
+		if(filenum>2){
+			qsort(&(files[1]),filenum-1,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
+		}
 	}
 	else if(filenum>1){
 		qsort(files,filenum,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
