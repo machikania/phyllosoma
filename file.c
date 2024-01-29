@@ -332,6 +332,11 @@ int lib_file(int r0, int r1, int r2){
 				default:
 					return (int)"";
 			}
+		case FILE_FRENAME:
+			r2=f_rename((TCHAR*)r1,(TCHAR*)r0) ? -1:0;
+			garbage_collection((char*)r0);
+			garbage_collection((char*)r1);
+			return r2;
 		default:
 			break;
 	}
@@ -544,4 +549,10 @@ int finfostr_function(void){
 	return argn_function(LIB_FILE,
 		ARG_INTEGER<<ARG1 |
 		FILE_FINFOSTR<<LIBOPTION);
+}
+int frename_function(void){
+	return argn_function(LIB_FILE,
+		ARG_STRING<<ARG1 |
+		ARG_STRING<<ARG2 |
+		FILE_FRENAME<<LIBOPTION);
 }

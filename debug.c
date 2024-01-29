@@ -119,7 +119,7 @@ static const char* debug_files[]={
 	"MACHIKAP.BAS",
 	rem_repeat64k("MACHIKAP")
 	,"CLASS001.BAS",
-	rem_repeat16k("CLASS001")
+	rem_repeat64k("CLASS001")
 	,"CLASS002.BAS",
 	rem_repeat16k("CLASS002")
 	,"CLASS003.BAS",

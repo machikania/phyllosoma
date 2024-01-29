@@ -486,6 +486,8 @@ FGETC()
 	Reads 1 byte from the file opened with FOPEN and returns it as an integer value. Returns -1 if the end of the file has been reached or the read fails.
 FLEN()
 	Returns the length of the file opened with FOPEN in bytes.
+FRENAME x$,y$
+	Renames the file indicated by x$ to y$. If called as a function, returns success (0) or failure (-1).
 FSEEK()
 	Returns the current file position of the file opened with FOPEN.
 FINPUT$([x])

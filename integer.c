@@ -213,6 +213,7 @@ int integer_functions(void){
 	if (instruction_is("FREMOVE(")) return fremove_function();
 	if (instruction_is("FSEEK(")) return fseek_function();
 	if (instruction_is("SETDIR(")) return setdir_function();
+	if (instruction_is("FRENAME(")) return frename_function();
 	// Timer functions
 	if (instruction_is("CORETIMER(")) return coretimer_function();
 	if (instruction_is("TIMER(")) return timer_function();
