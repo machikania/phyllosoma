@@ -220,6 +220,7 @@
 #define FILE_FINFO 16
 #define FILE_FINFOSTR 17
 #define FILE_FRENAME 18
+#define FILE_MKDIR 19
 
 /*
 	LIB TIMER options
@@ -606,6 +607,7 @@ int ffind_function(void);
 int finfo_function(void);
 int finfostr_function(void);
 int frename_function(void);
+int mkdir_function(void);
 
 // display.c
 int lib_display(int r0, int r1, int r2);

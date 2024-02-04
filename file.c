@@ -337,6 +337,10 @@ int lib_file(int r0, int r1, int r2){
 			garbage_collection((char*)r0);
 			garbage_collection((char*)r1);
 			return r2;
+		case FILE_MKDIR:
+			r2=f_mkdir((TCHAR*)r0) ? -1:0;
+			garbage_collection((char*)r0);
+			return r2;
 		default:
 			break;
 	}
@@ -555,4 +559,9 @@ int frename_function(void){
 		ARG_STRING<<ARG1 |
 		ARG_STRING<<ARG2 |
 		FILE_FRENAME<<LIBOPTION);
+}
+int mkdir_function(void){
+	return argn_function(LIB_FILE,
+		ARG_STRING<<ARG1 |
+		FILE_MKDIR<<LIBOPTION);
 }
