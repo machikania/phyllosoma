@@ -17,7 +17,6 @@ caused by using this program.
 ----------------------------------------------------------------------------*/
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
 #include "LCDdriver.h"
@@ -190,7 +189,11 @@ void dispfiles(int n){
 			for (j = 10 - strlen(files[i + n].fname); j > 0; j--)
 				printchar(' ');
 			if(show_timestamp){
+				printchar(' ');
 				disptimestamp(&files[i+n]);
+				if(WIDTH_X>=40){
+					for(j=1;j<=10;j++) printchar(' ');
+				}
 			}
 		}
 		else if (i + n < filenum){
@@ -202,11 +205,26 @@ void dispfiles(int n){
 			for (j = 12 - strlen(files[i + n].fname); j > 0; j--)
 				printchar(' ');
 			if(show_timestamp){
+				printchar(' ');
 				disptimestamp(&files[i+n]);
+				if(WIDTH_X>=40){
+					printchar(' ');
+					uint32_t size=files[i+n].fsize;
+					if(size>=(1<<28)){
+						printnum(size>>20);
+						printstr("MB");
+					}
+					else if(size>=(1<<20)){
+						printnum(size>>10);
+						printstr("KB");
+					}
+					else printnum(size);
+					for(j=40-(cursor-TVRAM)%WIDTH_X;j>0;j--) printchar(' ');
+				}
 			}
 		}
 		else if(show_timestamp){
-			for(j = 0; j < 30; j++) printchar(' '); //画面最後まで空白で埋める
+			for(j = 0; j < WIDTH_X; j++) printchar(' '); //画面最後まで空白で埋める
 		}
 		else{
 			for(j = 0; j < 13; j++) printchar(' '); //画面最後まで空白で埋める
@@ -216,22 +234,42 @@ void dispfiles(int n){
 }
 
 // ファイルの並べ替え比較関数
-static int fnamecmp(const void *s1,const void *s2){
+int fnamecmp(FILINFO *s1,FILINFO *s2){
 	uint32_t t1,t2;
-	t1=(((FILINFO *)s1)->fdate <<16)+((FILINFO *)s1)->ftime;
-	t2=(((FILINFO *)s2)->fdate <<16)+((FILINFO *)s2)->ftime;
+	t1=(s1->fdate <<16)+s1->ftime;
+	t2=(s2->fdate <<16)+s2->ftime;
 	switch (filesortby)
 	{
 	case 0: // A..Z
-		return strncmp(((FILINFO *)s1)->fname,((FILINFO *)s2)->fname,12);
+		return strncmp(s1->fname,s2->fname,12);
 	case 1: // Z..A
-		return strncmp(((FILINFO *)s2)->fname,((FILINFO *)s1)->fname,12);
+		return strncmp(s2->fname,s1->fname,12);
 	case 2: // OLD..NEW
 		return (int)(t1-t2);
 	case 3: // NEW..OLD
 		return (int)(t2-t1);
 	}
 	return 0;
+}
+
+// fp配列内のstartからendまでの要素をsortbyに沿って並べ替え
+void file_sort(FILINFO *fp,int start, int end){
+	if(start>=end) return;
+	for(int i=start;i<=end;i++){
+		int s=i;
+		for(int j=i+1;j<=end;j++){
+			if(fnamecmp(&fp[j],&fp[s])<0) s=j;
+		}
+		void *p=&fp[i];
+		void *q=&fp[s];
+		for(int k=0;k<sizeof(FILINFO)/4;k++){
+			uint32_t temp=*(uint32_t *)p;
+			*(uint32_t *)p=*(uint32_t *)q;
+			*(uint32_t *)q=temp;
+			p+=4;
+			q+=4;
+		}
+	}
 }
 
 // SDカード内のBASICソースプログラム一覧を表示、選択し
@@ -279,11 +317,11 @@ unsigned char *fileselect(void){
 		if(files[0].fname[0]=='.'){
 			// 親ディレクトリ(..)は並べ替え対象外
 			if(dirnum>2){
-				qsort(&(files[1]),dirnum-1,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
+				file_sort(files,1,dirnum-1); //ディレクトリ名順に並べ替え
 			}
 		}
 		else if(dirnum>1){
-			qsort(files,dirnum,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
+			file_sort(files,0,dirnum-1); //ディレクトリ名順に並べ替え
 		}
 
 		if(filenum < MAXFILE){
@@ -291,9 +329,11 @@ unsigned char *fileselect(void){
 //			fr = f_findfirst(&dj, &fno, path, "*.BAS"); // BASICソースファイル
 			if (fr) disperror("Findfirst Error.", fr);
 			while (fr == FR_OK && fno.fname[0]){ // Repeat while an item is found
-				files[filenum]=fno;
-				filenum++;
-				if (filenum >= MAXFILE) break;
+				if(!(fno.fattrib & AM_SYS)){ // システムファイル除く
+					files[filenum]=fno;
+					filenum++;
+					if (filenum >= MAXFILE) break;
+				}
 				fr = f_findnext(&dj, &fno); // Search for next item
 				if (fr) disperror("Findnext Error.", fr);
 			}
@@ -301,7 +341,7 @@ unsigned char *fileselect(void){
 		}
 		if (filenum == 0) return NULL;
 		if(filenum-dirnum>1){
-			qsort(&(files[dirnum]),filenum-dirnum,sizeof(FILINFO),fnamecmp); //ファイル名順に並べ替え
+			file_sort(files,dirnum,filenum-1); //ファイル名順に並べ替え
 		}
 		n = 0;
 		top = 0;
@@ -429,14 +469,14 @@ unsigned char *fileselect(void){
 				if(files[0].fname[0]=='.'){
 					// 親ディレクトリ(..)は並べ替え対象外
 					if(dirnum>2){
-						qsort(&(files[1]),dirnum-1,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
+						file_sort(files,1,dirnum-1); //ディレクトリ名順に並べ替え
 					}
 				}
 				else if(dirnum>1){
-					qsort(files,dirnum,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
+					file_sort(files,0,dirnum-1); //ディレクトリ名順に並べ替え
 				}
 				if(filenum-dirnum>1){
-					qsort(&(files[dirnum]),filenum-dirnum,sizeof(FILINFO),fnamecmp); //ファイル名順に並べ替え
+					file_sort(files,dirnum,filenum-1); //ファイル名順に並べ替え
 				}
 				n = 0;
 				top = 0;

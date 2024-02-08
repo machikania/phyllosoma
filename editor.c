@@ -16,7 +16,6 @@ caused by using this program.
 
 ----------------------------------------------------------------------------*/
 
-#include <stdlib.h>
 #include <string.h>
 #include "pico/stdlib.h"
 #include "./editor.h"
@@ -1464,24 +1463,7 @@ int overwritecheck(char *fn){
 	}
 }
 
-// ファイルの並べ替え比較関数
-static int fnamecmp(const void *s1,const void *s2){
-	uint32_t t1,t2;
-	t1=(((FILINFO *)s1)->fdate <<16)+((FILINFO *)s1)->ftime;
-	t2=(((FILINFO *)s2)->fdate <<16)+((FILINFO *)s2)->ftime;
-	switch (filesortby)
-	{
-	case 0: // A..Z
-		return strncmp(((FILINFO *)s1)->fname,((FILINFO *)s2)->fname,12);
-	case 1: // Z..A
-		return strncmp(((FILINFO *)s2)->fname,((FILINFO *)s1)->fname,12);
-	case 2: // OLD..NEW
-		return (int)(t1-t2);
-	case 3: // NEW..OLD
-		return (int)(t2-t1);
-	}
-	return 0;
-}
+void file_sort(FILINFO *fp,int start, int end); // files配列内のstartからendまでの要素をsortbyに沿って並べ替え
 
 // タイムスタンプ表示
 static void disptimestamp(FILINFO *finfo){
@@ -1535,11 +1517,24 @@ void printfilename(unsigned char x,unsigned char y,int f,int num_dir){
 		if(show_timestamp){
 			setcursor(x+13,y,COLOR_NORMALTEXT);
 			disptimestamp(&files[f]);
+			if(WIDTH_X>=40){
+				printchar(' ');
+				uint32_t size=files[f].fsize;
+				if(size>=(1<<28)){
+					printnum(size>>20);
+					printstr("MB");
+				}
+				else if(size>=(1<<20)){
+					printnum(size>>10);
+					printstr("KB");
+				}
+				else printnum(size);
+			}
 		}
 	}
 }
 
-void disp_dir_file_list(int filenum,int num_dir, unsigned char* msg){
+void disp_dir_file_list(int filenum,int top,int num_dir, unsigned char* msg){
 	int f;
 	int x,y;
 	int mx,my;
@@ -1553,9 +1548,9 @@ void disp_dir_file_list(int filenum,int num_dir, unsigned char* msg){
 	printstr(msg);
 	setcursor(5,0,COLOR_ERRORTEXT);
 	if(WIDTH_X>=40)
-		printstr("[Enter]/[Esc] F1:View F2:Sort");
+		printstr("[Enter]/[Esc] F1:View F3:Sort");
 	else
-		printstr("[Enter][ESC][F1][F2]");
+		printstr("[Enter][ESC][F1][F3]");
 	setcursor(WIDTH_X-5,0,COLOR_BOTTOMLINE);
 	switch (filesortby)
 	{
@@ -1572,9 +1567,9 @@ void disp_dir_file_list(int filenum,int num_dir, unsigned char* msg){
 		printstr("\x1f" "Date");
 		break;
 	}
-	for(f=-2;f<filenum;f++){
-		x=((f+2)%mx)*13+1;
-		y=(f+2)/mx+1;
+	for(f=top;f<filenum;f++){
+		x=((f-top)%mx)*13+1;
+		y=(f-top)/mx+1;
 		if(y>=WIDTH_Y-1) break;
 		printfilename(x,y,f,num_dir);
 	}
@@ -1594,13 +1589,11 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 	unsigned char vk,sh;
 	int mx,my;
 
-	//ファイル一覧を画面に表示
-	disp_dir_file_list(filenum,num_dir,msg);
-
 	if(show_timestamp) mx=1; else mx=WIDTH_X/13;
 	my=WIDTH_Y-1;
 	top=-2;//画面一番先頭のファイル番号
 	f=-2;//現在選択中のファイル番号
+	disp_dir_file_list(filenum,top,num_dir,msg); //ファイル一覧を画面に表示
 	while(1){
 		setcursor(0,WIDTH_Y-1,COLOR_NORMALTEXT);
 		for(x=0;x<WIDTH_X-1;x++) printchar(' '); //最下行のステータス表示を消去
@@ -1610,7 +1603,7 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 		while(1){
 			inputchar();
 			vk=vkey & 0xff; //vk:仮想キーコード
-			sh=vkey>>8; //sh:シフト関連キー状態
+			sh=(vkey>>8) & 0xf; //sh:シフト関連キー状態
 			if(vk) break;
 		}
 		printchar(' ');
@@ -1618,6 +1611,14 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 			case VK_UP:
 			case VK_NUMPAD8:
 				//上矢印キー
+				if(sh==CHK_CTRL){
+					// Ctrl+上矢印で親ディレクトリに移動
+					if(files[0].fname[0]=='.'){
+						strcpy(tempfile,files[0].fname);
+						return 0;
+					}
+					break;
+				}
 				if(f-mx>=-2){
 					f-=mx;
 					if(f<top){
@@ -1663,6 +1664,21 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 					}
 				}
 				break;
+			case VK_PRIOR:
+				//Page Upキー
+				top-=mx*my;
+				if(top<-2) top=-2;
+				f-=mx*my;
+				if(f<-2) f=-2;
+				disp_dir_file_list(filenum,top,num_dir,msg); //ファイル一覧を画面に表示
+				break;
+			case VK_NEXT:
+				//Page Downキー
+				if(top+mx*my<filenum) top+=mx*my;
+				f+=mx*my;
+				if(f>=filenum) f=filenum-1;
+				disp_dir_file_list(filenum,top,num_dir,msg); //ファイル一覧を画面に表示
+				break;
 			case VK_LEFT:
 			case VK_NUMPAD4:
 				//左矢印キー
@@ -1677,33 +1693,31 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 				//F1キー タイムスタンプ表示切り替え
 				if(WIDTH_X>=30){
 					show_timestamp^=1;
-					//ファイル一覧を画面に表示
-					disp_dir_file_list(filenum,num_dir,msg);
 					if(show_timestamp) mx=1; else mx=WIDTH_X/13;
 					top=-2;//画面一番先頭のファイル番号
 					f=-2;//現在選択中のファイル番号
+					disp_dir_file_list(filenum,top,num_dir,msg); //ファイル一覧を画面に表示
 				}
 				break;
-			case VK_F2:
-				//F2キー 並び順切り替え
-				if(sh & CHK_SHIFT) filesortby^=1;
+			case VK_F3:
+				//F3キー 並び順切り替え
+				if(sh==CHK_SHIFT) filesortby^=1;
 				else filesortby=(filesortby+1)&3;
 				if(files[0].fname[0]=='.'){
 					// 親ディレクトリ(..)は並べ替え対象外
 					if(num_dir>2){
-						qsort(&(files[1]),num_dir-1,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
+						file_sort(files,1,num_dir-1); //ディレクトリ名順に並べ替え
 					}
 				}
 				else if(num_dir>1){
-					qsort(files,num_dir,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
+					file_sort(files,0,num_dir-1); //ディレクトリ名順に並べ替え
 				}
 				if(filenum-num_dir>1){
-					qsort(&(files[num_dir]),filenum-num_dir,sizeof(FILINFO),fnamecmp); //ファイル名順に並べ替え
+					file_sort(files,num_dir,filenum-1); //ファイル名順に並べ替え
 				}
-				//ファイル一覧を画面に表示
-				disp_dir_file_list(filenum,num_dir,msg);
 				top=-2;//画面一番先頭のファイル番号
 				f=-2;//現在選択中のファイル番号
+				disp_dir_file_list(filenum,top,num_dir,msg); //ファイル一覧を画面に表示
 				break;
 			case VK_RETURN: //Enterキー
 			case VK_SEPARATOR: //テンキーのEnter
@@ -1784,11 +1798,11 @@ int getfilelist(int *p_num_dir){
 	if(files[0].fname[0]=='.'){
 		// 親ディレクトリ(..)は並べ替え対象外
 		if(filenum>2){
-			qsort(&(files[1]),filenum-1,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
+			file_sort(files,1,filenum-1); //ディレクトリ名順に並べ替え
 		}
 	}
 	else if(filenum>1){
-		qsort(files,filenum,sizeof(FILINFO),fnamecmp); //ディレクトリ名順に並べ替え
+		file_sort(files,0,filenum-1); //ディレクトリ名順に並べ替え
 	}
 
 	//拡張子 BASファイルのサーチ
@@ -1836,7 +1850,7 @@ int getfilelist(int *p_num_dir){
 		f_closedir(&dj);
 	}
 	if(filenum-*p_num_dir>1){
-		qsort(&(files[*p_num_dir]),filenum-*p_num_dir,sizeof(FILINFO),fnamecmp); //ファイル名順に並べ替え
+		file_sort(files,*p_num_dir,filenum-1); //ファイル名順に並べ替え
 	}
 	return filenum;
 }
