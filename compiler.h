@@ -128,6 +128,7 @@
 #define LIB_DELAYMS 154
 #define LIB_RTC 155
 #define LIB_WIFI 156
+#define LIB_AUXCODE 157
 
 /*
 	Gereral option used for intializing static variables
@@ -680,6 +681,13 @@ int lib_rtc(int r0, int r1, int r2);
 int gettime_function(void);
 int settime_statement(void);
 int strftime_function(void);
+
+// auxcodes.c
+int aux_statements(void);
+int aux_int_functions(void);
+int aux_str_functions(void);
+int aux_float_functions(void);
+int lib_aux(int r0, int r1, int r2);
 
 // For debugging
 void dump_cmpdata(void);

@@ -227,6 +227,9 @@ int integer_functions(void){
 	// Wifi functions
 	e=wifi_int_functions();
 	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;
+	// Aux functions
+	e=aux_int_functions();
+	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;
 	// Environment
 	return display_functions();
 }

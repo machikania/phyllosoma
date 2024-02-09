@@ -93,6 +93,16 @@ if (TARGET tinyusb_device)
 			pico_stdlib
 		)
 	endif()
+	
+	# Create Auxiliary code library (include file in subdirectory)
+	include(auxcode/auxcode.cmake)
+	# The default definition is as follows
+		# add_library(aux_files
+		#	auxcode/auxcode.c
+		# )
+		# target_link_libraries(aux_files 
+		#	pico_stdlib
+		# )
 		
 	# phyllosoma_kb.uf2
 	add_executable(phyllosoma_kb
@@ -104,6 +114,7 @@ if (TARGET tinyusb_device)
 	)
 	target_link_libraries(phyllosoma_kb shared_files)
 	target_link_libraries(phyllosoma_kb wifi_files)
+	target_link_libraries(phyllosoma_kb aux_files)
 	target_link_libraries(phyllosoma_kb tinyusb_board)
 	target_link_libraries(phyllosoma_kb tinyusb_host)
 	target_include_directories(phyllosoma_kb PRIVATE ${CMAKE_CURRENT_LIST_DIR}/interface)
@@ -115,6 +126,7 @@ if (TARGET tinyusb_device)
 	)
 	target_link_libraries(phyllosoma shared_files)
 	target_link_libraries(phyllosoma wifi_files)
+	target_link_libraries(phyllosoma aux_files)
 
 	# enable usb output, disable uart output
 	pico_enable_stdio_usb(phyllosoma_kb 0)
@@ -138,6 +150,7 @@ if (TARGET tinyusb_device)
 	# set compile definitions
 	target_compile_definitions(shared_files PUBLIC MACHIKANIA_CONFIG="./config/${MACHIKANIA_BUILD}.h")
 	target_compile_definitions(wifi_files PUBLIC MACHIKANIA_CONFIG="./config/${MACHIKANIA_BUILD}.h")
+	target_compile_definitions(aux_files PUBLIC MACHIKANIA_CONFIG="./config/${MACHIKANIA_BUILD}.h")
 	if (MACHIKANIA_DEBUG_MODE)
 		target_compile_definitions(shared_files PUBLIC MACHIKANIA_DEBUG_MODE)
 		target_compile_definitions(wifi_files PUBLIC MACHIKANIA_DEBUG_MODE)

@@ -1574,6 +1574,9 @@ int compile_statement(void){
 	// Wifi statements
 	e=wifi_statements();
 	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;
+	// Aux statements
+	e=aux_statements();
+	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;
 	// Try call statement
 	if (!call_statement()) return 0;
 	// Finally, try let statement as error may occur in LET statement.

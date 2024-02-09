@@ -66,6 +66,9 @@ int string_functions(void){
 	// Wifi functions
 	e=wifi_str_functions();
 	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;
+	// Aux functions
+	e=aux_str_functions();
+	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;
 	return ERROR_SYNTAX;
 }
 
