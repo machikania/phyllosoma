@@ -493,7 +493,7 @@ FSEEK()
 GETDIR$()
 	Returns the current directory as a string.
 MKDIR x$
-	Create a new firectory with the name indicated by x$.
+	Create a new firectory with the name indicated by x$. If called as a function, returns success (0) or failure (-1).
 SETDIR x$
 	Moves the current directory to x$. If called as a function, returns 0 on success, non-zero on error.
 
@@ -757,6 +757,14 @@ If strings are handled consecutively in a line, an error message "String too com
 Be careful when accessing global variables in interrupt functions. If a variable of the same name is specified as a VAR in one of the subroutines and is also used as a local variable, depending on when the interrupt is triggered, the value of the variable may or may not belong to the global or local variable. Therefore, if you want to handle a global variable in an interrupt function, do not specify a variable of the same name as a VAR.
 
 <Version history>
+KM-1505 Released in February 2024.
+　Enabled to use spi1 with SPI instruction when LCD is not used.
+　Fixed a bug in PUTBMP instruction when displaying a long width image.
+　The file modification date and time can be displayed in the file list view.
+　The display order of file names and modified dates in the file list display is now supported.
+　Fixed a display bug on ILI9488 LCD when it is displayed in portrait mode.
+　The FRENAME and MKDIR instructions and the FRENAME() and MKDIR() functions have been added.
+　Auxiliary code (auxcode) can be added.
 KM-1504 Released in October 2023.
 　The BASIC program for embed now supports file reading.
 　The number of files that can be embedded for embedding has been increased to 16.

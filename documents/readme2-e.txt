@@ -8,6 +8,13 @@ We are not responsible for any damage or loss caused by the use of this software
 
 <machikania-p2.zip file contents>
 
+[LIB] directory
+　Contains additinal class library
+　Stores the
+　-[GEN3O]
+　　Class to show Source Han Sans font. In addition to GEN3O.BAS and help.txt,
+　　this directory contains files required for execution of the GEN3O class. 
+
 [pico_ili9488] directory
 　Contains binaries used when combining Raspberry Pi Pico and ILI9488 LCD
 　Stores the

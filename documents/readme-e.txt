@@ -102,6 +102,9 @@ MACHIKAP.INI
 　BLOCK.BAS
 　　Block breaking game created for the first MachiKania
 
+　FILEMAN.BAS
+　　File manager for MachiKania type P
+
 　INVADE.BAS
 　　Invader game created for MachiKania type Z
 
@@ -212,3 +215,15 @@ Phyllosoma 1.31/KM-1504 (2023.10.28)
 　The BASIC program for embed now supports file reading.
 　The number of files that can be embedded for embedding has been increased to 16.
 　Fixed a bug that caused wrong values when displaying floating points and handling strings.
+
+Phyllosoma 1.40/KM-1505 (2024.2.17)
+　FILEMAN (file manager) was added as a sample program.
+　Added BUTTON (button operation), GEN3O (Genkaku Gothic display), QRCODE (QRCODE display), 
+and TSC2046 (touch panel operation) to the class library.
+　Enabled to use spi1 with SPI instruction when LCD is not used.
+　Fixed a bug in PUTBMP instruction when displaying a long width image.
+　The file modification date and time can be displayed in the file list view.
+　The display order of file names and modified dates in the file list display is now supported.
+　Fixed a display bug on ILI9488 LCD when it is displayed in portrait mode.
+　The FRENAME and MKDIR instructions and the FRENAME() and MKDIR() functions have been added.
+　Auxiliary code (auxcode) can be added.
