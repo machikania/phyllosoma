@@ -190,6 +190,8 @@ Phyllosoma 1.20/KM-1502 (2023.1.28)
 　Four classes, CRDINI, CLDHEX, REGEXP, and STRING, are added to the library.
 
 Phyllosoma 1.30/KM-1503 (2023.9.30)
+　WEATHER.BAS (get weather forecast from web), HDEAMON.BAS (construct web server) were added as a sample program.
+　Added HTTPD (construct HTTP deamon), IR_RX (IR receiver), IR_TX (IR transmitter), JSON (analyze JSON string) and WGET (web browsing) to the class library.
 　Added support for WiFi connection using Raspberry Pi Pico W. Following statements/functions are added: DNS$(), IFCONFIG$(), NTP, TCPACCEPT(), TCPCLIENT, TCPCLOSE, TCPRECEIVE, TCPSEND, TCPSERVER, TCPSTATUS, TLSCLIENT, WIFIERR(), WIFIERR$()
 　Fixed a bug in GCOLOR() function.
 　Fixed a key input bug with some USB keyboards.
@@ -217,7 +219,7 @@ Phyllosoma 1.31/KM-1504 (2023.10.28)
 　Fixed a bug that caused wrong values when displaying floating points and handling strings.
 
 Phyllosoma 1.40/KM-1505 (2024.2.17)
-　FILEMAN (file manager) was added as a sample program.
+　FILEMAN.BAS (file manager) was added as a sample program.
 　Added BUTTON (button operation), GEN3O (Genkaku Gothic display), QRCODE (QRCODE display), 
 and TSC2046 (touch panel operation) to the class library.
 　Enabled to use spi1 with SPI instruction when LCD is not used.
