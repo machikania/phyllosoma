@@ -1,0 +1,812 @@
+REM ----------------------------------
+REM File Manager for MachiKania type P
+REM ----------------------------------
+
+USEVAR FB,FMAX,FNUM,DNUM,SORTBY,PATH
+USEVAR CLPPTH,CLPFIL,CLIPB,BYTEBF
+USEVAR WX,WY
+
+FMAX=256:SORTBY=3
+WX=SYSTEM(20):WY=SYSTEM(21)-2
+IF WX<40 THEN PRINT "Width must be at least 40 characters":END
+
+DIM FB(24*FMAX/4)
+REM File list buffer
+REM Offset
+REM  0-12 file name
+REM  13 file info
+REM  16-17 time
+REM  18-19 date
+REM  20-23 size
+
+DIM BYTEBF(512/4)
+PATH$="/":CLIPB=0
+
+DO
+ SETDIR PATH$
+ GOSUB RDFLST:REM Read file lists
+ F=0
+ DO
+  GOSUB PRTLST,F:REM Print lists
+  F=GOSUB(KEYSEL,F)
+ LOOP WHILE F>=0
+LOOP
+END
+
+REM -------------------------------
+REM  File select and input command
+REM -------------------------------
+
+LABEL KEYSEL
+ VAR T,Y,K,L,M
+ T=ARGS(1):Y=T%WY:T=T-Y
+ DO
+  IF FNUM>0 THEN
+   COLOR 5
+   CURSOR 0,Y+1:PRINT CHR$(28);
+  ENDIF
+  DO
+   K=READKEY()
+   L=(K>>16) AND $0F
+   K=(K>>8) AND $FF
+   REM Check if Shift key changed
+   M=(M<<1) OR INKEY($A0) OR INKEY($A1)
+   IF (M+1 AND 3)>1 THEN GOSUB PRTBTM
+   DELAYMS 10
+  LOOP UNTIL K
+  CURSOR 0,Y+1:PRINT " ";
+  IF (K=$26 AND L=2) OR (K=$73 AND L=0) THEN
+   REM Ctrl+Up / F4
+   IF GOSUB(SUBPAR) THEN RETURN -1
+  ELSEIF (K=ASC("V") AND L=2) OR (K=$72 AND L=1) THEN
+   REM Ctrl+V / Shift+F3
+   IF GOSUB(SUBPST) THEN RETURN -1
+   RETURN T+Y
+  ELSEIF K=$70 AND L=0 THEN
+   REM F1 (Help)
+   GOSUB HELP
+   RETURN T+Y
+  ELSEIF (K=ASC("M") AND L=2) OR (K=$74 AND L=1) THEN
+   REM Ctrl+M / Shift+F5 (MKDIR)
+   IF GOSUB(NEWDIR) THEN RETURN -1
+   RETURN T+Y
+  ELSEIF K=$74 AND L=0 THEN
+   REM F5 (Reload)
+   RETURN -1
+  ELSEIF (K=ASC("Q") AND L=2) OR (K=$73 AND L=1) THEN
+   REM Ctrl+Q / Shift+F4 (Quit)
+   COLOR 7:CURSOR 0,WY+1:END
+  ENDIF
+  IF FNUM=0 THEN CONTINUE
+
+  IF K=$28 AND L=0 THEN
+   REM Down
+   IF T+Y+1>=FNUM THEN CONTINUE
+   IF Y+1=WY THEN RETURN T+WY
+   Y=Y+1
+  ELSEIF K=$26 AND L=0 THEN
+   REM Up
+   IF T+Y=0 THEN CONTINUE
+   IF Y=0 THEN RETURN T-1
+   Y=Y-1
+  ELSEIF K=$2E AND L=0 THEN
+   REM Delete
+   IF GOSUB(SUBDEL,T+Y) THEN RETURN -1
+  ELSEIF K=$71 AND L=0 THEN
+   REM F2 (Rename)
+   IF GOSUB(SUBREN,T+Y) THEN RETURN -1
+   RETURN T+Y
+  ELSEIF K=$72 AND L=0 THEN
+   REM F3 (Sort)
+   SORTBY=(SORTBY+1)%6
+   GOSUB FSORT
+   RETURN 0
+  ELSEIF K=$0D AND L=0 THEN
+   REM Enter
+   IF GOSUB(SUBENT,T+Y) THEN RETURN -1
+   RETURN T+Y
+  ELSEIF (K=ASC("B") AND L=2) OR (K=$0D AND L=1) THEN
+   REM Ctrl+B / Shift+Enter (Binary view)
+   IF GOSUB(SUBBIN,T+Y) THEN RETURN -1
+   RETURN T+Y
+  ELSEIF K=$22 AND L=0 THEN
+   REM Page Down
+   IF T+WY<FNUM THEN RETURN T+WY
+  ELSEIF K=$21 AND L=0 THEN
+   REM Page Up
+   IF T-WY>=0 THEN RETURN T-WY
+  ELSEIF (K=ASC("C") AND L=2) OR (K=$70 AND L=1) THEN
+   REM Ctrl+C / Shift+F1
+   GOSUB SUBCPY,T+Y
+  ELSEIF (K=ASC("X") AND L=2) OR (K=$71 AND L=1) THEN
+   REM Ctrl+X / Shift+F2
+   GOSUB SUBCUT,T+Y
+  ENDIF
+ LOOP
+RETURN 0
+
+REM -------------------------------
+REM Display directory and file list
+REM -------------------------------
+
+REM Make directory and file list
+LABEL RDFLST
+ VAR P,S
+ P=FB:DNUM=0
+
+ REM Search directories
+ S$=FFIND$("*")
+ DO WHILE LEN(S$)
+  IF DNUM=FMAX THEN BREAK
+  IF (FINFO(3) AND $14)=$10 THEN
+   GOSUB STRCPY,P,S
+   POKE P+13,FINFO(3)
+   POKE16 P+16,FINFO(2)
+   POKE16 P+18,FINFO(1)
+   POKE32 P+20,FINFO(0)
+   P=P+24
+   DNUM=DNUM+1
+  ENDIF
+  S$=FFIND$()
+ LOOP
+
+ REM Search files
+ FNUM=DNUM
+ S$=FFIND$("*")
+ DO WHILE LEN(S$)
+  IF FNUM=FMAX THEN BREAK
+  IF (FINFO(3) AND $14)=0 THEN
+   GOSUB STRCPY,P,S
+   POKE P+13,FINFO(3)
+   POKE16 P+16,FINFO(2)
+   POKE16 P+18,FINFO(1)
+   POKE32 P+20,FINFO(0)
+   P=P+24
+   FNUM=FNUM+1
+  ENDIF
+  S$=FFIND$()
+ LOOP
+ GOSUB FSORT
+RETURN
+
+REM Display a page of file list
+LABEL PRTLST
+ VAR P,N,I
+ CLS
+ GOSUB PRTTOP
+ GOSUB PRTBTM
+ CURSOR 0,1:COLOR 7
+ N=(ARGS(1)/WY)*WY
+ P=FB+N*24
+ FOR I=1 TO WY
+  IF N>=FNUM THEN BREAK
+  GOSUB PRTFIL,P
+  P=P+24:N=N+1
+ NEXT
+RETURN
+
+REM Print a line of file or directory
+LABEL PRTFIL
+ VAR P,J
+ P=ARGS(1)
+ PRINT " ";
+ IF PEEK(P+13) AND $10 THEN
+  COLOR 6
+  PRINT "[";P$;"]";
+  FOR J=1 TO 11-LEN(P$):PRINT " ";:NEXT
+ ELSE
+  COLOR 7
+  PRINT P$;
+  FOR J=1 TO 13-LEN(P$):PRINT " ";:NEXT
+ ENDIF
+ GOSUB PRTDAT,PEEK32(P+16)
+ IF (PEEK(P+13) AND $10)=0 THEN
+  PRINT " ";
+  GOSUB PRTSIZ,PEEK32(P+20)
+ ENDIF
+ PRINT
+RETURN
+
+REM Copy a string
+LABEL STRCPY
+ VAR D,S
+ D=ARGS(1):S=ARGS(2)
+ DO WHILE PEEK(S)
+  POKE D,PEEK(S)
+  D=D+1:S=S+1
+ LOOP
+ POKE D,0
+RETURN
+
+REM Print file updated date
+LABEL PRTDAT
+ VAR D
+ D=ARGS(1)
+ PRINT 1980+(D>>25);"/";
+ GOSUB PRTD2,(D>>21) AND 15
+ PRINT "/";
+ GOSUB PRTD2,(D>>16) AND 31
+ PRINT " ";
+ GOSUB PRTD2,(D>>11) AND 31
+ PRINT ":";
+ GOSUB PRTD2,(D>>5) AND 63
+RETURN
+
+LABEL PRTD2
+ IF ARGS(1)<10 THEN PRINT "0";
+ PRINT ARGS(1);
+RETURN
+
+REM Print file size
+LABEL PRTSIZ
+ IF ARGS(1)<0 OR ARGS(1)>=(1<<28) THEN
+  PRINT ARGS(1)>>20;"MB";
+ ELSEIF ARGS(1)>=(1<<20) THEN
+  PRINT ARGS(1)>>10;"KB";
+ ELSE
+  PRINT ARGS(1);
+ ENDIF 
+RETURN
+
+REM -------------------------------
+REM           Sorting
+REM -------------------------------
+
+REM Directory and file list sort
+LABEL FSORT
+ GOSUB SEL_SORT,0,DNUM-1
+ GOSUB SEL_SORT,DNUM,FNUM-1
+RETURN
+
+LABEL SEL_SORT
+ VAR I,J,S,F,T
+ F=ARGS(1):T=ARGS(2)
+ IF F>=T THEN RETURN
+ FOR I=F TO T
+  S=I
+  FOR J=I+1 TO T
+   IF GOSUB(FCMP,J,S)<0 THEN S=J
+  NEXT
+  GOSUB FINFSW,I,S
+ NEXT
+RETURN
+
+REM Swap file info area
+LABEL FINFSW
+ VAR P,Q,I,T
+ P=FB+ARGS(1)*24:Q=FB+ARGS(2)*24
+ FOR I=1 TO 6
+  T=PEEK32(P)
+  POKE32 P,PEEK32(Q)
+  POKE32 Q,T
+  P=P+4:Q=Q+4
+ NEXT
+RETURN
+
+REM Compare two files with SORTBY
+LABEL FCMP
+ VAR P,Q,S
+ IF SORTBY<2 THEN
+  REM Compare by filename
+  P=FB+ARGS(1)*24:Q=FB+ARGS(2)*24
+  S=STRNCMP(P$,Q$,LEN(P$)+1)
+  IF SORTBY AND 1 THEN S=-S
+ ELSEIF SORTBY<4 THEN
+  REM Compare by date
+  P=FB+ARGS(1)*24+16
+  Q=FB+ARGS(2)*24+16
+  S=PEEK32(P)-PEEK32(Q)
+  IF SORTBY AND 1 THEN S=-S
+ ELSE
+  REM Compare by size
+  P=FB+ARGS(1)*24+20
+  Q=FB+ARGS(2)*24+20
+  S=PEEK32(P)-PEEK32(Q)
+  IF SORTBY AND 1 THEN S=-S
+ ENDIF
+RETURN S
+
+REM -------------------------------
+REM           Commands
+REM -------------------------------
+
+REM Go to parent directory
+LABEL SUBPAR
+ VAR P
+ P=LEN(PATH$)-2
+ IF P<0 THEN RETURN 0
+ WHILE PEEK(PATH+P)!=$2F:P=P-1:WEND
+ PATH$=PATH$(0,P+1)
+RETURN 1
+
+REM Copy to clipboard
+LABEL SUBCPY
+ VAR S
+ IF PEEK(FB+ARGS(1)*24+13) AND $10 THEN
+  GOSUB PRTMSG,"Directory copy not supported",6
+ ELSE
+  S=FB+ARGS(1)*24
+  CLIPB=1
+  CLPPTH$=PATH$
+  CLPFIL$=S$
+  GOSUB PRTMSG,S$+" copied to clipboard",5
+ ENDIF
+RETURN
+
+REM Cut to clipboard
+LABEL SUBCUT
+ VAR S
+ S=FB+ARGS(1)*24
+ IF GOSUB(NGFILE,S$) THEN
+  GOSUB PRTMSG,"Can't cut this file",6
+  RETURN
+ ENDIF
+ IF PEEK(S+13) AND $10 THEN CLIPB=3 ELSE CLIPB=2
+ CLPPTH$=PATH$
+ CLPFIL$=S$
+ GOSUB PRTMSG,S$+" cut to clipboard",5
+RETURN
+
+REM Paste from clipboard
+LABEL SUBPST
+ VAR S
+ IF CLIPB=1 THEN
+  REM Copy & Paste
+  S$=CLPFIL$
+  DO WHILE GOSUB(FEXIST,S$)
+   IF STRNCMP(PATH$,CLPPTH$,LEN(PATH$)+1)=0 AND STRNCMP(S$,CLPFIL$,LEN(S$)+1)=0 THEN
+    GOSUB PRTMSG,"Can't overwrite the same file",6
+   ELSE
+    IF GOSUB(OVRWRT) THEN BREAK
+   ENDIF
+   S$=GOSUB$(INPTFN,"Copy")
+   IF LEN(S$)=0 THEN RETURN 0
+  LOOP
+  GOSUB FILCPY,CLPPTH$+CLPFIL$,PATH$+S$
+  RETURN 1
+
+ ELSEIF CLIPB=2 THEN
+  REM Cut & Paste (file)
+  S$=CLPFIL$
+  DO WHILE GOSUB(FEXIST,S$)
+   GOSUB PRTMSG,"Can't move, the same name file exists",6
+   S$=GOSUB$(INPTFN,"Move")
+   IF LEN(S$)=0 THEN RETURN 0
+  LOOP
+  IF FRENAME(CLPPTH$+CLPFIL$,PATH$+S$) THEN 
+   GOSUB PRTMSG,"Error Can't move",6
+   RETURN 0
+  ELSE
+   GOSUB PRTMSG,"Moved successfully",5
+   CLIPB=0
+  ENDIF
+  RETURN 1
+
+ ELSEIF CLIPB=3 THEN
+  REM Cut & Paste (directory)
+  S$=CLPPTH$+CLPFIL$
+  IF STRNCMP(PATH$,S$,LEN(S$))=0 THEN
+   GOSUB PRTMSG,"Can't move to the sub-directory",6
+   RETURN 0
+  ENDIF
+  S$=CLPFIL$
+  DO WHILE GOSUB(FEXIST,S$)
+   GOSUB PRTMSG,"Can't. The same name directory exists",6
+   S$=GOSUB$(INPTDN,"Move")
+   IF LEN(S$)=0 THEN RETURN 0
+  LOOP
+  IF FRENAME(CLPPTH$+CLPFIL$,PATH$+S$) THEN 
+   GOSUB PRTMSG,"Error: Can't move",6
+   RETURN 0
+  ELSE
+   GOSUB PRTMSG,"Moved successfully",5
+   CLIPB=0
+  ENDIF
+  RETURN 1
+
+ ELSE
+  GOSUB PRTMSG,"No file or directory clipped",6
+ ENDIF
+RETURN 0
+
+REM Rename file or directory
+LABEL SUBREN
+ VAR S,R
+ S=FB+ARGS(1)*24
+ IF GOSUB(NGFILE,S$) THEN
+  GOSUB PRTMSG,"Don't rename this file",6
+  RETURN 0
+ ENDIF
+ IF PEEK(S+13) AND $10 THEN
+  R$=GOSUB$(INPTDN,"Rename")
+ ELSE
+  R$=GOSUB$(INPTFN,"Rename")
+ ENDIF
+ IF LEN(R$)=0 THEN RETURN 0
+ IF GOSUB(FEXIST,R$) THEN
+  GOSUB PRTMSG,"The file or directory exists",6
+  RETURN 0
+ ENDIF
+ IF FRENAME(S$,R$) THEN
+  GOSUB PRTMSG,"Error, can't rename",6
+ ELSE
+  GOSUB PRTMSG,"Rename successfully",5
+  IF CLIPB!=0 THEN
+   IF STRNCMP(PATH$,CLPPTH$,LEN(PATH$)+1)=0 AND STRNCMP(S$,CLPFIL$,LEN(S$)+1)=0 THEN CLIPB=0
+  ENDIF
+  RETURN 1
+ ENDIF
+RETURN 0
+
+REM Delete file or directory
+LABEL SUBDEL
+ VAR S
+ GOSUB CLRBTM
+ COLOR 5:PRINT "Delete ";
+ S=FB+ARGS(1)*24
+ IF GOSUB(NGFILE,S$) THEN
+  GOSUB PRTMSG,"Can't delete this file",6
+  RETURN 0
+ ENDIF
+ PRINT S$;"? ";
+ IF GOSUB(SURE) THEN
+  IF CLIPB!=0 THEN
+   IF STRNCMP(PATH$,CLPPTH$,LEN(PATH$)+1)=0 AND STRNCMP(S$,CLPFIL$,LEN(S$)+1)=0 THEN CLIPB=0
+  ENDIF
+  IF FREMOVE(S$)=0 THEN RETURN 1
+  GOSUB PRTMSG,"Delete Error",6
+ ENDIF
+RETURN 0
+
+REM Make a new directory
+LABEL NEWDIR
+ VAR S
+ S$=GOSUB$(INPTDN,"New dir")
+ IF LEN(S$)=0 THEN RETURN 0
+ IF GOSUB(FEXIST,S$) THEN
+  GOSUB PRTMSG,"The directory exists",6
+ ELSE
+  IF MKDIR(S$)=0 THEN RETURN 1
+  GOSUB PRTMSG,"New directory Error",6
+ ENDIF
+RETURN 0
+
+REM Enter (Sub-directory or file view)
+LABEL SUBENT
+ VAR S,K,Y
+ S=FB+ARGS(1)*24
+ IF PEEK(S+13) AND $10 THEN
+  REM Go to sub-directory
+  PATH$=PATH$+S$+"/"
+  RETURN 1
+ ENDIF
+
+ REM File view
+ IF FOPEN(S$,"r",1)=0 THEN
+  GOSUB PRTMSG,"File open error",6
+  RETURN 1
+ ENDIF
+ CLS:COLOR 7
+ DO UNTIL FEOF()
+  IF SYSTEM(27)<SYSTEM(21)-1 THEN DELAYMS 50
+  PRINT FINPUT$();
+  K=READKEY() AND $FF00
+  IF K THEN
+   Y=SYSTEM(27):REM Current cursor line
+   IF Y=SYSTEM(21) THEN PRINT:Y=Y-1
+   GOSUB CLRBTM
+   COLOR 5:PRINT "Quit:Escape key / Continue:Other";
+   DO
+    DELAYMS 10
+    K=READKEY() AND $FF00
+   LOOP UNTIL K
+   IF K=$1B00 THEN BREAK
+   GOSUB CLRBTM
+   COLOR 7:CURSOR 0,Y
+  ENDIF
+ LOOP
+ FCLOSE 1
+ IF K=$1B00 THEN RETURN 0
+ PRINT:CURSOR 0,WY+1:COLOR 5
+ PRINT "Hit Escape key";
+ DO:DELAYMS 10
+ LOOP UNTIL (READKEY() AND $FF00)=$1B00
+RETURN 0
+
+REM Binary viewer
+LABEL SUBBIN
+ VAR S,K,Y,I,A,D
+ S=FB+ARGS(1)*24
+ IF PEEK(S+13) AND $10 THEN RETURN 0
+ IF FOPEN(S$,"r",1)=0 THEN
+  GOSUB PRTMSG,"File open error",6
+  RETURN 1
+ ENDIF
+ CLS:COLOR 7
+ A=0
+ DO
+  PRINT HEX$(A,4);":";
+  FOR I=0 TO 7
+   IF FEOF() THEN BREAK
+   D=FGETC()
+   CURSOR 5+I*3,SYSTEM(27)
+   PRINT HEX$(D,2);
+   CURSOR 30+I,SYSTEM(27)
+   IF D!=10 THEN PRINT CHR$(D);
+  NEXT
+  IF FEOF() THEN BREAK
+  A=A+8:PRINT
+  IF SYSTEM(27)<SYSTEM(21)-1 THEN DELAYMS 50
+  K=READKEY() AND $FF00
+  IF K THEN
+   Y=SYSTEM(27)
+   IF Y=SYSTEM(21) THEN PRINT:Y=Y-1
+   GOSUB CLRBTM
+   COLOR 5:PRINT "Quit:Escape key / Continue:Other";
+   DO
+    DELAYMS 10
+    K=READKEY() AND $FF00
+   LOOP UNTIL K
+   IF K=$1B00 THEN BREAK
+   GOSUB CLRBTM
+   COLOR 7:CURSOR 0,Y
+  ENDIF
+ LOOP
+ FCLOSE 1
+ IF K=$1B00 THEN RETURN 0
+ PRINT:CURSOR 0,WY+1:COLOR 5
+ PRINT "Hit Escape key";
+ DO:DELAYMS 10
+ LOOP UNTIL (READKEY() AND $FF00)=$1B00
+RETURN 0
+
+REM Input file name
+LABEL INPTFN
+ VAR S
+ DO
+  GOSUB CLRBTM
+  COLOR 5:PRINT ARGS$(1);
+  PRINT ":Input File Name:";
+  COLOR 7
+  S$=INPUT$()
+  IF LEN(S$)=0 THEN BREAK
+  IF GOSUB(NGFILE,S$) THEN
+   GOSUB PRTMSG,"Forbidden name",6
+   CONTINUE
+  ENDIF
+  IF GOSUB(CHKFNM,S$)=0 THEN BREAK
+  GOSUB CLRBTM
+  COLOR 6:PRINT "Bad file name"
+  DELAYMS 1500
+ LOOP
+ GOSUB PRTBTM
+RETURN S$
+
+REM Input directory name
+LABEL INPTDN
+ VAR S
+ DO
+  GOSUB CLRBTM
+  COLOR 5:PRINT ARGS$(1);
+  PRINT ":Input Directory Name:";
+  COLOR 7
+  S$=INPUT$()
+  IF LEN(S$)=0 THEN BREAK
+  IF GOSUB(NGFILE,S$) THEN
+   GOSUB PRTMSG,"Forbidden name",6
+   CONTINUE
+  ENDIF
+  IF GOSUB(CHKDNM,S$)=0 THEN BREAK
+  GOSUB CLRBTM
+  COLOR 6:PRINT "Bad directory name"
+  DELAYMS 1500
+ LOOP
+ GOSUB PRTBTM
+RETURN S$
+
+REM File copy arg 1 to 2
+LABEL FILCPY
+ VAR N
+ GOSUB CLRBTM
+ IF FOPEN(ARGS$(1),"r",1)=0 THEN
+  GOSUB PRTMSG,"Can't open "+ARGS$(1),6
+  RETURN
+ ENDIF
+ IF FOPEN(ARGS$(2),"w",2)=0 THEN
+  GOSUB PRTMSG,"Can't open "+ARGS$(2),6
+  RETURN
+ ENDIF
+ COLOR 5
+ PRINT "Copying...";
+ DO
+  FILE 1
+  N=FGET(BYTEBF,512)
+  IF N=0 THEN BREAK
+  FILE 2
+  FPUT BYTEBF,N
+ LOOP
+ FCLOSE 1
+ FCLOSE 2
+ PRINT "Done";
+ DELAYMS 1500
+RETURN
+
+REM Check if file exists in file list
+LABEL FEXIST
+ VAR I,P,S,N
+ P=ARGS(1):N=LEN(P$)+1
+ S=FB
+ FOR I=0 TO FNUM-1
+  IF STRNCMP(P$,S$,N)=0 THEN RETURN 1
+  S=S+24
+ NEXT
+RETURN 0
+
+LABEL OVRWRT
+ GOSUB CLRBTM
+ COLOR 5:PRINT "Over Write? ";
+RETURN GOSUB(SURE)
+
+LABEL SURE
+ VAR K
+ PRINT "(Y/N)";
+ DO
+  K=READKEY() AND $FF
+  DELAYMS 10
+ LOOP UNTIL K=ASC("Y") OR K=ASC("N")
+ GOSUB PRTBTM
+ IF K=ASC("Y") THEN RETURN 1
+RETURN 0
+
+LABEL PRTTOP
+ CURSOR 0,0:COLOR 4
+ IF LEN(PATH$)+6>WX THEN
+  PRINT "...";PATH$(LEN(PATH$)-WX+9)
+ ELSE
+  PRINT PATH$
+ ENDIF
+ CURSOR WX-5,0:COLOR 5
+ IF SORTBY AND 1 THEN PRINT CHR$(31); ELSE PRINT CHR$(30);
+ IF SORTBY<2 THEN
+  PRINT "Name"
+ ELSEIF SORTBY<4 THEN
+  PRINT "Date"
+ ELSE
+  PRINT "Size"
+ ENDIF
+RETURN
+
+REM Print message at bottom line 1.5sec
+LABEL PRTMSG
+ GOSUB CLRBTM
+ COLOR ARGS(2)
+ PRINT ARGS$(1);
+ DELAYMS 1500
+ GOSUB PRTBTM
+RETURN
+
+REM Print bottom line
+LABEL PRTBTM
+ GOSUB CLRBTM
+ IF INKEY($A0) OR INKEY($A1) THEN
+  REM Shift key pushed
+  COLOR 7:PRINT "|";
+  COLOR 4:PRINT " COPY ";
+  COLOR 7:PRINT "|";
+  COLOR 4:PRINT " CUT  ";
+  COLOR 7:PRINT "|";
+  COLOR 4:PRINT "PASTE ";
+  COLOR 7:PRINT "|";
+  COLOR 4:PRINT " QUIT ";
+  COLOR 7:PRINT "|=|";
+  COLOR 4:PRINT "NEWDIR";
+  COLOR 7:PRINT "|";
+ ELSE
+  REM Shift key not pushed
+  COLOR 7:PRINT "|";
+  COLOR 4:PRINT " HELP ";
+  COLOR 7:PRINT "|";
+  COLOR 4:PRINT "RENAME";
+  COLOR 7:PRINT "|";
+  COLOR 4:PRINT " SORT ";
+  COLOR 7:PRINT "|";
+  COLOR 4:PRINT " \X1EDIR ";
+  COLOR 7:PRINT "|=|";
+  COLOR 4:PRINT "RELOAD";
+  COLOR 7:PRINT "|";
+ ENDIF
+RETURN
+
+REM Clear bottom line
+LABEL CLRBTM
+ VAR I
+ CURSOR 0,WY+1
+ FOR I=1 TO WX:PRINT " ";:NEXT
+ CURSOR 0,WY+1
+RETURN
+
+REM Check forbidden file
+LABEL NGFILE
+ VAR S
+ S=ARGS(1)
+ IF STRNCMP(S$,"~TEMP.BAS",10)=0 THEN RETURN 1
+ IF STRNCMP(S$,"~WORKDIR.TMP",13)=0 THEN RETURN 1
+RETURN 0
+
+REM Check bad file name
+LABEL CHKFNM
+ VAR S,P,Q
+ S=ARGS(1)
+ P=S:Q=0
+ DO WHILE PEEK(P)
+  IF PEEK(P)=$2E THEN
+   IF Q THEN RETURN 1 ELSE Q=P
+  ENDIF
+  P=P+1
+ LOOP
+ IF Q=0 THEN
+  IF P-S=0 OR P-S>8 THEN RETURN 1
+ ELSE
+  IF Q-S=0 OR Q-S>8 THEN RETURN 1
+  IF P-Q=1 OR P-Q>4 THEN RETURN 1
+ ENDIF
+ P=S
+ DO
+  Q=PEEK(P):P=P+1
+  IF Q=0 THEN BREAK
+  IF Q=$2D THEN CONTINUE
+  IF Q=$2E THEN CONTINUE
+  IF Q=$5F THEN CONTINUE
+  IF Q=$7E THEN CONTINUE
+  IF Q>=$30 AND Q<=$39 THEN CONTINUE
+  IF Q>=$41 AND Q<=$5A THEN CONTINUE
+  IF Q>=$61 AND Q<=$7A THEN CONTINUE
+  RETURN 1
+ LOOP
+RETURN 0
+
+REM Check bad directory name
+LABEL CHKDNM
+ VAR P,Q
+ P=ARGS(1)
+ IF LEN(P$)>8 THEN RETURN 1
+ DO
+  Q=PEEK(P):P=P+1
+  IF Q=0 THEN BREAK
+  IF Q=$2D THEN CONTINUE
+  IF Q=$5F THEN CONTINUE
+  IF Q=$7E THEN CONTINUE
+  IF Q>=$30 AND Q<=$39 THEN CONTINUE
+  IF Q>=$41 AND Q<=$5A THEN CONTINUE
+  IF Q>=$61 AND Q<=$7A THEN CONTINUE
+  RETURN 1
+ LOOP
+RETURN 0
+
+REM Display help
+LABEL HELP
+ CLS
+ COLOR 7
+ PRINT "F1 Display help"
+ PRINT "F2 Rename file or directory"
+ PRINT "F3 Sort order change"
+ PRINT "F4 or ^\X1E Go to parent directory"
+ PRINT "F5 Reload"
+ PRINT "Shift+F1 or ^C Copy file to clipboard"
+ PRINT "Shift+F2 or ^X Cut file or directory"
+ PRINT "Shift+F3 or ^V Paste from clipboard"
+ PRINT "Shift+F4 or ^Q Quit program"
+ PRINT "Shift+F5 or ^M Make a new directory"
+ PRINT "Delete Delete a file"
+ PRINT "Page Up/Down Go to previous/next page"
+ PRINT "Enter"
+ PRINT " File: View file, hit any key to pause"
+ PRINT " Directory: Go to sub-directory"
+ PRINT "Shift+Enter Binary viewer"
+
+ PRINT
+ COLOR 4
+ PRINT "Hit any key";
+ DO:DELAYMS 10
+ LOOP UNTIL READKEY() AND $FF00
+RETURN
