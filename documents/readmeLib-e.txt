@@ -7,6 +7,9 @@ The following is a (possibly incomplete) list of classes included in this librar
 BIGNUM
 	Class for performing long multiple arithmetic operations up to 1000 decimal places.
 
+BUTTON
+	Class to make it easier to use the UP, DOWN, LEFT, RIGHT, START, and FIRE buttons.
+
 C24LC
 	Class for reading and writing EEPROM 24LC512.
 
@@ -31,6 +34,9 @@ CRDINI
 CSWTIF
 	Class for displaying TIFF images.
 
+GEN3O
+	Class for displaying Genno Kaku Gothic, a large font of 29 to 118 pixels, included in machikap-p2-xxx.zip.
+
 HTTPD
 	Class to construct http server
 
@@ -46,6 +52,9 @@ JSON
 MA
 	Class for memory allocation, used in STRDIM.
 
+QRCODE
+	Class for displaying QRCODE on the screen.
+
 REGEXP
 	Class for using regular expressions with MachiKania type P.
 
@@ -57,6 +66,12 @@ STRDIM
 
 STRING
 	Class for handling string objects, similar to Java's String class.
+
+TSC2046
+	Class for retrieving information from LCD touch panel (TSC2046).
+
+WGET
+	Class for retrieving information from a specified URL as a client when connecting to Wifi.
 
 WS2812B
 	Class for using serial connection LED WS2812B.

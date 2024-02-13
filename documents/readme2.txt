@@ -8,6 +8,12 @@ MachiKaniaシリーズを利用していることについてもWebサイトや
 
 ＜machikania-p2.zipファイルコンテンツ＞
 
+[LIB]ディレクトリ
+　追加のクラスライブラリー
+　-[GEN3O]
+　　源ノ角ゴシックを表示するためのクラス。GEN3O.BASファイルとhelp.txt以外に、
+　　実行に必要なファイル群を格納。
+
 [pico_ili9488]ディレクトリ
 　Raspberry Pi Pico と ILI9488 液晶の組み合わせのときに使うバイナリー
 　を格納
