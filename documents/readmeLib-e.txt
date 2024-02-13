@@ -75,3 +75,33 @@ WGET
 
 WS2812B
 	Class for using serial connection LED WS2812B.
+
+------------------------------------------------------------------------
+MachiKania type P Class Library Revision History
+
+Phyllosoma 1.00/KM-1500 (2022.8.27)
+　First public version
+　Including BIGNUM, C24LC, CIOEX, CKNJ8, CKNJ12, CKNJ16, CSWTIF
+
+Phyllosoma 1.10/KM-1501 (2022.10.1)
+　MA, STRDIM,STRD2, and WS2812B are added.
+　CSWTIF ver 0.3
+
+Phyllosoma 1.20/KM-1502 (January 28, 2023)
+　CLDHEX, CRDINI, REGEXP, and STRING are added.
+
+Phyllosoma 1.30/KM-1503 (2023.9.30)
+　HTTPD, IR_RX, IR_TX, JSON, and WGET are added
+　CKNJ8 ver 0.4
+　CKNJ12 ver 0.4
+　CKNJ16 ver 0.4
+
+Phyllosoma 1.31/KM-1504 (2023.10.28)
+　No change
+
+Phyllosoma 1.40/KM-1505 (2024.2.17)
+　BUTTON, QRCODE, TS2046 added
+　CKNJ8 ver 0.5
+　CKNJ12 ver 0.5
+　CKNJ16 ver 0.5
+　HTTPD ver 0.3.2

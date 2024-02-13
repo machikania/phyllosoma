@@ -81,3 +81,33 @@ WGET
 
 WS2812B
 	シリアル接続LED WS2812Bを利用するためのクラス。
+
+------------------------------------------------------------------------
+MachiKania type P クラスライブラリー改版履歴
+
+Phyllosoma 1.00/KM-1500（2022.8.27）
+　・最初の公開バージョン
+　・BIGNUM, C24LC, CIOEX, CKNJ8, CKNJ12, CKNJ16, CSWTIFを含む
+
+Phyllosoma 1.10/KM-1501（2022.10.1）
+　・MA, STRDIM,STRD2, WS2812Bを追加
+　・CSWTIF ver 0.3
+
+Phyllosoma 1.20/KM-1502（2023.1.28）
+　・CLDHEX, CRDINI, REGEXP, STRINGを追加
+
+Phyllosoma 1.30/KM-1503 (2023.9.30)
+　・HTTPD, IR_RX, IR_TX, JSON, WGETを追加
+　・CKNJ8 ver 0.4
+　・CKNJ12 ver 0.4
+　・CKNJ16 ver 0.4
+
+Phyllosoma 1.31/KM-1504 (2023.10.28)
+　・変更なし
+
+Phyllosoma 1.40/KM-1505 (2024.2.17)
+　・BUTTON, QRCODE, TS2046を追加
+　・CKNJ8 ver 0.5
+　・CKNJ12 ver 0.5
+　・CKNJ16 ver 0.5
+　・HTTPD ver 0.3.2

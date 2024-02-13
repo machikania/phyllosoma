@@ -2,8 +2,8 @@
 
 $version=array(
 	"Phyllosoma",
-	"1.3.1.0",
-	"KM-1504",
+	"1.4.0.0",
+	"KM-1505",
 );
 
 $configs=array(
