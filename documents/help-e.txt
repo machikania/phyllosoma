@@ -421,10 +421,14 @@ Up to two files can be open at the same time.
 
 FCLOSE [x].
 	Closes a file. If there is an argument (x), the file specified by the file handle is closed.
+FEOF()
+	Returns whether the current file position of the file opened with FOPEN has reached the end of the file. 1 indicates that the end has been reached, 0 indicates that the end has not been reached.
 FFIND$([x$[,y$]))
 	Returns the filename of the file indicated by the string x$ (e.g., "*.BAS") in the directory. Returns the first filename if x$ is specified and the second or later filenames if x$ is not specified. If no file is found, an empty string is returned. If y$ is specified, the specified directory is searched, otherwise, the current directory is searched.
 FGET x,y
 	Reads y bytes into the buffer (specified as an array in x). If called as a function, returns the number of bytes successfully read.
+FGETC()
+	Reads 1 byte from the file opened with FOPEN and returns it as an integer value. Returns -1 if the end of the file has been reached or the read fails.
 FILE x
 	Specify the active file handle (1 or 2) in x.
 FINFO(x)
@@ -457,6 +461,10 @@ FINFO$(x)
 			"a" for archive, "-" otherwise
 		When x=4:
 			Returns the file name.
+FINPUT$([x])
+	Reads a string of the length indicated by x from the file opened with FOPEN; if x is omitted, the string is read to the end of the line (including line feed codes).
+FLEN()
+	Returns the length of the file opened with FOPEN in bytes.
 FOPEN x$,y$[,z].
 	Opens the file whose name is indicated by x$ in the mode indicated by y$. The number of files that can be opened simultaneously is limited to two. If called as a function, a file handle is returned.
 		"r": Opens a file in read mode.
@@ -475,23 +483,19 @@ FPUT x,y
 FPUTC x
 	Writes one byte of data indicated by x to the file. If called as a function, returns the number of bytes successfully written (1 or 0).
 FREMOVE x$
-	Deletes the file whose name is indicated by x$ from the SD card. If called as a function, returns whether the deletion succeeded (0) or failed (-1).
+	Deletes the file or empty directory whose name is indicated by x$ from the SD card. If called as a function, returns whether the deletion succeeded (0) or failed (-1).
+FRENAME x$,y$
+	Renames the file or directory indicated by x$ to y$. If called as a function, returns success (0) or failure (-1).
 FSEEK x
 	Moves to the file location indicated by x.
-SETDIR x$
-	Moves the current directory to x$. If called as a function, returns 0 on success, non-zero on error.
-FEOF()
-	Returns whether the current file position of the file opened with FOPEN has reached the end of the file. 1 indicates that the end has been reached, 0 indicates that the end has not been reached.
-FGETC()
-	Reads 1 byte from the file opened with FOPEN and returns it as an integer value. Returns -1 if the end of the file has been reached or the read fails.
-FLEN()
-	Returns the length of the file opened with FOPEN in bytes.
 FSEEK()
 	Returns the current file position of the file opened with FOPEN.
-FINPUT$([x])
-	Reads a string of the length indicated by x from the file opened with FOPEN; if x is omitted, the string is read to the end of the line (including line feed codes).
 GETDIR$()
 	Returns the current directory as a string.
+MKDIR x$
+	Create a new firectory with the name indicated by x$. If called as a function, returns success (0) or failure (-1).
+SETDIR x$
+	Moves the current directory to x$. If called as a function, returns 0 on success, non-zero on error.
 
 <Timer Related Instructions and Functions>
 There are two types of timers: normal timers and core timers. Normal timers are general-purpose timers that can be used to set speeds and change values. Core timers are special timers synchronized with the CPU clock and can be read but not set.
@@ -753,6 +757,14 @@ If strings are handled consecutively in a line, an error message "String too com
 Be careful when accessing global variables in interrupt functions. If a variable of the same name is specified as a VAR in one of the subroutines and is also used as a local variable, depending on when the interrupt is triggered, the value of the variable may or may not belong to the global or local variable. Therefore, if you want to handle a global variable in an interrupt function, do not specify a variable of the same name as a VAR.
 
 <Version history>
+KM-1505 Released in February 2024.
+　Enabled to use spi1 with SPI instruction when LCD is not used.
+　Fixed a bug in PUTBMP instruction when displaying a long width image.
+　The file modification date and time can be displayed in the file list view.
+　The display order of file names and modified dates in the file list display is now supported.
+　Fixed a display bug on ILI9488 LCD when it is displayed in portrait mode.
+　The FRENAME and MKDIR instructions and the FRENAME() and MKDIR() functions have been added.
+　Auxiliary code (auxcode) can be added.
 KM-1504 Released in October 2023.
 　The BASIC program for embed now supports file reading.
 　The number of files that can be embedded for embedding has been increased to 16.

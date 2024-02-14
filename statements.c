@@ -1552,6 +1552,8 @@ int compile_statement(void){
 	if (instruction_is("FREMOVE")) return fremove_function();
 	if (instruction_is("FSEEK")) return fseek_statement();
 	if (instruction_is("SETDIR")) return setdir_function();
+	if (instruction_is("FRENAME")) return frename_function();
+	if (instruction_is("MKDIR")) return mkdir_function();
 	// Timer and interrupt statements
 	if (instruction_is("USETIMER")) return usetimer_statement();
 	if (instruction_is("TIMER")) return timer_statement();
@@ -1571,6 +1573,9 @@ int compile_statement(void){
 	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;
 	// Wifi statements
 	e=wifi_statements();
+	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;
+	// Aux statements
+	e=aux_statements();
 	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;
 	// Try call statement
 	if (!call_statement()) return 0;

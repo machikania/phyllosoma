@@ -128,6 +128,7 @@
 #define LIB_DELAYMS 154
 #define LIB_RTC 155
 #define LIB_WIFI 156
+#define LIB_AUXCODE 157
 
 /*
 	Gereral option used for intializing static variables
@@ -219,6 +220,8 @@
 #define FILE_FFIND 15
 #define FILE_FINFO 16
 #define FILE_FINFOSTR 17
+#define FILE_FRENAME 18
+#define FILE_MKDIR 19
 
 /*
 	LIB TIMER options
@@ -412,6 +415,8 @@ extern unsigned int g_wait_for_keyboard;
 extern char g_interrupt_code;
 
 extern const char g_active_usb_keyboard;
+extern unsigned char show_timestamp;
+extern unsigned char filesortby;
 
 /*
 	Prototypes
@@ -602,6 +607,8 @@ int getdir_function(void);
 int ffind_function(void);
 int finfo_function(void);
 int finfostr_function(void);
+int frename_function(void);
+int mkdir_function(void);
 
 // display.c
 int lib_display(int r0, int r1, int r2);
@@ -623,6 +630,7 @@ void call_interrupt_function(void* r0);
 void raise_interrupt_flag(int i);
 
 // io.c
+int ini_file_io(char* line);
 void io_init(void);
 int lib_keys(int r0, int r1, int r2);
 int lib_pwm(int r0, int r1, int r2);
@@ -674,9 +682,17 @@ int gettime_function(void);
 int settime_statement(void);
 int strftime_function(void);
 
+// auxcodes.c
+int aux_statements(void);
+int aux_int_functions(void);
+int aux_str_functions(void);
+int aux_float_functions(void);
+int lib_aux(int r0, int r1, int r2);
+
 // For debugging
 void dump_cmpdata(void);
 void dump(void);
+void blink_led(int num);
 
 /*
 	Macros

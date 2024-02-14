@@ -790,6 +790,7 @@ static const void* lib_list2[]={
 	lib_delayms,    // #define LIB_DELAYMS 154
 	lib_rtc,        // #define LIB_RTC 155
 	lib_wifi,       // #define LIB_WIFI 156
+	lib_aux,        // #define LIB_AUXCODE 157
 };
 
 int statement_library(int r0, int r1, int r2, int r3){

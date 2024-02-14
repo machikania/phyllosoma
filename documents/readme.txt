@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2023.9.30
+　　　　　　　　　　　　　　　　　　　　　　　　　　2024.2.17
 　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
 　　　　　　　　「MachiKania type P」
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -121,6 +121,9 @@ MACHIKAP.INI
 　BLOCK.BAS
 　　初代MachiKania向けに作成したブロック崩しゲーム
 
+　FILEMAN.BAS
+　　MachiKania type P用ファイルマネージャ
+
 　INVADE.BAS
 　　MachiKania type Z向けに作成したインベーダーゲーム
 
@@ -206,6 +209,11 @@ Phyllosoma 1.20/KM-1502（2023.1.28）
 　・CRDINI・CLDHEX・REGEXP・STRINGの４つのクラスを、ライブラリーに追加
 
 Phyllosoma 1.30/KM-1503 (2023.9.30)
+　・サンプルプログラムに、WEATHER.BAS(webページから天気予報を得る)と
+　HDEAMON.BAS(web サーバー構築を構築)を追加。
+　・クラスライブラリーに、HTTPD(HTTPサーバーを構築)、IR_RX(赤外線リモコン
+　受信モジュールを使用)、IR_TX(赤外線LEDでリモコン信号を送信)、JSON(JSON文字列
+　を解析)、WGET(指定のURLから情報を取得)を追加。
 　・Raspberry Pi Pico W を用いた WiFi 接続に対応。次の命令・関数を追加： 
 　　DNS$(), IFCONFIG$(), NTP, TCPACCEPT(), TCPCLIENT, TCPCLOSE, TCPRECEIVE, 
 　　TCPSEND, TCPSERVER, TCPSTATUS, TLSCLIENT, WIFIERR(), WIFIERR$()
@@ -229,3 +237,20 @@ Phyllosoma 1.30/KM-1503 (2023.9.30)
 　・クラスのスタティックメソッド呼び出し不具合を修正
 　・FFINGD$(), FINFO(), FINFO$()の3つの関数を追加。ファイル一覧の作成が可能に
 　・REM 文に「"」を含む際のコンパイル時の不具合を修正
+
+Phyllosoma 1.31/KM-1504 (2023.10.28)
+　・embed用のBASICプログラムで、ファイルの読み取りに対応。
+　・embed用に組み込むことができるファイル数が、合計16個に増加。
+　・浮動小数点の表示や文字列の扱いの際、間違った値になる不具合を修正。
+
+Phyllosoma 1.40/KM-1505 (2024.2.17)
+　・サンプルプログラムに、FILEMAN.BAS(ファイルマネージャー)を追加。
+　・クラスライブラリーに、BUTTON(ボタン操作), GEN3O(源ノ角ゴシック表示), 
+　　QRCODE(QRCODE表示), TSC2046(タッチパネル操作)を追加。
+　・液晶を使わない場合に、SPI命令でspi1を使う事を可能にした。
+　・PUTBMP命令で、横幅が長い画像を表示する際の不具合を修正。
+　・ファイル一覧表示の際、ファイル更新日時の表示を可能にした。
+　・ファイル一覧表示の際の、ファイル名・ファイル更新日時による表示順に対応。
+　・ILI9488液晶で縦置の際の表示不具合を修正。
+　・FRENAME, MKDIR命令及びFRENAME(), MKDIR()関数の追加。
+　・補助コード(auxcode)を追加できる機能を実装。

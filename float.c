@@ -42,6 +42,7 @@ int not_sharp_function(void){
 }
 
 int float_functions(void){
+	int e;
 	if (instruction_is("ACOS#(")) return float_arg1_function(MATH_ACOS);
 	if (instruction_is("ARGS#(")) return args_function();
 	if (instruction_is("ASIN#(")) return float_arg1_function(MATH_ASIN);
@@ -68,6 +69,9 @@ int float_functions(void){
 	if (instruction_is("TAN#(")) return float_arg1_function(MATH_TAN);
 	if (instruction_is("TANH#(")) return float_arg1_function(MATH_TANH);
 	if (instruction_is("VAL#(")) return val_float_function();
+	// Aux functions
+	e=aux_float_functions();
+	if (e!=ERROR_STATEMENT_NOT_DETECTED) return e;
 	return ERROR_SYNTAX;
 }
 

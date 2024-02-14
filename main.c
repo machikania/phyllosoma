@@ -33,6 +33,8 @@ void read_ini(void){
 			continue;
 		} else if (ini_file_exception(str)) {
 			continue;
+		} else if (ini_file_io(str)) {
+			continue;
 		} else if (!strncmp(str,"AUTOEXEC=",9)) {
 			// Get file name
 			for(i=0;i<12;i++){
@@ -87,15 +89,10 @@ void read_ini(void){
 			lockkey|=4;
 		} else if (!strncmp(str,"WAIT4KEYBOARD=",14)) {
 			sscanf(str+14,"%d",&g_wait_for_keyboard);
-		} else if (!strncmp(str,"SPIMISO=",8)) {
-			i=atoi(str+8);
-			if (0==i || 4==i | 16==i) g_io_spi_rx=i;
-		} else if (!strncmp(str,"SPIMOSI=",8)) {
-			i=atoi(str+8);
-			if (3==i || 7==i | 19==i) g_io_spi_tx=i;
-		} else if (!strncmp(str,"SPICLK=",7)) {
-			i=atoi(str+7);
-			if (2==i || 6==i | 18==i) g_io_spi_sck=i;
+		} else if (!strncmp(str,"SHOWTIMESTAMP",13)) {
+			show_timestamp=1;
+		} else if (!strncmp(str,"FILESORTBY=",11)) {
+			sscanf(str+11,"%hhd",&filesortby);
 		}
 	}
 	// Close file

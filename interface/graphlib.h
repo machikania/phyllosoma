@@ -54,12 +54,12 @@ void stopPCG(void);
 void g_pset(int x,int y,unsigned char c);
 // (x,y)の位置にカラーcで点を描画
 
-void g_putbmpmn(int x,int y,unsigned char m,unsigned char n,const unsigned char bmp[]);
+void g_putbmpmn(int x,int y,unsigned short m,unsigned short n,const unsigned char bmp[]);
 // 横m*縦nドットのキャラクターを座標x,yに表示
 // unsigned char bmp[m*n]配列に、単純にカラー番号を並べる
 // カラー番号が0の部分は透明色として扱う
 
-void g_clrbmpmn(int x,int y,unsigned char m,unsigned char n);
+void g_clrbmpmn(int x,int y,unsigned short m,unsigned short n);
 // 縦m*横nドットのキャラクター消去
 // カラー0で塗りつぶし
 

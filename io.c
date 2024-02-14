@@ -5,6 +5,8 @@
 */
 
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include "pico/stdlib.h"
 #include "hardware/pwm.h"
 #include "hardware/gpio.h"
@@ -21,6 +23,30 @@
 unsigned char g_io_spi_rx=IO_SPI_RX;
 unsigned char g_io_spi_tx=IO_SPI_TX;
 unsigned char g_io_spi_sck=IO_SPI_SCK;
+void* g_io_spi_ch=IO_SPI_CH;
+volatile unsigned int* g_io_spi_sspcr=IO_SPI_SSPCR0;
+
+int ini_file_io(char* line){
+	int i;
+	if (!strncmp(line,"SPIMISO=",8)) {
+		i=atoi(line+8);
+		if (0==i || 4==i | 16==i) g_io_spi_rx=i;
+		if (8==i || 12==i) g_io_spi_rx=i;
+	} else if (!strncmp(line,"SPIMOSI=",8)) {
+		i=atoi(line+8);
+		if (3==i || 7==i | 19==i) g_io_spi_tx=i;
+		if (11==i || 15==i) g_io_spi_tx=i;
+	} else if (!strncmp(line,"SPICLK=",7)) {
+		i=atoi(line+7);
+		if (2==i || 6==i | 18==i) g_io_spi_sck=i;
+		if (10==i || 14==i) {
+			g_io_spi_sck=i;
+			g_io_spi_ch=spi1;
+			g_io_spi_sspcr=((volatile unsigned int*)(SPI1_BASE + SPI_SSPCR0_OFFSET));
+		}
+	} else return 0;
+	return 1;
+}
 
 static unsigned char gpio_table[16]={
 	IO_GPIO0,
@@ -71,8 +97,8 @@ void io_init(void){
 	io_uart_buff=0;
 	io_uart_var=0;
 	// Resister SSPCR0 for SD
-	sd_spi_sspcr[0]=IO_SPI_SSPCR0[0];
-	sd_spi_sspcr[1]=IO_SPI_SSPCR0[1];
+	sd_spi_sspcr[0]=g_io_spi_sspcr[0];
+	sd_spi_sspcr[1]=g_io_spi_sspcr[1];
 }
 
 int io_prepare_stack(int min_args){
@@ -336,14 +362,14 @@ void spi_send_option(int bit_num, unsigned int* sp, int sp_num){
 	int i;
 	switch(bit_num){
 		case 8:
-			for(i=0;i<sp_num;i++) spi_write_blocking(IO_SPI_CH,(const unsigned char*)&sp[i],1);
+			for(i=0;i<sp_num;i++) spi_write_blocking(g_io_spi_ch,(const unsigned char*)&sp[i],1);
 			break;
 		case 16:
-			for(i=0;i<sp_num;i++) spi_write16_blocking(IO_SPI_CH,(const unsigned short*)&sp[i],1);
+			for(i=0;i<sp_num;i++) spi_write16_blocking(g_io_spi_ch,(const unsigned short*)&sp[i],1);
 			break;
 		case 32:
 		default:
-			for(i=0;i<sp_num;i++) spi_write32_blocking(IO_SPI_CH,((const unsigned long*)&sp[i]),1);
+			for(i=0;i<sp_num;i++) spi_write32_blocking(g_io_spi_ch,((const unsigned long*)&sp[i]),1);
 			break;
 	}
 }
@@ -358,8 +384,8 @@ int lib_spi(int r0, int r1, int r2){
 		return 0;
 	}
 	// Set control registers for IO
-	IO_SPI_SSPCR0[0]=io_spi_sspcr[0];
-	IO_SPI_SSPCR0[1]=io_spi_sspcr[1];
+	g_io_spi_sspcr[0]=io_spi_sspcr[0];
+	g_io_spi_sspcr[1]=io_spi_sspcr[1];
 	// Activate SPI connection
 	asm volatile("nop \n nop \n nop");
 	if (0<=cs_port) gpio_put(cs_port,0);
@@ -387,7 +413,7 @@ int lib_spi(int r0, int r1, int r2){
 			gpio_set_dir(cs_port, GPIO_OUT);
 			gpio_put(cs_port,1);
 			// Init SPI
-			spi_init(IO_SPI_CH,sp[0]*1000);
+			spi_init(g_io_spi_ch,sp[0]*1000);
 		    gpio_set_function(g_io_spi_rx, GPIO_FUNC_SPI);
 		    gpio_set_function(g_io_spi_tx, GPIO_FUNC_SPI);
 		    gpio_set_function(g_io_spi_sck, GPIO_FUNC_SPI);
@@ -396,39 +422,39 @@ int lib_spi(int r0, int r1, int r2){
 			// Note: order must be SPI_MSB_FIRST, no other values supported on the PL022 
 			switch(sp[2]){
 				case 0: // CPOL=0, CPHA=0
-					spi_set_format(IO_SPI_CH,sp[1],SPI_CPOL_0,SPI_CPHA_0,SPI_MSB_FIRST);
+					spi_set_format(g_io_spi_ch,sp[1],SPI_CPOL_0,SPI_CPHA_0,SPI_MSB_FIRST);
 					break;
 				case 1: // CPOL=0, CPHA=1
-					spi_set_format(IO_SPI_CH,sp[1],SPI_CPOL_0,SPI_CPHA_1,SPI_MSB_FIRST);
+					spi_set_format(g_io_spi_ch,sp[1],SPI_CPOL_0,SPI_CPHA_1,SPI_MSB_FIRST);
 					break;
 				case 2: // CPOL=1, CPHA=1
-					spi_set_format(IO_SPI_CH,sp[1],SPI_CPOL_1,SPI_CPHA_1,SPI_MSB_FIRST);
+					spi_set_format(g_io_spi_ch,sp[1],SPI_CPOL_1,SPI_CPHA_1,SPI_MSB_FIRST);
 					break;
 				case 3: // CPOL=1, CPHA=0
-					spi_set_format(IO_SPI_CH,sp[1],SPI_CPOL_1,SPI_CPHA_0,SPI_MSB_FIRST);
+					spi_set_format(g_io_spi_ch,sp[1],SPI_CPOL_1,SPI_CPHA_0,SPI_MSB_FIRST);
 					break;
 				default:
 					stop_with_error(ERROR_INVALID);
 					return r0;
 			}
 			// Store control registers for IO
-			io_spi_sspcr[0]=IO_SPI_SSPCR0[0];
-			io_spi_sspcr[1]=IO_SPI_SSPCR0[1];
+			io_spi_sspcr[0]=g_io_spi_sspcr[0];
+			io_spi_sspcr[1]=g_io_spi_sspcr[1];
 			break;
 		case LIB_SPI_SPIREAD:
 			spi_send_option(bit_num,sp,r0);
 			switch(bit_num){
 				case 8:
-					spi_read_blocking(IO_SPI_CH,0xff,(unsigned char*)&g_scratch_char[0],1);
+					spi_read_blocking(g_io_spi_ch,0xff,(unsigned char*)&g_scratch_char[0],1);
 					r0=(unsigned char)g_scratch_char[0];
 					break;
 				case 16:
-					spi_read16_blocking(IO_SPI_CH,0xffff,(unsigned short*)&g_scratch_short[0],1);
+					spi_read16_blocking(g_io_spi_ch,0xffff,(unsigned short*)&g_scratch_short[0],1);
 					r0=(unsigned short)g_scratch_short[0];
 					break;
 				case 32:
 				default:
-					spi_read32_blocking(IO_SPI_CH,0xffffffff,(unsigned long*)&g_scratch_int[0],1);
+					spi_read32_blocking(g_io_spi_ch,0xffffffff,(unsigned long*)&g_scratch_int[0],1);
 					r0=(unsigned int)g_scratch_int[0];
 					break;
 			}
@@ -440,14 +466,14 @@ int lib_spi(int r0, int r1, int r2){
 			spi_send_option(bit_num,&sp[2],r0-2);
 			switch(bit_num){
 				case 8:
-					spi_read_blocking(IO_SPI_CH,0xff,(unsigned char*)sp[0],sp[1]);
+					spi_read_blocking(g_io_spi_ch,0xff,(unsigned char*)sp[0],sp[1]);
 					break;
 				case 16:
-					spi_read16_blocking(IO_SPI_CH,0xffff,(unsigned short*)sp[0],sp[1]);
+					spi_read16_blocking(g_io_spi_ch,0xffff,(unsigned short*)sp[0],sp[1]);
 					break;
 				case 32:
 				default:
-					spi_read32_blocking(IO_SPI_CH,0xffffffff,(unsigned long*)sp[0],sp[1]);
+					spi_read32_blocking(g_io_spi_ch,0xffffffff,(unsigned long*)sp[0],sp[1]);
 					break;
 			}
 			break;
@@ -455,14 +481,14 @@ int lib_spi(int r0, int r1, int r2){
 			spi_send_option(bit_num,&sp[2],r0-2);
 			switch(bit_num){
 				case 8:
-					spi_write_blocking(IO_SPI_CH,(unsigned char*)sp[0],sp[1]);
+					spi_write_blocking(g_io_spi_ch,(unsigned char*)sp[0],sp[1]);
 					break;
 				case 16:
-					spi_write16_blocking(IO_SPI_CH,(unsigned short*)sp[0],sp[1]);
+					spi_write16_blocking(g_io_spi_ch,(unsigned short*)sp[0],sp[1]);
 					break;
 				case 32:
 				default:
-					spi_write32_blocking(IO_SPI_CH,(unsigned long*)sp[0],sp[1]);
+					spi_write32_blocking(g_io_spi_ch,(unsigned long*)sp[0],sp[1]);
 					break;
 			}
 			break;
@@ -470,14 +496,14 @@ int lib_spi(int r0, int r1, int r2){
 			spi_send_option(bit_num,&sp[2],r0-2);
 			switch(bit_num){
 				case 8:
-					spi_write_read_blocking(IO_SPI_CH,(unsigned char*)sp[0],(unsigned char*)sp[0],sp[1]);
+					spi_write_read_blocking(g_io_spi_ch,(unsigned char*)sp[0],(unsigned char*)sp[0],sp[1]);
 					break;
 				case 16:
-					spi_write16_read16_blocking(IO_SPI_CH,(unsigned short*)sp[0],(unsigned short*)sp[0],sp[1]);
+					spi_write16_read16_blocking(g_io_spi_ch,(unsigned short*)sp[0],(unsigned short*)sp[0],sp[1]);
 					break;
 				case 32:
 				default:
-					spi_write32_read32_blocking(IO_SPI_CH,(unsigned long*)sp[0],(unsigned long*)sp[0],sp[1]);
+					spi_write32_read32_blocking(g_io_spi_ch,(unsigned long*)sp[0],(unsigned long*)sp[0],sp[1]);
 					break;
 			}
 			break;
@@ -490,8 +516,8 @@ int lib_spi(int r0, int r1, int r2){
 	if (0<=cs_port) gpio_put(cs_port,1);
 	asm volatile("nop \n nop \n nop");
 	// Set control registers for SD
-	IO_SPI_SSPCR0[0]=sd_spi_sspcr[0];
-	IO_SPI_SSPCR0[1]=sd_spi_sspcr[1];
+	g_io_spi_sspcr[0]=sd_spi_sspcr[0];
+	g_io_spi_sspcr[1]=sd_spi_sspcr[1];
 	return r0;
 }
 

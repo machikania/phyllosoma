@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2023.9.30
+　　　　　　　　　　　　　　　　　　　　　　　　　　2024.2.17
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type P
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -102,6 +102,9 @@ MACHIKAP.INI
 　BLOCK.BAS
 　　Block breaking game created for the first MachiKania
 
+　FILEMAN.BAS
+　　File manager for MachiKania type P
+
 　INVADE.BAS
 　　Invader game created for MachiKania type Z
 
@@ -187,6 +190,8 @@ Phyllosoma 1.20/KM-1502 (2023.1.28)
 　Four classes, CRDINI, CLDHEX, REGEXP, and STRING, are added to the library.
 
 Phyllosoma 1.30/KM-1503 (2023.9.30)
+　WEATHER.BAS (get weather forecast from web), HDEAMON.BAS (construct web server) were added as a sample program.
+　Added HTTPD (construct HTTP deamon), IR_RX (IR receiver), IR_TX (IR transmitter), JSON (analyze JSON string) and WGET (web browsing) to the class library.
 　Added support for WiFi connection using Raspberry Pi Pico W. Following statements/functions are added: DNS$(), IFCONFIG$(), NTP, TCPACCEPT(), TCPCLIENT, TCPCLOSE, TCPRECEIVE, TCPSEND, TCPSERVER, TCPSTATUS, TLSCLIENT, WIFIERR(), WIFIERR$()
 　Fixed a bug in GCOLOR() function.
 　Fixed a key input bug with some USB keyboards.
@@ -207,3 +212,20 @@ Phyllosoma 1.30/KM-1503 (2023.9.30)
 　Fixed a static method call bug in a class.
 　Three functions, FFINGD$(), FINFO(), and FINFO$(), are added. Enabled to create file list.
 　Fixed a compile-time bug when the REM statement contains double quotation.
+
+Phyllosoma 1.31/KM-1504 (2023.10.28)
+　The BASIC program for embed now supports file reading.
+　The number of files that can be embedded for embedding has been increased to 16.
+　Fixed a bug that caused wrong values when displaying floating points and handling strings.
+
+Phyllosoma 1.40/KM-1505 (2024.2.17)
+　FILEMAN.BAS (file manager) was added as a sample program.
+　Added BUTTON (button operation), GEN3O (Genkaku Gothic display), QRCODE (QRCODE display), 
+and TSC2046 (touch panel operation) to the class library.
+　Enabled to use spi1 with SPI instruction when LCD is not used.
+　Fixed a bug in PUTBMP instruction when displaying a long width image.
+　The file modification date and time can be displayed in the file list view.
+　The display order of file names and modified dates in the file list display is now supported.
+　Fixed a display bug on ILI9488 LCD when it is displayed in portrait mode.
+　The FRENAME and MKDIR instructions and the FRENAME() and MKDIR() functions have been added.
+　Auxiliary code (auxcode) can be added.

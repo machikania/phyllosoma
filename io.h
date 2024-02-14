@@ -8,6 +8,8 @@
 extern unsigned char g_io_spi_rx;
 extern unsigned char g_io_spi_tx;
 extern unsigned char g_io_spi_sck;
+extern void* g_io_spi_ch;
+extern volatile unsigned int* g_io_spi_sspcr;
 
 #define IO_GPIO_8L_MASK (\
 		(1<<IO_GPIO0) | (1<<IO_GPIO1) | (1<<IO_GPIO2) | (1<<IO_GPIO3) | \

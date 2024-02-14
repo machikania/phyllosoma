@@ -4,8 +4,8 @@ usevar Min1,Max1,Fstr1
 
 if val(strftime$("%Y"))<2023 then ntp
 
-j$=WGET::FORSTRING$("http://www.recfor.net/projects/weather/tokyo.php")
-REM j$=WGET::FORSTRING$("http://www.recfor.net/projects/weather/osaka.php")
+j$=WGET::FORSTRING$("https://www.recfor.net/projects/weather/tokyo.php")
+REM j$=WGET::FORSTRING$("https://www.recfor.net/projects/weather/osaka.php")
 o=new(JSON,j$)
 
 Min0#=o.FQUERY#(".DailyForecasts[0].Temperature.Minimum.Value")
