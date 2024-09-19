@@ -13,6 +13,10 @@ cmake and make. The pico-sdk (ver 1.5.0 is confirmed for building) with tinyusb 
 4. set(MACHIKANIA_BUILD pico_w_ili9341) : for Raspberry Pi Pico W + ILI9341 LCD + Wifi  
 5. set(MACHIKANIA_BUILD pico_w_ili9488) : for Raspberry Pi Pico W + ILI9488 LCD + Wifi
 
+## how to compile for Raspberry Pi Pico 2
+
+Add "-DPICO_BOARD=pico2 -DPICO_PLATFORM=rp2350-arm-s" parameter to execute cmake, then execute make. The pico-sdk (ver 2.0.0 is confirmed for building) with all submodules (execute "Submodule Update" for git clone) is required.
+
 ## how to use
 Copy "phyllosoma.uf2" to the RPI-RP2 drive of Raspberry Pi Pico or Pico W. Immediately connect to COMx port (com number depends on environment) by serial console at 115200 baud rate, if needed. Alternatively, copy "phyllosoma_kb.uf2" to the RPI-RP2 drive for using USB keyboard directly connected to Raspberry Pi Pico (or Pico W).
 

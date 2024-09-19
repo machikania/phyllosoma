@@ -603,7 +603,7 @@ int lib_debug(int r0, int r1, int r2){
 	//lib_wait(60,0,0);
 	return r0;
 #else
-	return r0+1;
+	return r0;
 #endif
 }
 
