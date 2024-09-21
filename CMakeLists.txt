@@ -59,7 +59,7 @@ if (TARGET tinyusb_device)
 		hardware_adc
 		hardware_i2c
 		hardware_exception
-#		hardware_rtc
+		pico_aon_timer
 	)
 	
 	# Create wifi library
@@ -142,12 +142,12 @@ if (TARGET tinyusb_device)
 	if (MACHIKANIA_WIFI STREQUAL "withwifi") 
 		pico_set_linker_script(phyllosoma_kb ${CMAKE_CURRENT_SOURCE_DIR}/wifi/memmap_machikania.ld)
 		pico_set_linker_script(phyllosoma ${CMAKE_CURRENT_SOURCE_DIR}/wifi/memmap_machikania.ld)
-	elseif(PICO_PLATFORM STREQUAL "rp2040")
-		pico_set_linker_script(phyllosoma_kb ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania.ld)
-		pico_set_linker_script(phyllosoma ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania.ld)
-	else()
+	elseif(PICO_PLATFORM STREQUAL "rp2350-arm-s")
 		pico_set_linker_script(phyllosoma_kb ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania_pico2.ld)
 		pico_set_linker_script(phyllosoma ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania_pico2.ld)
+	else()
+		pico_set_linker_script(phyllosoma_kb ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania.ld)
+		pico_set_linker_script(phyllosoma ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania.ld)
 	endif()
 	
 	# set compile definitions

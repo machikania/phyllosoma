@@ -118,6 +118,9 @@ char g_interrupt_code=0;
 
 unsigned int g_wait_for_keyboard=2000;
 
+// Clock speed in hz
+unsigned int g_clock_hz;
+
 // Reserved words
 
 const char* const g_reserved_words[189]={
