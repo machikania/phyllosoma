@@ -44,10 +44,14 @@ void run_code(void){
 	// Store return address and call kmbasic_object
 	asm("ldr r1,=kmbasic_object+1");
 	asm("mov r0,pc");
-	asm("add r0,#5");
+	asm("add r0,#7");
 	asm("str r0,[r7,#4]");
 	asm("bx r1");
 	// Pop r0-r12
+	asm("nop");
+	asm("nop");
+	asm("nop");
+	asm("nop");
 	asm("pop {r0,r1,r2,r3,r4}");
 	asm("mov r8,r0");
 	asm("mov r9,r1");
