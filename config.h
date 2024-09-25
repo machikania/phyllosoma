@@ -24,7 +24,11 @@
 	"\n"
 
 #ifndef KMBASIC_OBJECT_KBYTES
+#ifdef PICO_PLATFORM_RP2350
+#define KMBASIC_OBJECT_KBYTES 448
+#else
 #define KMBASIC_OBJECT_KBYTES 192
+#endif
 #endif
 
 #define IO_SPI_TX SD_SPI_TX

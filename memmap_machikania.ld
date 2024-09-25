@@ -24,8 +24,7 @@
 MEMORY
 {
     FLASH(rx) : ORIGIN = 0x10000000, LENGTH = 2048k
-    OBJECT(rwx) : ORIGIN =  0x20000000, LENGTH = 192k
-    RAM(rwx) : ORIGIN =  0x20030000, LENGTH = 64k
+    RAM(rwx) : ORIGIN =  0x20000000, LENGTH = 256k
     SCRATCH_X(rwx) : ORIGIN = 0x20040000, LENGTH = 4k
     SCRATCH_Y(rwx) : ORIGIN = 0x20041000, LENGTH = 4k
 }
@@ -34,6 +33,10 @@ ENTRY(_entry_point)
 
 SECTIONS
 {
+    .kmbasicobject_section 0x20000000 (NOLOAD) : {
+        KEEP(*(.kmbasicobject_section))
+    } > RAM
+
     /* Second stage bootloader is prepended to the image. It must be 256 bytes big
        and checksummed. It is usually built by the boot_stage2 target
        in the Raspberry Pi Pico SDK
@@ -179,11 +182,6 @@ SECTIONS
         . = ALIGN(4);
         *(.uninitialized_data*)
     } > RAM
-
-    .kmbasicobject (COPY): {
-        . = ALIGN(4);
-        *(.uninitialized_data*)
-    } > OBJECT
 
     /* Start and end symbols must be word-aligned */
     .scratch_x : {

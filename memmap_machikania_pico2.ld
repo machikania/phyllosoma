@@ -24,8 +24,7 @@
 MEMORY
 {
     FLASH(rx) : ORIGIN = 0x10000000, LENGTH = 4096k
-    OBJECT(rwx) : ORIGIN =  0x20000000, LENGTH = 288k
-    RAM(rwx) : ORIGIN =  0x20048000, LENGTH = 224k
+    RAM(rwx) : ORIGIN =  0x20000000, LENGTH = 512k
     SCRATCH_X(rwx) : ORIGIN = 0x20080000, LENGTH = 4k
     SCRATCH_Y(rwx) : ORIGIN = 0x20081000, LENGTH = 4k
 }
@@ -34,6 +33,9 @@ ENTRY(_entry_point)
 
 SECTIONS
 {
+    .kmbasicobject_section 0x20000000 (NOLOAD) : {
+        KEEP(*(.kmbasicobject_section))
+    } > RAM
     .flash_begin : {
         __flash_binary_start = .;
     } > FLASH
