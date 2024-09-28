@@ -44,9 +44,6 @@ if (TARGET tinyusb_device)
 		debug.c	
 		exception.c
 		rtc.c
-		interface/${MACHIKANIA_GRAPH_LIB}.c
-		interface/fontdata.c
-		interface/graphlib.c
 		interface/ff.c
 		interface/pico-sdmm.c
 		interface/fileselect.c
@@ -60,6 +57,17 @@ if (TARGET tinyusb_device)
 		hardware_i2c
 		hardware_exception
 		pico_aon_timer
+	)
+	
+	# Create graphic library
+	add_library(graphic_files
+		interface/${MACHIKANIA_GRAPH_LIB}.c
+		interface/fontdata.c
+		interface/graphlib.c	
+	)
+	target_link_libraries(graphic_files 
+		pico_stdlib
+		hardware_spi
 	)
 	
 	# Create wifi library
@@ -113,6 +121,7 @@ if (TARGET tinyusb_device)
 		withkeyboard.c
 	)
 	target_link_libraries(phyllosoma_kb shared_files)
+	target_link_libraries(phyllosoma_kb graphic_files)
 	target_link_libraries(phyllosoma_kb wifi_files)
 	target_link_libraries(phyllosoma_kb aux_files)
 	target_link_libraries(phyllosoma_kb tinyusb_board)
@@ -125,6 +134,7 @@ if (TARGET tinyusb_device)
 		pcconnect.c
 	)
 	target_link_libraries(phyllosoma shared_files)
+	target_link_libraries(phyllosoma graphic_files)
 	target_link_libraries(phyllosoma wifi_files)
 	target_link_libraries(phyllosoma aux_files)
 
@@ -148,17 +158,13 @@ if (TARGET tinyusb_device)
 	endif()
 	
 	# set compile definitions
-	target_compile_definitions(shared_files PUBLIC MACHIKANIA_CONFIG="./config/${MACHIKANIA_BUILD}.h")
-	target_compile_definitions(wifi_files PUBLIC MACHIKANIA_CONFIG="./config/${MACHIKANIA_BUILD}.h")
-	target_compile_definitions(aux_files PUBLIC MACHIKANIA_CONFIG="./config/${MACHIKANIA_BUILD}.h")
+	add_compile_definitions(MACHIKANIA_CONFIG="./config/${MACHIKANIA_BUILD}.h")
 	if (MACHIKANIA_DEBUG_MODE)
-		target_compile_definitions(shared_files PUBLIC MACHIKANIA_DEBUG_MODE)
-		target_compile_definitions(wifi_files PUBLIC MACHIKANIA_DEBUG_MODE)
-		target_compile_definitions(aux_files PUBLIC MACHIKANIA_DEBUG_MODE)
+		add_compile_definitions(MACHIKANIA_DEBUG_MODE)
 	endif()
 	if (MACHIKANIA_WIFI STREQUAL "withwifi")
-		target_compile_definitions(wifi_files PUBLIC PICO_STACK_SIZE=4096)
-		target_compile_definitions(wifi_files PUBLIC PICO_HEAP_SIZE=4096)
+		add_compile_definitions(PICO_STACK_SIZE=4096)
+		add_compile_definitions(PICO_HEAP_SIZE=4096)
 		#target_compile_definitions(wifi_files PRIVATE machikania_dummy=6)
 	endif()
 	if(PICO_PLATFORM STREQUAL "rp2350-arm-s")
