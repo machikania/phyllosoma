@@ -2,8 +2,8 @@
 
 $version=array(
 	"Phyllosoma",
-	"1.4.0.0",
-	"KM-1505",
+	"1.4.1.0",
+	"KM-1506",
 );
 
 $configs=array(
@@ -54,10 +54,14 @@ function check_uf2($filename,$fullpath){
 		echo $config,"\n";
 		if (!preg_match('@config/([^\.]*)@',$config,$m)) exit ("Error ".__LINE__);
 		if ($m[1]==$config_file) echo "  config: OK";
+		elseif ($m[1]==str_replace('pico2_','pico_',$config_file)) echo "  config: OK";
 		else echo "  config; NG";
 		$embed=preg_match('@\(embed\)@',$config);
 		if ($embed==$embed_file) echo "  embed state: OK";
 		else echo "  embed state: NG";
+		if (preg_match('/(pico2_|rp2350)/',$config_file) && substr($uf2file,0x1c,1)=='W') echo "  pico1/pico2 state: OK";
+		elseif (preg_match('/(pico2_|rp2350)/',$config_file)==0 && substr($uf2file,0x1c,1)=='V') echo "  pico1/pico2 state: OK";
+		else echo "  pico1/pico2 state: NG";
 		echo "\n\n";
 		return;
 	}
