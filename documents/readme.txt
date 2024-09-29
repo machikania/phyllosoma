@@ -1,12 +1,13 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2024.2.17
+　　　　　　　　　　　　　　　　　　　　　　　　　　2024.10.19
 　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
 　　　　　　　　「MachiKania type P」
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
 
 MachiKania（マチカニア）はBASICコンパイラを搭載したマイコン用
 オープンプラットフォームです。
-MachiKania type PではRaspberry Pi Picoと小型液晶モジュールを
-搭載し、ポータブルなBASIC実行環境を実現しています。
+MachiKania type PではRaspberry Pi Pico (Pico 2, Pico W)と小型
+液晶モジュールを搭載し、ポータブルなBASIC実行環境を実現してい
+ます。
 汎用I/OやSPI、I2Cといった外部機器の制御もBASICから簡単に行う
 ことが可能です。
 
@@ -87,8 +88,24 @@ MachiKaniaシリーズを利用していることについてもWebサイトや
 　　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
 　　WiFi接続が可能
 
+[pico2_ili9341]ディレクトリ
+　Raspberry Pi Pico 2 と ILI9341 液晶の組み合わせのときに使うバイナリー
+　を格納
+　-phyllosoma.uf2
+　　MachiKania type P BASICシステム本体（PC connect機能対応版）
+　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　PC connect機能により、USBケーブルで接続したPCからBASICプログラムを転送可能
+　　WiFi接続が可能
+
+　-phyllosoma_kb.uf2
+　　MachiKania type P BASICシステム本体（USBキーボード接続対応版）
+　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
+　　WiFi接続が可能
+
 [pico_ili9341/embed]ディレクトリ
 [pico_w_ili9341/embed]ディレクトリ
+[pico2_ili9341/embed]ディレクトリ
 　組み込み用途などMMC/SDカードなしでもBASICプログラムを実行することが
 　できるようなツール類を格納
 
@@ -254,3 +271,7 @@ Phyllosoma 1.40/KM-1505 (2024.2.17)
 　・ILI9488液晶で縦置の際の表示不具合を修正。
 　・FRENAME, MKDIR命令及びFRENAME(), MKDIR()関数の追加。
 　・補助コード(auxcode)を追加できる機能を実装。
+
+Phyllosoma 1.41/KM-1506 (2024.10.19)
+　・Raspberry Pi Pico 2に対応。
+　・WEATHER.BASサンプルプログラムを更新

@@ -627,10 +627,14 @@ SYSTEM(105)
 	Returns a pointer to the graphic display area.
 SYSTEM 200,x
 	Stops (when x is 0) or starts (when x is non-zero) the display.
+SYSTEM 201,x
+	Turns the LEDs on the board ON/OFF. x= non-zero is ON, 0 is OFF (Type P only).
 SYSTEM(250,x)
-	Allocates memory in an x-byte area initialized with zeros and returns an address (equivalent to calloc).
+	Allocates memory in an x-byte area initialized with zeros and returns an address (equivalent to calloc; Type P only).
 SYSTEM(251,x)
-	Allocates memory for an area of x bytes and returns an address (equivalent to malloc).
+	Allocates memory for an area of x bytes and returns an address (equivalent to malloc; Type P only).
+SYSTEM 252,x
+	Release the memory allocated to address x (equivalent to free; Type P only).
 
 <Input/output commands and functions>
 Input/output functions are available for Type M and Type P.
@@ -757,6 +761,8 @@ If strings are handled consecutively in a line, an error message "String too com
 Be careful when accessing global variables in interrupt functions. If a variable of the same name is specified as a VAR in one of the subroutines and is also used as a local variable, depending on when the interrupt is triggered, the value of the variable may or may not belong to the global or local variable. Therefore, if you want to handle a global variable in an interrupt function, do not specify a variable of the same name as a VAR.
 
 <Version history>
+KM-1506 Released in October 2024.
+　Changed to use aon_timer for RTC to share code with Pico 2.
 KM-1505 Released in February 2024.
 　Enabled to use spi1 with SPI instruction when LCD is not used.
 　Fixed a bug in PUTBMP instruction when displaying a long width image.
