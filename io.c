@@ -214,15 +214,15 @@ int lib_pwm(int r0, int r1, int r2){
 	gpio_set_function(port, GPIO_FUNC_PWM);
 	if (1000<=r1) {
 		// Set clock divier for frequency
-		pwm_set_clkdiv(slice,125000.0/((float)r1));
+		pwm_set_clkdiv(slice,((float)(g_clock_hz/1000)) / ((float)r1));
 		// 1000 cycles PWM
 		pwm_set_wrap(slice, 1000);
 		// Set duty
 		pwm_set_chan_level(slice, channel, r2);
 	} else {
 		// Set clock divier for frequency
-		pwm_set_clkdiv(slice,125000.0/65.0/((float)r1));
-		// 1000 cycles PWM
+		pwm_set_clkdiv(slice,((float)(g_clock_hz/1000/65)) / ((float)r1));
+		// 65000 cycles PWM
 		pwm_set_wrap(slice, 65000);
 		// Set duty
 		pwm_set_chan_level(slice, channel, r2*65);

@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "pico/stdlib.h"
+#include "hardware/clocks.h"
 #include "./compiler.h"
 #include "./api.h"
 #include "./debug.h"
@@ -117,6 +118,7 @@ int main() {
 	init_file_system();
 	fileselect_init();
 	init_machikania_rtc();
+	g_clock_hz=clock_get_hz(clk_sys);
 	// Read MACHIKAP.INI
 	read_ini();
 	sleep_ms(g_wait_at_begin-500);

@@ -4,17 +4,23 @@ MachiKania Phyllosoma
 ## MachiKania Phyllosoma
 MachiKania Phyllosoma is a BASIC compiler for ARMv6-M, especially for Raspberry Pi Pico.
 
-## how to compile
-cmake and make. The pico-sdk (ver 1.5.0 is confirmed for building) with tinyusb (ver 0.15.0 is confirmed for building), cyw43-driver, lwip, and mbedtls submodules is required. In config.cmake, select configuration option to build by enabling "set()" command. Currently, there are following options:  
+## how to compile for Raspberry Pi Pico
+cmake and make. The pico-sdk (ver 2.0.0 is confirmed for building) with all submodules (execute "Submodule Update" for git clone) is required. In config.cmake, select configuration option to build by enabling "set()" command. Currently, there are following options:  
   
 1. set(MACHIKANIA_BUILD pico_ili9341) : for Raspberry Pi Pico + ILI9341 LCD  
 2. set(MACHIKANIA_BUILD pico_ili9488) : for Raspberry Pi Pico + ILI9488 LCD  
-3. set(MACHIKANIA_BUILD xiao_embed) : for Seeed XIAO RP2040 for embedded development  
-4. set(MACHIKANIA_BUILD pico_w_ili9341) : for Raspberry Pi Pico W + ILI9341 LCD + Wifi  
-5. set(MACHIKANIA_BUILD pico_w_ili9488) : for Raspberry Pi Pico W + ILI9488 LCD + Wifi
+3. set(MACHIKANIA_BUILD xiao_embed) : for Seeed XIAO RP2040 for embedded development
+
+## how to compile for Raspberry Pi Pico W
+
+Add "-DPICO_BOARD=pico_w -DPICO_PLATFORM=rp2040" parameter to execute cmake, then execute make. The config.cmake setting is the same as above.
+
+## how to compile for Raspberry Pi Pico 2
+
+Add "-DPICO_BOARD=pico2 -DPICO_PLATFORM=rp2350-arm-s" parameter to execute cmake, then execute make. The config.cmake setting is the same as above.
 
 ## how to use
-Copy "phyllosoma.uf2" to the RPI-RP2 drive of Raspberry Pi Pico or Pico W. Immediately connect to COMx port (com number depends on environment) by serial console at 115200 baud rate, if needed. Alternatively, copy "phyllosoma_kb.uf2" to the RPI-RP2 drive for using USB keyboard directly connected to Raspberry Pi Pico (or Pico W).
+Copy "phyllosoma.uf2" to the RPI-RP2 (or RP2350) drive of Raspberry Pi Pico or Pico W. Immediately connect to COMx port (com number depends on environment) by serial console at 115200 baud rate, if needed. Alternatively, copy "phyllosoma_kb.uf2" to the RPI-RP2 drive for using USB keyboard directly connected to Raspberry Pi Pico (or Pico W).
 
 ## License
 Most of codes (written in C) are provided with LGPL 2.1 license, but some codes are provided with the other licenses. See the comment of each file.

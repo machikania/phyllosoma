@@ -111,3 +111,6 @@ Phyllosoma 1.40/KM-1505 (2024.2.17)
 　・CKNJ12 ver 0.5
 　・CKNJ16 ver 0.5
 　・HTTPD ver 0.3.2
+
+Phyllosoma 1.41/KM-1506 (2024.10.06)
+　・変更なし

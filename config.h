@@ -13,8 +13,8 @@
 
 #define PHYLLOSOMA
 #define SYSVER1 "Phyllosoma"
-#define SYSVER2 "1.4.0.0"
-#define BASVER "KM-1505"
+#define SYSVER2 "1.4.1.0"
+#define BASVER "KM-1506"
 
 #define INTRODUCE_MACHIKANIA \
 	"MachiKania BASIC System\n"\
@@ -24,7 +24,11 @@
 	"\n"
 
 #ifndef KMBASIC_OBJECT_KBYTES
+#ifdef PICO_PLATFORM_RP2350
+#define KMBASIC_OBJECT_KBYTES 448
+#else
 #define KMBASIC_OBJECT_KBYTES 192
+#endif
 #endif
 
 #define IO_SPI_TX SD_SPI_TX

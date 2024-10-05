@@ -115,7 +115,7 @@ void exception_handler_main(int* sp, unsigned int icsr){
 }
 
 void exception_handler(void){
-	asm("movs r0,sp");
+	asm("mov r0,sp");
 	asm("ldr r1,=0xE000ED04"); // ICSR
 	asm("ldr r1,[r1]");
 	asm("b exception_handler_main");

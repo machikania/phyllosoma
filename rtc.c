@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#include "hardware/rtc.h"
+#include "pico/aon_timer.h"
 #include "pico/stdlib.h"
 #include "pico/util/datetime.h"
 #include "./compiler.h"
@@ -40,6 +40,34 @@ int ini_file_rtc(char* line){
 	return 1;
 }
 
+void init_machikania_rtc(void){
+	struct tm ttm={
+		.tm_sec=0,                   // seconds after the minute (0-59)
+		.tm_min=0,                   // minutes after the hour (0-59)
+		.tm_hour=0,                  // hours since midnight (0-23)
+		.tm_mday=FF_NORTC_MDAY,      // day of the month (1-31)
+		.tm_mon=FF_NORTC_MON-1,      // months since January (0-11)
+		.tm_year=FF_NORTC_YEAR-1900, // years since 1900
+		.tm_wday=0,                  // days since Sunday (0-6)
+		.tm_yday=0,                  // days since January 1 (0-365)
+		.tm_isdst=0                  // Daylight Saving Time flag
+	};
+	struct timespec tts={
+		.tv_sec=0,
+		.tv_nsec=0
+	};
+	tts.tv_sec=mktime(&ttm);
+	aon_timer_start(&tts);
+}
+
+struct tm* get_tm_now(void){
+	struct timespec tts;
+	time_t t;
+	aon_timer_get_time(&tts);
+	t=tts.tv_sec;
+	return localtime(&t);
+}
+
 /*
 	DWORD get_fattime (void);
 		bit31:25 (7 bits) Year origin from the 1980 (0..127, e.g. 37 for 2017)
@@ -49,67 +77,25 @@ int ini_file_rtc(char* line){
 		bit10:5  (6 bits) Minute (0..59)
 		bit4:0   (5 bits) Second / 2 (0..29, e.g. 25 for 50) 
 */
-DWORD get_fattime (void){
-	datetime_t now;
+DWORD get_fattime(void){
+	struct tm* ttm;
 	if (g_rtc4file) {
-		rtc_get_datetime(&now);
+		ttm=get_tm_now();
 		return
-			((now.year-1980)<<25) |
-			(now.month<<21) |
-			(now.day<<16) |
-			(now.hour<<11) |
-			(now.min<<5) |
-			(now.sec>>1);
+			((ttm->tm_year-80)<<25) |
+			((ttm->tm_mon+1)<<21) |
+			(ttm->tm_mday<<16) |
+			(ttm->tm_hour<<11) |
+			(ttm->tm_min<<5) |
+			(ttm->tm_sec>>1);
 	} else {
 		return ((DWORD)(FF_NORTC_YEAR - 1980) << 25 | (DWORD)FF_NORTC_MON << 21 | (DWORD)FF_NORTC_MDAY << 16);
 	}
 }
 
-void init_machikania_rtc(void){
-    datetime_t t = {
-            .year  = FF_NORTC_YEAR,
-            .month = FF_NORTC_MON,
-            .day   = FF_NORTC_MDAY,
-            .dotw  = 0, // Week setting will be ignored
-            .hour  = 0,
-            .min   = 0,
-            .sec   = 0
-    };
-	rtc_init();
-	rtc_set_datetime(&t);
-}
-
-struct tm* datetime2tm(datetime_t* dt){
-	static struct tm t;
-	t.tm_sec = dt->sec;
-	t.tm_min = dt->min;
-	t.tm_hour = dt->hour;
-	t.tm_mday = dt->day;
-	t.tm_mon = dt->month - 1; // 0-11
-	t.tm_year = dt->year - 1900; // year since 1900
-	t.tm_wday = dt->dotw;
-	t.tm_yday = 0; // not used
-	t.tm_isdst = -1; // not used
-	return &t;
-}
-
-datetime_t* tm2datetime(struct tm* t){
-	static datetime_t dt;
-	dt.sec = t->tm_sec;
-	dt.min = t->tm_min;
-	dt.hour = t->tm_hour;
-	dt.dotw = t->tm_wday;
-	dt.day = t->tm_mday;
-	dt.month = t->tm_mon + 1; // 0-11 to 1-12
-	dt.year = t->tm_year + 1900; // year-1900 to year
-	return &dt;
-}
-
 char* get_time_now(void){
 	static char str[]="YYYY-MM-DDThh:mm:ss";
-	datetime_t now;
-	rtc_get_datetime(&now);
-	strftime((char*)&str, sizeof str,"%Y-%m-%dT%H:%M:%S",datetime2tm(&now));
+	strftime((char*)&str, sizeof str,"%Y-%m-%dT%H:%M:%S",get_tm_now());
 	return str;
 }
 
@@ -131,25 +117,33 @@ struct tm* iso8601str2tm(char* iso8601){
 }
 
 void set_time_from_utc(time_t t){
+	struct timespec tts={
+		.tv_sec=0,
+		.tv_nsec=0
+	};
 	if (0<g_timezome) {
 		t+=(3600/4)*g_timezome;
 	} else if (g_timezome<0) {
 		t-=(3600/4)*(0-g_timezome);
 	}
-	struct tm* tm=localtime(&t);
-	rtc_set_datetime(tm2datetime(tm));
+	tts.tv_sec=t;
+	aon_timer_set_time(&tts);
 }
 
 int lib_rtc(int r0, int r1, int r2){
 	struct tm* tm;
 	time_t t;
-	datetime_t now;
 	char* str;
 	int i;
+	struct timespec tts={
+		.tv_sec=0,
+		.tv_nsec=0
+	};
 	switch(r2){
 		case LIB_RTC_GETTIME:
 			// r1 (1st argument): ISO-8601 string (optional)
 			// r0 (2nd argument): adjustment in seconds
+			if (!r1) return (int)get_time_now();
 			if (!r1) return (int)get_time_now();
 			t=mktime(iso8601str2tm((char*)r1))+r0;
 			garbage_collection((char*)r1);
@@ -161,7 +155,8 @@ int lib_rtc(int r0, int r1, int r2){
 			// r0 (1st argument): ISO-8601 string
 			tm=iso8601str2tm((char*)r0);
 			garbage_collection((char*)r0);
-			rtc_set_datetime(tm2datetime(tm));
+			tts.tv_sec=mktime(tm);
+			aon_timer_set_time(&tts);
 			break;
 		case LIB_RTC_STRFTIME:
 			// r1 (1st argument): format for strftime
@@ -171,13 +166,13 @@ int lib_rtc(int r0, int r1, int r2){
 				garbage_collection((char*)r0);
 				tm=localtime(&t);
 			} else {
-				rtc_get_datetime(&now);
-				tm=datetime2tm(&now);
+				tm=get_tm_now();
 			}
 			i=strlen((char*)r1)+1;
 			str=alloc_memory(i,-1); // Allocate (bytes of string+1)*4 bytes memory
 			strftime(str,i*4,(char*)r1,tm);
 			return (int)str;
+			return 0;
 		default:
 			stop_with_error(ERROR_UNKNOWN);
 	}

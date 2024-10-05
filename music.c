@@ -15,7 +15,7 @@
 
 /*
 	clkdiv=138.75, clock=125000000
-	440 Hz: 2048 (125000000/138.75/440 = 2047.50)
+	440 Hz: 2048 (125000000/138.75/440 = 2047.50) (138.72=125000000/901120)
 */
 
 /*
@@ -220,7 +220,7 @@ void stop_music(void){
 	// Allocate GPIO to the PWM
 	gpio_set_function(AUDIO_PORT, GPIO_FUNC_PWM);
 	// Set clock divier for fastest frequency
-	pwm_set_clkdiv(AUDIO_SLICE, 138.75);
+	pwm_set_clkdiv(AUDIO_SLICE, (float)(g_clock_hz/901120));
 	// 2048 cycles PWM (an example for 440 Hz)
 	pwm_set_wrap(AUDIO_SLICE, 2047);
 	// Set duty to 50%

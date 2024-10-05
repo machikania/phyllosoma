@@ -17,7 +17,7 @@ unsigned short* object;
 	KM-BASIC related global areas
 */
 
-unsigned short __attribute__((section(".kmbasicobject"))) kmbasic_object[512*KMBASIC_OBJECT_KBYTES]; // 192K or defined bytes RAM area
+unsigned short __attribute__((section(".kmbasicobject_section"))) kmbasic_object[512*KMBASIC_OBJECT_KBYTES]; // 192K or defined bytes RAM area
 int kmbasic_data[32];
 int kmbasic_variables[ALLOC_BLOCK_NUM];
 unsigned short kmbasic_var_size[ALLOC_BLOCK_NUM];
@@ -117,6 +117,9 @@ char g_interrupt_code=0;
 // How long time for waiting keyboard connection
 
 unsigned int g_wait_for_keyboard=2000;
+
+// Clock speed in hz
+unsigned int g_clock_hz;
 
 // Reserved words
 

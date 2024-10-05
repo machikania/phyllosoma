@@ -42,8 +42,24 @@ MachiKaniaシリーズを利用していることについてもWebサイトや
 　　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
 　　WiFi接続が可能
 
+[pico2_ili9488]ディレクトリ
+　Raspberry Pi Pico 2 と ILI9488 液晶の組み合わせのときに使うバイナリー
+　を格納
+　-phyllosoma.uf2
+　　MachiKania type P BASICシステム本体（PC connect機能対応版）
+　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　PC connect機能により、USBケーブルで接続したPCからBASICプログラムを転送可能
+　　WiFi接続が可能
+
+　-phyllosoma_kb.uf2
+　　MachiKania type P BASICシステム本体（USBキーボード接続対応版）
+　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
+　　WiFi接続が可能
+
 [pico_ili9488/embed]ディレクトリ
 [pico_w_ili9488/embed]ディレクトリ
+[pico2_ili9488/embed]ディレクトリ
 　組み込み用途などMMC/SDカードなしでもBASICプログラムを実行することが
 　できるようなツール類を格納
 
@@ -57,5 +73,18 @@ MachiKaniaシリーズを利用していることについてもWebサイトや
 　-phyllosoma_kb.uf2
 　　MachiKania type P BASICシステム本体（USBキーボード接続対応版）
 　　PCとSeeed XIAO RP2040をUSB接続し書き込む
+　　convert.phpにより、MACHIKAP.BASなどを埋め込む
+　　BASICプログラム中でUSBキーボードを使用可能
+
+[xiao_rp2350_embed]ディレクトリ
+　Seeed XIAO RP2350への組み込み用途で使うバイナリーを格納
+　-phyllosoma.uf2
+　　MachiKania type P BASICシステム本体（USBキーボード接続非対応版）
+　　PCとSeeed XIAO RP2350をUSB接続し書き込む
+　　convert.phpにより、MACHIKAP.BASなどを埋め込む
+
+　-phyllosoma_kb.uf2
+　　MachiKania type P BASICシステム本体（USBキーボード接続対応版）
+　　PCとSeeed XIAO RP2350をUSB接続し書き込む
 　　convert.phpにより、MACHIKAP.BASなどを埋め込む
 　　BASICプログラム中でUSBキーボードを使用可能
