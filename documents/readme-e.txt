@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2024.10.19
+　　　　　　　　　　　　　　　　　　　　　　　　　　2024.10.06
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type P
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -247,6 +247,6 @@ and TSC2046 (touch panel operation) to the class library.
 　The FRENAME and MKDIR instructions and the FRENAME() and MKDIR() functions have been added.
 　Auxiliary code (auxcode) can be added.
 
-Phyllosoma 1.41/KM-1506 (2024.10.19)
+Phyllosoma 1.41/KM-1506 (2024.10.06)
 　Support Raspberry Pi Pico 2.
 　Update WEATHER.BAS sample program.

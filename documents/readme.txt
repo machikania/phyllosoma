@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2024.10.19
+　　　　　　　　　　　　　　　　　　　　　　　　　　2024.10.06
 　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
 　　　　　　　　「MachiKania type P」
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -272,6 +272,6 @@ Phyllosoma 1.40/KM-1505 (2024.2.17)
 　・FRENAME, MKDIR命令及びFRENAME(), MKDIR()関数の追加。
 　・補助コード(auxcode)を追加できる機能を実装。
 
-Phyllosoma 1.41/KM-1506 (2024.10.19)
+Phyllosoma 1.41/KM-1506 (2024.10.06)
 　・Raspberry Pi Pico 2に対応。
 　・WEATHER.BASサンプルプログラムを更新
