@@ -1,5 +1,5 @@
 /*
-	Configuration file for Raspberry Pi Pico + ILI9488 LCD + MMC card
+	Configuration file for Raspberry Pi Pico + NTSC Video + MMC card
 
 	Peripheral assignment
 
@@ -13,12 +13,12 @@
 	GP7 I/O bit7 / I2C SCL
 	GP8 I/O bit8 / button1 (UP)
 	GP9 I/O bit9 / button2 (LEFT)
-	GP10 LCD-DC
-	GP11 LCD-RESET
-	GP12 LCD-MISO
-	GP13 LCD-CS
-	GP14 LCD-SCK
-	GP15 LCD-MOSI
+	GP10 
+	GP11 
+	GP12 
+	GP13 
+	GP14 
+	GP15 NTSC Video out
 	GP16 SD-DO(MISO) / SPI RX (pulled up by a 10k ohm resistor)
 	GP17 SD-CS
 	GP18 SD-SCLK / SCK
@@ -34,7 +34,7 @@
 
 //                     31     24      16       8       0
 //                      |      |       |       |       |
-#define GPIO_ALL_MASK 0b00011100011100000000001111111111
+#define GPIO_ALL_MASK 0b00111100011100000111111111111111
 
 // IO settings
 #define IO_SPI_CS 3
@@ -75,6 +75,20 @@
 #define IO_GPIO13 26
 #define IO_GPIO14 27
 #define IO_GPIO15 28
+#define IO_GPIO16 10
+#define IO_GPIO17 11
+#define IO_GPIO18 12
+#define IO_GPIO19 13
+#define IO_GPIO20 14
+#define IO_GPIO21 15
+#define IO_GPIO22 16
+#define IO_GPIO23 17
+#define IO_GPIO24 18
+#define IO_GPIO25 19
+#define IO_GPIO26 23
+#define IO_GPIO27 24
+#define IO_GPIO28 25
+#define IO_GPIO29 29
 
 // Buttons settings
 #define GPIO_KEYUP 8
@@ -89,18 +103,7 @@
 #define AUDIO_SLICE 6
 #define AUDIO_CHAN PWM_CHAN_A
 
-// LCD settings
-#define LCD_CS 13
-#define LCD_DC 10
-#define LCD_RESET 11
-#define LCD_SPI_TX 15
-#define LCD_SPI_RX 12
-#define LCD_SPI_SCK 14
-#define LCD_SPICH spi1
-#define LCD_COLUMN_RES 320
-#define LCD_ROW_RES 480
-#define LCD_SPI_BAUDRATE (32*1000*1000)
-#define LCD_SPI_BAUDRATE_R (15*1000*1000)
+#define NTSC_VIDEO_OUT 15
 
 // File system SPI settings
 #define SD_SPI_CS 17

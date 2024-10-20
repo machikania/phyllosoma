@@ -41,3 +41,16 @@ void LCD_Clear(unsigned short color);
 void LCD_continuous_output(unsigned short x,unsigned short y,unsigned short color,int n);
 void drawPixel(unsigned short x, unsigned short y, unsigned short color);
 unsigned short getColor(unsigned short x, unsigned short y);
+
+extern int WIDTH_X; // 横方向文字数
+extern int WIDTH_Y; // 縦方向文字数
+extern unsigned char *cursor; // カーソル位置
+extern unsigned char cursorcolor;
+extern unsigned int bgcolor; // バックグランドカラー
+#define ATTROFFSET (LCD_COLUMN_RES*LCD_ROW_RES/64) // VRAM上のカラーパレット格納位置
+extern int attroffset; // TVRAMのカラー情報エリア位置
+
+void lcd_display_init(void);
+#define display_init() lcd_display_init()
+
+#define set_videomode(a,b) (0)

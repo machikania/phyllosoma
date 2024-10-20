@@ -11,8 +11,17 @@
 
 // Environment non-specific settings follow
 
-#define PHYLLOSOMA
+#ifdef MACHIKANIA_PUERULUS
+#define PUERULUS   1
+#define PHYLLOSOMA 0
+#define SYSVER1 "Puerulus"
+#endif
+#ifdef MACHIKANIA_PHYLLOSOMA
+#define PUERULUS   0
+#define PHYLLOSOMA 1
 #define SYSVER1 "Phyllosoma"
+#endif
+
 #define SYSVER2 "1.4.1.0"
 #define BASVER "KM-1506"
 

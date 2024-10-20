@@ -120,6 +120,8 @@ void pre_run(void){
 	kmbasic_data[2]=(int)&kmbasic_var_size[0];
 	// Close all files
 	close_all_files();
+	// Init video
+	video_init();
 	// Init I/O
 	io_init();
 	// Init music
@@ -135,7 +137,11 @@ void pre_run(void){
 	pre_run_wifi();
 }
 
+void init_palette(void);
+
 void post_run(void){
+	// Reset video settings
+	video_init();
 	// Reset memory allocation
 	reset_memory();
 	// Close all files

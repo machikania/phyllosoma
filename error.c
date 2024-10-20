@@ -10,7 +10,7 @@
 static char* g_error_file;
 static int g_error_line;
 
-static const char* g_error_text[25]={
+static const char* g_error_text[26]={
 	"No error",
 	"Syntax error",                  // #define ERROR_SYNTAX _throw_error(-1)
 	"Unknown error",                 // #define ERROR_UNKNOWN _throw_error(-2)
@@ -36,6 +36,7 @@ static const char* g_error_text[25]={
 	"File path too long",            // #define ERROR_PATH_TOO_LONG _throw_error(-22)
 	"",                              // #define ERROR_OPTION_CLASSCODE (-23)
 	"Exception",                     // #define ERROR_EXCEPTION (-24)
+	"Function call error",           // #define ERROR_FUNCTION_CALL (-25)
 };
 
 int show_error(int e, int pos){

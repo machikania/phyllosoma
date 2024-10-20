@@ -3,12 +3,12 @@ cmake_minimum_required(VERSION 3.13)
 # Pull in SDK (must be before project)
 include(pico_sdk_import.cmake)
 
-project(lcd-lib C CXX ASM)
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_CXX_STANDARD 17)
-
 # include configure file for specifying target
 include(config.cmake)
+
+project(${MACHIKANIA_CODE_NAME} C CXX ASM)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 # Initialize the SDK
 pico_sdk_init()
@@ -59,15 +59,18 @@ if (TARGET tinyusb_device)
 		pico_aon_timer
 	)
 	
-	# Create graphic library
-	add_library(graphic_files
+	# Create video library
+	add_library(video_files
 		interface/${MACHIKANIA_GRAPH_LIB}.c
+		interface/${MACHIKANIA_MONITOR_LIB}.c
 		interface/fontdata.c
-		interface/graphlib.c	
 	)
-	target_link_libraries(graphic_files 
+	target_link_libraries(video_files 
 		pico_stdlib
+		hardware_pwm
 		hardware_spi
+		hardware_dma	
+		hardware_clocks
 	)
 	
 	# Create wifi library
@@ -112,49 +115,49 @@ if (TARGET tinyusb_device)
 		#	pico_stdlib
 		# )
 		
-	# phyllosoma_kb.uf2
-	add_executable(phyllosoma_kb
-		editor.c
+	# xxxxx_kb.uf2
+	add_executable(${MACHIKANIA_CODE_NAME}_kb
+		${MACHIKANIA_EDITOR}.c
 		interface/usbkeyboard.c
 		interface/hid_virtual_keytable.c
 		interface/keyinput.c
 		withkeyboard.c
 	)
-	target_link_libraries(phyllosoma_kb shared_files)
-	target_link_libraries(phyllosoma_kb graphic_files)
-	target_link_libraries(phyllosoma_kb wifi_files)
-	target_link_libraries(phyllosoma_kb aux_files)
-	target_link_libraries(phyllosoma_kb tinyusb_board)
-	target_link_libraries(phyllosoma_kb tinyusb_host)
-	target_include_directories(phyllosoma_kb PRIVATE ${CMAKE_CURRENT_LIST_DIR}/interface)
+	target_link_libraries(${MACHIKANIA_CODE_NAME}_kb shared_files)
+	target_link_libraries(${MACHIKANIA_CODE_NAME}_kb video_files)
+	target_link_libraries(${MACHIKANIA_CODE_NAME}_kb wifi_files)
+	target_link_libraries(${MACHIKANIA_CODE_NAME}_kb aux_files)
+	target_link_libraries(${MACHIKANIA_CODE_NAME}_kb tinyusb_board)
+	target_link_libraries(${MACHIKANIA_CODE_NAME}_kb tinyusb_host)
+	target_include_directories(${MACHIKANIA_CODE_NAME}_kb PRIVATE ${CMAKE_CURRENT_LIST_DIR}/interface)
 
-	# phyllosoma.uf2
-	add_executable(phyllosoma
+	# xxxxx.uf2
+	add_executable(${MACHIKANIA_CODE_NAME}
 		withoutkeyboard.c
 		pcconnect.c
 	)
-	target_link_libraries(phyllosoma shared_files)
-	target_link_libraries(phyllosoma graphic_files)
-	target_link_libraries(phyllosoma wifi_files)
-	target_link_libraries(phyllosoma aux_files)
+	target_link_libraries(${MACHIKANIA_CODE_NAME} shared_files)
+	target_link_libraries(${MACHIKANIA_CODE_NAME} video_files)
+	target_link_libraries(${MACHIKANIA_CODE_NAME} wifi_files)
+	target_link_libraries(${MACHIKANIA_CODE_NAME} aux_files)
 
 	# enable usb output, disable uart output
-	pico_enable_stdio_usb(phyllosoma_kb 0)
-	pico_enable_stdio_usb(phyllosoma 1)
-	pico_enable_stdio_uart(phyllosoma_kb 0)
-	pico_enable_stdio_uart(phyllosoma 0)
+	pico_enable_stdio_usb(${MACHIKANIA_CODE_NAME}_kb 0)
+	pico_enable_stdio_usb(${MACHIKANIA_CODE_NAME} 1)
+	pico_enable_stdio_uart(${MACHIKANIA_CODE_NAME}_kb 0)
+	pico_enable_stdio_uart(${MACHIKANIA_CODE_NAME} 0)
 
 	# create map/bin/hex/uf2 file etc.
-	pico_add_extra_outputs(phyllosoma_kb)
-	pico_add_extra_outputs(phyllosoma)
+	pico_add_extra_outputs(${MACHIKANIA_CODE_NAME}_kb)
+	pico_add_extra_outputs(${MACHIKANIA_CODE_NAME})
 
 	# use custom linker script
 	if(PICO_PLATFORM STREQUAL "rp2350-arm-s")
-		pico_set_linker_script(phyllosoma_kb ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania_pico2.ld)
-		pico_set_linker_script(phyllosoma ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania_pico2.ld)
+		pico_set_linker_script(${MACHIKANIA_CODE_NAME}_kb ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania_pico2.ld)
+		pico_set_linker_script(${MACHIKANIA_CODE_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania_pico2.ld)
 	else()
-		pico_set_linker_script(phyllosoma_kb ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania.ld)
-		pico_set_linker_script(phyllosoma ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania.ld)
+		pico_set_linker_script(${MACHIKANIA_CODE_NAME}_kb ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania.ld)
+		pico_set_linker_script(${MACHIKANIA_CODE_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/memmap_machikania.ld)
 	endif()
 	
 	# set compile definitions
@@ -165,10 +168,15 @@ if (TARGET tinyusb_device)
 	if (MACHIKANIA_WIFI STREQUAL "withwifi")
 		add_compile_definitions(PICO_STACK_SIZE=4096)
 		add_compile_definitions(PICO_HEAP_SIZE=4096)
-		#target_compile_definitions(wifi_files PRIVATE machikania_dummy=6)
+		#add_compile_definitions(machikania_dummy=6)
 	endif()
-	if(PICO_PLATFORM STREQUAL "rp2350-arm-s")
+	if (PICO_PLATFORM STREQUAL "rp2350-arm-s")
 		add_compile_definitions(PICO_PLATFORM_RP2350)
+	endif()
+	if (MACHIKANIA_CODE_NAME STREQUAL "phyllosoma")
+		add_compile_definitions(MACHIKANIA_PHYLLOSOMA)
+	elseif (MACHIKANIA_CODE_NAME STREQUAL "puerulus")
+		add_compile_definitions(MACHIKANIA_PUERULUS)
 	endif()
 	
 elseif(PICO_ON_DEVICE)

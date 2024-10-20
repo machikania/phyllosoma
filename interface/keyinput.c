@@ -20,7 +20,7 @@ caused by using this program.
 
 #include "pico/stdlib.h"
 #include "bsp/board.h"
-#include "LCDdriver.h"
+#include "videodriver.h"
 #include "graphlib.h"
 #include "usbkeyboard.h"
 #include "keyinput.h"
@@ -39,13 +39,13 @@ void wait60thsec(unsigned short n){
 // カーソル点滅用に元の文字コードを退避
 void getcursorchar(){
 	blinkchar=*cursor;
-	blinkcolor=*(cursor+ATTROFFSET);
+	blinkcolor=*(cursor+attroffset);
 }
 
 // カーソルを元の文字に戻す
 void resetcursorchar(){
 	*cursor=blinkchar;
-	*(cursor+ATTROFFSET)=blinkcolor;
+	*(cursor+attroffset)=blinkcolor;
 	putcursorchar();
 }
 
@@ -64,12 +64,12 @@ void blinkcursorchar(){
 	if(blinktimer<BLINKTIME){
 		if(insertmode) *cursor=CURSORCHAR;
 		else *cursor=CURSORCHAR2;
-		*(cursor+ATTROFFSET)=CURSORCOLOR;
+		*(cursor+attroffset)=CURSORCOLOR;
 		putcursorchar();
 	}
 	else{
 		*cursor=blinkchar;
-		*(cursor+ATTROFFSET)=blinkcolor;
+		*(cursor+attroffset)=blinkcolor;
 		putcursorchar();
 	}
 }

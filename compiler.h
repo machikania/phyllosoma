@@ -54,6 +54,7 @@
 #define ERROR_PATH_TOO_LONG _throw_error(-22)
 #define ERROR_OPTION_CLASSCODE (-23)
 #define ERROR_EXCEPTION (-24)
+#define ERROR_FUNCTION_CALL (-25)
 
 /*
 	Libraries

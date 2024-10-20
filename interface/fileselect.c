@@ -19,7 +19,7 @@ caused by using this program.
 #include <string.h>
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
-#include "LCDdriver.h"
+#include "videodriver.h"
 #include "graphlib.h"
 #include "ff.h"
 #include "../config.h"

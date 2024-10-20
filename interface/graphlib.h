@@ -111,9 +111,5 @@ extern const unsigned char FontData[];
 extern unsigned char TVRAM[];
 //テキストVRAM
 
-extern int WIDTH_X; // 横方向文字数
-extern int WIDTH_Y; // 縦方向文字数
-extern unsigned char *cursor; // カーソル位置
-extern unsigned char cursorcolor;
-extern unsigned int bgcolor; // バックグランドカラー
-#define ATTROFFSET (LCD_COLUMN_RES*LCD_ROW_RES/64) // VRAM上のカラーパレット格納位置
+void video_init(void);
+// Initialize video for running BASIC code

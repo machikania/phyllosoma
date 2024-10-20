@@ -19,6 +19,7 @@ caused by using this program.
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
 #include "LCDdriver.h"
+#include "graphlib.h"
 #include "../config.h"
 
 int LCD_ALIGNMENT; // VERTICAL, HORIZONTAL, VERTICAL&LCD180TURN, or HORIZONTAL&LCD180TURN
@@ -361,4 +362,29 @@ unsigned short getColor(unsigned short x, unsigned short y)
 	LCD_SetCursor(x,y);
 	LCD_Read(0x2e, (unsigned char *)&d, 3);
 	return ((d&0xf8)<<8)|((d&0xfc00)>>5)|((d&0xf80000)>>19); //RGB565 format
+}
+
+int attroffset; // TVRAMのカラー情報エリア位置
+
+void lcd_display_init(void){
+	// Enable SPI and connect to GPIOs
+	spi_init(LCD_SPICH, LCD_SPI_BAUDRATE);
+	gpio_set_function(LCD_SPI_RX, GPIO_FUNC_SPI);
+	gpio_set_function(LCD_SPI_TX, GPIO_FUNC_SPI);
+	gpio_set_function(LCD_SPI_SCK, GPIO_FUNC_SPI);
+	
+	gpio_init(LCD_CS);
+	gpio_put(LCD_CS, 1);
+	gpio_set_dir(LCD_CS, GPIO_OUT);
+	gpio_init(LCD_DC);
+	gpio_put(LCD_DC, 1);
+	gpio_set_dir(LCD_DC, GPIO_OUT);
+	gpio_init(LCD_RESET);
+	gpio_put(LCD_RESET, 1);
+	gpio_set_dir(LCD_RESET, GPIO_OUT);
+	
+	init_textgraph(HORIZONTAL);
+
+	// attroffset is always equal to ATTROFFSET
+	attroffset=ATTROFFSET;
 }

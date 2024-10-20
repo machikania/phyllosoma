@@ -112,7 +112,8 @@ int lib_print_main(int r0, int r1, int r2){
 	}
 	if (0x20==(r1&0xf0)) {
 		// ","
-		printstr(&("          "[i%10]));
+		if (42==WIDTH_X) printstr(&("       "[i%7]));
+		else printstr(&("          "[i%10]));
 	}
 	return r0;
 }
@@ -603,7 +604,7 @@ int lib_debug(int r0, int r1, int r2){
 	//lib_wait(60,0,0);
 	return r0;
 #else
-	return r0;
+	return r0+1;
 #endif
 }
 

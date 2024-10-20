@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------
 
-Copyright (C) 2023, KenKen, all right reserved.
+Copyright (C) 2024, KenKen, all right reserved.
 
 This program supplied herewith by KenKen is free software; you can
 redistribute it and/or modify it under the terms of the same license written
@@ -23,8 +23,8 @@ caused by using this program.
 #include "./compiler.h"
 #include "./config.h"
 #include "./interface/usbkeyboard.h"
-#include "./interface/graphlib.h"
 #include "./interface/videodriver.h"
+#include "./interface/graphlib.h"
 #include "./interface/ff.h"
 
 //リンク付きのテキストバッファ
@@ -553,7 +553,12 @@ void redraw(){
 			//文字がある位置までサーチ
 			while(ix>=bp->n){
 				if(bp==bp1 && ix==ix1){
-					cl=COLOR_AREASELECTTEXT;
+					if(textmode!=TMODE_MONOTEXT){
+						cl=COLOR_AREASELECTTEXT;
+					}
+					else{
+						cl=COLOR_INV;
+					}
 				}
 				if(bp==bp2 && ix==ix2) cl=COLOR_NORMALTEXT;
 				bp=bp->next;
@@ -562,7 +567,12 @@ void redraw(){
 			}
 			if(bp==NULL) break; //バッファ最終
 			if(bp==bp1 && ix==ix1){
-				cl=COLOR_AREASELECTTEXT;
+				if(textmode!=TMODE_MONOTEXT){
+					cl=COLOR_AREASELECTTEXT;
+				}
+				else{
+					cl=COLOR_INV;
+				}
 			}
 			if(bp==bp2 && ix==ix2) cl=COLOR_NORMALTEXT;
 			ch=bp->Buf[ix++];
@@ -1586,9 +1596,11 @@ void disp_dir_file_list(int filenum,int top,int num_dir, unsigned char* msg){
 int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 	int top,f,f2;
 	int x,y;
-	unsigned char vk,sh;
+	unsigned char vk,sh,vm;
 	int mx,my;
 
+	vm=videomode;
+	set_videomode(VMODE_WIDETEXT,0);
 	if(show_timestamp) mx=1; else mx=WIDTH_X/13;
 	my=WIDTH_Y-1;
 	top=-2;//画面一番先頭のファイル番号
@@ -1749,9 +1761,11 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 					//ファイル名またはディレクトリ名をtempfileにコピー
 					strcpy(tempfile,files[f].fname);
 				}
+				set_videomode(vm,0);
 				return f;
 			case VK_ESCAPE:
 				//ESCキー
+				set_videomode(vm,0);
 				return -3;
 		}
 	}
@@ -2073,13 +2087,13 @@ int fileload(void){
 		}
 	}
 }
-// 画面縦横の切り替え
+// 画面幅の切り替え
 void changewidth(void){
 	set_lcdalign(LCD_ALIGNMENT^HORIZONTAL); //縦横切り替え
-	EDITWIDTHY=WIDTH_Y-1; //エディタ画面行数設定
+	if(videomode==VMODE_WIDETEXT) set_videomode(VMODE_MONOTEXT,0);
+	else set_videomode(VMODE_WIDETEXT,0);
 	cursor_top(); //カーソルをテキストバッファの先頭に設定
 	redraw(); //再描画
-	textredraw(); //液晶に強制出力
 }
 
 //KM-BASICコンパイル＆実行
@@ -2089,7 +2103,7 @@ void run(int test){
 	FRESULT fr;
 	FIL Fil;
 	unsigned int disptoppos,cursorpos;
-	int alignment;
+	unsigned char widthmode;
 	int i,edited1;
 	_tbuf *bp;
 	unsigned short ix;
@@ -2153,9 +2167,9 @@ void run(int test){
 	//カーソル位置、画面表示位置、画面モードの保存
 	disptoppos=bpixtopos(disptopbp,disptopix);
 	cursorpos=bpixtopos(cursorbp,cursorix);
-	alignment=LCD_ALIGNMENT;
+	widthmode=videomode;
 	edited1=edited; //編集済みフラグの一時退避
-//	set_lcdalign(HORIZONTAL | (LCD_ALIGNMENT&LCD180TURN)); //デフォルトは横方向で実行
+	set_videomode(VMODE_WIDETEXT,0);
 
 	//KM-BASIC実行
 	printstr(INTRODUCE_MACHIKANIA);
@@ -2174,15 +2188,16 @@ void run(int test){
 	}
 
 	setcursorcolor(COLOR_NORMALTEXT);
-	bgcolor=0; //バックグランドカラーは黒
+//	bgcolor=0; //バックグランドカラーは黒
 	printchar('\n');
 	printstr((unsigned char *)Message1);// Hit Any Key
 	do usbkb_readkey(); //キーバッファが空になるまで読み出し
 	while(vkey!=0);
 	inputchar(); //1文字入力待ち
 	init_palette();	//カラーパレット初期化
-	set_lcdalign(alignment);
-
+	//画面モードを戻す
+	set_videomode(widthmode,0);
+	
 	while(1){
 		//カレントディレクトリをルートに変更
 		if(f_chdir((char *)ROOTDIR)){
@@ -2264,8 +2279,14 @@ void displaybottomline(void){
 	p=cursor; //カーソル位置の退避
 	c=cursorcolor;
 	if(shiftkeys() & CHK_SHIFT){
-		setcursor(0,WIDTH_Y-1,COLOR_BOTTOMLINE);
-		printstr("NEW |    |H/V |TEST|");
+		if(videomode!=VMODE_MONOTEXT){
+			setcursor(0,WIDTH_Y-1,COLOR_BOTTOMLINE);
+			printstr("NEW |    |WIDTH|TEST|");
+		}
+		else{
+			setcursor(0,WIDTH_Y-1,COLOR_INV);
+			printstr(" NEW  \x87      \x87 WIDTH\x87 TEST \x87\x87");
+		}
 		setcursorcolor(COLOR_ERRORTEXT);
 		t=TBUFMAXSIZE-num;
 		if(t==0) t=1;
@@ -2277,8 +2298,14 @@ void displaybottomline(void){
 		printnum(TBUFMAXSIZE-num);
 	}
 	else{
-		setcursor(0,WIDTH_Y-1,COLOR_BOTTOMLINE);
-		printstr("LOAD|SAVE|    |RUN |");
+		if(videomode!=VMODE_MONOTEXT){
+			setcursor(0,WIDTH_Y-1,COLOR_BOTTOMLINE);
+			printstr("LOAD|SAVE|    |RUN |");
+		}
+		else{
+			setcursor(0,WIDTH_Y-1,COLOR_INV);
+			printstr(" LOAD \x87 SAVE \x87      \x87 RUN  \x87\x87");
+		}
 		setcursorcolor(COLOR_ERRORTEXT);
 		t=line_no;
 		if(t==0) t=1;
@@ -2516,7 +2543,7 @@ void texteditor(void){
 
 	editormallocp=EDITORRAM;
 	TextBuffer=(_tbuf *)editormalloc(sizeof(_tbuf)*TBUFMAXLINE);
-	clipboard=editormalloc(attroffset);
+	clipboard=editormalloc(ATTROFFSETBW);
 	filebuf=editormalloc(FILEBUFSIZE);
 	cwdpath=editormalloc(PATHNAMEMAX);
 	temppath=editormalloc(PATHNAMEMAX);
