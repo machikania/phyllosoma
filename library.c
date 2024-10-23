@@ -634,6 +634,9 @@ int lib_system(int r0, int r1, int r2){
 		case 5:
 		//	コンパイル時のコンフィグ設定、"pico_ili9341.h" "pico_ili9341.h (embed)"などを返す。
 			return 9+(int)MACHIKANIA_CONFIG MACHIKANIA_DEBOG_MODE_STR;
+		case 6:
+		//	KM-BASICの実行用に割り当てられたRAM領域のキロバイト数、176, 192, 448などを返す。
+			return KMBASIC_OBJECT_KBYTES;
 		case 20:
 		//	キャラクターディスプレイ横幅を返す。
 			return WIDTH_X;
