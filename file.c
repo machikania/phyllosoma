@@ -43,6 +43,21 @@ int mmc_file_exists(unsigned char* fname){
 	return fileinfo.fsize+1;
 }
 
+FRESULT chdir_sub_directory(char* fname,const char* subdir){
+	// Usage:
+	//   chdir_sub_directory(fname,"/TYPEPU/PICO2");
+	//   chdir_sub_directory(fname,"/PICO2");
+	//   chdir_sub_directory(fname,"/TYPEPU");
+	//   chdir_sub_directory(fname,"");
+	int i,j;
+	for(i=0;i<5;i++) g_file_buffer[i]="/lib/"[i];
+	for(j=0;g_file_buffer[i]=fname[j];i++){
+		if ('.'==fname[j++]) break;
+	}
+	for(j=0;g_file_buffer[i++]=subdir[j];j++);
+	return f_chdir(g_file_buffer);
+}
+
 int compile_file(unsigned char* fname, char isclass){
 	int e,i,num,class_id;
 	FIL fpo;
@@ -75,16 +90,30 @@ int compile_file(unsigned char* fname, char isclass){
 				// Class file not found in the current directory
 				// The class file may be found as "/lib/classname/classname.bas"
 				// Change current directory to "/lib/classname"
-				for(num=0;fname[num]!='.';num++);
-				for(i=0;i<5;i++) g_file_buffer[i]="/lib/"[i];
-				for(i=0;i<num;i++) g_file_buffer[i+5]=fname[i];
-				g_file_buffer[i+5]=0x00;
-				f_chdir(g_file_buffer);
-				// Open the class file again
-				if (f_open(fp,fname,FA_READ)) {
-					// Error
-					f_chdir(curdir);
-					return show_error(ERROR_NO_CLASS_FILE,0);
+				// "/lib/classname/typepu/pico2/classname.bas" etc are also checked under the conditions specified (Type PU, and/or Pico2)
+				for(i=0;i<5;i++){
+					switch(i){ // Seek sub directory in following sequence
+						case 0:
+							if (!(PUERULUS && KMBASIC_RP2350)) continue;
+							if (FR_OK!=chdir_sub_directory(fname,"/TYPEPU/PICO2")) continue;
+							break;
+						case 1:
+							if (!KMBASIC_RP2350) continue;
+							if (FR_OK!=chdir_sub_directory(fname,"/PICO2")) continue;
+							break;
+						case 2:
+							if (!PUERULUS) continue;
+							if (FR_OK!=chdir_sub_directory(fname,"/TYPEPU")) continue;
+							break;
+						case 3:
+							if (FR_OK!=chdir_sub_directory(fname,"")) continue;
+							break;
+						default:
+							f_chdir(curdir);
+							return show_error(ERROR_NO_CLASS_FILE,0);
+					}
+					if (FR_OK!=f_open(fp,fname,FA_READ)) continue;
+					break;
 				}
 				// Succesfully opened the file. Change the current dirctory
 				for(i=0;curdir[i]=g_file_buffer[i];i++) {

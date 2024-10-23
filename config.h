@@ -40,6 +40,14 @@
 #endif
 #endif
 
+#ifdef PICO_PLATFORM_RP2350
+#define KMBASIC_RP2350 1
+#define KMBASIC_RP2040 0
+#else
+#define KMBASIC_RP2350 0
+#define KMBASIC_RP2040 1
+#endif
+
 #define IO_SPI_TX SD_SPI_TX
 #define IO_SPI_RX SD_SPI_RX
 #define IO_SPI_SCK SD_SPI_SCK
