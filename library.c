@@ -630,7 +630,7 @@ int lib_system(int r0, int r1, int r2){
 			return (int)"";
 		case 4:
 		//	現在実行中のCPUのクロック周波数を返す。
-			return 125000000;
+			return g_clock_hz;
 		case 5:
 		//	コンパイル時のコンフィグ設定、"pico_ili9341.h" "pico_ili9341.h (embed)"などを返す。
 			return 9+(int)MACHIKANIA_CONFIG MACHIKANIA_DEBOG_MODE_STR;
