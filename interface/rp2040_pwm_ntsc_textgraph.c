@@ -141,13 +141,13 @@ static void makeDmaBuffer(uint16_t* buf, size_t line_num)
 			{
 				drawing = -1;
 			}
-			tvp = TVRAM+((line_num-(V_SYNC + V_PREEQ))>>3)*WIDTH_X;
+			tvp = TVRAM+((line_num-(V_SYNC + V_PREEQ))>>3)*WIDTH_XCL;
 			tline = (line_num-(V_SYNC + V_PREEQ)) & 7;
 			if(videomode==VMODE_WIDETEXT){
 				//テキストモード
 				uint32_t bc1=*((uint32_t*)(color_tbl+256*4));
 				uint32_t bc2=*((uint32_t*)(color_tbl+256*4+2));
-				for(int i=0;i<WIDTH_X;i++)
+				for(int i=0;i<WIDTH_XCL;i++)
 				{
 					uint8_t d=fontp[*tvp *8 +tline];
 					uint16_t* clp=color_tbl+(*(tvp+ATTROFFSET))*4;
@@ -177,7 +177,7 @@ static void makeDmaBuffer(uint16_t* buf, size_t line_num)
 			else if(videomode==VMODE_WIDEGRPH){
 				fbp = GVRAM+(line_num-(V_SYNC + V_PREEQ))*X_RES;
 				//グラフィック＋テキストモード
-				for(int i=0;i<WIDTH_X;i++)
+				for(int i=0;i<WIDTH_XCL;i++)
 				{
 					uint8_t d=fontp[*tvp *8 +tline];
 					uint16_t* clp=color_tbl+(*(tvp+ATTROFFSET))*4;
@@ -457,7 +457,7 @@ void set_videomode(unsigned char m, unsigned char *gvram){
 			if(textmode!=TMODE_WIDETEXT){
 				textmode=TMODE_WIDETEXT;
 				graphmode=0;
-				WIDTH_X=X_RES/8;
+				WIDTH_X=WIDTH_XCL;
 				attroffset=ATTROFFSET;
 				clearscreen();
 			}
@@ -470,13 +470,13 @@ void set_videomode(unsigned char m, unsigned char *gvram){
 				clearscreen();
 			}
 			break;
-		case VMODE_WIDEGRPH: // ワイドグラフィック＋テキスト48文字モード
+		case VMODE_WIDEGRPH: // ワイドグラフィック＋テキスト42文字モード
 			GVRAM=gvram;
 			g_clearscreen();
 			graphmode=GMODE_WIDEGRPH;
 			if(textmode!=TMODE_WIDETEXT){
 				textmode=TMODE_WIDETEXT;
-				WIDTH_X=X_RES/8;
+				WIDTH_X=WIDTH_XCL;
 				attroffset=ATTROFFSET;
 				clearscreen();
 			}

@@ -2,12 +2,13 @@
 
 #define X_RES	336 // Graphic横方向解像度
 #define Y_RES	216 // Graphic縦方向解像度
-extern int WIDTH_X; // 横方向文字数
+#define WIDTH_XCL 42 // 横方向文字数（カラー時）
 #define WIDTH_Y 27 // 縦方向文字数
-#define ATTROFFSET (WIDTH_X*WIDTH_Y) // TVRAM上のカラーパレット格納位置
+#define ATTROFFSET (WIDTH_XCL*WIDTH_Y) // TVRAM上のカラーパレット格納位置
 #define WIDTH_XBW	80 // 横方向文字数（モノクロ時）
 #define ATTROFFSETBW	(WIDTH_XBW*WIDTH_Y) // TVRAM上のカラーパレット格納位置（モノクロ時）
 #define WIDTH_XMAX WIDTH_XBW // 横方向最大文字数
+extern int WIDTH_X; // 横方向文字数
 
 // videomode値
 //#define VMODE_T30 0 // 標準テキスト30文字互換モード
