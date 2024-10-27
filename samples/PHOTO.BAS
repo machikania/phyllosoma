@@ -1,6 +1,7 @@
 REM Display photo in SD card
 REM BMP format(320x240/8bit-color)
 WIDTH 40,2
+USEGRAPHIC
 GCLS
 FOPEN "COSMOS.BMP","r"
 FSEEK 54
