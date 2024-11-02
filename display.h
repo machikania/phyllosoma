@@ -43,6 +43,7 @@
 	(1<<DISPLAY_PUTBMP2) |\
 	(1<<DISPLAY_PSET) )
 #define DISPLAY_USE_GRAPHIC (\
+	(1<<DISPLAY_BOXFILL) |\
 	(1<<DISPLAY_CIRCLE) |\
 	(1<<DISPLAY_CIRCLEFILL) |\
 	(1<<DISPLAY_GCLS) |\
@@ -53,9 +54,8 @@
 	(1<<DISPLAY_POINT) |\
 	(1<<DISPLAY_PSET) |\
 	(1<<DISPLAY_PUTBMP) |\
-	(1<<DISPLAY_PUTBMP2) )
-
-
+	(1<<DISPLAY_PUTBMP2) |\
+	(1<<DISPLAY_GCOLOR_FUNC) )
 
 int display_statements(void);
 int display_functions(void);
