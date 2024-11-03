@@ -13,6 +13,17 @@
 #include "./config.h"
 
 /*
+	Default LCD definitions
+*/
+
+#ifndef LCD_COLUMN_RES
+#define LCD_COLUMN_RES 240
+#endif
+#ifndef LCD_ROW_RES
+#define LCD_ROW_RES 320
+#endif
+
+/*
 	Local prototypings
 */
 int lib_cread(int r0, int r1, int r2);
@@ -196,7 +207,7 @@ int lib_display(int r0, int r1, int r2){
 					break;
 			}
 			// Width setting
-			if (0<r1 & r1<=(LCD_ALIGNMENT&HORIZONTAL ? 40:30) && PHYLLOSOMA) {
+			if (0<r1 & r1<=(LCD_ALIGNMENT&HORIZONTAL ? (LCD_ROW_RES/8):(LCD_COLUMN_RES/8)) && PHYLLOSOMA) {
 				WIDTH_X=r1;
 				cls();
 			}
