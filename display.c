@@ -329,6 +329,7 @@ int lib_display(int r0, int r1, int r2){
 						// Allocate memory for graphic VRAM and start graphic mode
 						if (!pgvram) pgvram=calloc_memory(X_RES*Y_RES/4,permanent_block_number);
 						set_videomode(VMODE_WIDEGRPH,pgvram);
+						cls();
 						g_clearscreen();
 						break;
 					}

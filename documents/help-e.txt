@@ -128,7 +128,7 @@ WHILE x|x#
 WEND
 	If x or x# is non-zero, the statements from WHILE to WEND are executed repeatedly.
 WIDTH x[,y].
-	Specifies the width of the character display in characters. x can be 30, 36, 40, 48, or 80; for Type P, the range is 1-40. If y=1, the display is vertical; if y=2, the display is horizontal (Type P only).
+	Specifies the width of the character display in characters. x can be 30, 36, 40, 48, or 80; for Type P, the range is 1-40 (1-60 when using ILI9488 LCD). If y=1, the display is vertical; if y=2, the display is horizontal (Type P only).
 
 <Integer type function>
 Hereinafter, x, y, z refer to integer values, x#, y#, z# refer to real values, and x$, y$, z$ refer to strings. [ ] indicates that the function is optional.
@@ -412,6 +412,8 @@ For Type Z
 	Use or deactivate the graphic display. x=0 deactivates it, x=1 uses it, x=2 clears the screen and palette for use, and x=3 reserves the graphic area but leaves the display as a character display. If x is omitted, the value is the same as x=1.
 In the case of Type P
 	This instruction clears the screen. Both graphics and characters are always available. However, if x=2, the palette is also initialized.
+For Type PU
+	Use or disuse the graphic display. x=0 to disuse, x=1 to use, x=2 to clear the screen and palette, x=3 to reserve the graphic area but leave the display as a character display.
 
 GCOLOR(x,y)
 	Returns the palette number of the palette currently being displayed at graphic coordinates (x,y).

@@ -141,7 +141,7 @@ void init_palette(void);
 
 void post_run(void){
 	// Reset video settings
-	video_init();
+	//video_init();
 	// Reset memory allocation
 	reset_memory();
 	// Close all files
