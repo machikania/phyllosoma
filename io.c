@@ -48,7 +48,7 @@ int ini_file_io(char* line){
 	return 1;
 }
 
-static unsigned char gpio_table[16]={
+static unsigned char gpio_table[]={
 	IO_GPIO0,
 	IO_GPIO1,
 	IO_GPIO2,
@@ -65,6 +65,23 @@ static unsigned char gpio_table[16]={
 	IO_GPIO13,
 	IO_GPIO14,
 	IO_GPIO15
+#ifdef IO_GPIO16
+	,
+	IO_GPIO16,
+	IO_GPIO17,
+	IO_GPIO18,
+	IO_GPIO19,
+	IO_GPIO20,
+	IO_GPIO21,
+	IO_GPIO22,
+	IO_GPIO23,
+	IO_GPIO24,
+	IO_GPIO25,
+	IO_GPIO26,
+	IO_GPIO27,
+	IO_GPIO28,
+	IO_GPIO29	
+#endif
 };
 
 // UART data
@@ -829,7 +846,7 @@ int lib_gpio(int r0, int r1, int r2){
 	int i;
 	switch(r2){
 		case LIB_GPIO_IN:
-			if (r0<0 || 15<r0) return -1;
+			if (r0<0 || (sizeof gpio_table)<=r0) return -1;
 			i=gpio_table[r0];
 			gpio_init(i);
 			gpio_set_dir(i,GPIO_IN);
@@ -854,7 +871,7 @@ int lib_gpio(int r0, int r1, int r2){
 			r0=gpio_get_all() & IO_GPIO_16_MASK;
 			return io_gpio_in16_conversion(r0);
 		case LIB_GPIO_OUT:
-			if (r1<0 || 15<r1) return r0;
+			if (r1<0 || (sizeof gpio_table)<=r1) return r0;
 			i=gpio_table[r1];
 			gpio_init(i);
 			gpio_set_dir(i, GPIO_OUT);
