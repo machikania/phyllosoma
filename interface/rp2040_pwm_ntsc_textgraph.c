@@ -56,7 +56,7 @@ uint16_t color_tbl[4*257] __attribute__ ((aligned (4)));
 
 static uint pwm_dma_chan0,pwm_dma_chan1;
 
-static void makeDmaBuffer(uint16_t* buf, size_t line_num)
+static void __not_in_flash_func() makeDmaBuffer(uint16_t* buf, size_t line_num)
 {
 	uint8_t* fbp;
 	uint8_t* tvp;

@@ -365,7 +365,11 @@ bool usbkb_init(void){
 	for(int i=0;i<256;i++) usbkb_keystatus[i]=0; //全キー離した状態
 	lockkeychanged=false;
 	sem_init(&keycodebuf_sem, 1, 1); //キーコードバッファ用セマフォ初期化
-	return tusb_init(); //TinyUSB初期化処理
+	tuh_init(BOARD_TUH_RHPORT);
+	if (board_init_after_tusb) {
+		board_init_after_tusb();
+	}
+	return true;
 }
 
 // USBインターフェイス監視とキーボードの処理実施
