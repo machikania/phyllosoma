@@ -72,7 +72,7 @@ Alternatevely, as before, the phyllosoma.uf2 firmware supports the USB serial co
 # puerulus
 MachiKania type PU (aka MachiKania Puerulus)
 ## MachiKania Puerulus
-MachiKania Puerulus is a BASIC compiler for ARMv6-M, especially for Raspberry Pi Pico, Pico W, XIAO RP2040, Tiny 2040 and RP2040-Zero.  
+MachiKania Puerulus is a BASIC compiler for ARMv6-M, especially for Raspberry Pi Pico, Pico W, XIAO RP2040, Tiny 2040 and RP2040-Zero. MachiKania Puerulus has a video output instead of an LCD.  
 
 ## how to compile for Raspberry Pi Pico or XIAO RP2040
 cmake and make. The pico-sdk (ver 2.0.0 is confirmed for building) with all submodules (execute "Submodule Update" for git clone) is required. In config.cmake, select configuration option to build by enabling "set()" command. Currently, there are following options:  
@@ -93,7 +93,7 @@ Copy "puerulus.uf2" to the RPI-RP2 drive of Raspberry Pi Pico or Pico W. Immedia
 Most of codes (written in C) are provided with LGPL 2.1 license, but some codes are provided with the other licenses. See the comment of each file.
 
 ## Connection
-### Case 1. MachiKania type P + Video adapter - LCD
+### Case 1. MachiKania type P with Video adapter instead of an LCD
 Connect a Raspberry Pi Pico to a TV (NTSC Video) and an MultiMediaCard (SPI connection) as follows.
 ![schematic.png](documents/shematic_ntsc.png)  
 Note that USB keyboard is connected to micro-USB B port of Raspberry Pi Pico (or Pico W) board when required.
@@ -133,36 +133,36 @@ Connect XIAO RP2040 or Tiny2040 or RP2040-Zero to a TV (NTSC Video) and an Multi
 
 ![schematic_xiao.png](documents/schematic_xiao.png)  
 ```console
-	GP0 UART TX / PWM1
-	GP1 button5 (START) / PWM2
+	GP0 I/O bit0 / UART TX / PWM1
+	GP1 I/O bit1 / button5 (START) / UART RX / PWM2
 	GP2 SD-SCLK / SCK
 	GP3 SD-DI(MOSI) / SPI TX
 	GP4 SD-DO(MISO) / SPI RX (pulled up by a 10k ohm resistor)
-	GP5 button6 (FIRE)
+	GP5 I/O bit5 / button6 (FIRE)
 	GP6 SD-CS
 	GP7 NTSC Video out
-	GP8 PWM3
-	GP9
-	GP10
-	GP11
-	GP12 button1 (UP)
-	GP13 button2 (LEFT)
-	GP14 button3 (RIGHT)
-	GP15 button4 (DOWN)
-	GP16
-	GP17
-	GP18
-	GP19
-	GP20
-	GP21
-	GP22
-	GP23
-	GP24
-	GP25
-	GP26 ADC0 / I2C SDA
-	GP27 ADC1 / I2C SCL
-	GP28 SOUND OUT / ADC2
-	GP29 ADC3 / SPI CS (default)
+	GP8 I/O bit8 / PWM3
+	GP9 I/O bit9
+	GP10 I/O bit10
+	GP11 I/O bit11
+	GP12 I/O bit12 / button1 (UP)
+	GP13 I/O bit13 / button2 (LEFT)
+	GP14 I/O bit14 / button3 (RIGHT)
+	GP15 I/O bit15 / button4 (DOWN)
+	GP16 I/O bit16
+	GP17 I/O bit17
+	GP18 I/O bit18
+	GP19 I/O bit19
+	GP20 I/O bit20
+	GP21 I/O bit21
+	GP22 I/O bit22
+	GP23 I/O bit23
+	GP24 I/O bit24
+	GP25 I/O bit25
+	GP26 I/O bit26 / ADC0 / I2C SDA
+	GP27 I/O bit27 / ADC1 / I2C SCL
+	GP28 I/O bit28 / SOUND OUT / ADC2
+	GP29 I/O bit29 / ADC3 / SPI CS (default)
 ```
 For more details, please see documents/MachiKania-RP2040-Video.pdf.
 
