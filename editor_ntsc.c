@@ -1597,12 +1597,11 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 	int top,f,f2;
 	int x,y;
 	unsigned char vk,sh,vm;
-	int mx,my;
+	int mx;
 
 	vm=videomode;
 	set_videomode(VMODE_WIDETEXT,0);
 	if(show_timestamp) mx=1; else mx=WIDTH_X/13;
-	my=WIDTH_Y-1;
 	top=-2;//画面一番先頭のファイル番号
 	f=-2;//現在選択中のファイル番号
 	disp_dir_file_list(filenum,top,num_dir,msg); //ファイル一覧を画面に表示
@@ -1678,16 +1677,16 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 				break;
 			case VK_PRIOR:
 				//Page Upキー
-				top-=mx*my;
+				top-=mx*(WIDTH_Y-2);
 				if(top<-2) top=-2;
-				f-=mx*my;
+				f-=mx*(WIDTH_Y-2);
 				if(f<-2) f=-2;
 				disp_dir_file_list(filenum,top,num_dir,msg); //ファイル一覧を画面に表示
 				break;
 			case VK_NEXT:
 				//Page Downキー
-				if(top+mx*my<filenum) top+=mx*my;
-				f+=mx*my;
+				if(top+mx*(WIDTH_Y-2)<filenum) top+=mx*(WIDTH_Y-2);
+				f+=mx*(WIDTH_Y-2);
 				if(f>=filenum) f=filenum-1;
 				disp_dir_file_list(filenum,top,num_dir,msg); //ファイル一覧を画面に表示
 				break;
