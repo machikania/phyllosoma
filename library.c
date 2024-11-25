@@ -561,9 +561,20 @@ int lib_var_pop(int r0, int r1, int r2){
 }
 
 int lib_wait(int r0, int r1, int r2){
-	unsigned short n=(unsigned short)r0;
-	uint64_t t=to_us_since_boot(get_absolute_time())%16667;
-	sleep_us(16667*n-t);
+	unsigned short n;
+	uint64_t t;
+	if (PUERULUS) {
+		n=drawcount;
+		while(0<r0){
+			while(n==drawcount) asm ("wfi");
+			n=drawcount;
+			r0--;
+		}
+	} else {
+		n=(unsigned short)r0;
+		t=to_us_since_boot(get_absolute_time())%16667;
+		sleep_us(16667*n-t);
+	}
 	return r0;
 }
 
@@ -615,6 +626,7 @@ extern unsigned char *fontp;
 extern const unsigned char FontData[256*8];
 
 int lib_system(int r0, int r1, int r2){
+	static char s_ntsc_off=0;
 	switch(r0){
 		case 0:
 		//	MachiKania バージョン文字列、"Zoea"等を返す。
@@ -699,6 +711,15 @@ int lib_system(int r0, int r1, int r2){
 			return 0;
 		case 200:
 		//	ディスプレイの表示を停止(xが0のとき)、もしくは開始(xが0以外の時)する。
+			if (PUERULUS) {
+				if (r1) {
+					if (s_ntsc_off) start_composite();
+					s_ntsc_off=0;
+				} else {
+					stop_composite();
+					s_ntsc_off=1;
+				}
+			}
 			break;
 		case 201:
 		// ボード上のLEDをON/OFFする(type Pのみ)。

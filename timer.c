@@ -205,9 +205,17 @@ int lib_timer(int r0, int r1, int r2){
 		case TIMER_TIMERFUNC:
 			return g_timer_counter;
 		case TIMER_DRAWCOUNT:
-			g_drawcount=r0;
+			if (PUERULUS) {
+				drawcount=r0;
+			} else {
+				g_drawcount=r0;
+			}
 		case TIMER_DRAWCOUNTFUNC:
-			return g_drawcount;
+			if (PUERULUS) {
+				return drawcount;
+			} else {
+				return g_drawcount;
+			}
 		default:
 			stop_with_error(ERROR_UNKNOWN);
 	}

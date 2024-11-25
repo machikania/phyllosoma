@@ -763,6 +763,8 @@ If strings are handled consecutively in a line, an error message "String too com
 Be careful when accessing global variables in interrupt functions. If a variable of the same name is specified as a VAR in one of the subroutines and is also used as a local variable, depending on when the interrupt is triggered, the value of the variable may or may not belong to the global or local variable. Therefore, if you want to handle a global variable in an interrupt function, do not specify a variable of the same name as a VAR.
 
 <Version history>
+KM-1507 Released in ? 202?.
+　Changed so that separate class files can be handled for Pico/Pico2 or Type P/PU.
 KM-1506 Released in October 2024.
 　Changed to use aon_timer for RTC to share code with Pico 2.
 KM-1505 Released in February 2024.

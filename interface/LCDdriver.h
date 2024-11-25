@@ -53,4 +53,8 @@ extern int attroffset; // TVRAMのカラー情報エリア位置
 void lcd_display_init(void);
 #define display_init() lcd_display_init()
 
+// Dummy functions not used for LCD
 #define set_videomode(a,b) (0)
+#define start_composite() (0)
+#define stop_composite() (0)
+#define drawcount g_scratch_short[0]

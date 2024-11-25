@@ -138,10 +138,12 @@ void pre_run(void){
 }
 
 void init_palette(void);
+int lib_system(int r0, int r1, int r2);
 
 void post_run(void){
 	// Reset video settings
 	//video_init();
+	lib_system(200,1,0); //start_composite();
 	// Reset memory allocation
 	reset_memory();
 	// Close all files
