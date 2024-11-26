@@ -67,6 +67,8 @@ int lib_display(int r0, int r1, int r2){
 				return prevx1;
 			case 4:
 				return prevy1;
+			case 5:
+				return (int)pgvram;
 			default:
 				return 0;
 		}

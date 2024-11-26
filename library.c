@@ -708,7 +708,7 @@ int lib_system(int r0, int r1, int r2){
 			return (int)fontp;
 		case 105:
 		//	グラフィックディスプレイ領域へのポインターを返す。
-			return 0;
+			return lib_display(5,0,0);
 		case 200:
 		//	ディスプレイの表示を停止(xが0のとき)、もしくは開始(xが0以外の時)する。
 			if (PUERULUS) {
