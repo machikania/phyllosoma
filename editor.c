@@ -1673,7 +1673,7 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 				break;
 			case VK_NEXT:
 				//Page Downキー
-				if(top+mx*(WIDTH_Y-2)<filenum) top+=mx*my;
+				if(top+mx*(WIDTH_Y-2)<filenum) top+=mx*(WIDTH_Y-2);
 				f+=mx*(WIDTH_Y-2);
 				if(f>=filenum) f=filenum-1;
 				disp_dir_file_list(filenum,top,num_dir,msg); //ファイル一覧を画面に表示
