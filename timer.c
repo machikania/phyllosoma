@@ -151,7 +151,16 @@ bool repeating_drawcount_callback(struct repeating_timer *t) {
 		if (check_keypress()) call_interrupt_function(g_interrupt_vector[INTERRUPT_INKEY]);
 		drop_interrupt_flag(INTERRUPT_INKEY);
 	}
-	return true;
+	if (0<t->delay_us) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
+void trigger_drawcount_callback_once(void) {
+	cancel_repeating_timer(&g_drawcount_timer);
+	add_repeating_timer_us(1, repeating_drawcount_callback, NULL, &g_drawcount_timer);
 }
 
 int64_t alarm_coretimer_callback(alarm_id_t id, void *user_data) {

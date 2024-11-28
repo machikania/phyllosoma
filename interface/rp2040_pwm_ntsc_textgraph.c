@@ -283,6 +283,7 @@ void init_palette(void){
 
 static void irq_handler(void) {
 	volatile uint32_t s0;
+	uint16_t dc=drawcount;
 
 #if defined ( PIN_DEBUG_BUSY )
 	gpio_put(PIN_DEBUG_BUSY, 1);
@@ -300,6 +301,8 @@ static void irq_handler(void) {
 	if (++scanline >= NUM_LINES) {
 		scanline = 0;
 	}
+	// Trigger drawcount interrupt every 1/60 second
+	if (dc!=drawcount) drawcount_interrupt();
 #if defined ( PIN_DEBUG_BUSY )
 	gpio_put(PIN_DEBUG_BUSY, 0);
 #endif

@@ -69,8 +69,12 @@ extern uint8_t* GVRAM; // Graphicビデオメモリ
 extern uint8_t videomode,textmode,graphmode; //画面モード
 extern int attroffset; // TVRAMのカラー情報エリア位置
 extern const uint8_t FontData[];
-extern uint8_t* fontp; //現在のフォントパターンの先頭アドレス
+extern uint8_t* fontp; //現在のフォン;トパターンの先頭アドレス
 extern uint8_t *cursor;
 extern uint8_t cursorcolor;
 
 extern int LCD_ALIGNMENT; // Dummy
+
+// Intterupt for DRAWCOUNT
+void trigger_drawcount_callback_once(void);
+#define drawcount_interrupt() trigger_drawcount_callback_once()
