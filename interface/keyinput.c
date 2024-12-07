@@ -32,8 +32,13 @@ int insertmode; //挿入モード：1、上書きモード：0
 
 // 60分のn秒ウェイト
 void wait60thsec(unsigned short n){
+#if PUERULUS
+	n+=drawcount;
+	while(drawcount!=n) asm("wfi");
+#else
 	uint64_t t=to_us_since_boot(get_absolute_time())%16667;
 	sleep_us(16667*n-t);
+#endif
 }
 
 // カーソル点滅用に元の文字コードを退避
