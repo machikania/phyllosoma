@@ -64,12 +64,12 @@
 #define IO_ADC3 29
 #define IO_GPIO0  0
 #define IO_GPIO1  1
-#define IO_GPIO2  2
-#define IO_GPIO3  3
-#define IO_GPIO4  4
+#define IO_GPIO2  21
+#define IO_GPIO3  21
+#define IO_GPIO4  21
 #define IO_GPIO5  5
-#define IO_GPIO6  6
-#define IO_GPIO7  7
+#define IO_GPIO6  21
+#define IO_GPIO7  21
 #define IO_GPIO8  8
 #define IO_GPIO9  9
 #define IO_GPIO10 10
@@ -117,3 +117,13 @@
 #define SD_SPI_BAUDRATE (10*1000*1000)
 
 #define KMBASIC_OBJECT_KBYTES 192
+
+// Disable all port number conversion
+#undef io_gpio_outh_conversion
+#undef io_gpio_inh_conversion
+#undef io_gpio_out16_conversion
+#undef io_gpio_in16_conversion
+#define io_gpio_outh_conversion(a) (a)
+#define io_gpio_inh_conversion(a) (a)
+#define io_gpio_out16_conversion(a) (a)
+#define io_gpio_in16_conversion(a) (a)

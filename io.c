@@ -15,10 +15,9 @@
 #include "hardware/uart.h"
 #include "hardware/irq.h"
 #include "hardware/spi.h"
+#include "./io.h"
 #include "./compiler.h"
 #include "./api.h"
-#include "./io.h"
-#include "./config.h"
 
 unsigned char g_io_spi_rx=IO_SPI_RX;
 unsigned char g_io_spi_tx=IO_SPI_TX;
