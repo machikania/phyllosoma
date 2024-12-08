@@ -21,7 +21,6 @@ caused by using this program.
 #include "./editor.h"
 #include "./keyinput.h"
 #include "./compiler.h"
-#include "./config.h"
 #include "./interface/usbkeyboard.h"
 #include "./interface/videodriver.h"
 #include "./interface/graphlib.h"

@@ -12,7 +12,6 @@
 #include "./compiler.h"
 #include "./api.h"
 #include "./display.h"
-#include "./config.h"
 #include "./sleep.h"
 #include "./debug.h"
 

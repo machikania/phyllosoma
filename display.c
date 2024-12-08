@@ -10,7 +10,6 @@
 #include "./compiler.h"
 #include "./api.h"
 #include "./display.h"
-#include "./config.h"
 
 /*
 	Default LCD definitions
