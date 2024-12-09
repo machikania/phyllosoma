@@ -58,7 +58,7 @@ else()
 	set(MACHIKANIA_CODE_NAME phyllosoma)
 endif()
 
-if (PICO_BOARD STREQUAL "pico_w")
+if (PICO_BOARD STREQUAL "pico_w" OR PICO_BOARD STREQUAL "pico2_w")
 	set(MACHIKANIA_WIFI withwifi)
 	if (MACHIKANIA_BUILD STREQUAL "pico_ntsc")
 		set(MACHIKANIA_BUILD pico_w_ntsc)

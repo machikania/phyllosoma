@@ -5,7 +5,7 @@ MachiKania Phyllosoma
 MachiKania Phyllosoma is a BASIC compiler for ARMv6-M, especially for Raspberry Pi Pico.
 
 ## how to compile for Raspberry Pi Pico
-cmake and make. The pico-sdk (ver 2.0.0 is confirmed for building) with all submodules (execute "Submodule Update" for git clone) is required. In config.cmake, select configuration option to build by enabling "set()" command. Currently, there are following options:  
+cmake and make. The pico-sdk (ver 2.1.0 is confirmed for building) with all submodules (execute "Submodule Update" for git clone) is required. In config.cmake, select configuration option to build by enabling "set()" command. Currently, there are following options:  
   
 1. set(MACHIKANIA_BUILD pico_ili9341) : for Raspberry Pi Pico + ILI9341 LCD  
 2. set(MACHIKANIA_BUILD pico_ili9488) : for Raspberry Pi Pico + ILI9488 LCD  
@@ -18,6 +18,10 @@ Add "-DPICO_BOARD=pico_w -DPICO_PLATFORM=rp2040" parameter to execute cmake, the
 ## how to compile for Raspberry Pi Pico 2
 
 Add "-DPICO_BOARD=pico2 -DPICO_PLATFORM=rp2350-arm-s" parameter to execute cmake, then execute make. The config.cmake setting is the same as above.
+
+## how to compile for Raspberry Pi Pico 2 W (beta)
+
+Add "-DPICO_BOARD=pico2_w -DPICO_PLATFORM=rp2350-arm-s" parameter to execute cmake, then execute make. The config.cmake setting is the same as above.
 
 ## how to use
 Copy "phyllosoma.uf2" to the RPI-RP2 (or RP2350) drive of Raspberry Pi Pico or Pico W. Immediately connect to COMx port (com number depends on environment) by serial console at 115200 baud rate, if needed. Alternatively, copy "phyllosoma_kb.uf2" to the RPI-RP2 drive for using USB keyboard directly connected to Raspberry Pi Pico (or Pico W).
@@ -75,7 +79,7 @@ MachiKania type PU (aka MachiKania Puerulus)
 MachiKania Puerulus is a BASIC compiler for ARMv6-M, especially for Raspberry Pi Pico, Pico W, XIAO RP2040, Tiny 2040 and RP2040-Zero. MachiKania Puerulus has a video output instead of an LCD.  
 
 ## how to compile for Raspberry Pi Pico or XIAO RP2040
-cmake and make. The pico-sdk (ver 2.0.0 is confirmed for building) with all submodules (execute "Submodule Update" for git clone) is required. In config.cmake, select configuration option to build by enabling "set()" command. Currently, there are following options:  
+cmake and make. The pico-sdk (ver 2.1.0 is confirmed for building) with all submodules (execute "Submodule Update" for git clone) is required. In config.cmake, select configuration option to build by enabling "set()" command. Currently, there are following options:  
   
 1. set(MACHIKANIA_BUILD pico_ntsc) : for Raspberry Pi Pico
 2. set(MACHIKANIA_BUILD xiao_ntsc) : for XIAO RP2040, Tiny 2040 and RP2040-Zero
