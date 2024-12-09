@@ -14,7 +14,6 @@ static int g_timer_counter;
 static struct repeating_timer g_drawcount_timer;
 static unsigned short g_drawcount;
 static void* g_interrupt_vector[7];
-static struct repeating_timer g_coretimer_timer;
 static unsigned int g_interrupt_flags;
 
 void raise_interrupt_flag(int i){
@@ -172,7 +171,6 @@ void cancel_all_interrupts(void){
 	int i;
 	// Cancel timers
 	cancel_repeating_timer(&g_timer);
-	cancel_repeating_timer(&g_coretimer_timer);
 	// Cancel all interrupts
 	for(i=0;i<(sizeof g_interrupt_vector)/(sizeof g_interrupt_vector[0]);i++) g_interrupt_vector[i]=0;
 	g_interrupt_flags=0;
@@ -183,7 +181,6 @@ void timer_init(void){
 	// Cancel all timers, first
 	cancel_repeating_timer(&g_timer);
 	cancel_repeating_timer(&g_drawcount_timer);
-	cancel_repeating_timer(&g_coretimer_timer);
 	// Cancel all interrupts
 	for(i=0;i<(sizeof g_interrupt_vector)/(sizeof g_interrupt_vector[0]);i++) g_interrupt_vector[i]=0;
 	g_interrupt_flags=0;
@@ -195,11 +192,10 @@ int lib_timer(int r0, int r1, int r2){
 	uint64_t ui64;
 	switch(r2){
 		case TIMER_CORETIMER:
-			cancel_repeating_timer(&g_coretimer_timer);
 			ui64=time_us_64()&0xffffffff00000000;
 			ui64|=(unsigned int)r0;
 			while(ui64<time_us_64()) ui64+=0x100000000;
-			add_alarm_at(ui64,alarm_coretimer_callback,NULL,&g_coretimer_timer);
+			add_alarm_at(ui64,alarm_coretimer_callback,NULL,true);
 			break;
 		case TIMER_USETIMER:
 			cancel_repeating_timer(&g_timer);
