@@ -565,12 +565,18 @@ int lib_wait(int r0, int r1, int r2){
 	if (PUERULUS) {
 		n=drawcount;
 		while(0<r0){
+			if (check_break() && !g_interrupt_code) return lib_end(0,0,0);
 			while(n==drawcount) asm ("wfi");
 			n=drawcount;
 			r0--;
 		}
 	} else {
 		n=(unsigned short)r0;
+		while(1<n){
+			sleep_us(16667);
+			if (check_break() && !g_interrupt_code) return lib_end(0,0,0);
+			n--;
+		}
 		t=to_us_since_boot(get_absolute_time())%16667;
 		sleep_us(16667*n-t);
 	}
