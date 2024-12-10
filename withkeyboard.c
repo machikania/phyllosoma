@@ -30,7 +30,7 @@ static char g_fileselect_no_keyboard=0;
 
 void usbk_polling_handler(void){
   usbkb_polling();
-  request_core1_callback_at(usbk_polling_handler,time_us_32()+1000);
+  request_core1_callback_at(usbk_polling_handler,time_us_32()+10000);
 }
 
 void post_inifile(void){

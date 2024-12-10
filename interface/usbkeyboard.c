@@ -42,7 +42,7 @@ uint16_t vkey; // usbkb_readkey()関数でセットされるキーコード、�
 uint8_t lockkey=0; // 初期化時にLockキーの状態指定。下位3ビットが<SCRLK><CAPSLK><NUMLK>
 uint8_t keytype=0; // キーボードの種類。0：日本語109キー、1：英語104キー
 
-#define USBKBLED_TIMER_INTERVAL 10;
+#define USBKBLED_TIMER_INTERVAL 50;
 static uint32_t usbkbled_timer=0;
 static bool lockkeychanged;
 static uint8_t USBKB_dev_addr=0xFF;
