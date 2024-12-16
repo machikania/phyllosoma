@@ -15,11 +15,21 @@
 #define PUERULUS   1
 #define PHYLLOSOMA 0
 #define SYSVER1 "Puerulus"
+#define MONITOR_TYPE "NTSC"
 #endif
 #ifdef MACHIKANIA_PHYLLOSOMA
 #define PUERULUS   0
 #define PHYLLOSOMA 1
 #define SYSVER1 "Phyllosoma"
+#define MONITOR_TYPE "LCD"
+#endif
+
+#ifdef PICO_PLATFORM_RP2350
+#define RP2040 0
+#define RP2350 1
+#else
+#define RP2040 1
+#define RP2350 0
 #endif
 
 #define SYSVER2 "1.5.0.0"
@@ -29,7 +39,7 @@
 	"MachiKania BASIC System\n"\
 	" Ver "SYSVER1" "SYSVER2"\n"\
 	"BASIC Compiler "BASVER" by Katsumi\n"\
-	"LCD, File, & Keyboard systems by KENKEN\n"\
+	MONITOR_TYPE", File, & Keyboard systems by KENKEN\n"\
 	"\n"
 
 #ifndef KMBASIC_OBJECT_KBYTES

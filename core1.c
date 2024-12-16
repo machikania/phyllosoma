@@ -65,7 +65,7 @@ void core1_entry(void) {
 		for(i=0;i<CALLBACK_BUFFER_NUM;i++){
 			if (!g_core1_callback[i]) continue;
 			j=g_core1_callback_at[i]-now32;
-			if (j<first) first=j;
+			if (0<j && j<first) first=j;
 		}
 		if (1<first) {
 			g_1w0r_core1_busy=0;
