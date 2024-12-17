@@ -7,7 +7,7 @@ WIFIPASSWD=xxxxxx
 
 If your router has the ability to automatically assign IP addresses via DHCP (which it does in most cases), you can connect to the network. If your router has an Internet connection, you can also connect to the Internet from MachiKania.
 
-Both client and server applications can be built using MachiKania. The HTTP protocol (denoted as http, https, web, www, html, etc.) is widely used on the Internet. With MachiKania, http/https client applications and http server applications can be easily built using the WGET and HTTPD classes. MachiKania allows you to easily build http/https client applications and http server applications using the WGET and HTTPD classes.
+Both client and server applications can be built using MachiKania. The HTTP protocol (denoted as http, https, web, www, html, etc.) is widely used on the Internet. With MachiKania, http/https client applications and http server applications can be easily built using the WGET and HTTPD classes.
 
 
 <Another way to specify SSID and password for Wi-Fi>
@@ -32,7 +32,7 @@ WIFIPASSWD=
 HOSTNAME=
 	Specifies the hostname for the Wi-Fi connection (default: PicoW). The domain name depends on the router used. If you want to know the full name, you can use "ping -a <IP address>" at the console/command prompt.
 
-NTPSERVER=.
+NTPSERVER=
 	Specify the hostname of the NTP server to use (default: pool.ntp.org).
 
 INITIALNTP
@@ -48,7 +48,7 @@ HTTPD is provided in the library as a class for server applications, and can be 
 
 <Instructions and functions for Wi-Fi>
 
-The following commands and functions are related to Wi-Fi. The usage is as follows: First, call one of TCPCLIENT/TLSCLIENT/TCPSERVER, poll TCPSTATUS() or TCPACCEPT(), if there is a connection, respond with TCPSEND/TCPRECEIVE, and finally, terminate the connection with TCPCLOSE. Finally, the connection is closed with TCPCLOSE. Please refer to the usage examples below and in the WGET and HTTPD classes.
+The following commands and functions are related to Wi-Fi. The usage is as follows: First, call one of TCPCLIENT/TLSCLIENT/TCPSERVER, poll TCPSTATUS() or TCPACCEPT(), if there is a connection, respond with TCPSEND/TCPRECEIVE, and finally, terminate the connection with TCPCLOSE. Please refer to the usage examples below and in the WGET and HTTPD classes.
 
 DNS$(x$)
 	Returns the IP address of the computer whose hostname on the Internet is indicated by x$ as a string.
@@ -118,7 +118,7 @@ If you build a server with MachiKania, please use it only within your local envi
 
 Accessing https sites with MachiKania has a lower level of security than accessing https sites with a regular browser. Even if the connection is to an https site, the same problems can occur as with a connection to an http site. For example, personal information to be transmitted (e.g., passwords) can be compromised, or phishing can occur if the connection destination is different from the one specified. This is due to the fact that it is difficult to check the CA certificate and keep the AES cipher as strong as the specification when using TLS connections with small programs, not only MachiKaniania. MachiKania does not check CA certificates, and the difficulty of analogizing the AES encryption key is not high. Therefore, please consider that connecting to https sites can be problematic, although not as problematic as connecting to http sites. Gathering information from a site is not a problem, but if you secure a connection by submitting personal information such as IDs and passwords, you should exercise caution and do so at your own risk.
 
-Also, if you have written your Wi-Fi SSID and password in MACHIKAP.INI, please be careful not to lose or steal your MMC/SD card. If you have embedded the SSID and password in the Raspberry Pi Pico W as described in "Another way to specify the SSID and password for Wi-Fi", please be careful not to lose or have the Raspberry Pi Pico W lost or stolen. If it is lost or stolen, we recommend that you change the password.
+Also, if you have written your Wi-Fi SSID and password in MACHIKAP.INI, please make sure that your MMC/SD card is not lost or stolen. If you have embedded the SSID and password in the Raspberry Pi Pico W as described in "Another way to specify the SSID and password for Wi-Fi", please make sure that the Raspberry Pi Pico W is not lost or stolen. If it is lost or stolen, we recommend that you change the password.
 
 
 <Example of use>

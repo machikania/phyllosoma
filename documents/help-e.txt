@@ -6,23 +6,23 @@ The available variable types are 32-bit signed integer (-2147483648 to +21474836
 
 Twenty-six integer type variables (A-Z) are available. To treat a variable as a floating-point type, write it as A#, and to treat it as a string, write it as A$. However, A (integer type), A# (floating-point type), and A$ (string type) cannot be used simultaneously.
 
-Variables with long names (even longer names are allowed in Type P) of up to 6 characters can be used if specified with a statement such as USEVAR. The first letter of the name can be an alphabetic character (A-Z) or an underscore (_), and the second letter can be a number (0-9).
+Variables with long names can be used if specified with a statement such as USEVAR. The first letter of the name can be an alphabetic character (A-Z) or an underscore (_), and the second letter can be a number (0-9).
 
 Integer type constants are written in decimal notation; if you use hexadecimal notation, you must either add a "$" to the beginning, such as "$1200", or write it as "0x1200".
 
 Floating-point constants should be written as "2e-3" (for 0.002) or "10.5".
 
-String type constants should be written by enclosing them with " ". When "" is used, it can be written as "CHR$($22)".
+String type constants should be written by enclosing them with '"'. When '"' must be included in the string, it can be written as "CHR$($22)".
 
 <General Instructions>
-Hereinafter, x, y, z, etc. refer to integer values; x$, y$, z$ refer to character strings; x#, y#, z# refer to floating-point real values; xxx, yyy, zzz, www, etc. refer to arbitrary statements; x#, y#, z# refer to floating-point real values; x#, y#, z#, etc. refer to floating-point real values. [ ] indicates that the statement is optional. | (vertical line) indicates that either left or right notation can be used.
+Hereinafter, x, y, z, etc. refer to integer values; x$, y$, z$ refer to character strings; x#, y#, z# refer to floating-point real values; xxx, yyy, zzz, www, etc. refer to arbitrary statement. [ ] indicates that the statement is optional. | (vertical line) indicates that either left or right notation can be used.
 
 Multiple commands can be processed on a single line by separating them with ":".
 
+ALIGN4
+	In the compile object, the lower two bits of the address of the code of the next instruction are set to zero.
 BGCOLOR r,g,b
 	Specifies background color.
-ALIGN4
-	In the compile object, the lower two bits of the address of the code of the next instruction are set to zero. Available in Type P only.
 BREAK
 	Breaks out of FOR-NEXT, DO-LOOP, and WHILE-WEND loops.
 CDATA x[,y[,z[...]]]
@@ -42,9 +42,9 @@ CDATA xxx[,yyy[,zzz[...]]]
 DATA xxx[,yyy[,zzz[...]]]]
 	Specify a data string as an integer value or a string.
 DELAYMS x
-	Available for Type P. Stop execution for x milliseconds.
+	Stop execution for x milliseconds.
 DELAYUS x
-	Available for Type P. Stop execution for x microseconds.
+	Stop execution for x microseconds.
 DIM xxx [, yyy [, zzz [, ... ]]]
 	Assigns an array of integer or floating-point type. xxx,yyy,zzz should be written, for example, "A(10)". In this case, 11 integer type variables from A(0) to A(10) are allocated. In the case of a floating-point array, it should be written as "A#(10)". Multi-dimensional arrays can also be declared.
 DO WHILE x|x#
@@ -64,7 +64,7 @@ DRAWCOUNT x
 END
 	Stops the BASIC program.
 EXEC x[,y[,z[...]]]
-	Execute machine language. However, x, y, z are 32-bit integer values for Type Z and Type M, and 16-bit integer values for Type P.
+	Execute machine language. The x, y, z are 16-bit integer values.
 FOR x=yyyy TO zzz [ STEP www ].
 NEXT
 	Assign the result of the calculation indicated by yyyy to x, and repeat the statements up to the next NEXT statement until the value of x is zzzz. Each time it is repeated, the value of x is incremented by www (or by 1 if omitted). Note that nothing is written after "NEXT".
@@ -83,29 +83,29 @@ zzz]
 ENDIF
 	Execute xxx when x or x# is non-zero, yyyy otherwise and y or y# is non-zero (if described), zzzz otherwise. ELSEIF statements can be multiple. Note that on each line, do not put anything after the THEN statement.
 LABEL xxx
-	Register a jump destination for GOTO/GOSUB. xxx is a string of up to 6 alphanumeric characters.
+	Register a jump destination for GOTO/GOSUB. xxx is a string of alphanumeric characters.
 [LET] x=yyyy
-	Assign the result of the calculation indicated by y to x (an integer variable). LET" may be omitted.
+	Assign the result of the calculation indicated by y to x (an integer variable). "LET" may be omitted.
 [LET] x#=yyyy
-	Assign the result of the calculation indicated by y to x (a floating-point variable). LET" may be omitted.
+	Assign the result of the calculation indicated by y to x (a floating-point variable). "LET" may be omitted.
 [LET] x$=yyyy
-	The string (or concatenation result; the concatenation operator is "+") indicated by yyyy is assigned to x$. LET" may be omitted.
+	The string (or concatenation result; the concatenation operator is "+") indicated by yyyy is assigned to x$. "LET" may be omitted.
 MUSIC x$[,y].
-	Plays background music. For details, see <MUSIC> below. y=1 for Type M, y=2 for right side, y=3 for left side, or both when omitted.
+	Plays background music. For details, see <MUSIC> below. The y is invalid for TypeP and Type PU.
 PLAYWAVE x$[,y].
-	Plays a WAVE file for music (specified by x$ as the file name) in stereo or monaural format for Type M (monaural only for Type Z) with a bit length of 8 and a sampling frequency of 15700 Hz. 16000 If y is specified, playback starts from the specified point (if you want to play from the first second, specify 15700). x$ is a zero-length string, which stops the currently playing music.
+	Plays a WAVE file for music (specified by x$ as the file name). The WAVE format is mono, bit length is 8, and sampling frequency is 15700 Hz or 16000 Hz. If y is specified, playback starts at the specified point (if you want playback from the first second, specify 15700 or 16000). If x$ is a zero-length string, which stops the currently playing music.
 PALETTE n,r,g,b
 	Palette specification.
 PCG x,y,z
-	Changes the display character for characters whose ASCII code is x. y,z are character data. See <PCG> below for details.
+	Changes the display character for characters whose ASCII code is x. y, z are character data. See <PCG> below for details.
 POKE x,y
 	Writes the value (1-byte value) indicated by y to the physical address indicated by x.
 POKE16 x,y
-	Writes the value indicated by y (16-bit value) to the physical address indicated by x. Note that if x is an odd value, the exception stops.
+	Writes the value indicated by y (16-bit value) to the physical address indicated by x. Note that if x is an odd value, the exception occurs.
 POKE32 x,y
-	Writes the value indicated by y (32-bit value) to the physical address indicated by x. Note that if x is not a multiple of 4, the exception stops.
+	Writes the value indicated by y (32-bit value) to the physical address indicated by x. Note that if x is not a multiple of 4, the exception occurs.
 PRINT [ x or x$ or x# [ , or; [ y or y$ or y# [ ... ]]]]
-	Prints a whole number or string on the display. If ";" is used, the next display follows. If "," is used, the display is separated by 10 characters. If neither is used, the next display is on a different line.
+	Prints a whole number or string on the display. If ";" is used, the next display follows. If "," is used, the display is separated by 10 characters (7 characters for Type PU). If neither is used, the next display is on a different line.
 REM xxx
 	Nothing is executed. Used to insert comment text.
 RESTORE xxx
@@ -115,11 +115,11 @@ RETURN
 SCROLL x,y
 	Moves the screen horizontally or vertically (or diagonally). The direction and size of the movement are specified by x and y as the degree of horizontal movement and vertical movement, respectively.
 SOUND xxx[,y].
-	Plays a sound effect. For details, see <SOUND> below. xxx is a line number or label. y=1 for Type M, y=2 for right side, y=3 for left side, or both if omitted.
+	Plays a sound effect. For details, see <SOUND> below. xxx is a line number or label. The y is invalid for TypeP and Type PU.
 USEPCG [x].
 	Use or deactivate PCG. x=0 to deactivate, x=1 to use, x=2 to reset the character. x omitted is the same as x=1.
 USEVAR xxx [, yyy [, zzz [, ... ]]]
-	Allows variable names of up to 6 characters in alphanumeric and underscore (_) (even longer names are allowed in Type P). Long variable names such as xxx, yyy, etc. can be used after this statement.
+	Allows long name(s) in alphanumeric and underscore (_). Long variable names such as xxx, yyy, etc. can be used after this statement.
 VAR xxx [, yyy [, zzz [, ... ]]]
 	Specifies local variables to be used in the subroutine. xxx, yyy, etc. can be specified by A-Z alphabetical characters or variable names.
 WAIT x
@@ -136,7 +136,7 @@ Hereinafter, x, y, z refer to integer values, x#, y#, z# refer to real values, a
 ABS(x)
 	Returns the absolute value of x.
 ARGS(x)
-	In a subroutine, retrieves the x-th argument passed to GOSUB or a method as an integer value. However, if
+	In a subroutine, retrieves the x-th argument passed to GOSUB or a method as an integer value. However;
 		ARGS(0) returns the number of arguments.
 		ARGS(-1) returns a pointer to the array that contains the previous argument.
 		ARGS(-2) returns a pointer to an object if used in a class.
@@ -145,15 +145,15 @@ ASC(x$)
 CREAD()
 	Reads data (8-bit integer value) one by one after the DATA statement. See also READ() function.
 DATAADDRESS(xxx)
-	Returns the physical address of the label indicated by xxx, which can be used with Type P.
+	Returns the physical address of the label indicated by xxx.
 DRAWCOUNT()
 	Obtains the DRAWCOUNT value, which is a 16-bit integer value that increases by 1 every 1/60th of a second.
 FUNCADDRESS(xxx)
-	Returns the code address of the label indicated by xxx, which can be used with Type P.
+	Returns the code address of the label indicated by xxx.
 GOSUB(xxx [, y [, z [, ... ]]])
 	Same as the GOSUB instruction, but with a return value (see RETURN). xxx is a label or line number. yyyy, zzz, etc. are arguments that are passed on to the subroutine (see ARGS() function).
 INKEY([x])
-	If x is not specified, returns the ASCII value of the currently pressed key. If x is specified with an ASCII value, returns whether the key is pressed or not. invalid for Type P.
+	If x is not specified, returns the ASCII value of the currently pressed key. If x is specified with an ASCII value, returns whether the key is pressed or not.
 INT(x#)
 	Converts the real value x# to an integer and returns it.
 KEYS([x])
@@ -164,7 +164,6 @@ KEYS([x])
 		KEYRIGHT: 8
 		KEYSTART: 16
 		KEYFIRE: 32
-	Note that using this function on Type Z will disable keyboard-based functions such as INKEY interrupt and READKEY(), etc. This is not the case on Type M and Type P.
 LEN(x$)
 	Returns the length of the string.
 MUSIC()
@@ -174,11 +173,11 @@ NOT(x)
 PEEK(x)
 	Reads 1 byte from the physical address indicated by x and returns it.
 PEEK16(x)
-	Reads 2 bytes from the physical address indicated by x and returns it as a 16-bit value; note that if x is an odd number, the exception stops.
+	Reads 2 bytes from the physical address indicated by x and returns it as a 16-bit value; note that if x is an odd number, the exception occurs.
 PEEK32(x)
-	Reads 4 bytes from the physical address indicated by x and returns a 32-bit value; note that if x is not a multiple of 4, the exception stops.
+	Reads 4 bytes from the physical address indicated by x and returns a 32-bit value; note that if x is not a multiple of 4, the exception occurs.
 PLAYWAVE([x])
-	If x is not specified or 0 is specified, returns the number of samplings remaining in the currently playing WAVE file; if 1 is specified, returns the sampling number currently playing; if 2 is specified, returns the total number of samplings in the WAVE file. If 2 is specified, the total sampling number of the WAVE file is returned.
+	If x is not specified or 0 is specified, returns the number of samplings remaining in the currently playing WAVE file; if 1 is specified, returns the sampling number currently playing; if 2 is specified, returns the total number of samplings in the WAVE file.
 READ()
 	Reads data (32-bit integer value) one by one after the DATA statement. See also the CREAD() function.
 READKEY()
@@ -404,16 +403,12 @@ POINT x,y
 PSET [x,y][,c]
 	Draw a point at coordinate (x,y) with color c.
 PUTBMP [x,y],m,n,bbb
-	Draws a character (specified by bbb) of size m*n dots horizontally and vertically at coordinates (x,y). Simply arrange the color numbers in an array bmp of size m*n. However, the part with color 0 is treated as a transparent color. However, bbb is a label name or a pointer to the array.
+	Draws a character (specified by bbb) of size m*n dots horizontally and vertically at coordinates (x,y). Simply arrange the color numbers in an array bmp of size m*n. Note that the part with color 0 is treated as a transparent color, and that bbb is a label name or a pointer to the array.
 USEGRAPHIC [x].
-For Type M
-	Use or disuse the graphic display. x=0 to disuse, x=1, 5, 9 to use, x=2, 6, 10 to clear the screen and palette, x=3, 7, 11 to reserve the graphic area but leave the display as a character display. However, if x=0, 4, or 8 is set while the graphic display is not used, the area is reserved. x=1 is the same as x=1 if x is omitted. However, if x is 0-3, Type-Z compatible graphics are used; if x is 4-7, standard graphics are used; if x is 8-11, wide graphics are used.
-For Type Z
-	Use or deactivate the graphic display. x=0 deactivates it, x=1 uses it, x=2 clears the screen and palette for use, and x=3 reserves the graphic area but leaves the display as a character display. If x is omitted, the value is the same as x=1.
-In the case of Type P
-	This instruction clears the screen. Both graphics and characters are always available. However, if x=2, the palette is also initialized.
-For Type PU
-	Use or disuse the graphic display. x=0 to disuse, x=1 to use, x=2 to clear the screen and palette, x=3 to reserve the graphic area but leave the display as a character display.
+	For Type P
+		This instruction clears the screen. Both graphics and characters are always available. If x=2, the palette is also initialized.
+	For Type PU
+		Use or disuse the graphic display. x=0 to disuse, x=1 to use, x=2 to clear the screen and palette, x=3 to reserve the graphic area but leave the display as a character display.
 
 GCOLOR(x,y)
 	Returns the palette number of the palette currently being displayed at graphic coordinates (x,y).
@@ -495,17 +490,17 @@ FSEEK()
 GETDIR$()
 	Returns the current directory as a string.
 MKDIR x$
-	Create a new firectory with the name indicated by x$. If called as a function, returns success (0) or failure (-1).
+	Create a new directory with the name indicated by x$. If called as a function, returns success (0) or failure (-1).
 SETDIR x$
 	Moves the current directory to x$. If called as a function, returns 0 on success, non-zero on error.
 
 <Timer Related Instructions and Functions>
-There are two types of timers: normal timers and core timers. Normal timers are general-purpose timers that can be used to set speeds and change values. Core timers are special timers synchronized with the CPU clock and can be read but not set.
+There are two types of timers: normal timer and core timer. Normal timer is general-purpose one that can be used to set speeds and change values. Core timer is special one synchronized with the CPU clock and can be read but not set.
 
-CORETIMER
-	Sets the timing of interrupts using the core timer. Note that this does not change the value of the core timer. The frequency of the core timer is 95.45453 MHz for Type M, 57.27272 MHz for Type Z (53.693175 MHz when graphics are used), and 1 MHz for Type P.
+CORETIMER x
+	Sets the timing of interrupts using the core timer. Note that this does not change the value of the core timer. The frequency of the core timer is 1 MHz.
 USETIMER x
-	Starts a timer. x specifies the speed of the timer in microseconds (values less than or equal to 175769).
+	Starts the timer. x specifies the speed of the timer in microseconds (values less than or equal to 175769).
 TIMER x
 	Sets the current timer value as a 32-bit integer (x).
 CORETIMER()
@@ -521,7 +516,7 @@ INTERRUPT xxx,yyy[,z1[,z2 ...]] ]]
 		DRAWCOUNT
 			Interrupts every 1/60th of a second.
 		KEYS
-			When the button press state changes. note that using this function on Type Z will disable keyboard functions such as INKEY interrupt, READKEY(), INKEY(), etc. On Type M, this is not the case.
+			When the button press state changes.
 		INKEY
 			When keyboard is pressed, use with READKEY() function.
 		MUSIC
@@ -547,7 +542,7 @@ Please refer to the attached "music.bas" file for a sample of how to use this fu
 <SOUND>
 The SOUND instruction specifies the data in the DATA column by line number or label. If the next SOUND instruction is executed before the previous sound effect finishes, playback of the previous sound effect stops and a new sound effect is immediately played.
 
-The DATA column represents the replacement sound as a 32-bit integer value. The lower 16 bits of this integer value specify the frequency; 2048 corresponds to 440 Hz (the sound of La). The larger the value, the lower the note. The upper 16 bits are the length of the note; 1 corresponds to 1/60th of a second. Finally, a value of 65535 or less specifies the number of times the sound effect is repeated. The number of these data should not exceed 32.
+The DATA column represents the replacement sound as a 32-bit integer value. The lower 16 bits of this integer value specify the frequency; 2048 corresponds to 440 Hz (the sound of A). The larger value corresponds to the lower note. The upper 16 bits are the length of the note; 1 corresponds to 1/60th of a second. Finally, a value of 65535 or less specifies the number of times the sound effect is repeated. The number of these data should not exceed 32.
 
 Please refer to the attached "sound.bas" file for a sample of how to use this function.
 
@@ -556,35 +551,35 @@ PCG (Programmable Character Generator) allows you to specify a font for each ASC
 
 USEPCG
 
-to use the PCG statement. To change the font, use the PCG statement
+to use the PCG statement. To change the font, use the PCG statement as following example:
 
 PCG 0x80,0x80402010,0x08040201
 
-using PCG statements like PCG 0x80,0x80402010,0x08040201. In this example, the font is set for characters with ASCII code 0x80, which will display a backslash-like symbol (a diagonal line from upper left to lower right).
+In this example, the font is set for characters with ASCII code 0x80, which will display a backslash-like symbol (a diagonal line from upper left to lower right). If you want to stop PCG and go back to original font, execute:
 
 USEPCG 0
 
-If you want to use PCG again, use USEPCG 0. If you want to use PCG again, use
+If you want to use PCG again, execute:
 
 USEPCG
 
-to use PCG again. The font data set earlier will be restored. If you want to discard the previously set font data and start using PCG again, set
+In this case, the font data set earlier will be restored. If you want to discard the previously set font data and start using PCG again, execute:
 
 USEPCG 2
 
-If you want to discard the previously set font data and start using PCG, please set USEPCG 2.
+
 
 <System Variables>
 Various system information can be exchanged using the SYSTEM function and SYSTEM statements.
 
 SYSTEM$(0)
-	Returns the MachiKania version string, "Zoea", etc.
+	Returns the MachiKania version string, "Phyllosoma", etc.
 SYSTEM$(1)
 	Returns the MachiKania version string, "1.2", etc.
 SYSTEM$(2)
 	Return BASIC version string, "KM-1208", etc.
 SYSTEM$(3)
-	Returns the name of the currently executing HEX file, e.g., "ZOEA.HEX".
+	Returns the name of the currently executing HEX file, e.g., "ZOEA.HEX" (in the case of Type P/PU, returns zero length string).
 SYSTEM(4)
 	Returns the clock frequency of the CPU currently running.
 SYSTEM(20)
@@ -628,51 +623,49 @@ SYSTEM(104)
 SYSTEM(105)
 	Returns a pointer to the graphic display area.
 SYSTEM 200,x
-	Stops (when x is 0) or starts (when x is non-zero) the display.
+	In the case of Type PU, stops (when x is 0) or starts (when x is non-zero) the display.
 SYSTEM 201,x
-	Turns the LEDs on the board ON/OFF. x= non-zero is ON, 0 is OFF (Type P only).
+	Turns the LEDs on the board ON/OFF. x= non-zero is ON, 0 is OFF.
 SYSTEM(250,x)
-	Allocates memory in an x-byte area initialized with zeros and returns an address (equivalent to calloc; Type P only).
+	Allocates memory in an x-byte area initialized with zeros and returns an address (equivalent to calloc).
 SYSTEM(251,x)
-	Allocates memory for an area of x bytes and returns an address (equivalent to malloc; Type P only).
+	Allocates memory for an area of x bytes and returns an address (equivalent to malloc).
 SYSTEM 252,x
-	Release the memory allocated to address x (equivalent to free; Type P only).
+	Release the memory allocated to address x (equivalent to free).
 
 <Input/output commands and functions>
-Input/output functions are available for Type M and Type P.
 
 ANALOG(x)
-	For Type M, returns the analog input value (10-bit value; value from 0-1023) of the xth bit from the lower part of PORTB. Type P returns the analog input value of GP26-29 (12-bit value; 0-4095). However, GP26 is specified for x=0, 13, 26; GP27 for x=1, 14, 27; GP28 for x=2, 15, 28; GP29 for x=3, 16, 29.
+	Returns the analog input value of GP26-29 (12-bit value; 0-4095). However, GP26 is specified for x=0, 13, 26; GP27 for x=1, 14, 27; GP28 for x=2, 15, 28; GP29 for x=3, 16, 29.
 IN(x)
-	Returns the input value (1-bit value; 1 or 0) of the xth bit from the lower part of the specified I/O port. However, when x=16, 17, or 18, PORTE5, 6, or 7 is specified, respectively. The input is pulled up inside the PIC.
+	Returns the input value (1-bit value; 1 or 0) of the xth bit from the lower part of the specified I/O port. The input is pulled up inside the chip.
 IN8H()
-	Returns the input value (8-bit value) of the upper 8 bits of PORTB for Type M and the specified I/O port for Type P. The input is pulled up inside the PIC.
+	Returns the input value (8-bit value) of the upper 8 bits of I/O port. The input is pulled up inside the chip.
 IN8L()
-	Returns the input value (8-bit value) of the lower 8 bits of the specified I/O port for Type M and Type P. The input is pulled up inside the PIC. The input is pulled up inside the PIC.
+	Returns the input value (8-bit value) of the lower 8 bits of I/O port. The input is pulled up inside the chip.
 IN16()
-	Returns the input value (16-bit value) of the specified I/O port for PORTB for Type M and for Type P. The input is pulled up inside the PIC. The input is pulled up inside the PIC.
+	Returns the input value (16-bit value) of the I/O port. The input is pulled up inside the chip.
 PWM x[,y[,z]]
 	PWM output; x specifies the duty ratio in the range 0-1000; y specifies the pulse frequency in Hz (1000 if omitted; valid values are 6-95454).
-	For Type M, z=1 results in output to PORTD10, z=2 results in output to PORTD11; if z is omitted, PORTD10.
-	For Type P, z=1, 2, and 3, output to the specified PWM1, PWM2, and PWM3, respectively.
+	By z=1, 2, and 3, output to the specified PWM1, PWM2, and PWM3, respectively.
 SERIAL x[,y[,z]]
-	Starts serial communication. x specifies the baud rate (to terminate use of serial communication, specify x=0). y=0 for no parity, y=1 for even parity, y=2 for odd parity, y=3 for no 9-bit parity. If y is omitted, it is the same as If y is omitted, y=0. z specifies the number of characters in the receive buffer; if z is omitted, a buffer large enough to guarantee continuous reception for 1/60th of a second is reserved.
+	Starts serial communication. x specifies the baud rate (to terminate use of serial communication, specify x=0). y=0 for no parity, y=1 for even parity, y=2 for odd parity, y=3 for no 9-bit parity. If y is omitted, y=0. z specifies the number of characters in the receive buffer; if z is omitted, a buffer large enough to guarantee continuous reception for 1/60th of a second is reserved.
 SERIALIN([x])
 	Receive one character in serial communication. If x=1, the number of characters in the receive buffer is returned. In case of 8-bit reception with parity, if a parity error occurs, a value of 0x100 or higher is returned.
 SERIALOUT x
 	Transmits a single character in serial communication.
 OUT x,y
-	Outputs the value indicated by y (1-bit value; 1 or 0) to the xth bit from the lower part of the specified I/O port in PORTB for Type M and in Type P. Note that PORTE5, 6, and 7 are open drain outputs.
+	Outputs the value indicated by y (1-bit value; 1 or 0) to the xth bit from the lower part of the specified I/O port.
 OUT8H x
-	Outputs the value indicated by x (8-bit value) to the upper 8 bits of PORTB for Type M and to the specified I/O port for Type P.
+	Outputs the value indicated by x (8-bit value) to the upper 8 bits of I/O port.
 OUT8L x
-	Outputs the value (8-bit value) indicated by "x" to the lower 8 bits of the specified I/O port for PORTB in Type M and Type P.
+	Outputs the value indicated by x (8-bit value) to the lower 8 bits of I/O port.
 OUT16 x
-	Outputs the value indicated by x (16-bit value) to the PORTB for Type M or to the specified I/O port for Type P.
+	Outputs the value indicated by x (16-bit value) to the I/O port.
 I2C [x].
 	Starts I2C use in master mode. x specifies the number of clocks in kHz (valid values are 12-3409). If omitted, x=100.
 I2CWRITE x[,y[,z[, ... ]]
-	Performs I2C fixed-length transmission. x is the 7-bit slave address. y, z, etc. are optional transmission codes, specified as byte values. Note that in the case of Type P, if y is not specified, no communication takes place at all.
+	Performs I2C fixed-length transmission. x is the 7-bit slave address. y, z, etc. are optional transmission codes, specified as byte values. Note that in the case of Type P or Type PU, if y is not specified, no communication takes place at all.
 I2CREAD(x[,y[,z[, ... ]])
 	Receive 1 byte after I2C fixed length transmission. x is the 7-bit slave address. y, z, etc. are optional transmission codes, specified as byte values. Returns an 8-bit value on success, -1 on error. Returns -1 in case of error.
 I2CWRITEDATA x,y,z1[,z2[,z3...]]
@@ -683,8 +676,7 @@ I2CERROR()
 	Returns a non-zero value if there was an error in the previous I2C transmission/reception, otherwise returns 0.
 SPI x[,y[,z1[,z2]]]
 	Starts SPI usage in master mode. x specifies the number of clocks in kHz (valid values are 93-47727). y specifies the number of bits in one word in 8/16/32 (8 if omitted). z1 specifies how to handle SPI clock (0 if omitted). ). z1 specifies how to handle the SPI clock (0 if omitted). For details, see below. z2 specifies which port is used for the CS line.
-	In the case of Type M, if z2 is omitted, it is 0x39 (PORTD9). If other ports are used, for example, 0x15 for PORTB5 and 0x13 for PORTB3.
-	For Type P, if z2 is omitted, 3 (GP3). If other ports are used, for example, 4 for GP4 (I/O bit 4) and 27 or 14 for GP27 (I/O bit 14).
+	If z2 is omitted, 3 (GP3). If other ports are used, for example, 4 for GP4 (I/O bit 4) and 27 or 14 for GP27 (I/O bit 14).
 		z1=0: Low when idle and data changes to Low (CKP=0,CKE=1; CPOL=0,CPHA=0)
 		z1=1: Low when idle, data changes to high (CKP=0,CKE=0; CPOL=0,CPHA=1)
 		z1=2: "H" when idle, data changes to "H" (CKP=1,CKE=1; CPOL=1,CPHA=1)
@@ -701,12 +693,8 @@ SPISWAPDATA x,y[,z1[,z2[,z3...]]]
 	SPI multi-word send/receive. x is a pointer to the buffer that stores the contents to be sent/received. y is the number of words to be sent/received. z1, z2, z3, etc. are optional transmission codes, which are sent first. Then, after sending the contents of buffer x, data is received and stored back into buffer x. This operation is repeated over y words.
 
 <Option>
-Type Z and Type M allow various options to be specified at compile-time or run-time using the OPTION statement. For Type P, only "OPTION CLASSCODE" is valid. The following options are available
+The following option(s) can be specified using the OPTION statement.
 
-OPTION NOLINENUM
-	Do not insert a line numbering instruction at compile time. This option is expected to reduce program size and increase execution speed. However, if an error occurs, it will not be clear which line the error occurred on.
-OPTION FASTFIELD
-	When two or more classes are used and there are no duplicate public field names, this option speeds up field access. However, it is advisable to make sure that there are no errors in the BASIC code before using this function, since it may not cause an error if a field of a nonexistent object is accessed. If only one class is used, this option is effective even if it is not specified.
 OPTION CLASSCODE
 	After this option, you can write a code that describes the class. However, the file name must be saved as "classname.BAS". Using this feature, code that uses only one class can be contained in a single file. This is useful for class development.
 
@@ -714,17 +702,17 @@ OPTION CLASSCODE
 For details on how to use classes and objects, please refer to class.txt. The following are related instructions and functions.
 
 USECLASS x[,y[,z[, ... ]]]
-	Declares the use of a class. x,y,z, etc., is the class name up to 6 alphanumeric characters (Type P allows up to 8 characters).
+	Declares the use of a class. x,y,z, etc., is the class name up to 8 alphanumeric characters.
 FIELD [PUBLIC] x[,y[,z[, ... ]]]
-	Declares a public field in the class file. PUBLIC" can be omitted. x,y,z, etc. are field names of up to 6 alphanumeric characters (long names are allowed in Type P).
+	Declares a public field in the class file. PUBLIC" can be omitted. x,y,z, etc. are field names.
 FIELD PRIVATE x[,y[,z[, ... ]]]
-	Declares a private field in the class file. x,y,z, etc. are field names up to 6 alphanumeric characters (long names are also acceptable for Type P).
+	Declares a private field in the class file. x,y,z, etc. are field names.
 STATIC [PUBLIC] x[,y[,z[, ... ]]]
 	Declares a public static variable in the class file. PUBLIC" may be omitted.
 STATIC PRIVATE x[,y[,z[, ... ]]]
 	Declares a private static variable in the class file.
 METHOD x
-	Declares a method in the class file. x is the name of the method, up to 6 alphanumeric characters (Type P allows longer names).
+	Declares a method in the class file. x is the name of the method.
 NEW(x[,y[,z[, ... ]]])
 	Creates a class object and returns a pointer to the object. x is the class name. y, z, etc. are arguments used when there is a constructor.
 DELETE x[,y[,z[, ... ]]]
@@ -733,12 +721,12 @@ CALL x
 	Calls the method of the object specified by x. CALL" can be omitted.
 
 <Real-time clock>
-The real-time clock can be used with Type P. When using it with Type P that supports WiFi, set MACHIKAP.INI to connect to an NTP server at startup, or use the NTP command to connect to an NTP server to set the current time. If you are using Type P that does not support WiFi, use the SETTIME command to set the current time. The ISO-8601 string used in the sequence of instructions and functions is formatted as shown in the following example (with a "T" between the date and time).
+The real-time clock can be used with Type P and Type PU. When using it with Type P/Type PU that supports WiFi, set MACHIKAP.INI to connect to an NTP server at startup, or use the NTP command to connect to an NTP server to set the current time. If you are using Type P/Type PU that does not support WiFi, use the SETTIME command to set the current time. The ISO-8601 string used in the sequence of instructions and functions is formatted as shown in the following example (with a "T" between the date and time).
 
-	2023-09-01T13:00:00 (for September 1, 2023, 1:00:0 PM)
+	2023-09-01T13:00:00 (for September 1, 2023, 1:00:00 PM)
 
 GETTIME$([x$[,y]])
-	Returns the (current) time as a string; if x$ is not specified, the current time is used; if y is specified, the time after y seconds is returned (negative seconds can also be specified).
+	Returns the (current) time as a string; if x$ is not specified, the current time is used; if x$ is specifiedas an ISO-8601 string, the specified time is used; if y is specified, the time after y seconds is returned (negative seconds can also be specified).
 
 SETTIME x$
 	Sets the current time, where x$ is the current time as an ISO-8601 string.
@@ -751,7 +739,7 @@ STRFTIME$(x$[,y$]])
 <Hints>
 Since MachiKania ver 1.2, the RETURN statement can be used in the middle of the FOR-NEXT loop, WHILE-WEND loop, and DO-LOOP loop. However, jumping outside the loop with the GOTO statement will cause unexpected results (e.g., equipment reset). It is also possible to use the GOSUB statement to call a subroutine or nest another loop.
 
-ON GOTO minutes and ON GOSUB statements are not supported. However, it is possible to cause similar behavior by writing, for example, the following
+ON GOTO statement and ON GOSUB statement are not supported. However, it is possible to cause similar behavior by writing, for example, the following
  GOSUB 10000+A
  ....
  10000 PRINT "A=0" : RETURN

@@ -1,7 +1,7 @@
-The included executable file (uf2 file) can be freely used for non-commercial use only
-You can freely use the included executable file (uf2 file) for non-commercial use only.
+The included executable file (uf2 file) can be freely used 
+for non-commercial use only.
 You may also publish your work to the general public. In that case,
-Please mention that you are using the MachiKania series on your website or
+please mention that you are using the MachiKania series on your website or instruction note.
 Please note that any damage or injury resulting from the use of the MachiKania series must be paid for by the user.
 We are not responsible for any damage or loss caused by the use of this software.
 

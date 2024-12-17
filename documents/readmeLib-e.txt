@@ -1,6 +1,6 @@
 <About the MachiKania library>
 
-The LIB directory contains several sub-directories, each of which contains class files. This will allow you to use the USECLASS statement. This will allow you to use these classes by declaring them with the USECLASS statement.
+The LIB directory contains several sub-directories, each of which contains class files. This will allow you to use the USECLASS statement. To use these classes in MachiKania, put the group of directories in a directory named “LIB” and place it in the root of the SD/MMC card. This will allow you to use these classes by declaring them in the USECLASS statement.
 
 The following is a (possibly incomplete) list of classes included in this library. Please refer to the respective documentation (e.g., help.txt) for information on how to use each class.
 
