@@ -753,6 +753,10 @@ Be careful when accessing global variables in interrupt functions. If a variable
 <Version history>
 KM-1507 Released in December 2024.
 　Changed so that separate class files can be handled for Pico/Pico2 or Type P/PU.
+　Fix SYSTEM(4) to return correct CPU execution speed.
+　Added SYSTEM(6) to obtain the size of BASIC's object RAM area.
+　When using the ILI9488 LCD, the width that could not be specified before can now be specified with the WIDTH statement.
+　When a WAIT statement is being executed, execution can be stopped by pressing the PAUSE/BREAK key on the keyboard.
 KM-1506 Released in October 2024.
 　Changed to use aon_timer for RTC to share code with Pico 2.
 KM-1505 Released in February 2024.

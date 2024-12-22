@@ -259,3 +259,12 @@ and TSC2046 (touch panel operation) to the class library.
 Phyllosoma 1.41/KM-1506 (2024.10.06)
 　Support Raspberry Pi Pico 2.
 　Update WEATHER.BAS sample program.
+
+Phyllosoma 1.50/KM-1507 (2024.12.28)
+　Update BLOCK.BAS and PHOTO.BAS sample programs.
+　Fixed a bug in the file selection function of the text editor.
+　Changed so that separate class files can be handled for Pico/Pico2 or Type P/PU.
+　Fix SYSTEM(4) to return correct CPU execution speed.
+　Added SYSTEM(6) to obtain the size of BASIC's object RAM area.
+　When using the ILI9488 LCD, the width that could not be specified before can now be specified with the WIDTH statement.
+　When a WAIT statement is being executed, execution can be stopped by pressing the PAUSE/BREAK key on the keyboard.
