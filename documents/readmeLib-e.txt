@@ -108,3 +108,7 @@ Phyllosoma 1.40/KM-1505 (2024.2.17)
 
 Phyllosoma 1.41/KM-1506 (2024.10.06)
 　No change
+
+Phyllosoma/Puerulus 1.50/KM-1507 (2024.12.28)
+　・WS2812B ver 1.1 (supports Pico2, Type PU)
+　・QRCODE ver 0.2.1 (supports Pico2)
