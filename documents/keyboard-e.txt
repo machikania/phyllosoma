@@ -13,7 +13,7 @@ When you are finished using the program, you can turn off the power without any 
 If a program is executed from the editor screen when a USB keyboard is connected, it will return to the editor screen again when the program is terminated by the END instruction or “Pause” key. If necessary, save the file to MMC/SD card before turning off the power.
 
 
-＜エディタ使用キー一覧＞
+<List of Keys Used in Editor>
 
 F1(CTRL+O)
 	Loads an existing file. If there is a file before saving, there is confirmation of saving.
@@ -24,7 +24,7 @@ F4
 Shift+F1(CTRL+N)
 	New text is created. If there is a file before saving, there is a confirmation of saving.
 Shift+F3
-	Switch between portrait and landscape display
+	Switching between portrait and landscape display for Type P, and 42 color characters/80 monochrome characters mode for Type PU
 Shift+F4
 	Compile test. Used to check for syntax errors, etc., since it is not executed.
 INSERT

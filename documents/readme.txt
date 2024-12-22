@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2024.10.06
+　　　　　　　　　　　　　　　　　　　　　　　　　　2024.12.28
 　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
 　　　　　　　　「MachiKania type P」
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -95,13 +95,11 @@ MachiKaniaシリーズを利用していることについてもWebサイトや
 　　MachiKania type P BASICシステム本体（PC connect機能対応版）
 　　PCとRaspberry Pi PicoをUSB接続し書き込む
 　　PC connect機能により、USBケーブルで接続したPCからBASICプログラムを転送可能
-　　WiFi接続が可能
 
 　-phyllosoma_kb.uf2
 　　MachiKania type P BASICシステム本体（USBキーボード接続対応版）
 　　PCとRaspberry Pi PicoをUSB接続し書き込む
 　　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
-　　WiFi接続が可能
 
 [pico_ili9341/embed]ディレクトリ
 [pico_w_ili9341/embed]ディレクトリ

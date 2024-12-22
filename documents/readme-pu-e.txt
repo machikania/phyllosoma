@@ -1,27 +1,38 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2024.10.06
+　　　　　　　　　　　　　　　　　　　　　　　　　　2024.12.28
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type P
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
 
 MachiKania is an open platform for microcontrollers with a BASIC compiler.
-MachiKania type P is equipped with a Raspberry Pi Pico (Pico 2, Pico W) and a small LCD module to realize a portable BASIC execution environment.
-External devices such as general-purpose I/O, SPI, and I2C can be easily controlled from BASIC.
+MachiKania type P is equipped with a Raspberry Pi Pico (Pico 2, Pico W) and an 
+NTSC video output circuitry to provide a portable BASIC execution environment.
+External devices such as general-purpose I/O, SPI, and I2C can be easily 
+controlled from BASIC.
+
+
 
 The on-board BASIC compiler is KM-BASIC, which is a 32-bit integer BASIC.
 It also supports single-precision floating-point arithmetic.
 Structured programming and object-oriented support are also available.
-BASIC programs can be created on a PC or other device and transferred via MMC or SD card, or using a USB cable and dedicated software.
-It is also possible to connect a USB keyboard and directly edit and execute the program.
+BASIC programs can be created on a PC or other device and transferred 
+via MMC or SD card, or using a USB cable and dedicated software.
+It is also possible to connect a USB keyboard and directly edit and execute 
+the program.
+
 
 For operating circuits and other details, please refer to the following Web site
-http://www.ze.em-net.ne.jp/~kenken/machikania/typep.html
+http://www.ze.em-net.ne.jp/~kenken/machikania/typepu.html
 
 
-The included executable file (uf2 file) can be freely used for non-commercial use only, free of charge.
-It is also possible to publish your work to the public. In this case, please mention that you are using the MachiKania series on your website, in the instructions, or in any other place.
-Please note that we are not responsible for any damage or loss caused by the use of the MachiKania series.
+The included executable file (uf2 file) can be freely used for non-commercial 
+use only, free of charge.
+It is also possible to publish your work to the public. In this case, 
+please mention that you are using the MachiKania series on your website, 
+in the instructions, or in any other place.
+Please note that we are not responsible for any damage or loss caused 
+by the use of the MachiKania series.
 
-<machikania-p.zip file contents
+<machikania-pu.zip file contents>
 
 [documents] directory
 　Stores documents
@@ -41,60 +52,87 @@ Please note that we are not responsible for any damage or loss caused by the use
 　- pcconnect-e.txt
 　　How to transfer files from your PC to MachiKania
 
-　- shematic.png
-　　MachiKania type P schematic
+　- shematic_ntsc.png
+　- shematic_xiao.png
+　　MachiKania type PU schematics
 
 　- wifi.txt
 　- wifi-e.txt
 　　Reference manual to use WiFi connection with Raspberry Pi Pico W
 
-[pico_ili9341] directory
-　Stores binaries used when combining Raspberry Pi Pico and ILI9341 LCD
-　- phyllosoma.uf2
-　　MachiKania type P BASIC system (version supporting PC connect function)
+[pico_ntsc] directory
+　Stores binaries when using Raspberry Pi Pico
+　- puerulus.uf2
+　　MachiKania type PU BASIC system (version supporting PC connect function)
 　　Connects the PC and Raspberry Pi Pico via USB and writes
 　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
 
-　- phyllosoma_kb.uf2
-　　MachiKania type P BASIC system main unit (USB keyboard connection version)
+　- puerulus_kb.uf2
+　　MachiKania type PU BASIC system main unit (USB keyboard connection version)
 　　Connects a PC and Raspberry Pi Pico via USB cable and writes
 　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
 
-[pico_w_ili9341] directory
-　Stores binaries used when combining Raspberry Pi Pico W and ILI9341 LCD
-　- phyllosoma.uf2
-　　MachiKania type P BASIC system (version supporting PC connect function)
-　　Connects the PC and Raspberry Pi Pico via USB and writes
-　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
-　　WiFi connection is available.
-
-　- phyllosoma_kb.uf2
-　　MachiKania type P BASIC system main unit (USB keyboard connection version)
-　　Connects a PC and Raspberry Pi Pico via USB cable and writes
-　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
-　　WiFi connection is available.
-
-[pico2_ili9341] directory
-　Stores binaries used when combining Raspberry Pi Pico 2 and ILI9341 LCD
-　- phyllosoma.uf2
-　　MachiKania type P BASIC system (version supporting PC connect function)
+[pico_w_ntsc] directory
+　Stores binaries when using Raspberry Pi Pico W
+　- puerulus.uf2
+　　MachiKania type PU BASIC system (version supporting PC connect function)
 　　Connects the PC and Raspberry Pi Pico via USB and writes
 　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
 　　WiFi connection is available.
 
-　- phyllosoma_kb.uf2
-　　MachiKania type P BASIC system main unit (USB keyboard connection version)
+　- puerulus_kb.uf2
+　　MachiKania type PU BASIC system main unit (USB keyboard connection version)
 　　Connects a PC and Raspberry Pi Pico via USB cable and writes
 　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
 　　WiFi connection is available.
 
-[pico_ili9341/embed] directory
-[pico_w_ili9341/embed] directory
-[pico2_ili9341/embed] directory
-　Stores tools that allow you to run BASIC programs without an SD card, e.g. for embedded applications
+[pico2_ntsc] directory
+　Stores binaries when using Raspberry Pi Pico 2
+　- puerulus.uf2
+　　MachiKania type PU BASIC system (version supporting PC connect function)
+　　Connects the PC and Raspberry Pi Pico via USB and writes
+　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
+
+　- puerulus_kb.uf2
+　　MachiKania type PU BASIC system main unit (USB keyboard connection version)
+　　Connects a PC and Raspberry Pi Pico via USB cable and writes
+　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
+
+[xiao_ntsc] directory
+　Stores binaries when using XIAO-RP2040, TINY2040, or RP2040-Zero
+　- puerulus.uf2
+　　MachiKania type PU BASIC system (version supporting PC connect function)
+　　Connects the PC and micro-contoller board via USB and writes
+　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
+
+　- puerulus_kb.uf2
+　　MachiKania type PU BASIC system main unit (USB keyboard connection version)
+　　Connects a PC and micro-contoller board via USB cable and writes
+　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
+
+[xiao_rp2350_ntsc] directory
+　Stores binaries when using XIAO-RP2350, TINY2350, or RP2350-Zero
+　- puerulus.uf2
+　　MachiKania type PU BASIC system (version supporting PC connect function)
+　　Connects the PC and micro-contoller board via USB and writes
+　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
+
+　- puerulus_kb.uf2
+　　MachiKania type PU BASIC system main unit (USB keyboard connection version)
+　　Connects a PC and micro-contoller board via USB cable and writes
+　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
+
+[pico_ntsc/embed] directory
+[pico_w_ntsc/embed] directory
+[pico2_ntsc/embed] directory
+[xiao_ntsc/embed] directory
+[xiao_rp2350_ntsc/embed] directory
+　Stores tools that allow you to run BASIC programs without an SD card, 
+　e.g. for embedded applications
 
 [pcconnect] directory
-　Contains tools for transferring files in a PC to MachiKania via USB cable
+　Contains tools for transferring files in a PC to MachiKania via USB 
+　cable
 
 readme.txt
 　This file
@@ -102,16 +140,18 @@ readme.txt
 readmeLib.txt
 　Library documentation in the LIB directory
 
-<Copy all files and directories below here to the root directory of the SD card
+<Copy all files and directories below here to the root directory of the SD card>
 
 MACHIKAP.INI
-　Initialization file for MachiKania type P
+　Initialization file for MachiKania type PU (shared with type P)
 
 [LIB] directory
-　Class library that can be easily used from BASIC programs Copy the entire LIB directory to the root of the SD card and use it
+　Class library that can be easily used from BASIC programs. Copy the entire 
+　LIB directory to the root of the SD card and use it
 
 [samples] directory
-　BASIC sample programs. Copy these files to the root directory of the SD card (or create any subdirectory and copy)
+　BASIC sample programs. Copy these files to the root directory of the 
+　SD card (or create any subdirectory and copy)
 
 　3DWAVE.BAS
 　　3D graphic of ripples
@@ -176,77 +216,7 @@ MACHIKAP.INI
 
 
 ------------------------------------------------------------------------
-MachiKania type P BASIC System Revision History
+MachiKania type PU BASIC System Revision History
 
-Phyllosoma 1.00/KM-1500 (2022.8.27)
+Phyllosoma 1.50/KM-1507 (2024.12.28)
 　First public version
-
-Phyllosoma 1.10/KM-1501 (2022.10.1)
-　Added PC connect function
-　Added NOT#() function
-　Fixed a bug that prevented compiling when another class is used in a class.
-　Fixed a bug in static function call of a class.
-　Allowed assignment of strings and arrays to object fields.
-　Fixed a bug that WAVE files stop playing after a certain period of time.
-　Allowed WAIT, DELAYMS, and DELAYUS statements to be used during interruptions
-　Fixed a bug that MUSIC statement stopped with an error in some environments.
-　Improved the display of the file selection screen.
-　Four classes, WS2812B, STRDIM, STRD2, and MA, have been added to the library.
-
-Phyllosoma 1.20/KM-1502 (2023.1.28)
-　USB keyboard and editor support
-　Added INKEY(), READKEY(), and INPUT$() functions and INKEY interrupt function.
-　Fixed a bug that occurred in some environments when compiling class files.
-　Added ALIGN4 statement, DATAADDRESS() function, and FUNCADDRESS() function.
-　Fixed a slight timing discrepancy in timer interrupt.
-　Added memory allocation related functions to SYSTEM().
-　Added a function related to memory allocation to SYSTEM().
-　Supported OPTION CLASSCODE.
-　Card can be inserted and removed during BASIC program execution.
-　HEX files created in C language can be loaded on the file selection screen.
-　Four classes, CRDINI, CLDHEX, REGEXP, and STRING, are added to the library.
-
-Phyllosoma 1.30/KM-1503 (2023.9.30)
-　WEATHER.BAS (get weather forecast from web), HDEAMON.BAS (construct web server) were added as a sample program.
-　Added HTTPD (construct HTTP deamon), IR_RX (IR receiver), IR_TX (IR transmitter), JSON (analyze JSON string) and WGET (web browsing) to the class library.
-　Added support for WiFi connection using Raspberry Pi Pico W. Following statements/functions are added: DNS$(), IFCONFIG$(), NTP, TCPACCEPT(), TCPCLIENT, TCPCLOSE, TCPRECEIVE, TCPSEND, TCPSERVER, TCPSTATUS, TLSCLIENT, WIFIERR(), WIFIERR$()
-　Fixed a bug in GCOLOR() function.
-　Fixed a key input bug with some USB keyboards.
-　FGETC() function returns -1 when EOF.
-　Supported XIAO RP2040, RP2040-Zero, and Tiny-2040 for embedding.
-　SPI ports can now be specified in the INI file.
-　Fixed a bug when the third argument of SERIAL statement is omitted.
-　Exceptions are now trapped and displayed on the screen.
-　Fixed a bug that CORETIMER starts to fail about 2000 seconds after power-on.
-　Support ILI9488.
-　Support RTC(Real Time Clock). Follosing statement/functions are added: GETTIME$(), SETTIME. STRFTIME$()
-　Supports date/time setting when saving files.
-　Supports RTC setting by NTP server.
-　Supports turning on/off the LEDs attached to the board by calling SYSTEM 201.
-　Fixed a memory allocation bug.
-　Fixed a garbage collection bug when using file-related commands such as FREMOVE/SETDIR.
-　Improved stability of the WAVE player.
-　Fixed a static method call bug in a class.
-　Three functions, FFINGD$(), FINFO(), and FINFO$(), are added. Enabled to create file list.
-　Fixed a compile-time bug when the REM statement contains double quotation.
-
-Phyllosoma 1.31/KM-1504 (2023.10.28)
-　The BASIC program for embed now supports file reading.
-　The number of files that can be embedded for embedding has been increased to 16.
-　Fixed a bug that caused wrong values when displaying floating points and handling strings.
-
-Phyllosoma 1.40/KM-1505 (2024.2.17)
-　FILEMAN.BAS (file manager) was added as a sample program.
-　Added BUTTON (button operation), GEN3O (Genkaku Gothic display), QRCODE (QRCODE display), 
-and TSC2046 (touch panel operation) to the class library.
-　Enabled to use spi1 with SPI instruction when LCD is not used.
-　Fixed a bug in PUTBMP instruction when displaying a long width image.
-　The file modification date and time can be displayed in the file list view.
-　The display order of file names and modified dates in the file list display is now supported.
-　Fixed a display bug on ILI9488 LCD when it is displayed in portrait mode.
-　The FRENAME and MKDIR instructions and the FRENAME() and MKDIR() functions have been added.
-　Auxiliary code (auxcode) can be added.
-
-Phyllosoma 1.41/KM-1506 (2024.10.06)
-　Support Raspberry Pi Pico 2.
-　Update WEATHER.BAS sample program.

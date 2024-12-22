@@ -1,27 +1,38 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2024.10.06
+　　　　　　　　　　　　　　　　　　　　　　　　　　2024.12.28
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type P
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
 
+
 MachiKania is an open platform for microcontrollers with a BASIC compiler.
-MachiKania type P is equipped with a Raspberry Pi Pico (Pico 2, Pico W) and a small LCD module to realize a portable BASIC execution environment.
-External devices such as general-purpose I/O, SPI, and I2C can be easily controlled from BASIC.
+MachiKania type P is equipped with a Raspberry Pi Pico (Pico 2, Pico W) and 
+a small LCD module to realize a portable BASIC execution environment.
+External devices such as general-purpose I/O, SPI, and I2C can be easily 
+controlled from BASIC.
+
 
 The on-board BASIC compiler is KM-BASIC, which is a 32-bit integer BASIC.
 It also supports single-precision floating-point arithmetic.
 Structured programming and object-oriented support are also available.
-BASIC programs can be created on a PC or other device and transferred via MMC or SD card, or using a USB cable and dedicated software.
-It is also possible to connect a USB keyboard and directly edit and execute the program.
+BASIC programs can be created on a PC or other device and transferred via 
+MMC or SD card, or using a USB cable and dedicated software.
+It is also possible to connect a USB keyboard and directly edit and execute 
+the program.
+
 
 For operating circuits and other details, please refer to the following Web site
 http://www.ze.em-net.ne.jp/~kenken/machikania/typep.html
 
 
-The included executable file (uf2 file) can be freely used for non-commercial use only, free of charge.
-It is also possible to publish your work to the public. In this case, please mention that you are using the MachiKania series on your website, in the instructions, or in any other place.
-Please note that we are not responsible for any damage or loss caused by the use of the MachiKania series.
+The included executable file (uf2 file) can be freely used for non-commercial 
+use only, free of charge.
+It is also possible to publish your work to the public. In this case, please 
+mention that you are using the MachiKania series on your website, in the 
+instructions, or in any other place.
+Please note that we are not responsible for any damage or loss caused by the 
+use of the MachiKania series.
 
-<machikania-p.zip file contents
+<machikania-p.zip file contents>
 
 [documents] directory
 　Stores documents
@@ -80,13 +91,11 @@ Please note that we are not responsible for any damage or loss caused by the use
 　　MachiKania type P BASIC system (version supporting PC connect function)
 　　Connects the PC and Raspberry Pi Pico via USB and writes
 　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
-　　WiFi connection is available.
 
 　- phyllosoma_kb.uf2
 　　MachiKania type P BASIC system main unit (USB keyboard connection version)
 　　Connects a PC and Raspberry Pi Pico via USB cable and writes
 　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
-　　WiFi connection is available.
 
 [pico_ili9341/embed] directory
 [pico_w_ili9341/embed] directory

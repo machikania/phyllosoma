@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2024.12.??
+　　　　　　　　　　　　　　　　　　　　　　　　　　2024.12.28
 　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
 　　　　　　　　「MachiKania type PU」
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -60,33 +60,28 @@ MachiKaniaシリーズを利用していることについてもWebサイトや
 　- wifi-e.txt
 　　Raspberry Pi Pico Wを使ってWiFi接続を行うときのリファレンスマニュアル
 
-　- MachiKania-RP2040-Video.pdf
-　　MachiKania type PUを、XIAO RP2040, Tiny2040, RP2040-Zero, XIAO RP2350, 
-　　Tiny235, RP235-Zeroで使うための基板（MachiKania RP2040 Video基板）の
-　　説明書 
-
 [pico_ntsc]ディレクトリ
 　Raspberry Pi Pico を使う時の使うバイナリーを格納
 　-puerulus.uf2
-　　MachiKania type P BASICシステム本体（PC connect機能対応版）
+　　MachiKania type PU BASICシステム本体（PC connect機能対応版）
 　　PCとRaspberry Pi PicoをUSB接続し書き込む
 　　PC connect機能により、USBケーブルで接続したPCからBASICプログラムを転送可能
 
 　-puerulus_kb.uf2
-　　MachiKania type P BASICシステム本体（USBキーボード接続対応版）
+　　MachiKania type PU BASICシステム本体（USBキーボード接続対応版）
 　　PCとRaspberry Pi PicoをUSB接続し書き込む
 　　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
 
 [pico_w_ntsc]ディレクトリ
 　Raspberry Pi Pico W を使う時の使うバイナリーを格納
 　-puerulus.uf2
-　　MachiKania type P BASICシステム本体（PC connect機能対応版）
+　　MachiKania type PU BASICシステム本体（PC connect機能対応版）
 　　PCとRaspberry Pi PicoをUSB接続し書き込む
 　　PC connect機能により、USBケーブルで接続したPCからBASICプログラムを転送可能
 　　WiFi接続が可能
 
 　-puerulus_kb.uf2
-　　MachiKania type P BASICシステム本体（USBキーボード接続対応版）
+　　MachiKania type PU BASICシステム本体（USBキーボード接続対応版）
 　　PCとRaspberry Pi PicoをUSB接続し書き込む
 　　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
 　　WiFi接続が可能
@@ -94,44 +89,38 @@ MachiKaniaシリーズを利用していることについてもWebサイトや
 [pico2_ntsc]ディレクトリ
 　Raspberry Pi Pico 2 を使う時の使うバイナリーを格納
 　-puerulus.uf2
-　　MachiKania type P BASICシステム本体（PC connect機能対応版）
+　　MachiKania type PU BASICシステム本体（PC connect機能対応版）
 　　PCとRaspberry Pi PicoをUSB接続し書き込む
 　　PC connect機能により、USBケーブルで接続したPCからBASICプログラムを転送可能
-　　WiFi接続が可能
 
 　-puerulus_kb.uf2
-　　MachiKania type P BASICシステム本体（USBキーボード接続対応版）
+　　MachiKania type PU BASICシステム本体（USBキーボード接続対応版）
 　　PCとRaspberry Pi PicoをUSB接続し書き込む
 　　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
-　　WiFi接続が可能
 
 [xiao_ntsc]ディレクトリ
 　XIAO-RP2040, TINY2040, RP2040-Zero を使う時の使うバイナリーを格納
 　-puerulus.uf2
-　　MachiKania type P BASICシステム本体（PC connect機能対応版）
-　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　MachiKania type PU BASICシステム本体（PC connect機能対応版）
+　　PCとマイコンボードをUSB接続し書き込む
 　　PC connect機能により、USBケーブルで接続したPCからBASICプログラムを転送可能
-　　WiFi接続が可能
 
 　-puerulus_kb.uf2
-　　MachiKania type P BASICシステム本体（USBキーボード接続対応版）
-　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　MachiKania type PU BASICシステム本体（USBキーボード接続対応版）
+　　PCとマイコンボードをUSB接続し書き込む
 　　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
-　　WiFi接続が可能
 
 [xiao_rp2350_ntsc]ディレクトリ
 　XIAO-RP2350, TINY2350, RP2350-Zero を使う時の使うバイナリーを格納
 　-puerulus.uf2
-　　MachiKania type P BASICシステム本体（PC connect機能対応版）
-　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　MachiKania type PU BASICシステム本体（PC connect機能対応版）
+　　PCとマイコンボードをUSB接続し書き込む
 　　PC connect機能により、USBケーブルで接続したPCからBASICプログラムを転送可能
-　　WiFi接続が可能
 
 　-puerulus_kb.uf2
-　　MachiKania type P BASICシステム本体（USBキーボード接続対応版）
-　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　MachiKania type PU BASICシステム本体（USBキーボード接続対応版）
+　　PCとマイコンボードをUSB接続し書き込む
 　　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
-　　WiFi接続が可能
 
 [pico_ntsc/embed]ディレクトリ
 [pico_w_ntsc/embed]ディレクトリ
@@ -154,7 +143,7 @@ readmeLib.txt
 ＜ここより下のファイルおよびディレクトリ全てをSDカードのルートディレクトリにコピーしてください＞
 
 MACHIKAP.INI
-　MachiKania type Pの初期設定ファイル
+　MachiKania type PUの初期設定ファイル(type Pと共通)
 
 [LIB]ディレクトリ
 　BASICプログラムから簡単に利用可能なクラスライブラリ
@@ -229,5 +218,5 @@ MACHIKAP.INI
 ------------------------------------------------------------------------
 MachiKania type PU BASICシステム改版履歴
 
-Phyllosoma 1.50/KM-1507（2024.12.??）
+Phyllosoma 1.50/KM-1507（2024.12.28）
 　・最初の公開バージョン
