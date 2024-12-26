@@ -1,10 +1,10 @@
 　　　　　　　　　　　　　　　　　　　　　　　　　　2024.12.28
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
-　　　　　　　　MachiKania type P
+　　　　　　　　MachiKania type PU
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
 
 MachiKania is an open platform for microcontrollers with a BASIC compiler.
-MachiKania type P is equipped with a Raspberry Pi Pico (Pico 2, Pico W) and an 
+MachiKania type PU is equipped with a Raspberry Pi Pico (Pico 2, Pico W) and an 
 NTSC video output circuitry to provide a portable BASIC execution environment.
 External devices such as general-purpose I/O, SPI, and I2C can be easily 
 controlled from BASIC.
@@ -13,15 +13,15 @@ controlled from BASIC.
 
 The on-board BASIC compiler is KM-BASIC, which is a 32-bit integer BASIC.
 It also supports single-precision floating-point arithmetic.
-Structured programming and object-oriented support are also available.
-BASIC programs can be created on a PC or other device and transferred 
-via MMC or SD card, or using a USB cable and dedicated software.
+Structured and object-oriented programmings are also available.
+BASIC programs can be created on a PC or other device and transferred via 
+MMC or SD card, or using a USB cable and dedicated software.
 It is also possible to connect a USB keyboard and directly edit and execute 
 the program.
 
 
 For operating circuits and other details, please refer to the following Web site
-http://www.ze.em-net.ne.jp/~kenken/machikania/typepu.html
+http://www.ze.em-net.ne.jp/~kenken/machikania/typepu.html (in Japanese)
 
 
 The included executable file (uf2 file) can be freely used for non-commercial 
@@ -159,11 +159,17 @@ MACHIKAP.INI
 　BLOCK.BAS
 　　Block breaking game created for the first MachiKania
 
+　COSMOS.BMP (used in PHOTO.BAS)
+
 　FILEMAN.BAS
-　　File manager for MachiKania type P
+　　File manager for MachiKania type P/PU
+
+　HDAEMON.BAS
+　　Sample program to build a web server construction using the HTTPD class
+　　Connect from PC or smartphone to turn on/off LEDs on Pico W
 
 　INVADE.BAS
-　　Invader game created for MachiKania type Z
+　　Invader game created for MachiKania type Z/M/P/PU
 
 　LCHIKA.BAS
 　　Sample program to blink LEDs
@@ -192,27 +198,21 @@ MACHIKAP.INI
 　RAYTRACE.BAS
 　　Ray tracing program
 
-　STARTREK.BAS
-　　Star Trek game program
-
 　SOUND.BAS
 　　Sample program using the SOUND instruction
 
+　STARTREK.BAS
+　　Star Trek game program
+
 　TIME-INT.BAS
 　　Sample program for timer interrupt
-
-　WFRAME.BAS
-　　Wireframe graphics program
 
 　WEATHER.BAS
 　　Sample program to get information from web pages on the net using WGET and JSON classes
 　　Display today's date and weather forecast
 　
-　HDAEMON.BAS
-　　Sample program to build a web server construction using the HTTPD class
-　　Connect from PC or smartphone to turn on/off LEDs on Pico W
-
-　COSMOS.BMP (used in PHOTO.BAS)
+　WFRAME.BAS
+　　Wireframe graphics program
 
 
 ------------------------------------------------------------------------

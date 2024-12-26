@@ -1,9 +1,9 @@
-With Type P ver 1.1 or later, you can transfer files from your PC to MachiKania when MachiKania starts up, if the PC is connected to MachiKania with a USB cable. You can also debug libraries in the LIB directory.
+With Type P ver 1.1 or later and Type PU, you can transfer files from your PC to MachiKania when MachiKania starts up, if the PC is connected to MachiKania with a USB cable. You can also debug libraries in the LIB directory.
 
 <Preparation>
 
-1. Install MachiKania type P ver 1.1 or later on your Raspberry Pi Pico.
-2. Extract the "pcconnect" directory in the MachiKania type P zip archive to a location on your PC.
+1. Install MachiKania type P ver 1.1 or later (or Type PU) on your Raspberry Pi Pico.
+2. Extract the "pcconnect" directory in the MachiKania type P/PU zip archive to a location on your PC.
 3. If you use Linux as PC, compile connect.c with gcc and create a.out. If you use Windows, unzip forWindows.zip and extract a.exe and cygwin1.dll to Extract a.exe and cygwin1.dll to the pcconnect directory.
 4. Edit connect.ini. After "SERIALPORT=", specify the COM port for MachiKania when it is connected to a PC. If you are not sure, leave it as it is ("/dev/ttyDUMMY") and proceed to the next step.
 5. After "ROOT=" in connect.ini, specify the directory name that contains the files to be transferred to MachiKania. The default is "machikap/". If you want to use it as it is, create the machikap directory in the pcconnect directory. If you want to use another directory, create a directory with the specified name.
@@ -14,8 +14,8 @@ With Type P ver 1.1 or later, you can transfer files from your PC to MachiKania 
 
 <Transfer of files>
 
-1. Place the file you wish to transfer (e.g. MACHIKAP.BAS) in the machikap directory and edit it with your favorite editor. 
-2. If MACHIKAP.BAS is present, it will be executed as is.
+1. Place the file(s) you wish to transfer (e.g. MACHIKAP.BAS) in the machikap directory and edit it with your favorite editor. 
+2. Push the reset button of Machikania. The files will be transferd to MachiKania. If MACHIKAP.BAS is present, it will be executed as is.
 
 <Cleanup>
 

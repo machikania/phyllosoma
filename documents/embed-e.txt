@@ -1,4 +1,4 @@
-Type P has a function to automatically execute a BASIC program at startup.
+Type P/PU has a function to automatically execute a BASIC program at startup.
 
 1. Save the auto-execute program (MACHIKAP.BAS) in the MMC (SD) card.
 2. Embed the program to be automatically executed in the *.uf2 file.
@@ -9,29 +9,29 @@ The followings are a step-by-step explanation.
 
 If an MMC (SD) card is connected, save the BASIC program as MACHIKAP.BAS in the root directory of the card, and it will be automatically executed at startup. The name of the file to be automatically executed can be specified in MACHIKAP.INI. If you wish to execute a different file, edit MACHIKAP.INI.
 
-<Embedding a program to be automatically executed>
+<Embedding program(s) to be automatically executed>
 
-Even if an MMC(SD) card is not connected, you can embed a file into a uf2 file as follows. 1.
+Even if an MMC(SD) card is not connected, you can embed file(s) into a uf2 file as follows.
 
 1. Prepare an environment where PHP can be executed.
 2. Prepare an embed-only phyllosoma.uf2 file (included in the distribution in the embed directory or built with the MACHIKANIA_DEBUG_MODE option).
 3. Place convert.php in the same directory as phyllosoma.uf2.
-4. Place the text files (BAS/TXT/INI files) you wish to embed in the same directory. At this time, name the file MACHIKAP.BAS as the name of the file you want to automatically execute. 5.
+4. Place the text files (BAS/TXT/INI files) you wish to embed in the same directory. At this time, name the file MACHIKAP.BAS as the name of the file you want to automatically execute.
 5. Execute convert.php in PHP.
 6. result.uf2 is created.
 
-Drag & drop the created result.uf2 and the MachiKania system with MACHIKAP.BAS embedded will be loaded into the Raspberry Pi Pico.
+Drag & drop the created result.uf2. The MachiKania system with MACHIKAP.BAS embedded will be loaded into the Raspberry Pi Pico.
 
 Notes:
 1. The license of the created result.uf2 is the same as the license of phyllosoma.uf2 (MachiKania license).
-2. When using a class, the "class name.BAS" file must also be placed in the same directory.
+2. When using a class, the "classname.BAS" file must also be placed in the same directory.
 3. Initial settings can be made by embedding MACHIKAP.INI.
 4. Only files that do not contain the null character (\0) can be embedded.
-5. Up to 4 files can be embedded, including MACHIKAP.BAS. If you want to embed more files or large files, you need to change debug.c in the MachiKania system source code and rebuild it.
+5. Up to 16 files can be embedded, including MACHIKAP.BAS. If you want to embed more files or large files, you need to change debug.c in the MachiKania system source code and rebuild it.
 
 <Selection of uf2 files to use for embedding>
 
-You can embed files not only in the Raspberry Pi Pico, but also in various other boards that use the RP2040. Please refer to the following list to determine which uf2 file to use.
+You can embed files not only in the Raspberry Pi Pico, but also in various other boards that use the RP2040/RP2350. Please refer the readme-e.txt to determine which uf2 file to use. The following list contains a part of them.
 
 1. Raspberry Pi Pico or YD-RP2040
 　　　pico_ili9341/embed/phyllosoma.uf2

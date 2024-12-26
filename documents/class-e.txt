@@ -25,11 +25,11 @@ STATIC PRIVATE x[,y[,z[, ... ]]]
 METHOD x
 	Declares a method in the class file. x is the name of the method with alphanumeric characters.
 
-To access field values (both public and private) in a class file, access (read and write) directly to the variable with the long name specified FIELD. Notations such as "THIS" are not necessary.
+To access field values (both public and private) in a class file, access (read and write) directly to the variable with the long name specified FIELD. Notations such as "THIS" are not required.
 
 If you want to access a static variable that is not a field of an object, use the STATIC or USEVAR instruction. A variable with a long name used here does not affect the value of a variable with the same name in other files. However, reading or changing variables A-Z will affect the values used in other files.
 
-All methods declared with the METHOD instruction are public. Use the LABEL and GOSUB instructions/functions for private subroutine calls. Arguments for method calls can be retrieved with the ARGS() function. If a pointer to your own object is needed in the method, it can be retrieved with ARGS(-2).
+All methods declared with the METHOD instruction are public. Use the LABEL and GOSUB instructions/functions for private subroutine calls. Arguments for method calls can be retrieved with the ARGS() function. If a pointer to its own object is needed in the method, it can be retrieved with ARGS(-2).
 
 To specify a constructor, use "METHOD INIT". If the INIT method is specified in this way, it will be called when the object is created; it is also possible to give arguments to the INIT method (arguments are not required if not needed).
 
@@ -53,7 +53,7 @@ Example (saved under the name CLASS1.BAS)
 　METHOD TEST6
 　RETURN TEST3
 　METHOD TEST8
-　RETURN TEST8
+　RETURN TEST7
 
 <How to create an object>
 
@@ -74,7 +74,7 @@ Example 2 (when arguments are specified for the constructor): USECLASS CLASS1
 
 <How to destroy an object>
 
-Created objects can also be destroyed using the DELETE instruction. However, since the destructor is not implemented, if necessary, create a method for it and call it just before destroying the object.
+Created objects can also be destroyed using the DELETE instruction. Note that, since the destructor is not implemented, if necessary, create a method for it and call it just before destroying the object.
 
 If the fields of the object are strings or arrays, these areas will not be destroyed simply by DELETE of the object. In this case, first destroy these fields in the method (a DELETE instruction can be used) and then destroy the object.
 
@@ -85,7 +85,7 @@ Example
 
 <How to Access Fields>
 
-To access a public field, enter the variable containing the object followed by "." followed by the name of the field. If the field is a character string, add a "$" after it, and if the field is a real number, add a "#" after it.
+To access a public field, enter the variable containing the object followed by "." that is followed by the name of the field. If the field is a character string, add a "$" after it, and if the field is a real number, add a "#" after it.
 
 Example
 　USECLASS CLASS1

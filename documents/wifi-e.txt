@@ -1,6 +1,6 @@
 <How to use the Wi-Fi function>
 
-If you install the Wi-Fi version of MachiKania type P on your Raspberry Pi Pico W, you can use the Wi-Fi functionality. 2.4 GHz band Wi-Fi router must be used. The SSID and password to connect to the router can be set in MACHIKAP.INI as in the following example
+If you install the Wi-Fi version of MachiKania type P/PU on your Raspberry Pi Pico W, you can use the Wi-Fi functionality. 2.4 GHz band Wi-Fi router must be used. The SSID and password to connect to the router can be set in MACHIKAP.INI as in the following example
 
 WIFISSID=xxxx
 WIFIPASSWD=xxxxxx
@@ -12,7 +12,7 @@ Both client and server applications can be built using MachiKania. The HTTP prot
 
 <Another way to specify SSID and password for Wi-Fi>
 
-There are cases where saving the Wi-Fi SSID and password as a file on an MMC/SD card may cause security issues. In such cases, you can embed the SSID and password into the Raspberry Pi Pico W itself. To do this, use "embed_ssid_passwd.php" or "embed_ssid_passwd_kb.php" in the "scripts" folder in GitHub repository. Copy "phyllosoma.uf2" or "phyllosoma_kb.uf2" to the same folder, edit "embed_ssid_passwd.php" or "embed_ssid_passwd_kb.php" and specify SSID and password at the beginning of the file. Running these php scripts by PHP will create "result.uf2", copy it to the RPI-RP2 drive of the Raspberry Pi Pico W. You can connect to Wi-Fi without writing the SSID and password in the MACHIKAP.INI file. You do not need to write SSID and password in MACHIKAP.INI to connect to Wi-Fi.
+There are cases where saving the Wi-Fi SSID and password as a file on an MMC/SD card may cause security issues. In such cases, you can embed the SSID and password into the Raspberry Pi Pico W itself. To do this, use "embed_ssid_passwd.php" in the "scripts" folder in GitHub repository. Copy "phyllosoma.uf2", "phyllosoma_kb.uf2", "puerulus.uf2", or "puerulus_kb.uf2" to the same folder and edit "embed_ssid_passwd.php" to specify SSID and password at the beginning of the file. At this time, confirm that only one *.uf2 file exists in the folder. Running these php scripts by PHP will create "result.uf2", copy it to the RPI-RP2 drive of the Raspberry Pi Pico W. You can connect to Wi-Fi without writing the SSID and password in the MACHIKAP.INI file. You do not need to write SSID and password in MACHIKAP.INI to connect to Wi-Fi.
 
 
 <Wi-Fi related MACHIKAP.INI settings>
@@ -106,7 +106,7 @@ WIFIERR$()
 <To obtain the fixed URL of a server>
 
 	When you build an HTTP server with MachiKania, the IP address is assigned dynamically by the Wi-Fi router's DHCP server, and the IP address is not constant. Therefore, the URL when accessing this HTTP server from a PC or smartphone may change. There are two ways to avoid this.
-	One way is to specify "HOSTNAME=" in MACHIKAP.INI. For example, if you specify "HOSTNAME=macserver", the host name of MachiKania will be "macserver.mshome.net" and so on. In this case, you can connect to MachiKania's HTTP server by accessing "http://macserver.mshome.net/". However, the "mshome.net" part will vary depending on your environment, so please check the full host name using a method such as "ping -a <IP address>" as described above.
+	One way is to specify "HOSTNAME=" in MACHIKAP.INI. For example, if you specify "HOSTNAME=macserver", the host name of MachiKania will be "macserver.mshome.net" and so on. In this case, you can connect to MachiKania's HTTP server by accessing "http://macserver.mshome.net/". Note that the "mshome.net" part will vary depending on your environment, so please check the full host name using a method such as "ping -a <IP address>" as described above.
 	Another method is to specify a fixed IP for the MAC address assigned to the Raspberry Pi Pico W used for MachiKania in the Wi-Fi router settings. For example, if you set "192.168.1.100", the URL will be fixed to "http://192.168.1.100/". To find out the MAC address, use "PRINT IFCONFIG$(16)" on MachiKania.
 
 
@@ -160,4 +160,5 @@ do
 loop
 
 <Version history>
+KM-1507 Released in December 2024.
 KM-1503 Released in September 2023.

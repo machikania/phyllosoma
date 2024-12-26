@@ -2,7 +2,7 @@
 
 The LIB directory contains several sub-directories, each of which contains class files. This will allow you to use the USECLASS statement. To use these classes in MachiKania, put the group of directories in a directory named “LIB” and place it in the root of the SD/MMC card. This will allow you to use these classes by declaring them in the USECLASS statement.
 
-The following is a (possibly incomplete) list of classes included in this library. Please refer to the respective documentation (e.g., help.txt) for information on how to use each class.
+The following is a (maybe incomplete) list of classes included in this library. Please refer to the respective documentation (e.g., help.txt) for information on how to use each class.
 
 BIGNUM
 	Class for performing long multiple arithmetic operations up to 1000 decimal places.
@@ -56,7 +56,7 @@ QRCODE
 	Class for displaying QRCODE on the screen.
 
 REGEXP
-	Class for using regular expressions with MachiKania type P.
+	Class for using regular expressions with MachiKania type P/PU.
 
 STRD2
 	Class for using arrays containing strings (used when defining arrays containing many short strings).
@@ -77,7 +77,7 @@ WS2812B
 	Class for using serial connection LED WS2812B.
 
 ------------------------------------------------------------------------
-MachiKania type P Class Library Revision History
+MachiKania type P/PU Class Library Revision History
 
 Phyllosoma 1.00/KM-1500 (2022.8.27)
 　First public version

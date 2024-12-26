@@ -159,11 +159,17 @@ MACHIKAP.INI
 　BLOCK.BAS
 　　初代MachiKania向けに作成したブロック崩しゲーム
 
+　COSMOS.BMP（PHOTO.BASで使用）
+
 　FILEMAN.BAS
-　　MachiKania type P用ファイルマネージャ
+　　MachiKania type P/PU用ファイルマネージャ
+
+　HDAEMON.BAS
+　　HTTPDクラスを使って web サーバー構築を構築するサンプルプログラム
+　　PCやスマートフォンから接続して、Pico W の LED をオン・オフできる
 
 　INVADE.BAS
-　　MachiKania type Z向けに作成したインベーダーゲーム
+　　MachiKania type Z/M/P/PU向けに作成したインベーダーゲーム
 
 　LCHIKA.BAS
 　　LEDを点滅させるサンプルプログラム
@@ -192,27 +198,21 @@ MACHIKAP.INI
 　RAYTRACE.BAS
 　　レイトレーシングプログラム
 
-　STARTREK.BAS
-　　スタートレックゲームプログラム
-
 　SOUND.BAS
 　　SOUND命令使用のサンプルプログラム
 
+　STARTREK.BAS
+　　スタートレックゲームプログラム
+
 　TIME-INT.BAS
 　　タイマー割り込みのサンプルプログラム
-
-　WFRAME.BAS
-　　ワイヤーフレームグラフィックプログラム
 
 　WEATHER.BAS
 　　WGETクラスとJSONクラスを使った、ネット上のwebページから情報を得るサンプルプログラム
 　　今日の日付と天気予報を表示する
 　
-　HDAEMON.BAS
-　　HTTPDクラスを使って web サーバー構築を構築するサンプルプログラム
-　　PCやスマートフォンから接続して、Pico W の LED をオン・オフできる
-
-　COSMOS.BMP（PHOTO.BASで使用）
+　WFRAME.BAS
+　　ワイヤーフレームグラフィックプログラム
 
 
 ------------------------------------------------------------------------

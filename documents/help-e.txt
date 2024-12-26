@@ -37,8 +37,6 @@ CONTINUE
 	Skip subsequent code in FOR-NEXT, DO-LOOP, and WHILE-WEND loops.
 CURSOR x,y
 	Specifies cursor position.
-CDATA xxx[,yyy[,zzz[...]]]
-	Specify data sequence as 8-bit integer value.
 DATA xxx[,yyy[,zzz[...]]]]
 	Specify a data string as an integer value or a string.
 DELAYMS x
@@ -65,15 +63,15 @@ END
 	Stops the BASIC program.
 EXEC x[,y[,z[...]]]
 	Execute machine language. The x, y, z are 16-bit integer values.
-FOR x=yyyy TO zzz [ STEP www ].
+FOR x=yyy TO zzz [ STEP www ].
 NEXT
-	Assign the result of the calculation indicated by yyyy to x, and repeat the statements up to the next NEXT statement until the value of x is zzzz. Each time it is repeated, the value of x is incremented by www (or by 1 if omitted). Note that nothing is written after "NEXT".
+	Assign the result of the calculation indicated by yyy to x, and repeat the statements up to the next NEXT statement until the value of x is zzz. Each time it is repeated, the value of x is incremented by www (or by 1 if omitted). Note that nothing is written after "NEXT".
 GOSUB xxx [, yyy [, zzz [, ... ]]]
-	Memorize the current execution position and move to line xxx (or label). yyyy, zzz, etc. are arguments that are passed on to the subroutine (see the ARGS() function).
+	Memorize the current execution position and move to line xxx (or label). yyy, zzz, etc. are arguments that are passed on to the subroutine (see the ARGS() function).
 GOTO xxx
 	Go to line xxx (or label).
 IF x|x# THEN yyy [ ELSE zzz ].
-	If x is non-zero, execute yyyy; if x is zero, execute zzzz. yyyy and zzzz can be written with multiple statements separated by ":".
+	If x is non-zero, execute yyy; if x is zero, execute zzz. yyy and zzz can be written with multiple statements separated by ":".
 IF x|x# THEN
 xxx
 [ELSEIF y|y# THEN
@@ -81,17 +79,17 @@ yyy]
 [ELSE
 zzz]
 ENDIF
-	Execute xxx when x or x# is non-zero, yyyy otherwise and y or y# is non-zero (if described), zzzz otherwise. ELSEIF statements can be multiple. Note that on each line, do not put anything after the THEN statement.
+	Execute xxx when x or x# is non-zero, yyy otherwise and y or y# is non-zero (if described), zzz otherwise. ELSEIF statements can be multiple. Note that on each line, do not put anything after the THEN statement.
 LABEL xxx
 	Register a jump destination for GOTO/GOSUB. xxx is a string of alphanumeric characters.
-[LET] x=yyyy
+[LET] x=yyy
 	Assign the result of the calculation indicated by y to x (an integer variable). "LET" may be omitted.
-[LET] x#=yyyy
+[LET] x#=yyy
 	Assign the result of the calculation indicated by y to x (a floating-point variable). "LET" may be omitted.
-[LET] x$=yyyy
-	The string (or concatenation result; the concatenation operator is "+") indicated by yyyy is assigned to x$. "LET" may be omitted.
+[LET] x$=yyy
+	The string (or concatenation result; the concatenation operator is "+") indicated by yyy is assigned to x$. "LET" may be omitted.
 MUSIC x$[,y].
-	Plays background music. For details, see <MUSIC> below. The y is invalid for TypeP and Type PU.
+	Plays background music. For details, see <MUSIC> below. The y is invalid for Type P and Type PU.
 PLAYWAVE x$[,y].
 	Plays a WAVE file for music (specified by x$ as the file name). The WAVE format is mono, bit length is 8, and sampling frequency is 15700 Hz or 16000 Hz. If y is specified, playback starts at the specified point (if you want playback from the first second, specify 15700 or 16000). If x$ is a zero-length string, which stops the currently playing music.
 PALETTE n,r,g,b
@@ -127,8 +125,8 @@ WAIT x
 WHILE x|x#
 WEND
 	If x or x# is non-zero, the statements from WHILE to WEND are executed repeatedly.
-WIDTH x[,y].
-	Specifies the width of the character display in characters. x can be 30, 36, 40, 48, or 80; for Type P, the range is 1-40 (1-60 when using ILI9488 LCD). If y=1, the display is vertical; if y=2, the display is horizontal (Type P only).
+WIDTH x[,y]
+	Specifies the width of the character display in characters. For Type P, the x range is 1-40 (1-60 when using ILI9488 LCD). For Type PU, x is either 42 or 80. If y=1, the display is vertical; if y=2, the display is horizontal (Type P only).
 
 <Integer type function>
 Hereinafter, x, y, z refer to integer values, x#, y#, z# refer to real values, and x$, y$, z$ refer to strings. [ ] indicates that the function is optional.
@@ -150,8 +148,8 @@ DRAWCOUNT()
 	Obtains the DRAWCOUNT value, which is a 16-bit integer value that increases by 1 every 1/60th of a second.
 FUNCADDRESS(xxx)
 	Returns the code address of the label indicated by xxx.
-GOSUB(xxx [, y [, z [, ... ]]])
-	Same as the GOSUB instruction, but with a return value (see RETURN). xxx is a label or line number. yyyy, zzz, etc. are arguments that are passed on to the subroutine (see ARGS() function).
+GOSUB(xxx [, yyy [, zzz [, ... ]]])
+	Same as the GOSUB instruction, but with a return value (see RETURN). xxx is a label or line number. yyy, zzz, etc. are arguments that are passed on to the subroutine (see ARGS() function).
 INKEY([x])
 	If x is not specified, returns the ASCII value of the currently pressed key. If x is specified with an ASCII value, returns whether the key is pressed or not.
 INT(x#)
@@ -224,8 +222,8 @@ FLOOR#(x#)
 	Returns the largest integer less than or equal to x# as a real number.
 FMOD#(x#,y#)
 	Returns the remainder of x# divided by y# as a real number.
-GOSUB#(xxx [, y [, z [, ... ]]])
-	Same as the GOSUB instruction, but returns a return value (see RETURN). xxx is a label or line number. yyyy, zzz, etc. are arguments that are passed on to the subroutine (see ARGS() function).
+GOSUB#(xxx [, yyy [, zzz [, ... ]]])
+	Same as the GOSUB instruction, but returns a return value (see RETURN). xxx is a label or line number. yyy, zzz, etc. are arguments that are passed on to the subroutine (see ARGS() function).
 LOG#(x#)
 	Returns the natural logarithm of x# as a real number.
 LOG10#(x#)
@@ -265,8 +263,8 @@ DEC$(x)
 	Returns the value of x as a decimal string.
 FLOAT$(x#)
 	Returns the real value x# as a decimal string.
-GOSUB$(xxx [, y [, z [, ... ]]])
-	Same as the GOSUB instruction, but returns a string (see RETURN) where xxx is a label or line number. yyyy, zzz, etc. are arguments that are passed on to the subroutine (see ARGS() function).
+GOSUB$(xxx [, yyy [, zzz [, ... ]]])
+	Same as the GOSUB instruction, but returns a string (see RETURN) where xxx is a label or line number. yyy, zzz, etc. are arguments that are passed on to the subroutine (see ARGS() function).
 HEX$(x [,y])
 	Returns the value of x as a hexadecimal string; if y is specified, the string is y bytes long.
 INPUT$()
@@ -317,7 +315,7 @@ x XOR y
 Note that the order of precedence for integer operators is from highest to lowest as follows
 
 + - (unary operator) &
-* / % (unary operator)
+* / %
 + - (addition/subtraction)
 << >>
 < <= > >= !
@@ -345,13 +343,13 @@ x# = y#
 	1 if two real numbers are equal, 0 otherwise
 x# ! = y#
 	0 if two real numbers are equal, 1 otherwise
-1 if x# < y#
+x# < y#
 	1 if x is less than y, 0 otherwise
-1 if x# <= y#
+x# <= y#
 	1 if x is less than or equal to y, 0 otherwise
-1 if x# > y#
+x# > y#
 	1 if x is greater than y, 0 otherwise
-1 if x# >= y#
+x# >= y#
 	1 if x is greater than or equal to y, 0 otherwise
 x# AND y#
 	Logical conjunction of x and y values (note that this is not a bitwise AND)
@@ -361,7 +359,7 @@ x# OR y#
 The order of precedence of the real number operators is from highest to lowest as follows
 
 + - (unary operator)
-* / - (addition/subtraction)
+* /
 + - (addition/subtraction)
 < <= > >= !
 = ! = !
@@ -370,13 +368,13 @@ OR
 
 <Special Instructions and Functions>
 IDLE
-	Enters idle mode ("wait" assembly). CPU stops until interrupts such as video signal creation or timers are applied.
+	Enters idle mode ("wfi" assembly). CPU stops until interrupts such as video signal creation or timers are applied.
 OPTION x[,y[,z ... ]]]
 	Specify various options. For more information on options, see the section "Options" below.
 SYSTEM x , y
-	Set various system values. (See <SYSTEM> below.)
+	Set various system values. (See <System Variables> below.)
 SYSTEM(x)
-	Returns various system values as integer values. (See <SYSTEM VARIABLES>.)
+	Returns various system values as integer values. (See <System Variables>.)
 SYSTEM$(x)
 	Returns various system values as strings. (See <System Variables>.)
 
@@ -546,7 +544,7 @@ The DATA column represents the replacement sound as a 32-bit integer value. The 
 
 Please refer to the attached "sound.bas" file for a sample of how to use this function.
 
-<PCG> PCG (Programmable Character Generator)
+<PCG>
 PCG (Programmable Character Generator) allows you to specify a font for each ASCII code and display it as pseudo-graphics. To use this function, first specify the font in the
 
 USEPCG
@@ -636,7 +634,7 @@ SYSTEM 252,x
 <Input/output commands and functions>
 
 ANALOG(x)
-	Returns the analog input value of GP26-29 (12-bit value; 0-4095). However, GP26 is specified for x=0, 13, 26; GP27 for x=1, 14, 27; GP28 for x=2, 15, 28; GP29 for x=3, 16, 29.
+	Returns the analog input value of GP26-29 (12-bit value; 0-4095). The GP26 is specified for x=0, 13, 26; GP27 for x=1, 14, 27; GP28 for x=2, 15, 28; GP29 for x=3, 16, 29.
 IN(x)
 	Returns the input value (1-bit value; 1 or 0) of the xth bit from the lower part of the specified I/O port. The input is pulled up inside the chip.
 IN8H()
@@ -647,7 +645,7 @@ IN16()
 	Returns the input value (16-bit value) of the I/O port. The input is pulled up inside the chip.
 PWM x[,y[,z]]
 	PWM output; x specifies the duty ratio in the range 0-1000; y specifies the pulse frequency in Hz (1000 if omitted; valid values are 6-95454).
-	By z=1, 2, and 3, output to the specified PWM1, PWM2, and PWM3, respectively.
+	By z=1, 2, and 3, output to the specified PWM1, PWM2, and PWM3, respectively (default: PWM1).
 SERIAL x[,y[,z]]
 	Starts serial communication. x specifies the baud rate (to terminate use of serial communication, specify x=0). y=0 for no parity, y=1 for even parity, y=2 for odd parity, y=3 for no 9-bit parity. If y is omitted, y=0. z specifies the number of characters in the receive buffer; if z is omitted, a buffer large enough to guarantee continuous reception for 1/60th of a second is reserved.
 SERIALIN([x])
@@ -675,7 +673,7 @@ I2CREADDATA x,y,z1[,z2[,z3...]]
 I2CERROR()
 	Returns a non-zero value if there was an error in the previous I2C transmission/reception, otherwise returns 0.
 SPI x[,y[,z1[,z2]]]
-	Starts SPI usage in master mode. x specifies the number of clocks in kHz (valid values are 93-47727). y specifies the number of bits in one word in 8/16/32 (8 if omitted). z1 specifies how to handle SPI clock (0 if omitted). ). z1 specifies how to handle the SPI clock (0 if omitted). For details, see below. z2 specifies which port is used for the CS line.
+	Starts SPI usage in master mode. x specifies the number of clocks in kHz (valid values are 93-47727). y specifies the number of bits in one word in 8/16/32 (8 if omitted). z1 specifies how to handle SPI clock (0 if omitted). For details, see below. z2 specifies which port is used for the CS line.
 	If z2 is omitted, 3 (GP3). If other ports are used, for example, 4 for GP4 (I/O bit 4) and 27 or 14 for GP27 (I/O bit 14).
 		z1=0: Low when idle and data changes to Low (CKP=0,CKE=1; CPOL=0,CPHA=0)
 		z1=1: Low when idle, data changes to high (CKP=0,CKE=0; CPOL=0,CPHA=1)
@@ -696,7 +694,7 @@ SPISWAPDATA x,y[,z1[,z2[,z3...]]]
 The following option(s) can be specified using the OPTION statement.
 
 OPTION CLASSCODE
-	After this option, you can write a code that describes the class. However, the file name must be saved as "classname.BAS". Using this feature, code that uses only one class can be contained in a single file. This is useful for class development.
+	After this option, you can write a code that describes the class. The file name must be saved as "classname.BAS". Using this feature, code that uses only one class can be contained in a single file. This is useful for class development.
 
 <Functions Related to Classes and Objects>
 For details on how to use classes and objects, please refer to class.txt. The following are related instructions and functions.
@@ -708,7 +706,7 @@ FIELD [PUBLIC] x[,y[,z[, ... ]]]
 FIELD PRIVATE x[,y[,z[, ... ]]]
 	Declares a private field in the class file. x,y,z, etc. are field names.
 STATIC [PUBLIC] x[,y[,z[, ... ]]]
-	Declares a public static variable in the class file. PUBLIC" may be omitted.
+	Declares a public static variable in the class file. "PUBLIC" may be omitted.
 STATIC PRIVATE x[,y[,z[, ... ]]]
 	Declares a private static variable in the class file.
 METHOD x
@@ -718,7 +716,7 @@ NEW(x[,y[,z[, ... ]]])
 DELETE x[,y[,z[, ... ]]]
 	Destroys the created object. x,y,z, etc. are the names of variables to store the object.
 CALL x
-	Calls the method of the object specified by x. CALL" can be omitted.
+	Calls the method of the object specified by x. "CALL" can be omitted.
 
 <Real-time clock>
 The real-time clock can be used with Type P and Type PU. When using it with Type P/Type PU that supports WiFi, set MACHIKAP.INI to connect to an NTP server at startup, or use the NTP command to connect to an NTP server to set the current time. If you are using Type P/Type PU that does not support WiFi, use the SETTIME command to set the current time. The ISO-8601 string used in the sequence of instructions and functions is formatted as shown in the following example (with a "T" between the date and time).

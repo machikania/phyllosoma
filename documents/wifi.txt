@@ -1,6 +1,6 @@
 ＜Wi-Fi機能の利用方法＞
 
-Raspberry Pi Pico Wに、Wi-Fi版のMachiKania type Pをインストールすると、Wi-Fi機能を利用することができます。2.4 GHz帯のWi-Fiルーターを使用してください。ルーターに接続すためのSSIDとパスワードは、MACHIKAP.INIで次の例のように設定することができます。
+Raspberry Pi Pico Wに、Wi-Fi版のMachiKania type P/PUをインストールすると、Wi-Fi機能を利用することができます。2.4 GHz帯のWi-Fiルーターを使用してください。ルーターに接続すためのSSIDとパスワードは、MACHIKAP.INIで次の例のように設定することができます。
 
 WIFISSID=xxxx
 WIFIPASSWD=xxxx
@@ -12,7 +12,7 @@ MachiKaniaを用いて、クライアントアプリケーションとサーバ�
 
 ＜Wi-Fi用のSSIDとパスワードを指定するもう一つの方法＞
 
-Wi-Fi用のSSIDとパスワードをMMC/SDカードにファイルとして保存する事がセキュリティー上問題になるケースがあると思います。そのような場合は、Raspberry Pi Pico Wの本体に、SSIDとパスワードを埋め込むことができます。これには、GitHubレポジトリーの「scripts」フォルダーにある、「embed_ssid_passwd.php」もしくは「embed_ssid_passwd_kb.php」を用います。「phyllosoma.uf2」もしくは「phyllosoma_kb.uf2」を同じフォルダーにコピーし、「embed_ssid_passwd.php」もしくは「embed_ssid_passwd_kb.php」を編集してファイル冒頭でSSIDとパスワードを指定してください。PHPにてこれらのphpスクリプトを実行すれば「result.uf2」が作成されますので、Raspberry Pi Pico WのRPI-RP2ドライブにコピーしてください。MACHIKAP.INIにSSIDやパスワードを記述しなくても、Wi-Fiに接続できます。
+Wi-Fi用のSSIDとパスワードをMMC/SDカードにファイルとして保存する事がセキュリティー上問題になるケースがあると思います。そのような場合は、Raspberry Pi Pico Wの本体に、SSIDとパスワードを埋め込むことができます。これには、GitHubレポジトリーの「scripts」フォルダーにある、「embed_ssid_passwd.php」を用います。「phyllosoma.uf2」「phyllosoma_kb.uf2」「puerulus.uf2」もしくは「puerulus_kb.uf2」を同じフォルダーにコピーし、「embed_ssid_passwd.php」を編集してファイル冒頭でSSIDとパスワードを指定してください。この時、フォルダー内には*.uf2ファイルが一つだけある事を確認してください。PHPにてこれらのphpスクリプトを実行すれば「result.uf2」が作成されますので、Raspberry Pi Pico WのRPI-RP2ドライブにコピーしてください。MACHIKAP.INIにSSIDやパスワードを記述しなくても、Wi-Fiに接続できます。
 
 
 ＜Wi-Fi関連のMACHIKAP.INI設定＞
@@ -160,4 +160,5 @@ do
 loop
 
 ＜バージョン履歴＞
+・KM-1507 2024年12月公開。
 ・KM-1503 2023年9月公開。
