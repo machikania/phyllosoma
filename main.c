@@ -10,12 +10,11 @@
 #include <stdlib.h>
 #include "pico/stdlib.h"
 #include "hardware/clocks.h"
+#include "./io.h"
 #include "./compiler.h"
 #include "./api.h"
 #include "./debug.h"
 #include "./display.h"
-#include "./config.h"
-#include "./io.h"
 #include "./interface/usbkeyboard.h"
 
 char g_autoexec[13]="MACHIKAP.BAS";

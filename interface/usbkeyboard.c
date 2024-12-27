@@ -42,7 +42,7 @@ uint16_t vkey; // usbkb_readkey()関数でセットされるキーコード、�
 uint8_t lockkey=0; // 初期化時にLockキーの状態指定。下位3ビットが<SCRLK><CAPSLK><NUMLK>
 uint8_t keytype=0; // キーボードの種類。0：日本語109キー、1：英語104キー
 
-#define USBKBLED_TIMER_INTERVAL 10;
+#define USBKBLED_TIMER_INTERVAL 50;
 static uint32_t usbkbled_timer=0;
 static bool lockkeychanged;
 static uint8_t USBKB_dev_addr=0xFF;
@@ -365,7 +365,11 @@ bool usbkb_init(void){
 	for(int i=0;i<256;i++) usbkb_keystatus[i]=0; //全キー離した状態
 	lockkeychanged=false;
 	sem_init(&keycodebuf_sem, 1, 1); //キーコードバッファ用セマフォ初期化
-	return tusb_init(); //TinyUSB初期化処理
+	tuh_init(BOARD_TUH_RHPORT);
+	if (board_init_after_tusb) {
+		board_init_after_tusb();
+	}
+	return true;
 }
 
 // USBインターフェイス監視とキーボードの処理実施

@@ -1,8 +1,8 @@
 <About the MachiKania library>
 
-The LIB directory contains several sub-directories, each of which contains class files. This will allow you to use the USECLASS statement. This will allow you to use these classes by declaring them with the USECLASS statement.
+The LIB directory contains several sub-directories, each of which contains class files. This will allow you to use the USECLASS statement. To use these classes in MachiKania, put the group of directories in a directory named “LIB” and place it in the root of the SD/MMC card. This will allow you to use these classes by declaring them in the USECLASS statement.
 
-The following is a (possibly incomplete) list of classes included in this library. Please refer to the respective documentation (e.g., help.txt) for information on how to use each class.
+The following is a (maybe incomplete) list of classes included in this library. Please refer to the respective documentation (e.g., help.txt) for information on how to use each class.
 
 BIGNUM
 	Class for performing long multiple arithmetic operations up to 1000 decimal places.
@@ -56,7 +56,7 @@ QRCODE
 	Class for displaying QRCODE on the screen.
 
 REGEXP
-	Class for using regular expressions with MachiKania type P.
+	Class for using regular expressions with MachiKania type P/PU.
 
 STRD2
 	Class for using arrays containing strings (used when defining arrays containing many short strings).
@@ -77,7 +77,7 @@ WS2812B
 	Class for using serial connection LED WS2812B.
 
 ------------------------------------------------------------------------
-MachiKania type P Class Library Revision History
+MachiKania type P/PU Class Library Revision History
 
 Phyllosoma 1.00/KM-1500 (2022.8.27)
 　First public version
@@ -108,3 +108,7 @@ Phyllosoma 1.40/KM-1505 (2024.2.17)
 
 Phyllosoma 1.41/KM-1506 (2024.10.06)
 　No change
+
+Phyllosoma/Puerulus 1.50/KM-1507 (2024.12.28)
+　・WS2812B ver 1.1 (supports Pico2, Type PU)
+　・QRCODE ver 0.2.1 (supports Pico2)

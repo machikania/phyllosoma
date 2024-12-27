@@ -3,7 +3,9 @@
 date_default_timezone_set('America/Los_Angeles');
 
 if (!defined('FILENAME')) {
-	define('FILENAME','phyllosoma.uf2');
+	if (file_exists('phyllosoma.uf2')) define('FILENAME','phyllosoma.uf2');
+	elseif (file_exists('puerulus.uf2')) define('FILENAME','puerulus.uf2');
+	else exit("The *.uf2 file donesn't exist");
 }
 
 // Initializations

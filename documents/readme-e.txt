@@ -1,27 +1,38 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2024.10.06
+　　　　　　　　　　　　　　　　　　　　　　　　　　2024.12.28
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type P
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
 
+
 MachiKania is an open platform for microcontrollers with a BASIC compiler.
-MachiKania type P is equipped with a Raspberry Pi Pico (Pico 2, Pico W) and a small LCD module to realize a portable BASIC execution environment.
-External devices such as general-purpose I/O, SPI, and I2C can be easily controlled from BASIC.
+MachiKania type P is equipped with a Raspberry Pi Pico (Pico 2, Pico W) and 
+a small LCD module to realize a portable BASIC execution environment.
+External devices such as general-purpose I/O, SPI, and I2C can be easily 
+controlled from BASIC.
+
 
 The on-board BASIC compiler is KM-BASIC, which is a 32-bit integer BASIC.
 It also supports single-precision floating-point arithmetic.
-Structured programming and object-oriented support are also available.
-BASIC programs can be created on a PC or other device and transferred via MMC or SD card, or using a USB cable and dedicated software.
-It is also possible to connect a USB keyboard and directly edit and execute the program.
+Structured and object-oriented programmings are also available.
+BASIC programs can be created on a PC or other device and transferred via 
+MMC or SD card, or using a USB cable and dedicated software.
+It is also possible to connect a USB keyboard and directly edit and execute 
+the program.
+
 
 For operating circuits and other details, please refer to the following Web site
-http://www.ze.em-net.ne.jp/~kenken/machikania/typep.html
+http://www.ze.em-net.ne.jp/~kenken/machikania/typep.html (in Japanese)
 
 
-The included executable file (uf2 file) can be freely used for non-commercial use only, free of charge.
-It is also possible to publish your work to the public. In this case, please mention that you are using the MachiKania series on your website, in the instructions, or in any other place.
-Please note that we are not responsible for any damage or loss caused by the use of the MachiKania series.
+The included executable file (uf2 file) can be freely used for non-commercial 
+use only, free of charge.
+It is also possible to publish your work to the public. In this case, please 
+mention that you are using the MachiKania series on your website, in the 
+instructions, or in any other place.
+Please note that we are not responsible for any damage or loss caused by the 
+use of the MachiKania series.
 
-<machikania-p.zip file contents
+<machikania-p.zip file contents>
 
 [documents] directory
 　Stores documents
@@ -52,49 +63,52 @@ Please note that we are not responsible for any damage or loss caused by the use
 　Stores binaries used when combining Raspberry Pi Pico and ILI9341 LCD
 　- phyllosoma.uf2
 　　MachiKania type P BASIC system (version supporting PC connect function)
-　　Connects the PC and Raspberry Pi Pico via USB and writes
+　　Connects the PC and Raspberry Pi Pico via USB and transfer the uf2 file
 　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
 
 　- phyllosoma_kb.uf2
 　　MachiKania type P BASIC system main unit (USB keyboard connection version)
-　　Connects a PC and Raspberry Pi Pico via USB cable and writes
+　　Connects a PC and Raspberry Pi Pico via USB cable and transfer the uf2 file
 　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
+
 
 [pico_w_ili9341] directory
 　Stores binaries used when combining Raspberry Pi Pico W and ILI9341 LCD
 　- phyllosoma.uf2
 　　MachiKania type P BASIC system (version supporting PC connect function)
-　　Connects the PC and Raspberry Pi Pico via USB and writes
+　　Connects the PC and Raspberry Pi Pico via USB and transfer the uf2 file
 　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
 　　WiFi connection is available.
 
 　- phyllosoma_kb.uf2
 　　MachiKania type P BASIC system main unit (USB keyboard connection version)
-　　Connects a PC and Raspberry Pi Pico via USB cable and writes
+　　Connects a PC and Raspberry Pi Pico via USB cable and transfer the uf2 file
 　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
 　　WiFi connection is available.
+
 
 [pico2_ili9341] directory
 　Stores binaries used when combining Raspberry Pi Pico 2 and ILI9341 LCD
 　- phyllosoma.uf2
 　　MachiKania type P BASIC system (version supporting PC connect function)
-　　Connects the PC and Raspberry Pi Pico via USB and writes
+　　Connects the PC and Raspberry Pi Pico via USB and transfer the uf2 file
 　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
-　　WiFi connection is available.
 
 　- phyllosoma_kb.uf2
 　　MachiKania type P BASIC system main unit (USB keyboard connection version)
-　　Connects a PC and Raspberry Pi Pico via USB cable and writes
+　　Connects a PC and Raspberry Pi Pico via USB cable and transfer the uf2 file
 　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
-　　WiFi connection is available.
+
 
 [pico_ili9341/embed] directory
 [pico_w_ili9341/embed] directory
 [pico2_ili9341/embed] directory
 　Stores tools that allow you to run BASIC programs without an SD card, e.g. for embedded applications
 
+
 [pcconnect] directory
 　Contains tools for transferring files in a PC to MachiKania via USB cable
+
 
 readme.txt
 　This file
@@ -102,16 +116,18 @@ readme.txt
 readmeLib.txt
 　Library documentation in the LIB directory
 
-<Copy all files and directories below here to the root directory of the SD card
+<Copy all files and directories below here to the root directory of the MMC/SD card
 
 MACHIKAP.INI
 　Initialization file for MachiKania type P
 
 [LIB] directory
-　Class library that can be easily used from BASIC programs Copy the entire LIB directory to the root of the SD card and use it
+　Class library that can be easily used from BASIC programs 
+　Copy the entire LIB directory to the root of the MMC/SD card and use it
 
 [samples] directory
-　BASIC sample programs. Copy these files to the root directory of the SD card (or create any subdirectory and copy)
+　BASIC sample programs. Copy these files to the root directory of the SD card 
+　(or create any subdirectory and copy)
 
 　3DWAVE.BAS
 　　3D graphic of ripples
@@ -119,11 +135,17 @@ MACHIKAP.INI
 　BLOCK.BAS
 　　Block breaking game created for the first MachiKania
 
+　COSMOS.BMP (used in PHOTO.BAS)
+
 　FILEMAN.BAS
-　　File manager for MachiKania type P
+　　File manager for MachiKania type P/PU
+
+　HDAEMON.BAS
+　　Sample program to build a web server construction using the HTTPD class
+　　Connect from PC or smartphone to turn on/off LEDs on Pico W
 
 　INVADE.BAS
-　　Invader game created for MachiKania type Z
+　　Invader game created for MachiKania type Z/M/P/PU
 
 　LCHIKA.BAS
 　　Sample program to blink LEDs
@@ -152,27 +174,21 @@ MACHIKAP.INI
 　RAYTRACE.BAS
 　　Ray tracing program
 
-　STARTREK.BAS
-　　Star Trek game program
-
 　SOUND.BAS
 　　Sample program using the SOUND instruction
 
+　STARTREK.BAS
+　　Star Trek game program
+
 　TIME-INT.BAS
 　　Sample program for timer interrupt
-
-　WFRAME.BAS
-　　Wireframe graphics program
 
 　WEATHER.BAS
 　　Sample program to get information from web pages on the net using WGET and JSON classes
 　　Display today's date and weather forecast
 　
-　HDAEMON.BAS
-　　Sample program to build a web server construction using the HTTPD class
-　　Connect from PC or smartphone to turn on/off LEDs on Pico W
-
-　COSMOS.BMP (used in PHOTO.BAS)
+　WFRAME.BAS
+　　Wireframe graphics program
 
 
 ------------------------------------------------------------------------
@@ -250,3 +266,13 @@ and TSC2046 (touch panel operation) to the class library.
 Phyllosoma 1.41/KM-1506 (2024.10.06)
 　Support Raspberry Pi Pico 2.
 　Update WEATHER.BAS sample program.
+
+Phyllosoma 1.50/KM-1507 (2024.12.28)
+　Update BLOCK.BAS and PHOTO.BAS sample programs.
+　Update WS2812B and QRCODE in class library to support using for Pico 2.
+　Fixed a bug in the file selection function of the text editor.
+　Changed so that separate class files can be handled for Pico/Pico2 or Type P/PU.
+　Fix SYSTEM(4) to return correct CPU execution speed.
+　Added SYSTEM(6) to obtain the size of BASIC's object RAM area.
+　When using the ILI9488 LCD, the width that could not be specified before can now be specified with the WIDTH statement.
+　When a WAIT statement is being executed, execution can be stopped by pressing the PAUSE/BREAK key on the keyboard.

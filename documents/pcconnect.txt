@@ -1,9 +1,9 @@
-Type P の ver 1.1以降では、USBケーブルでPCとMachiKaniaを接続しておけば、MachiKaniaの起動時にPCから指定のファイルを転送することができます。BASICプログラムの作成やデバッグの際に、便利です。LIBディレクトリー中のライブラリーのデバッグも行えます。
+Type P の ver 1.1以降とType PUでは、USBケーブルでPCとMachiKaniaを接続しておけば、MachiKaniaの起動時にPCから指定のファイルを転送することができます。BASICプログラムの作成やデバッグの際に、便利です。LIBディレクトリー中のライブラリーのデバッグも行えます。
 
 ＜準備＞
 
-１．ver 1.1以降のMachiKania type Pを、Raspberry Pi Picoにインストールします。
-２．ダウンロードしたMachiKania type PのZIPアーカイブ中の「pcconnect」ディレクトリーを、PCのどこかに解凍・展開します。
+１．ver 1.1以降のMachiKania type P(もしくはType PU)を、Raspberry Pi Picoにインストールします。
+２．ダウンロードしたMachiKania type P/PUのZIPアーカイブ中の「pcconnect」ディレクトリーを、PCのどこかに解凍・展開します。
 ３．PCとしてLinuxを使用する場合は、connect.cをgccでコンパイルし、a.outを作成してください。Windowsを使用する場合は、forWindows.zipを解凍し、a.exeとcygwin1.dllをpcconnectディレクトリーに展開してください。
 ４．connect.iniを編集します。「SERIALPORT=」の後にはMachiKaniaをPCに接続した場合のCOMポートを指定します。よく分からない場合は、とりあえずそのまま(「/dev/ttyDUMMY」のまま)で次に進めてください。
 ５．connect.iniの「ROOT=」の後には、MachiKaniaに転送するファイルを含むディレクトリー名を指定します。デフォルトでは「machikap/」となっています。そのまま使用する場合は、pcconnectディレクトリーにmachikapディレクトリーを作成してください。別のディレクトリーを使用する場合は、指定した名のディレクトリーを作成してください。

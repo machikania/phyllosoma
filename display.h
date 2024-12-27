@@ -42,8 +42,21 @@
 	(1<<DISPLAY_PUTBMP) |\
 	(1<<DISPLAY_PUTBMP2) |\
 	(1<<DISPLAY_PSET) )
+#define DISPLAY_USE_GRAPHIC (\
+	(1<<DISPLAY_BOXFILL) |\
+	(1<<DISPLAY_CIRCLE) |\
+	(1<<DISPLAY_CIRCLEFILL) |\
+	(1<<DISPLAY_GCLS) |\
+	(1<<DISPLAY_GCOLOR) |\
+	(1<<DISPLAY_GPALETTE) |\
+	(1<<DISPLAY_GPRINT) |\
+	(1<<DISPLAY_LINE) |\
+	(1<<DISPLAY_POINT) |\
+	(1<<DISPLAY_PSET) |\
+	(1<<DISPLAY_PUTBMP) |\
+	(1<<DISPLAY_PUTBMP2) |\
+	(1<<DISPLAY_GCOLOR_FUNC) )
 
-void display_init(void);
 int display_statements(void);
 int display_functions(void);
 int lib_display(int r0, int r1, int r2);

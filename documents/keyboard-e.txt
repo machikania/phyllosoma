@@ -1,0 +1,61 @@
+The keyboard-capable version of MachiKania (phyllosoma_kb.uf2/puerulus_kb.uf2) allows keyboards to be connected using a USB-OTG cable.
+
+When the program is started with a USB keyboard connected, the editor screen starts up. Enter a BASIC program here and press the F4 key to compile and execute it. When execution is completed, the program returns to the editor screen. If necessary, save the created program to the MMC/SD card by pressing the F2 key. The BASIC program is saved as a temporary file when the program is executed, and the temporary file is deleted when the program is terminated. If for some reason you exit the system without exiting the program, this temporary file will be loaded at the next startup, so please name and save the file as necessary.
+
+The below table shows the special keys that can be used in the editor, as well as the ability to select a range and copy/paste using Shift + arrow keys. Note that copying is limited to the area that fits on one screen.
+
+Execution of a running BASIC program is terminated by reaching the END instruction or the last line of the program, and can be forced termination by pressing the “Pause” key during program execution. Note, however, that this may not work depending on the contents of the program being executed.
+
+When the USB keyboard connection version is started without a keyboard connected, the file selection screen with buttons is started. In addition, depending on the type of keyboard, the USB keyboard may not be recognized at power-on or reset, and in this case, the file selection screen with buttons will also be launched. Some types of keyboards, however, may not be recognized at all, so please prepare a different keyboard in this case. 
+
+When you are finished using the program, you can turn off the power without any problem. If you want to execute another program, press the RESET button to return to the program selection screen. You can also reset the software by pressing the START button after the program is finished (when the program is executed to the end or when the END instruction is executed).
+
+If a program is executed from the editor screen when a USB keyboard is connected, it will return to the editor screen again when the program is terminated by the END instruction or “Pause” key. If necessary, save the file to MMC/SD card before turning off the power.
+
+
+<List of Keys Used in Editor>
+
+F1(CTRL+O)
+	Loads an existing file. If there is a file before saving, there is confirmation of saving.
+F2
+	Saves the file by specifying a file name
+F4
+	Execute BASIC program (RUN)
+Shift+F1(CTRL+N)
+	New text is created. If there is a file before saving, there is a confirmation of saving.
+Shift+F3
+	Switching between portrait and landscape display for Type P, and 42 color characters/80 monochrome characters mode for Type PU
+Shift+F4
+	Compile test. Used to check for syntax errors, etc., since it is not executed.
+INSERT
+	Switches between insert mode and overwrite mode (cursor shape changes)
+Delete
+	Delete one character at the cursor position.
+Back Space
+	Delete one character before the cursor.
+Enter
+	Start a new line.
+Arrow keys
+	Move cursor
+Home (CTRL+Left arrow)
+	Move to the beginning of a line
+End (CTRL+right arrow)
+	Go to end of line
+Page Up
+	Scroll up one screen
+Page Down
+	Scroll down one screen
+Shift+arrow keys
+	Select a range. The selected area is displayed in green.
+CTRL+C
+	Copy selection to clipboard
+CTRL+X
+	Copy selection to clipboard and delete
+CTRL+V
+	Paste from clipboard
+CTRL+Z
+	Undo
+Shift+Caps Lock
+	Switch to uppercase input mode
+Scroll Lock or Katakana/Hiragana
+	Toggle Kana input mode

@@ -24,7 +24,6 @@ caused by using this program.
 unsigned char TVRAM[ATTROFFSET*2+1] __attribute__ ((aligned (4)));
 unsigned char *fontp; //フォント格納アドレス、初期化時はFontData、RAM指定することでPCGを実現
 unsigned int bgcolor; // バックグランドカラー
-//unsigned char twidth; //テキスト1行文字数
 unsigned char *cursor;
 unsigned char cursorcolor;
 unsigned short palette[256];
@@ -763,4 +762,10 @@ void set_lcdalign(unsigned char align){
 		WIDTH_Y=LCD_COLUMN_RES/8;
 	}
 	clearscreen();
+}
+
+// General function for video
+
+void video_init(void){
+	init_palette();
 }

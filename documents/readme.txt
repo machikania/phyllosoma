@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2024.10.06
+　　　　　　　　　　　　　　　　　　　　　　　　　　2024.12.28
 　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
 　　　　　　　　「MachiKania type P」
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -59,7 +59,6 @@ MachiKaniaシリーズを利用していることについてもWebサイトや
 　- wifi-e.txt
 　　Raspberry Pi Pico Wを使ってWiFi接続を行うときのリファレンスマニュアル 
 
-
 [pico_ili9341]ディレクトリ
 　Raspberry Pi Pico と ILI9341 液晶の組み合わせのときに使うバイナリー
 　を格納
@@ -95,13 +94,11 @@ MachiKaniaシリーズを利用していることについてもWebサイトや
 　　MachiKania type P BASICシステム本体（PC connect機能対応版）
 　　PCとRaspberry Pi PicoをUSB接続し書き込む
 　　PC connect機能により、USBケーブルで接続したPCからBASICプログラムを転送可能
-　　WiFi接続が可能
 
 　-phyllosoma_kb.uf2
 　　MachiKania type P BASICシステム本体（USBキーボード接続対応版）
 　　PCとRaspberry Pi PicoをUSB接続し書き込む
 　　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
-　　WiFi接続が可能
 
 [pico_ili9341/embed]ディレクトリ
 [pico_w_ili9341/embed]ディレクトリ
@@ -119,14 +116,14 @@ readme.txt
 readmeLib.txt
 　LIB ディレクトリー内のライブラリー説明書
 
-＜ここより下のファイルおよびディレクトリ全てをSDカードのルートディレクトリにコピーしてください＞
+＜ここより下のファイルおよびディレクトリ全てをMMC/SDカードのルートディレクトリにコピーしてください＞
 
 MACHIKAP.INI
 　MachiKania type Pの初期設定ファイル
 
 [LIB]ディレクトリ
 　BASICプログラムから簡単に利用可能なクラスライブラリ
-　SDカードのルートにLIBディレクトリごとコピーして利用
+　MMC/SDカードのルートにLIBディレクトリごとコピーして利用
 
 [samples]ディレクトリ
 　BASICサンプルプログラム。これらのファイルをSDカードのルートディレクトリにコピーする
@@ -138,11 +135,17 @@ MACHIKAP.INI
 　BLOCK.BAS
 　　初代MachiKania向けに作成したブロック崩しゲーム
 
+　COSMOS.BMP（PHOTO.BASで使用）
+
 　FILEMAN.BAS
-　　MachiKania type P用ファイルマネージャ
+　　MachiKania type P/PU用ファイルマネージャ
+
+　HDAEMON.BAS
+　　HTTPDクラスを使って web サーバー構築を構築するサンプルプログラム
+　　PCやスマートフォンから接続して、Pico W の LED をオン・オフできる
 
 　INVADE.BAS
-　　MachiKania type Z向けに作成したインベーダーゲーム
+　　MachiKania type Z/M/P/PU向けに作成したインベーダーゲーム
 
 　LCHIKA.BAS
 　　LEDを点滅させるサンプルプログラム
@@ -171,27 +174,21 @@ MACHIKAP.INI
 　RAYTRACE.BAS
 　　レイトレーシングプログラム
 
-　STARTREK.BAS
-　　スタートレックゲームプログラム
-
 　SOUND.BAS
 　　SOUND命令使用のサンプルプログラム
 
+　STARTREK.BAS
+　　スタートレックゲームプログラム
+
 　TIME-INT.BAS
 　　タイマー割り込みのサンプルプログラム
-
-　WFRAME.BAS
-　　ワイヤーフレームグラフィックプログラム
 
 　WEATHER.BAS
 　　WGETクラスとJSONクラスを使った、ネット上のwebページから情報を得るサンプルプログラム
 　　今日の日付と天気予報を表示する
 　
-　HDAEMON.BAS
-　　HTTPDクラスを使って web サーバー構築を構築するサンプルプログラム
-　　PCやスマートフォンから接続して、Pico W の LED をオン・オフできる
-
-　COSMOS.BMP（PHOTO.BASで使用）
+　WFRAME.BAS
+　　ワイヤーフレームグラフィックプログラム
 
 
 ------------------------------------------------------------------------
@@ -275,3 +272,13 @@ Phyllosoma 1.40/KM-1505 (2024.2.17)
 Phyllosoma 1.41/KM-1506 (2024.10.06)
 　・Raspberry Pi Pico 2に対応。
 　・WEATHER.BASサンプルプログラムを更新
+
+Phyllosoma 1.50/KM-1507 (2024.12.28)
+　・サンプルプログラム(BLOCK.BAS, PHOTO.BAS)を修正。
+　・クラスライブラリーのWS2812BとQRCODEを、Pico 2に対応するよう修正。
+　・テキストエディターのファイル選択機能のバグ修正。
+　・Pico/Pico2もしくは、Type P/PUごとに、別々のクラスファイルを扱えるように変更。
+　・SYSTEM(4)が正しいCPUの実行速度を返すように修正。
+　・SYSTEM(6)を追加し、BASICのオブジェクトRAM領域のサイズを得られるようにした。
+　・ILI9488を使っている時、今まで指定できなかった幅をWIDTHステートメントで指定できるようにした。
+　・WAITステートメントを実行している時に、キーボードのPAUSE/BREAKキーを押すことで実行停止できるようにした。

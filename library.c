@@ -12,7 +12,6 @@
 #include "./compiler.h"
 #include "./api.h"
 #include "./display.h"
-#include "./config.h"
 #include "./sleep.h"
 #include "./debug.h"
 
@@ -112,7 +111,8 @@ int lib_print_main(int r0, int r1, int r2){
 	}
 	if (0x20==(r1&0xf0)) {
 		// ","
-		printstr(&("          "[i%10]));
+		if (42==WIDTH_X) printstr(&("       "[i%7]));
+		else printstr(&("          "[i%10]));
 	}
 	return r0;
 }
@@ -560,9 +560,26 @@ int lib_var_pop(int r0, int r1, int r2){
 }
 
 int lib_wait(int r0, int r1, int r2){
-	unsigned short n=(unsigned short)r0;
-	uint64_t t=to_us_since_boot(get_absolute_time())%16667;
-	sleep_us(16667*n-t);
+	unsigned short n;
+	uint64_t t;
+	if (PUERULUS) {
+		n=drawcount;
+		while(0<r0){
+			if (check_break() && !g_interrupt_code) return lib_end(0,0,0);
+			while(n==drawcount) asm ("wfi");
+			n=drawcount;
+			r0--;
+		}
+	} else {
+		n=(unsigned short)r0;
+		while(1<n){
+			sleep_us(16667);
+			if (check_break() && !g_interrupt_code) return lib_end(0,0,0);
+			n--;
+		}
+		t=to_us_since_boot(get_absolute_time())%16667;
+		sleep_us(16667*n-t);
+	}
 	return r0;
 }
 
@@ -603,7 +620,7 @@ int lib_debug(int r0, int r1, int r2){
 	//lib_wait(60,0,0);
 	return r0;
 #else
-	return r0;
+	return r0+1;
 #endif
 }
 
@@ -614,6 +631,7 @@ extern unsigned char *fontp;
 extern const unsigned char FontData[256*8];
 
 int lib_system(int r0, int r1, int r2){
+	static char s_ntsc_off=0;
 	switch(r0){
 		case 0:
 		//	MachiKania バージョン文字列、"Zoea"等を返す。
@@ -629,10 +647,13 @@ int lib_system(int r0, int r1, int r2){
 			return (int)"";
 		case 4:
 		//	現在実行中のCPUのクロック周波数を返す。
-			return 125000000;
+			return g_clock_hz;
 		case 5:
 		//	コンパイル時のコンフィグ設定、"pico_ili9341.h" "pico_ili9341.h (embed)"などを返す。
 			return 9+(int)MACHIKANIA_CONFIG MACHIKANIA_DEBOG_MODE_STR;
+		case 6:
+		//	KM-BASICの実行用に割り当てられたRAM領域のキロバイト数、176, 192, 448などを返す。
+			return KMBASIC_OBJECT_KBYTES;
 		case 20:
 		//	キャラクターディスプレイ横幅を返す。
 			return WIDTH_X;
@@ -692,9 +713,18 @@ int lib_system(int r0, int r1, int r2){
 			return (int)fontp;
 		case 105:
 		//	グラフィックディスプレイ領域へのポインターを返す。
-			return 0;
+			return lib_display(5,0,0);
 		case 200:
 		//	ディスプレイの表示を停止(xが0のとき)、もしくは開始(xが0以外の時)する。
+			if (PUERULUS) {
+				if (r1) {
+					if (s_ntsc_off) start_composite();
+					s_ntsc_off=0;
+				} else {
+					stop_composite();
+					s_ntsc_off=1;
+				}
+			}
 			break;
 		case 201:
 		// ボード上のLEDをON/OFFする(type Pのみ)。

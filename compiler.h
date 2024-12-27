@@ -54,6 +54,7 @@
 #define ERROR_PATH_TOO_LONG _throw_error(-22)
 #define ERROR_OPTION_CLASSCODE (-23)
 #define ERROR_EXCEPTION (-24)
+#define ERROR_FUNCTION_CALL (-25)
 
 /*
 	Libraries
@@ -347,7 +348,7 @@
 	Variables
 */
 
-extern unsigned short kmbasic_object[512*KMBASIC_OBJECT_KBYTES];
+extern unsigned short kmbasic_object[512*KMBASIC_OBJECT_KBYTES_EXTENDED];
 extern int kmbasic_data[32];
 extern int kmbasic_variables[ALLOC_BLOCK_NUM];
 extern unsigned short kmbasic_var_size[ALLOC_BLOCK_NUM];

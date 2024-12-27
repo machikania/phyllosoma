@@ -10,7 +10,17 @@
 #include "./compiler.h"
 #include "./api.h"
 #include "./display.h"
-#include "./config.h"
+
+/*
+	Default LCD definitions
+*/
+
+#ifndef LCD_COLUMN_RES
+#define LCD_COLUMN_RES 240
+#endif
+#ifndef LCD_ROW_RES
+#define LCD_ROW_RES 320
+#endif
 
 /*
 	Local prototypings
@@ -24,30 +34,12 @@ CLEAR
 	PCGの使用をやめ、表示キャラクターをリセットする。
 */
 
-void display_init(void){
-	// Enable SPI and connect to GPIOs
-	spi_init(LCD_SPICH, LCD_SPI_BAUDRATE);
-	gpio_set_function(LCD_SPI_RX, GPIO_FUNC_SPI);
-	gpio_set_function(LCD_SPI_TX, GPIO_FUNC_SPI);
-	gpio_set_function(LCD_SPI_SCK, GPIO_FUNC_SPI);
-	
-	gpio_init(LCD_CS);
-	gpio_put(LCD_CS, 1);
-	gpio_set_dir(LCD_CS, GPIO_OUT);
-	gpio_init(LCD_DC);
-	gpio_put(LCD_DC, 1);
-	gpio_set_dir(LCD_DC, GPIO_OUT);
-	gpio_init(LCD_RESET);
-	gpio_put(LCD_RESET, 1);
-	gpio_set_dir(LCD_RESET, GPIO_OUT);
-	
-	init_textgraph(HORIZONTAL);
-}
-
 int lib_display(int r0, int r1, int r2){
 	static unsigned char cursorcolor=7;
 	static unsigned char gcolor=7;
 	static unsigned char* ppcg=0;
+	static unsigned char* pgvram=0;
+	static int permanent_block_number=0;
 	static int prevx1=0,prevy1=0;
 	int* sp=(int*)r1;
 	int i,j,gc;
@@ -58,6 +50,8 @@ int lib_display(int r0, int r1, int r2){
 		ppcg=0;
 		prevx1=0;
 		prevy1=0;
+		pgvram=0;
+		permanent_block_number=0;
 		return r0;
 	} else if (0==r2) {
 		// Return the static data
@@ -72,10 +66,14 @@ int lib_display(int r0, int r1, int r2){
 				return prevx1;
 			case 4:
 				return prevy1;
+			case 5:
+				return (int)pgvram;
 			default:
 				return 0;
 		}
 	}
+	// Check if graphic function is available
+	if ( (DISPLAY_USE_GRAPHIC & (1<<r2)) && (!pgvram) && PUERULUS ) stop_with_error(ERROR_FUNCTION_CALL);
 	// Set x1,y1,x2,y2 for graphic
 	if (DISPLAY_USE_STACK & (1<<r2)) {
 		// r1 is a pointer to stack
@@ -165,19 +163,19 @@ int lib_display(int r0, int r1, int r2){
 			if (WIDTH_X<(0-r1)) break;
 			if (0==r0 && 0==r1) break;
 			memmove(&TVRAM[0],&TVRAM[(0-r0)*WIDTH_X-r1],WIDTH_X*WIDTH_Y);
-			memmove(&TVRAM[ATTROFFSET],&TVRAM[ATTROFFSET+(0-r0)*WIDTH_X-r1],WIDTH_X*WIDTH_Y);
+			memmove(&TVRAM[attroffset],&TVRAM[attroffset+(0-r0)*WIDTH_X-r1],WIDTH_X*WIDTH_Y);
 			if (0<r0) {
 				for(i=0;i<WIDTH_X;i++){
 					for(j=0;j<r0;j++){
 						TVRAM[i+j*WIDTH_X]=0;
-						TVRAM[ATTROFFSET+i+j*WIDTH_X]=cursorcolor;
+						TVRAM[attroffset+i+j*WIDTH_X]=cursorcolor;
 					}
 				}
 			} else if (r0<0) {
 				for(i=0;i<WIDTH_X;i++){
 					for(j=0;j<(0-r0);j++){
 						TVRAM[i+(WIDTH_Y-j-1)*WIDTH_X]=0;
-						TVRAM[ATTROFFSET+i+(WIDTH_Y-j-1)*WIDTH_X]=cursorcolor;
+						TVRAM[attroffset+i+(WIDTH_Y-j-1)*WIDTH_X]=cursorcolor;
 					}
 				}
 			}
@@ -185,14 +183,14 @@ int lib_display(int r0, int r1, int r2){
 				for(i=0;i<r1;i++){
 					for(j=0;j<WIDTH_Y;j++){
 						TVRAM[i+j*WIDTH_X]=0;
-						TVRAM[ATTROFFSET+i+j*WIDTH_X]=cursorcolor;
+						TVRAM[attroffset+i+j*WIDTH_X]=cursorcolor;
 					}
 				}
 			} else if (r1<0) {
 				for(i=0;i<(0-r1);i++){
 					for(j=0;j<WIDTH_Y;j++){
 						TVRAM[WIDTH_X-i-1+j*WIDTH_X]=0;
-						TVRAM[ATTROFFSET+WIDTH_X-i-1+j*WIDTH_X]=cursorcolor;
+						TVRAM[attroffset+WIDTH_X-i-1+j*WIDTH_X]=cursorcolor;
 					}
 				}
 			}
@@ -210,9 +208,19 @@ int lib_display(int r0, int r1, int r2){
 					break;
 			}
 			// Width setting
-			if (0<r1 & r1<=(LCD_ALIGNMENT&HORIZONTAL ? 40:30)) {
+			if (0<r1 & r1<=(LCD_ALIGNMENT&HORIZONTAL ? (LCD_ROW_RES/8):(LCD_COLUMN_RES/8)) && PHYLLOSOMA) {
 				WIDTH_X=r1;
 				cls();
+			}
+			switch(r1){
+				case 42:
+					set_videomode(VMODE_WIDETEXT,0);
+					break;
+				case 80:
+					set_videomode(VMODE_MONOTEXT,0);
+					break;
+				default:
+					break;
 			}
 			break;
 		case DISPLAY_TVRAM:
@@ -250,7 +258,7 @@ int lib_display(int r0, int r1, int r2){
 			for(i=0;((unsigned char*)r0)[i];i++);
 			prevx1=x1+i*8;
 			prevy1=y1;
-			g_printstr(x1,y1,x2,((int)y2<0 ? (int)y2:palette[y2]),(unsigned char*)r0);
+			g_printstr(x1,y1,x2,((int)y2<0 || PUERULUS) ? (int)y2:palette[y2],(unsigned char*)r0);
 			garbage_collection((unsigned char*)r0);
 			break;
 		case DISPLAY_LINE:
@@ -283,9 +291,19 @@ int lib_display(int r0, int r1, int r2){
 			prevy1=y1;
 			break;
 		case DISPLAY_USEGRAPHIC:
+			if (PUERULUS && !permanent_block_number) permanent_block_number=get_permanent_block_number();
 			switch(r0&3){
 				case 0:
-					g_clearscreen();
+					if (PHYLLOSOMA) g_clearscreen();
+					if (PUERULUS) {
+						if (pgvram) {
+							delete_memory(pgvram);
+							pgvram=0;
+						} else {
+							pgvram=calloc_memory(X_RES*Y_RES/4,permanent_block_number);
+						}
+						set_videomode(VMODE_WIDETEXT,0);
+					}
 					break;
 				case 2:
 					// clear palette
@@ -300,9 +318,22 @@ int lib_display(int r0, int r1, int r2){
 					}
 					// clear graphic display
 					cls();
+					if (PUERULUS) {
+						// Allocate memory for graphic VRAM and start graphic mode
+						if (!pgvram) pgvram=calloc_memory(X_RES*Y_RES/4,permanent_block_number);
+						set_videomode(VMODE_WIDEGRPH,pgvram);
+					}
 					g_clearscreen();
 					break;
 				case 1:
+					if (PUERULUS) {
+						// Allocate memory for graphic VRAM and start graphic mode
+						if (!pgvram) pgvram=calloc_memory(X_RES*Y_RES/4,permanent_block_number);
+						set_videomode(VMODE_WIDEGRPH,pgvram);
+						cls();
+						g_clearscreen();
+						break;
+					}
 				default:
 					cls();
 					break;
@@ -312,6 +343,7 @@ int lib_display(int r0, int r1, int r2){
 			//GCOLOR(x,y)
 			// TODO: OPTION RGB565/GPALETTE
 			j=g_color(r1,r0);
+			if (PUERULUS) return j;
 			for(i=0;i<256;i++){
 				if (j==palette[i]) return i;
 			}

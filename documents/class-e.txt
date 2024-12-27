@@ -6,32 +6,32 @@ This section describes object-oriented programming, which is class-based in Mach
 　(2) Classes are described in separate files, with one class per file.
 　(3) Multiple classes can be used. Also, another class can be used within a class.
 　(4) Class inheritance is not implemented.
-　(5) Field names and method names can be alphanumeric characters of 2 to 6 characters (long names are also possible with Type P).
+　(5) Field names and method names can be alphanumeric characters of more than 2.
 
 By writing a class as a separate file and specifying this file as a class, it is possible to create a program consisting of multiple files. Connections between classes are made only via fields and methods. Therefore, even if a variable or label with the same name exists in multiple files, each file is controlled individually, so there is no name conflict.
 
 <How to Write a Class>
 
-To create a class, prepare a text file with the name "classname.BAS". The class name must be between 2 and 6 alphanumeric characters long (Type P allows up to 8 characters). In the class file, the FIELD, STATIC, and METHOD instructions are required.
+To create a class, prepare a text file with the name "classname.BAS". The class name must be between 2 and 8 alphanumeric characters long. In the class file, the FIELD, STATIC, and/or METHOD instruction(s) is/are required.
 
 FIELD [PUBLIC] x[,y[,z[, ... ]]]
-	Declares a public field in the class file. PUBLIC" can be omitted. x, y, z, etc. are alphanumeric field names of 6 characters or less (Type P allows longer names). However, if the field is used as a string type, "$" must be added after the field name.
+	Declares a public field in the class file. PUBLIC" can be omitted. x, y, z, etc. are field names of alphanumeric characters. If the field is used as a string type, "$" must be added after the field name.
 FIELD PRIVATE x[,y[,z[, ... ]]]
-	Declares a private field in the class file. x, y, z, etc. are field names of 6 characters or less (Type P allows longer names) and are specified in alphanumeric characters. However, when the field is used as a string type, "$" should be added after the field name, and "()" should be added when the field is used as an array.
+	Declares a private field in the class file. x, y, z, etc. are field names of alphanumeric characters. If the field is used as a string type, "$" should be added after the field name, and "()" should be added when the field is used as an array.
 STATIC [PUBLIC] x[,y[,z[, ... ]]]
 	Declares a public static variable in the class file." PUBLIC" may be omitted.
 STATIC PRIVATE x[,y[,z[, ... ]]]
-	Declares a private static variable in the class file.
+	Declares a private static variable in the class file. This is the same as "USEVAR".
 METHOD x
-	Declares a method in the class file. x is the name of the method, up to 6 alphanumeric characters (Type P allows longer names).
+	Declares a method in the class file. x is the name of the method with alphanumeric characters.
 
-To access field values (both public and private) in a class file, access (read and write) directly to the variable with the long name specified FIELD. Notations such as "THIS" are not necessary.
+To access field values (both public and private) in a class file, access (read and write) directly to the variable with the long name specified FIELD. Notations such as "THIS" are not required.
 
 If you want to access a static variable that is not a field of an object, use the STATIC or USEVAR instruction. A variable with a long name used here does not affect the value of a variable with the same name in other files. However, reading or changing variables A-Z will affect the values used in other files.
 
-All methods declared with the METHOD instruction are public. Use the LABEL and GOSUB instructions/functions for private subroutine calls. Arguments for method calls can be retrieved with the ARGS() function. If a pointer to your own object is needed in the method, it can be retrieved with ARGS(-2).
+All methods declared with the METHOD instruction are public. Use the LABEL and GOSUB instructions/functions for private subroutine calls. Arguments for method calls can be retrieved with the ARGS() function. If a pointer to its own object is needed in the method, it can be retrieved with ARGS(-2).
 
-To specify a constructor, use "METHOD INIT". If the INIT method is specified in this way, it will be called when the object is created; it is also possible to give arguments to the INIT method (arguments are not required).
+To specify a constructor, use "METHOD INIT". If the INIT method is specified in this way, it will be called when the object is created; it is also possible to give arguments to the INIT method (arguments are not required if not needed).
 
 Example (saved under the name CLASS1.BAS)
 　FIELD PUBLIC TEST1,TEST2
@@ -53,14 +53,14 @@ Example (saved under the name CLASS1.BAS)
 　METHOD TEST6
 　RETURN TEST3
 　METHOD TEST8
-　RETURN TEST8
+　RETURN TEST7
 
 <How to create an object>
 
 To create an object, first specify the class to be used with the USECLASS instruction, and then use the NEW function.
 
 USECLASS x[,y[,z[, ... ]]]
-	Declares the use of the class. x,y,z, etc. are class names up to 6 alphanumeric characters (Type P allows up to 8 characters).
+	Declares the use of the class. x,y,z, etc. are class names up to 8 alphanumeric characters.
 NEW(x[,y[,z[, ... ]]])
 	Creates a class object and returns a pointer to the object. x specifies the class name. y, z, etc. are arguments used when there is a constructor.
 
@@ -74,7 +74,7 @@ Example 2 (when arguments are specified for the constructor): USECLASS CLASS1
 
 <How to destroy an object>
 
-Created objects can also be destroyed using the DELETE instruction. However, since the destructor is not implemented, if necessary, create a method for it and call it just before destroying the object.
+Created objects can also be destroyed using the DELETE instruction. Note that, since the destructor is not implemented, if necessary, create a method for it and call it just before destroying the object.
 
 If the fields of the object are strings or arrays, these areas will not be destroyed simply by DELETE of the object. In this case, first destroy these fields in the method (a DELETE instruction can be used) and then destroy the object.
 
@@ -85,7 +85,7 @@ Example
 
 <How to Access Fields>
 
-To access a public field, enter the variable containing the object followed by ". followed by the name of the field. If the field is a character string, add a "$" after it, and if the field is a real number, add a "#" after it.
+To access a public field, enter the variable containing the object followed by "." that is followed by the name of the field. If the field is a character string, add a "$" after it, and if the field is a real number, add a "#" after it.
 
 Example
 　USECLASS CLASS1
@@ -95,7 +95,7 @@ Example
 
 <How to access methods>
 
-To access a public method, enter a variable containing an object followed by ". followed by the name of the method, followed by "( )". If the method returns a string as the return value, append "$" to the method name ("#" for real numbers). Methods are treated like functions, but they can also be called with the CALL instruction if the return value is not used. Note that when calling a method in the same class, it should be called with the GOSUB instruction, not a static method call.
+To access a public method, enter a variable containing an object followed by ".", by the name of the method, and by "( )". If the method returns a string as the return value, append "$" to the method name ("#" for real numbers). Methods are treated like functions, but they can also be called with the CALL instruction if the return value is not used. Note that when calling a method in the same class, it should be called with the GOSUB instruction, not a static method call.
 
 CALL x
 	Calls the method of the object specified by x.
@@ -140,9 +140,26 @@ Example description (CLASS1.BAS):
 
 <About the library>
 
-Class files are read if there is a "classname.BAS" file in the current directory. BAS" file in the current directory. If the file is not in the current directory, it will be read from the "⌘LIB\class name\class name.BAS" file, if available. Therefore, if you place a group of classes in the "⌘LIB" directory, you can use them as a library that can be used at any time.
+Class files are read if there is a "classname.BAS" file in the current directory. If the file is not in the current directory, it will be read from the "\LIB\class name\class name.BAS" file, if available. Therefore, if you place a group of classes in the "\LIB" directory, you can use them as a library that can be used at any time.
 
-＜Version History
+In KM-1507 and later BASIC compilers, if you want to load different BAS files as classes for Raspberry Pi Pico (or boards with RP2040) and Raspberry Pi Pico 2 (or boards with RP2350), or MachiKania type P and Type PU, it is possible to load separate BAS files depending on the situation by creating sub-directories such as “PICO2”, “TYPEPU”, “TYPEPU/PICO2” in the directory where classes are placed and placing BAS files there. For example, if the following four BAS files are prepared, the required BAS file can be loaded depending on the situation.
+
+　\LIB\classname\TYPEPU\PICO2\classname.BAS
+　\LIB\classname\PICO2\classname.BAS
+　\LIB\classname\TYPEPU\classname.BAS
+　\LIB\classname\classname.BAS
+
+The following example does not distinguish between Type P and Type PU, but wants to use them separately for Pico and Pico 2.
+
+　\LIB\classname\PICO2\classname.BAS
+　\LIB\classname\classname.BAS
+
+If a single BAS file is sufficient without such distinction, the arrangement is as follows
+
+　\LIB\classname\classname.BAS
+
+<Version History>
+KM-1507 Released in December 2024.
 KM-1501 Released in October 2022.
 KM-1500 released in August 2022.
 KM-1207/KM1302 released in March 2019.

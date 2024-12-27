@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "./interface/graphlib.h"
-#include "./interface/LCDdriver.h"
+#include "./interface/videodriver.h"
 #include "./interface/ff.h"
 
 #ifndef KMBASIC_COMPILER_H

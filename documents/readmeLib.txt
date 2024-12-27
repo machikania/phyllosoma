@@ -62,7 +62,7 @@ QRCODE
 	画面にQRCODEを表示するためのクラス。
 
 REGEXP
-	MachiKania type Pで正規表現を使うためのクラス。
+	MachiKania type P/PUで正規表現を使うためのクラス。
 
 STRD2
 	文字列を含む配列を使用するためのクラス（短い文字列を多数含む配列を定義するときに使用）。
@@ -83,7 +83,7 @@ WS2812B
 	シリアル接続LED WS2812Bを利用するためのクラス。
 
 ------------------------------------------------------------------------
-MachiKania type P クラスライブラリー改版履歴
+MachiKania type P/PU クラスライブラリー改版履歴
 
 Phyllosoma 1.00/KM-1500（2022.8.27）
 　・最初の公開バージョン
@@ -114,3 +114,7 @@ Phyllosoma 1.40/KM-1505 (2024.2.17)
 
 Phyllosoma 1.41/KM-1506 (2024.10.06)
 　・変更なし
+
+Phyllosoma/Puerulus 1.50/KM-1507 (2024.12.28)
+　・WS2812B ver 1.1 (Pico2, Type PU対応)
+　・QRCODE ver 0.2.1 (Pico2 対応)
