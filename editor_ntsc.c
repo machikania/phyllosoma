@@ -2279,7 +2279,7 @@ void displaybottomline(void){
 	if(shiftkeys() & CHK_SHIFT){
 		if(videomode!=VMODE_MONOTEXT){
 			setcursor(0,WIDTH_Y-1,COLOR_BOTTOMLINE);
-			printstr("NEW |    |WIDTH|TEST|");
+			printstr("| NEW |     |WIDTH|TEST |");
 		}
 		else{
 			setcursor(0,WIDTH_Y-1,COLOR_INV);
@@ -2298,7 +2298,7 @@ void displaybottomline(void){
 	else{
 		if(videomode!=VMODE_MONOTEXT){
 			setcursor(0,WIDTH_Y-1,COLOR_BOTTOMLINE);
-			printstr("LOAD|SAVE|    |RUN |");
+			printstr("|LOAD |SAVE |     | RUN |");
 		}
 		else{
 			setcursor(0,WIDTH_Y-1,COLOR_INV);
