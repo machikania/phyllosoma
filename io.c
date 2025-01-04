@@ -29,16 +29,16 @@ int ini_file_io(char* line){
 	int i;
 	if (!strncmp(line,"SPIMISO=",8)) {
 		i=atoi(line+8);
-		if (0==i || 4==i | 16==i) g_io_spi_rx=i;
-		if (8==i || 12==i) g_io_spi_rx=i;
+		if (0==i || 4==i || 16==i || 20==i) g_io_spi_rx=i;
+		if (8==i || 12==i || 24==i || 28==i) g_io_spi_rx=i;
 	} else if (!strncmp(line,"SPIMOSI=",8)) {
 		i=atoi(line+8);
-		if (3==i || 7==i | 19==i) g_io_spi_tx=i;
-		if (11==i || 15==i) g_io_spi_tx=i;
+		if (3==i || 7==i || 19==i || 23==i) g_io_spi_tx=i;
+		if (11==i || 15==i || 27==i) g_io_spi_tx=i;
 	} else if (!strncmp(line,"SPICLK=",7)) {
 		i=atoi(line+7);
-		if (2==i || 6==i | 18==i) g_io_spi_sck=i;
-		if (10==i || 14==i) {
+		if (2==i || 6==i || 18==i || 22==i) g_io_spi_sck=i;
+		if (10==i || 14==i || 26==i) {
 			g_io_spi_sck=i;
 			g_io_spi_ch=spi1;
 			g_io_spi_sspcr=((volatile unsigned int*)(SPI1_BASE + SPI_SSPCR0_OFFSET));
