@@ -25,6 +25,11 @@ unsigned char g_io_spi_sck=IO_SPI_SCK;
 void* g_io_spi_ch=IO_SPI_CH;
 volatile unsigned int* g_io_spi_sspcr=IO_SPI_SSPCR0;
 
+void* g_io_uart_ch=IO_UART_CH;
+unsigned char g_io_uart_tx=IO_UART_TX;
+unsigned char g_io_uart_rx=IO_UART_RX;
+unsigned char g_io_uart_irq=IO_UART_IRQ;
+
 int ini_file_io(char* line){
 	int i;
 	if (!strncmp(line,"SPIMISO=",8)) {
@@ -42,6 +47,30 @@ int ini_file_io(char* line){
 			g_io_spi_sck=i;
 			g_io_spi_ch=spi1;
 			g_io_spi_sspcr=((volatile unsigned int*)(SPI1_BASE + SPI_SSPCR0_OFFSET));
+		}
+	} else if (!strncmp(line,"UARTTX=",7)) {
+		i=atoi(line+7);
+		if (0==i || 12==i || 16==i || 28==i) {
+			g_io_uart_tx==i;
+			g_io_uart_ch=uart0;
+			g_io_uart_irq=UART0_IRQ;
+		}
+		if (4==i ||  8==i || 20==i || 24==i){
+			g_io_uart_tx==i;
+			g_io_uart_ch=uart1;
+			g_io_uart_irq=UART1_IRQ;
+		}
+	} else if (!strncmp(line,"UARTRX=",7)) {
+		i=atoi(line+7);
+		if (1==i || 13==i || 17==i || 29==i) {
+			g_io_uart_rx==i;
+			g_io_uart_ch=uart0;
+			g_io_uart_irq=UART0_IRQ;
+		}
+		if (5==i ||  9==i || 21==i || 25==i) {
+			g_io_uart_rx==i;
+			g_io_uart_ch=uart1;
+			g_io_uart_irq=UART1_IRQ;
 		}
 	} else return 0;
 	return 1;
@@ -108,7 +137,7 @@ void io_init(void){
 	pwm_set_enabled(IO_PWM3_SLICE, false);
 	// Disable I2C and UART
 	i2c_deinit(IO_I2C_CH);
-	uart_deinit(IO_UART_CH);
+	uart_deinit(g_io_uart_ch);
 	// Clear UART buffer
 	io_uart_buff=0;
 	io_uart_var=0;
@@ -709,12 +738,12 @@ int serialout_statement(void){
 
 void on_uart_rx() {
 	// The interrupt function
-	if((uart_get_hw(IO_UART_CH)->rsr & UART_UARTRSR_PE_BITS)){
+	if((uart_get_hw(g_io_uart_ch)->rsr & UART_UARTRSR_PE_BITS)){
 		// Parity error
-		io_uart_buff[io_uart_buff_write_pos++]=0x100 | uart_getc(IO_UART_CH);
+		io_uart_buff[io_uart_buff_write_pos++]=0x100 | uart_getc(g_io_uart_ch);
 	} else {
 		// No parity error
-		io_uart_buff[io_uart_buff_write_pos++]=uart_getc(IO_UART_CH);
+		io_uart_buff[io_uart_buff_write_pos++]=uart_getc(g_io_uart_ch);
 	}
 	if (io_uart_buff_size<=io_uart_buff_write_pos) io_uart_buff_write_pos=0;
 }
@@ -725,7 +754,7 @@ int lib_serial(int r0, int r1, int r2){
 		case LIB_SERIAL_SERIAL:
 			if (0==sp[0]) {
 				// End using UART
-				uart_deinit(IO_UART_CH);
+				uart_deinit(g_io_uart_ch);
 				return r0;
 			}
 			// Prepare io_uart_buff[]
@@ -738,30 +767,30 @@ int lib_serial(int r0, int r1, int r2){
 			if (!io_uart_var) io_uart_var=get_permanent_block_number();
 			io_uart_buff=(unsigned short*)alloc_memory((io_uart_buff_size+1)/2,io_uart_var);
 			// Initialize UART
-			uart_init(IO_UART_CH, 2400);
-			gpio_set_function(IO_UART_TX, GPIO_FUNC_UART);
-			gpio_set_function(IO_UART_RX, GPIO_FUNC_UART);
-			uart_set_baudrate(IO_UART_CH, sp[0]);
-			uart_set_hw_flow(IO_UART_CH, false, false);
+			uart_init(g_io_uart_ch, 2400);
+			gpio_set_function(g_io_uart_tx, GPIO_FUNC_UART);
+			gpio_set_function(g_io_uart_rx, GPIO_FUNC_UART);
+			uart_set_baudrate(g_io_uart_ch, sp[0]);
+			uart_set_hw_flow(g_io_uart_ch, false, false);
 			switch(sp[1]){
 				case 0:
-					uart_set_format(IO_UART_CH, 8, 1, UART_PARITY_NONE);
+					uart_set_format(g_io_uart_ch, 8, 1, UART_PARITY_NONE);
 					break;
 				case 1:
-					uart_set_format(IO_UART_CH, 8, 1, UART_PARITY_EVEN);
+					uart_set_format(g_io_uart_ch, 8, 1, UART_PARITY_EVEN);
 					break;
 				case 2:
-					uart_set_format(IO_UART_CH, 8, 1, UART_PARITY_ODD);
+					uart_set_format(g_io_uart_ch, 8, 1, UART_PARITY_ODD);
 					break;
 				case 3:
 				default:
 					stop_with_error(ERROR_INVALID);
 					return r0;
 			}
-			uart_set_fifo_enabled(IO_UART_CH, false);
-			irq_set_exclusive_handler(IO_UART_IRQ, on_uart_rx);
-			irq_set_enabled(IO_UART_IRQ, true);
-			uart_set_irq_enables(IO_UART_CH, true, false);
+			uart_set_fifo_enabled(g_io_uart_ch, false);
+			irq_set_exclusive_handler(g_io_uart_irq, on_uart_rx);
+			irq_set_enabled(g_io_uart_irq, true);
+			uart_set_irq_enables(g_io_uart_ch, true, false);
 			return r0;
 		case LIB_SERIAL_SERIALIN:
 			switch(r0){
@@ -780,7 +809,7 @@ int lib_serial(int r0, int r1, int r2){
 					return r0;
 			}
 		case LIB_SERIAL_SERIALOUT:
-			uart_putc_raw(IO_UART_CH,r0);
+			uart_putc_raw(g_io_uart_ch,r0);
 			return r0;
 		default:
 			// Invalid
