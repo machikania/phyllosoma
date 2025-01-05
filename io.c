@@ -30,6 +30,10 @@ unsigned char g_io_uart_tx=IO_UART_TX;
 unsigned char g_io_uart_rx=IO_UART_RX;
 unsigned char g_io_uart_irq=IO_UART_IRQ;
 
+void* g_io_i2c_ch=IO_I2C_CH;
+unsigned char g_io_i2c_sda=IO_I2C_SDA;
+unsigned char g_io_i2c_scl=IO_I2C_SCL;
+
 int ini_file_io(char* line){
 	int i;
 	if (!strncmp(line,"SPIMISO=",8)) {
@@ -71,6 +75,20 @@ int ini_file_io(char* line){
 			g_io_uart_rx==i;
 			g_io_uart_ch=uart1;
 			g_io_uart_irq=UART1_IRQ;
+		}
+	} else if (!strncmp(line,"I2CSDA=",7)) {
+		i=atoi(line+7);
+		if (0==i || 4==i || 8==i || 12==i || 16==i || 20==i || 24==i || 28==i) g_io_i2c_sda=i;
+		if (1==i || 5==i || 9==i || 13==i || 17==i || 21==i || 25==i || 29==i) g_io_i2c_sda=i;
+	} else if (!strncmp(line,"I2CSCL=",7)) {
+		i=atoi(line+7);
+		if (2==i || 6==i || 10==i || 14==i || 18==i || 22==i || 26==i) {
+			g_io_i2c_scl=i;
+			g_io_i2c_ch=i2c0;
+		}
+		if (3==i || 7==i || 11==i || 15==i || 19==i || 23==i || 27==i) {
+			g_io_i2c_scl=i;
+			g_io_i2c_ch=i2c1;
 		}
 	} else return 0;
 	return 1;
@@ -136,7 +154,7 @@ void io_init(void){
 	pwm_set_enabled(IO_PWM2_SLICE, false);
 	pwm_set_enabled(IO_PWM3_SLICE, false);
 	// Disable I2C and UART
-	i2c_deinit(IO_I2C_CH);
+	i2c_deinit(g_io_i2c_ch);
 	uart_deinit(g_io_uart_ch);
 	// Clear UART buffer
 	io_uart_buff=0;
@@ -654,11 +672,11 @@ int lib_i2c(int r0, int r1, int r2){
 	// Main jobs
 	switch(r2){
 		case LIB_I2C_I2C:
-			i2c_init(IO_I2C_CH, r0 * 1000);
-			gpio_set_function(IO_I2C_SDA, GPIO_FUNC_I2C);
-			gpio_set_function(IO_I2C_SCL, GPIO_FUNC_I2C);
-			gpio_pull_up(IO_I2C_SDA);
-			gpio_pull_up(IO_I2C_SCL);
+			i2c_init(g_io_i2c_ch, r0 * 1000);
+			gpio_set_function(g_io_i2c_sda, GPIO_FUNC_I2C);
+			gpio_set_function(g_io_i2c_scl, GPIO_FUNC_I2C);
+			gpio_pull_up(g_io_i2c_sda);
+			gpio_pull_up(g_io_i2c_scl);
 			return r0;
 		case LIB_I2C_I2CERROR:
 			// PICO_OK = 0,
@@ -669,18 +687,18 @@ int lib_i2c(int r0, int r1, int r2){
 			return s_err;
 		case LIB_I2C_I2CWRITE:
 			// Write
-			num=i2c_write_blocking(IO_I2C_CH,addr,i2cdat,num,false);
+			num=i2c_write_blocking(g_io_i2c_ch,addr,i2cdat,num,false);
 			if (num<0) return s_err=num;
 			else return s_err=0;
 		case LIB_I2C_I2CREAD:
 			if (num) {
 				// Optional writing before reading
-				num=i2c_write_blocking(IO_I2C_CH,addr,i2cdat,num,true);
+				num=i2c_write_blocking(g_io_i2c_ch,addr,i2cdat,num,true);
 				if (num<0) return s_err=num;
 				else s_err=0;
 			}
 			// Read a byte
-			num=i2c_read_blocking(IO_I2C_CH,addr,&i2cdat[-1],1,false);
+			num=i2c_read_blocking(g_io_i2c_ch,addr,&i2cdat[-1],1,false);
 			if (num<0) {
 				s_err=num;
 				return -1;
@@ -688,19 +706,19 @@ int lib_i2c(int r0, int r1, int r2){
 			return (unsigned int)i2cdat[-1];
 		case LIB_I2C_I2CWRITEDATA:
 			// Write
-			num=i2c_write_blocking(IO_I2C_CH,addr,i2cdat,num+numdat2,false);
+			num=i2c_write_blocking(g_io_i2c_ch,addr,i2cdat,num+numdat2,false);
 			garbage_collection(i2cdat);
 			if (num<0) return s_err=num;
 			else return s_err=0;
 		case LIB_I2C_I2CREADDATA:
 			if (num) {
 				// Optional writing 
-				num=i2c_write_blocking(IO_I2C_CH,addr,i2cdat,num,true);
+				num=i2c_write_blocking(g_io_i2c_ch,addr,i2cdat,num,true);
 				if (num<0) return s_err=num;
 				else s_err=0;
 			}
 			// Read
-			num=i2c_read_blocking(IO_I2C_CH,addr,i2cdat2,numdat2,false);
+			num=i2c_read_blocking(g_io_i2c_ch,addr,i2cdat2,numdat2,false);
 			if (num<0) return s_err=num;
 			else return s_err=0;
 		default:
