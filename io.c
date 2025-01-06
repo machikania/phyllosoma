@@ -78,11 +78,11 @@ int ini_file_io(char* line){
 		}
 	} else if (!strncmp(line,"I2CSDA=",7)) {
 		i=atoi(line+7);
-		if (0==i || 4==i || 8==i || 12==i || 16==i || 20==i || 24==i || 28==i) g_io_i2c_sda=i;
-		if (1==i || 5==i || 9==i || 13==i || 17==i || 21==i || 25==i || 29==i) g_io_i2c_sda=i;
+		if (0==i || 4==i ||  8==i || 12==i || 16==i || 20==i || 24==i || 28==i) g_io_i2c_sda=i;
+		if (2==i || 6==i || 10==i || 14==i || 18==i || 22==i || 26==i)          g_io_i2c_sda=i;
 	} else if (!strncmp(line,"I2CSCL=",7)) {
 		i=atoi(line+7);
-		if (2==i || 6==i || 10==i || 14==i || 18==i || 22==i || 26==i) {
+		if (1==i || 5==i ||  9==i || 13==i || 17==i || 21==i || 25==i || 29==i) {
 			g_io_i2c_scl=i;
 			g_io_i2c_ch=i2c0;
 		}
