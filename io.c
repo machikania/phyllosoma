@@ -55,24 +55,24 @@ int ini_file_io(char* line){
 	} else if (!strncmp(line,"UARTTX=",7)) {
 		i=atoi(line+7);
 		if (0==i || 12==i || 16==i || 28==i) {
-			g_io_uart_tx==i;
+			g_io_uart_tx=i;
 			g_io_uart_ch=uart0;
 			g_io_uart_irq=UART0_IRQ;
 		}
 		if (4==i ||  8==i || 20==i || 24==i){
-			g_io_uart_tx==i;
+			g_io_uart_tx=i;
 			g_io_uart_ch=uart1;
 			g_io_uart_irq=UART1_IRQ;
 		}
 	} else if (!strncmp(line,"UARTRX=",7)) {
 		i=atoi(line+7);
 		if (1==i || 13==i || 17==i || 29==i) {
-			g_io_uart_rx==i;
+			g_io_uart_rx=i;
 			g_io_uart_ch=uart0;
 			g_io_uart_irq=UART0_IRQ;
 		}
 		if (5==i ||  9==i || 21==i || 25==i) {
-			g_io_uart_rx==i;
+			g_io_uart_rx=i;
 			g_io_uart_ch=uart1;
 			g_io_uart_irq=UART1_IRQ;
 		}
