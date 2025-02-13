@@ -2,8 +2,8 @@
 
 $version_p=array(
 	"Phyllosoma",
-	"1.5.0.0",
-	"KM-1507",
+	"1.5.1.0",
+	"KM-1508",
 );
 $version_pu=$version_p;
 $version_pu[0]="Puerulus";
@@ -26,7 +26,9 @@ $configs=array(
 	'./config/xiao_ntsc.h',
 );
 
-check_dir('.','.');
+check_dir('machikania-p','machikania-p');
+check_dir('machikania-p2','machikania-p2');
+check_dir('machikania-pu','machikania-pu');
 
 function check_dir($dir,$fullpath){
 	global $version_p, $version_pu;
