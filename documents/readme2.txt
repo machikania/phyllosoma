@@ -8,6 +8,10 @@ MachiKaniaシリーズを利用していることについてもWebサイトや
 
 ＜machikania-p2.zipファイルコンテンツ＞
 
+（ver 1.5.1より、xiao_embed及びxiao_rp2350_embedディレクトリーは無くなり、
+同様の機能はILI9488用のembed版に統合されました。MACHIKAP.INIの設定でSPI・
+I2C・UART用のピン配置を変更することができます。）
+
 [LIB]ディレクトリ
 　追加のクラスライブラリー
 　-[GEN3O]
@@ -62,29 +66,3 @@ MachiKaniaシリーズを利用していることについてもWebサイトや
 [pico2_ili9488/embed]ディレクトリ
 　組み込み用途などMMC/SDカードなしでもBASICプログラムを実行することが
 　できるようなツール類を格納
-
-[xiao_embed]ディレクトリ
-　Seeed XIAO RP2040への組み込み用途で使うバイナリーを格納
-　-phyllosoma.uf2
-　　MachiKania type P BASICシステム本体（USBキーボード接続非対応版）
-　　PCとSeeed XIAO RP2040をUSB接続し書き込む
-　　convert.phpにより、MACHIKAP.BASなどを埋め込む
-
-　-phyllosoma_kb.uf2
-　　MachiKania type P BASICシステム本体（USBキーボード接続対応版）
-　　PCとSeeed XIAO RP2040をUSB接続し書き込む
-　　convert.phpにより、MACHIKAP.BASなどを埋め込む
-　　BASICプログラム中でUSBキーボードを使用可能
-
-[xiao_rp2350_embed]ディレクトリ
-　Seeed XIAO RP2350への組み込み用途で使うバイナリーを格納
-　-phyllosoma.uf2
-　　MachiKania type P BASICシステム本体（USBキーボード接続非対応版）
-　　PCとSeeed XIAO RP2350をUSB接続し書き込む
-　　convert.phpにより、MACHIKAP.BASなどを埋め込む
-
-　-phyllosoma_kb.uf2
-　　MachiKania type P BASICシステム本体（USBキーボード接続対応版）
-　　PCとSeeed XIAO RP2350をUSB接続し書き込む
-　　convert.phpにより、MACHIKAP.BASなどを埋め込む
-　　BASICプログラム中でUSBキーボードを使用可能
