@@ -556,6 +556,7 @@ void delete_memory(void* data);
 int move_from_temp(int vn, int pdata);
 void garbage_collection(void* data);
 int get_permanent_block_number(void);
+int get_number_of_remaining_blocks(void);
 void var2permanent(int var_num);
 void* machikania_malloc(int size);
 void machikania_free(void *ptr);

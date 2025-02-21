@@ -39,18 +39,10 @@ You can embed files not only in the Raspberry Pi Pico, but also in various other
 2. Raspberry Pi Pico W
 　　　pico_w_ili9341/embed/phyllosoma.uf2
 　　　pico_w_ili9341/embed/phyllosoma_kb.uf2 (when connecting USB keyboard)
-3. Seeed XIAO RP2040
-　　　xiao_embed/phyllosoma.uf2
-　　　xiao_embed/phyllosoma_kb.uf2 (when connecting a USB keyboard)
-　　　Note that the I/O port assignments are as follows, which are different from those for Pi Pico
-　　　　GP0 I/O bit0 / UART TX / PWM3
-　　　　GP1 I/O bit1 / UART RX / SPI CS / PWM2
-　　　　GP2 I/O bit2 / SPI SCK / PWM1
-　　　　GP3 I/O bit3 / SPI MOSI
-　　　　GP4 I/O bit4 / SPI MISO
-　　　　GP6 I/O bit6 / I2C SDA
-　　　　GP7 I/O bit7 / I2C SCL
-4.RP2040-Zero, Pimoroni Tiny-2040, etc.
+3. Seeed XIAO RP2040, RP2040-Zero, Pimoroni Tiny-2040, etc.
 　　　pico_ili9341/embed/phyllosoma.uf2
 　　　pico_ili9341/embed/phyllosoma_kb.uf2 (when connecting a USB keyboard)
-　　　Note that the port used for SPI connection can be changed by setting the values of "SPIMISO=", "SPIMOSI=", and "SPICLK=" in MACHIKAP.INI. For example, "SPIMISO=4", "SPIMOSI=7", "SPICLK=6", etc.
+　　　Note that the port used for SPI connection can be changed by setting the values of "SPIMISO=", "SPIMOSI=", and "SPICLK=" in MACHIKAP.INI. For example, "SPIMISO=4", "SPIMOSI=7", "SPICLK=6", etc. I2C and UART can be configured in the same way (I2CSDA;I2CSCL;UARTTX;UARTRX).
+4. Raspberry Pi Pico 2, Seeed XIAO RP2350 etc.
+　　　pico_ili9341/embed/phyllosoma.uf2
+　　　pico_ili9341/embed/phyllosoma_kb.uf2 (when connecting a USB keyboard)

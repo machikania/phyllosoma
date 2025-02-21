@@ -27,6 +27,8 @@ METHOD x
 
 To access field values (both public and private) in a class file, access (read and write) directly to the variable with the long name specified FIELD. Notations such as "THIS" are not required.
 
+Object fields can be assigned not only integer values and real numbers, but also strings and arrays. When strings, arrays, etc. are assigned, memory area is allocated separately from the object itself. Therefore, when rewriting these fields, use the DELETE statement to destroy the memory area of the field before rewriting.
+
 If you want to access a static variable that is not a field of an object, use the STATIC or USEVAR instruction. A variable with a long name used here does not affect the value of a variable with the same name in other files. However, reading or changing variables A-Z will affect the values used in other files.
 
 All methods declared with the METHOD instruction are public. Use the LABEL and GOSUB instructions/functions for private subroutine calls. Arguments for method calls can be retrieved with the ARGS() function. If a pointer to its own object is needed in the method, it can be retrieved with ARGS(-2).

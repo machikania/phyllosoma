@@ -218,5 +218,10 @@ MACHIKAP.INI
 ------------------------------------------------------------------------
 MachiKania type PU BASIC System Revision History
 
-Phyllosoma 1.50/KM-1507 (2024.12.28)
+Puerulus 1.50/KM-1507 (2024.12.28)
 　First public version
+
+Puerulus 1.51/KM-1508 (2025.2.22)
+　Fixed a bug that caused line numbers at the bottom of the screen to be displayed incorrectly when using the editor.
+　Changed pin assignments for SPI, I2C, and UART to be freely configurable in MACHIKAP.INI.
+　Fixed a problem with REGEXP in the class library that caused a memory error when used continuously.

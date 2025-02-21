@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2024.12.28
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.2.22
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type P
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -276,3 +276,8 @@ Phyllosoma 1.50/KM-1507 (2024.12.28)
 　Added SYSTEM(6) to obtain the size of BASIC's object RAM area.
 　When using the ILI9488 LCD, the width that could not be specified before can now be specified with the WIDTH statement.
 　When a WAIT statement is being executed, execution can be stopped by pressing the PAUSE/BREAK key on the keyboard.
+
+Phyllosoma 1.51/KM-1508 (2025.2.22)
+　Changed pin assignments for SPI, I2C, and UART to be freely configurable in MACHIKAP.INI.
+　Distribution of XIAO embed version was terminated due to the availability of MACHIKAP.INI to configure pin assignments.
+　Fixed a problem with REGEXP in the class library that caused a memory error when used continuously.

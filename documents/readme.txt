@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2024.12.28
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.2.22
 　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
 　　　　　　　　「MachiKania type P」
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -282,3 +282,8 @@ Phyllosoma 1.50/KM-1507 (2024.12.28)
 　・SYSTEM(6)を追加し、BASICのオブジェクトRAM領域のサイズを得られるようにした。
 　・ILI9488を使っている時、今まで指定できなかった幅をWIDTHステートメントで指定できるようにした。
 　・WAITステートメントを実行している時に、キーボードのPAUSE/BREAKキーを押すことで実行停止できるようにした。
+
+Phyllosoma 1.51/KM-1508 (2025.2.22)
+　・SPI・I2C・UART用のピン配置を、MACHIKAP.INIで自由に設定できるように変更。
+　・ピン配置をMACHIKAP.INIで設定できる事に伴い、XIAO embed版の配布を終了。
+　・クラスライブラリーのREGEXPで、連続使用時にメモリーエラーが出る不具合を修正。

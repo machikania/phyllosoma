@@ -277,6 +277,15 @@ int get_permanent_block_number(void){
 	return ERROR_UNKNOWN;
 }
 
+int get_number_of_remaining_blocks(void){
+	int i;
+	int j=0;
+	for(i=0;i<PERMVAR_NUMBER;i++){
+		if (0==kmbasic_var_size[ALLOC_PERM_BLOCK+i]) j++;
+	}
+	return j;
+}
+
 void var2permanent(int var_num){
 	int i;
 	int val=kmbasic_variables[var_num];
