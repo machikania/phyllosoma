@@ -39,18 +39,10 @@ Raspberry Pi Picoだけではなく、RP2040/RP2350を使用している様々�
 ２．Raspberry Pi Pico W
 　　　pico_w_ili9341/embed/phyllosoma.uf2
 　　　pico_w_ili9341/embed/phyllosoma_kb.uf2 (USB キーボードを接続する場合)
-３．Seeed XIAO RP2040
-　　　xiao_embed/phyllosoma.uf2
-　　　xiao_embed/phyllosoma_kb.uf2 (USB キーボードを接続する場合)
-　　　ただし、I/Oポートの割り当ては次のようになっており、Pi Pico用のものと異なる事に注意。
-　　　　GP0 I/O bit0 / UART TX / PWM3
-　　　　GP1 I/O bit1 / UART RX / SPI CS / PWM2
-　　　　GP2 I/O bit2 / SPI SCK / PWM1
-　　　　GP3 I/O bit3 / SPI MOSI
-　　　　GP4 I/O bit4 / SPI MISO
-　　　　GP6 I/O bit6 / I2C SDA
-　　　　GP7 I/O bit7 / I2C SCL
-４．RP2040-Zero, Pimoroni Tiny-2040 など
+３．Seeed XIAO RP2040, RP2040-Zero, Pimoroni Tiny-2040 など
 　　　pico_ili9341/embed/phyllosoma.uf2
 　　　pico_ili9341/embed/phyllosoma_kb.uf2 (USB キーボードを接続する場合)
-　　　ただし、SPI接続の場合にどのポートを使用するかは、MACHIKAP.INIで、"SPIMISO=", "SPIMOSI=", "SPICLK="の値を設定する事で変更することができる。例えば、"SPIMISO=4", "SPIMOSI=7", "SPICLK=6"など。
+　　　ただし、SPI接続の場合にどのポートを使用するかは、MACHIKAP.INIで、"SPIMISO=", "SPIMOSI=", "SPICLK="の値を設定する事で変更することができる。例えば、"SPIMISO=4", "SPIMOSI=7", "SPICLK=6"など。I2CとUARTも同様の方法で設定可能(I2CSDA;I2CSCL;UARTTX;UARTRX)。
+４．Raspberry Pi Pico 2, Seeed XIAO RP2350 など
+　　　pico_2_ili9341/embed/phyllosoma.uf2
+　　　pico_2_ili9341/embed/phyllosoma_kb.uf2 (USB キーボードを接続する場合)
