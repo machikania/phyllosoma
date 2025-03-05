@@ -14,6 +14,7 @@
 #include "./display.h"
 #include "./sleep.h"
 #include "./debug.h"
+#include "./interface/usbkeyboard.h"
 
 /*
 	Local macros
@@ -685,17 +686,17 @@ int lib_system(int r0, int r1, int r2){
 		//	グラフィックディスプレイの、現在のY位置を返す。
 			return lib_display(4,0,0);
 		case 40:
-		//	PS/2キーボードを使用中かどうかを返す。
-			return 0;
+		//	キーボードを使用中かどうかを返す。
+			return usbkb_mounted();
 		case 41:
-		//	PS/2キーボード情報、vkeyを返す。
-			return 0;
+		//	キーボード情報、vkeyを返す。
+			return vkey;
 		case 42:
-		//	PS/2キーボード情報、lockkeyを返す。
-			return 0;
+		//	キーボード情報、lockkeyを返す。
+			return lockkey;
 		case 43:
-		//	PS/2キーボード情報、keytypeを返す。
-			return 0;
+		//	キーボード情報、keytypeを返す。
+			return keytype;
 		case 100:
 		//	変数格納領域(g_var_mem)へのポインターを返す。
 			return (int)&kmbasic_variables[0];
