@@ -7,6 +7,8 @@
 #include "./compiler.h"
 #include "./core1.h"
 #include "./api.h"
+#include "hardware/clocks.h"
+#include "hardware/vreg.h"
 
 const int const g_r6_array[]={
 	0,                         // Pointer to object
@@ -135,6 +137,9 @@ void pre_run(void){
 	handle_exception(1);
 	// Wifi
 	pre_run_wifi();
+	// CPU
+	g_clock_hz_default=clock_get_hz(clk_sys);
+	g_cpu_voltage_default=vreg_get_voltage();
 }
 
 void init_palette(void);
@@ -166,6 +171,14 @@ void post_run(void){
 	handle_exception(0);
 	// Wifi
 	post_run_wifi();
+	// CPU
+	if (g_clock_hz!=g_clock_hz_default) {
+		set_sys_clock_hz(g_clock_hz_default,true);
+		g_clock_hz=clock_get_hz(clk_sys);
+	}
+	if (vreg_get_voltage()!=g_cpu_voltage_default) {
+		vreg_set_voltage(g_cpu_voltage_default);
+	}
 }
 
 /*

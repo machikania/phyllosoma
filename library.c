@@ -15,6 +15,8 @@
 #include "./sleep.h"
 #include "./debug.h"
 #include "./interface/usbkeyboard.h"
+#include "hardware/clocks.h"
+#include "hardware/vreg.h"
 
 /*
 	Local macros
@@ -697,6 +699,15 @@ int lib_system(int r0, int r1, int r2){
 		case 43:
 		//	キーボード情報、keytypeを返す。
 			return keytype;
+		case 50:
+		//	CPUのクロック周波数を、Hzで指定。
+			set_sys_clock_hz(r1,true);
+			g_clock_hz=clock_get_hz(clk_sys);
+			break;
+		case 51:
+		//	CPUの電圧を指定。有効値：6-15 (0.85 - 1.30 V)。デフォルト：11 (1.10 V)。
+			if ((int)VREG_VOLTAGE_MIN<=r1 && r1<=(int)VREG_VOLTAGE_MAX) vreg_set_voltage(r1);
+			break;
 		case 100:
 		//	変数格納領域(g_var_mem)へのポインターを返す。
 			return (int)&kmbasic_variables[0];

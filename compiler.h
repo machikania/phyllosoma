@@ -420,6 +420,8 @@ extern unsigned char show_timestamp;
 extern unsigned char filesortby;
 
 extern unsigned int g_clock_hz;
+extern unsigned int g_clock_hz_default;
+extern char g_cpu_voltage_default;
 
 /*
 	Prototypes

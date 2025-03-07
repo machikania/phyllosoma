@@ -118,8 +118,10 @@ char g_interrupt_code=0;
 
 unsigned int g_wait_for_keyboard=2000;
 
-// Clock speed in hz
+// Clock speed in hz, and CPU voltage setting
 unsigned int g_clock_hz;
+unsigned int g_clock_hz_default;
+char g_cpu_voltage_default;
 
 // Reserved words
 
