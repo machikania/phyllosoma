@@ -28,6 +28,7 @@ caused by using this program.
 #include "hardware/dma.h"
 #include "hardware/pwm.h"
 #include "hardware/clocks.h"
+#include "hardware/vreg.h"
 #include "rp2040_pwm_ntsc_textgraph.h"
 
 // デバッグ用、割込み処理中HIGHになるピン
@@ -47,6 +48,9 @@ unsigned char videomode=0xff,textmode=0xff,graphmode=0xff; //画面モード
 int WIDTH_X = 42; // 横方向文字数
 int attroffset; // TVRAMのカラー情報エリア位置
 uint8_t* fontp; //現在のフォントパターンの先頭アドレス
+
+static uint16_t black_level=2, white_level=9;
+static uint8_t ntsc_speed=2; //1:通常 2:倍速
 
 // DMAピンポンバッファ
 uint16_t dma_buffer[2][NUM_LINE_SAMPLES] __attribute__ ((aligned (4)));
@@ -78,7 +82,7 @@ static void __not_in_flash_func() makeDmaBuffer(uint16_t* buf, size_t line_num)
 	{
 		//垂直同期信号生成
 		for (int j = 0; j < NUM_LINE_SAMPLES-H_SYNC; j++) *b++ = 0;
-		while (b < buf + NUM_LINE_SAMPLES) *b++ = 2;
+		while (b < buf + NUM_LINE_SAMPLES) *b++ = black_level;
 	}
 	if(videomode==VMODE_MONOTEXT){
 		//モノクロテキストモード
@@ -86,7 +90,7 @@ static void __not_in_flash_func() makeDmaBuffer(uint16_t* buf, size_t line_num)
 		{
 			//水平同期
 			for (int j = 0; j < H_SYNC; j++) *b++ = 0;
-			while (b < buf + NUM_LINE_SAMPLES) *b++ = 2;
+			while (b < buf + NUM_LINE_SAMPLES) *b++ = black_level;
 		}
 		else if(line_num>=V_SYNC+V_PREEQ && line_num<V_SYNC+V_PREEQ+Y_RES)
 		{
@@ -105,10 +109,10 @@ static void __not_in_flash_func() makeDmaBuffer(uint16_t* buf, size_t line_num)
 				for(int j=0;j<8;j++)
 				{
 					if(d & 0x80){
-						*b=9; //white level
+						*b=white_level; //white level
 					}
 					else{
-						*b=2; //black level
+						*b=black_level; //black level
 					}
 					b++;
 					d<<=1;
@@ -123,15 +127,15 @@ static void __not_in_flash_func() makeDmaBuffer(uint16_t* buf, size_t line_num)
 		{
 			//水平同期＋バースト信号生成
 			for (int j = 0; j < H_SYNC; j++) *b++ = 0;
-			for (int j = 0; j < 8; j++) *b++ = 2;
+			for (int j = 0; j < 8; j++) *b++ = black_level;
 			for (int j = 0; j < 9; j++)
 			{
-				*b++=2;
-				*b++=1;
-				*b++=2;
-				*b++=3;
+				*b++=black_level;
+				*b++=black_level-ntsc_speed;
+				*b++=black_level;
+				*b++=black_level+ntsc_speed;
 			}
-			while (b < buf + NUM_LINE_SAMPLES) *b++ = 2;
+			while (b < buf + NUM_LINE_SAMPLES) *b++ = black_level;
 		}
 		else if(line_num>=V_SYNC+V_PREEQ && line_num<V_SYNC+V_PREEQ+Y_RES)
 		{
@@ -216,7 +220,7 @@ static void __not_in_flash_func() makeDmaBuffer(uint16_t* buf, size_t line_num)
 		}
 		//映像領域信号消去
 		b+=H_PICTURE;
-		for(int i=0;i<X_RES*2;i++) *b++ = 2;
+		for(int i=0;i<X_RES*2;i++) *b++ = black_level;
 	}
 }
 
@@ -247,13 +251,13 @@ void set_palette_main(unsigned short c,unsigned char b,unsigned char r,unsigned 
 	int32_t b_y_2=(b-y)*764;
 	int32_t r_y_2=(r-y)*(-786);
 
-	s=(y*1792 + b_y_1 + r_y_1 + 2*65536+32768)/65536;
+	s=(y*1792 + b_y_1 + r_y_1 + 2*65536+32768)*ntsc_speed/65536;
 	color_tbl[c*4] = s<0 ? 0 : s;
-	s=(y*1792 + b_y_2 + r_y_2 + 2*65536+32768)/65536;
+	s=(y*1792 + b_y_2 + r_y_2 + 2*65536+32768)*ntsc_speed/65536;
 	color_tbl[c*4+1] = s<0 ? 0 : s;
-	s=(y*1792 - b_y_1 - r_y_1 + 2*65536+32768)/65536;
+	s=(y*1792 - b_y_1 - r_y_1 + 2*65536+32768)*ntsc_speed/65536;
 	color_tbl[c*4+2] = s<0 ? 0 : s;
-	s=(y*1792 - b_y_2 - r_y_2 + 2*65536+32768)/65536;
+	s=(y*1792 - b_y_2 - r_y_2 + 2*65536+32768)*ntsc_speed/65536;
 	color_tbl[c*4+3] = s<0 ? 0 : s;
 }
 
@@ -381,10 +385,16 @@ void rp2040_pwm_ntsc_init(uint8_t n)
 	fontp=(uint8_t*)FontData; //標準フォントに設定
 
 	// CPUを157.5MHzで動作させる
-	uint32_t freq_khz = 157500;
+	uint32_t freq_khz = 157500*ntsc_speed;
 
 	// PWM周期を11サイクルとする (157.5 [MHz] / 11 = 14318181 [Hz])
-	uint32_t pwm_div = 11;
+	uint32_t pwm_div = 11*ntsc_speed;
+
+	if(ntsc_speed==2){
+		black_level=5;
+		white_level=18;
+		vreg_set_voltage(15);
+	}
 
 	// ※ NTSCのカラー信号を1周期4サンプルで出力する。
 	// 出力されるカラーバースト信号は  14318181 [Hz] / 4 = 3579545 [Hz] となる。
