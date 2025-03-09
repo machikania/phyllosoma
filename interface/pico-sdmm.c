@@ -45,6 +45,9 @@
 #define	CS_H() gpio_put(SD_SPI_CS, 1)	/* Set MMC CS "high" */
 #define CS_L() gpio_put(SD_SPI_CS, 0)	/* Set MMC CS "low" */
 
+void mmc_spi_init(void){
+	spi_init(SD_SPICH, SD_SPI_BAUDRATE);
+}
 
 static
 void dly_us (UINT n)	/* Delay n microseconds (avr-gcc -Os) */

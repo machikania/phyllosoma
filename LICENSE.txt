@@ -43,7 +43,7 @@ LGPL(v2.1)に基づくフリーソフトウェアとして扱われる限り再�
 はありませんので、注意して下さい。
 
 <License>
-The binary (*.ufs) is made from codes originally by Katsumi & 
+The binary (*.uf2) is made from codes originally by Katsumi & 
 Kenken under LGPL license and another licese (of which we call MachiKania
 license). As a result, the license of the binary is free software but only 
 if it will be used for non-profit purpose. The most of the source code 

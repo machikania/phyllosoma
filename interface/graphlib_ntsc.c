@@ -477,8 +477,9 @@ void video_init(void){
 	init_palette();
 }
 
-// Dummy function (not required for NTSC)
+// Dummy functions (not required for NTSC)
 void putcursorchar(void){}
 void textredraw(void){}
 void set_lcdalign(unsigned char align){}
 int LCD_ALIGNMENT=HORIZONTAL; // VERTICAL, HORIZONTAL, VERTICAL&LCD180TURN, or HORIZONTAL&LCD180TURN
+void lcd_spi_init(void){}

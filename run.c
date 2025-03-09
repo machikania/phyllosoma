@@ -172,13 +172,22 @@ void post_run(void){
 	// Wifi
 	post_run_wifi();
 	// CPU
+	if (vreg_get_voltage()<g_cpu_voltage_default) {
+		// Return to original CPU voltage if set lower one (probably for slower CPU speed)
+		vreg_set_voltage(g_cpu_voltage_default);
+	}
 	if (g_clock_hz!=g_clock_hz_default) {
+		// Return to original CPU speed
 		set_sys_clock_hz(g_clock_hz_default,true);
 		g_clock_hz=clock_get_hz(clk_sys);
 	}
-	if (vreg_get_voltage()!=g_cpu_voltage_default) {
+	if (g_cpu_voltage_default<vreg_get_voltage()) {
+		// Return to original CPU voltage if set lower one (probably for faster CPU speed)
 		vreg_set_voltage(g_cpu_voltage_default);
 	}
+	// Set SPI baudrates again
+	lcd_spi_init();
+	mmc_spi_init();
 }
 
 /*
