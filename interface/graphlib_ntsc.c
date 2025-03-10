@@ -484,9 +484,11 @@ void lcd_spi_init(void){
 	switch(g_clock_hz){
 		case 157500000:
 			// Normal mode NTSC video
+			ntsc_changeclock(1);
 			break;
 		case 315000000:
 			// Double speed mode NTSC video
+			ntsc_changeclock(2);
 			break;
 		default:
 			break;

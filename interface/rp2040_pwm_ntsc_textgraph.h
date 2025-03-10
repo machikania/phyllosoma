@@ -62,6 +62,7 @@ void rp2040_pwm_ntsc_init(uint8_t n);
 void init_palette(void);
 void set_videomode(unsigned char m, unsigned char *gvram); //ビデオモードの切り替え
 void set_lcdalign(unsigned char align); // Dummy
+void ntsc_changeclock(int s);
 
 extern volatile uint16_t drawcount;
 extern uint8_t TVRAM[]; // Textビデオメモリ

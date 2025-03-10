@@ -49,8 +49,9 @@ int WIDTH_X = 42; // 横方向文字数
 int attroffset; // TVRAMのカラー情報エリア位置
 uint8_t* fontp; //現在のフォントパターンの先頭アドレス
 
-static uint16_t black_level=2, white_level=9;
-static uint8_t ntsc_speed=2; //1:通常 2:倍速
+static uint pwm_slice_num; //ビデオ出力ポートのPWM slice number
+static uint16_t black_level, white_level;
+static uint8_t ntsc_speed; //1:通常 2:倍速
 
 // DMAピンポンバッファ
 uint16_t dma_buffer[2][NUM_LINE_SAMPLES] __attribute__ ((aligned (4)));
@@ -379,22 +380,20 @@ void rp2040_pwm_ntsc_init(uint8_t n)
 	gpio_init(PIN_DEBUG_BUSY);
 	gpio_set_dir(PIN_DEBUG_BUSY, GPIO_OUT);
 #endif
+	black_level=2;
+	white_level=9;
+	ntsc_speed=1;
+
 	//ビデオモード初期化
 	set_videomode(VMODE_WIDETEXT,0);
 	init_palette();
 	fontp=(uint8_t*)FontData; //標準フォントに設定
 
 	// CPUを157.5MHzで動作させる
-	uint32_t freq_khz = 157500*ntsc_speed;
+	uint32_t freq_khz = 157500;
 
 	// PWM周期を11サイクルとする (157.5 [MHz] / 11 = 14318181 [Hz])
-	uint32_t pwm_div = 11*ntsc_speed;
-
-	if(ntsc_speed==2){
-		black_level=5;
-		white_level=18;
-		vreg_set_voltage(15);
-	}
+	uint32_t pwm_div = 11;
 
 	// ※ NTSCのカラー信号を1周期4サンプルで出力する。
 	// 出力されるカラーバースト信号は  14318181 [Hz] / 4 = 3579545 [Hz] となる。
@@ -402,7 +401,7 @@ void rp2040_pwm_ntsc_init(uint8_t n)
 	set_sys_clock_khz(freq_khz, true);
 
 	gpio_set_function(n, GPIO_FUNC_PWM);
-	uint pwm_slice_num = pwm_gpio_to_slice_num(n);
+	pwm_slice_num = pwm_gpio_to_slice_num(n);
 
 	pwm_config config = pwm_get_default_config();
 	pwm_config_set_clkdiv(&config, 1);
@@ -453,6 +452,24 @@ void rp2040_pwm_ntsc_init(uint8_t n)
 	irq_set_exclusive_handler(DMA_IRQ_0, irq_handler);
 	irq_set_enabled(DMA_IRQ_0, true);
 	dma_channel_start(pwm_dma_chan0);
+}
+
+//システムクロックの切り替え
+// s 1:157.5MHz, 2:315.0MHz
+void ntsc_changeclock(int s){
+	if(s<1 || s>2 || s==ntsc_speed) return;
+	stop_composite();
+	ntsc_speed=s;
+	if(ntsc_speed==1){
+		black_level=2;
+		white_level=9;
+	}else{
+		black_level=5;
+		white_level=18;
+	}
+	pwm_set_wrap(pwm_slice_num, 11*ntsc_speed - 1);
+	init_palette();
+	start_composite();
 }
 
 //ビデオモードの切り替え
