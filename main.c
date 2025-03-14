@@ -132,7 +132,7 @@ int main() {
 	post_inifile();
 	
 	// Get filename to compile
-	if (file_exists(g_autoexec)) {
+	if (file_exists(g_autoexec) && gpio_get(GPIO_KEYSTART)) {
 		str=&g_autoexec[0];
 	} else {
 		// Open text editor if USB keyboard mode

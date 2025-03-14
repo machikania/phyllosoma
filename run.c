@@ -182,10 +182,10 @@ void post_run(void){
 		g_clock_hz=clock_get_hz(clk_sys);
 	}
 	if (g_cpu_voltage_default<vreg_get_voltage()) {
-		// Return to original CPU voltage if set lower one (probably for faster CPU speed)
+		// Return to original CPU voltage if set higher one (probably for faster CPU speed)
 		vreg_set_voltage(g_cpu_voltage_default);
 	}
-	// Set SPI baudrates again
+	// Set SPI baudrates again (also set NTSC routine to default in Puerulus)
 	lcd_spi_init();
 	mmc_spi_init();
 }
