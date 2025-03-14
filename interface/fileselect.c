@@ -285,6 +285,10 @@ unsigned char *fileselect(void){
 	unsigned int key;
 	int mx,my;
 
+	while(1){
+		keycheck();
+		if(!keystatus) break;
+	}
 	if(show_timestamp) mx=1; else mx=WIDTH_X/13;
 	my=WIDTH_Y-1;
 	cls();
