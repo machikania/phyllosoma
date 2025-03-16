@@ -705,7 +705,7 @@ int lib_system(int r0, int r1, int r2){
 			g_clock_hz=clock_get_hz(clk_sys);
 			lcd_spi_init();
 			mmc_spi_init();
-			stop_music();
+			init_music();
 			break;
 		case 51:
 		//	CPUの電圧を指定。有効値：6-15 (0.85 - 1.30 V)。デフォルト：11 (1.10 V)。
