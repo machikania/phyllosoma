@@ -275,7 +275,7 @@ int lib_pwm(int r0, int r1, int r2){
 	}
 	// Allocate GPIO to the PWM
 	gpio_set_function(port, GPIO_FUNC_PWM);
-	if (1000<=r1) {
+	if (g_clock_hz/100000<=r1) {
 		// Set clock divier for frequency
 		pwm_set_clkdiv(slice,((float)(g_clock_hz/1000)) / ((float)r1));
 		// 1000 cycles PWM
