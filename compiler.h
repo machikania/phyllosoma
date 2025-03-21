@@ -55,6 +55,7 @@
 #define ERROR_OPTION_CLASSCODE (-23)
 #define ERROR_EXCEPTION (-24)
 #define ERROR_FUNCTION_CALL (-25)
+#define ERROR_BAD_FREQUENCY (-26)
 
 /*
 	Libraries

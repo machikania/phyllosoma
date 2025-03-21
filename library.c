@@ -701,8 +701,9 @@ int lib_system(int r0, int r1, int r2){
 			return keytype;
 		case 50:
 		//	CPUのクロック周波数を、Hzで指定。
-			set_sys_clock_hz(r1,true);
+			set_sys_clock_hz(r1,false);
 			g_clock_hz=clock_get_hz(clk_sys);
+			if (r1!=g_clock_hz) stop_with_error(ERROR_BAD_FREQUENCY);
 			lcd_spi_init();
 			mmc_spi_init();
 			init_music();
