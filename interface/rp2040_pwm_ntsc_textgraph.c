@@ -34,8 +34,9 @@ caused by using this program.
 // デバッグ用、割込み処理中HIGHになるピン
 //#define PIN_DEBUG_BUSY 15
 
-uint8_t TVRAM[WIDTH_XMAX*WIDTH_Y*2+1];
-uint8_t *GVRAM=0; //グラフィックVRAM開始位置のポインタ
+uint8_t TVRAM[WIDTH_XMAX*WIDTH_Y*2+1] __attribute__ ((aligned (4)));
+uint8_t *GVRAM=0; //グラフィックVRAM（描画用）開始位置のポインタ
+static uint8_t *GVRAM_DISP; //グラフィックVRAM（表示用）開始位置のポインタ
 uint8_t *cursor=TVRAM;
 uint8_t cursorcolor=7;
 
@@ -180,7 +181,7 @@ static void __not_in_flash_func() makeDmaBuffer(uint16_t* buf, size_t line_num)
 				}
 			}
 			else if(videomode==VMODE_WIDEGRPH){
-				fbp = GVRAM+(line_num-(V_SYNC + V_PREEQ))*X_RES;
+				fbp = GVRAM_DISP+(line_num-(V_SYNC + V_PREEQ))*X_RES;
 				//グラフィック＋テキストモード
 				for(int i=0;i<WIDTH_XCL;i++)
 				{
@@ -502,6 +503,7 @@ void set_videomode(unsigned char m, unsigned char *gvram){
 			break;
 		case VMODE_WIDEGRPH: // ワイドグラフィック＋テキスト42文字モード
 			GVRAM=gvram;
+			GVRAM_DISP=gvram;
 			g_clearscreen();
 			graphmode=GMODE_WIDEGRPH;
 			if(textmode!=TMODE_WIDETEXT){
@@ -514,4 +516,10 @@ void set_videomode(unsigned char m, unsigned char *gvram){
 	}
 	videomode=m;
 //	start_composite();
+}
+
+//描画用ビデオメモリと表示用メモリの設定
+void set_gvram(uint8_t *gvram_draw,uint8_t *gvram_disp){
+	GVRAM=gvram_draw;
+	GVRAM_DISP=gvram_disp;
 }
