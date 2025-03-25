@@ -614,6 +614,10 @@ SYSTEM(42)
 	Return PS/2 keyboard information, lockkey.
 SYSTEM(43)
 	PS/2 keyboard information, keytype is returned.
+SYSTEM 50, x
+	Specify the CPU clock frequency in Hz units.
+SYSTEM 51, x
+	Set the CPU operating voltage as an integer value between 6 and 15. When x=6, the voltage is 0.85 V; when x=15, the voltage is 1.30 V. The default value at startup is 11 (1.10 V).
 SYSTEM(100)
 	Returns pointer to variable storage area (g_var_mem).
 SYSTEM(101)

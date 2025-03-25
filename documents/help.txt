@@ -614,6 +614,10 @@ SYSTEM(42)
 	PS/2キーボード情報、lockkeyを返す。
 SYSTEM(43)
 	PS/2キーボード情報、keytypeを返す。
+SYSTEM 50, x
+	CPUのクロック周波数を、hz単位で指定する。
+SYSTEM 51, x
+	CPUの動作電圧を、6-15の整数値で指定する。x=6の場合0.85 V、x=15の場合、1.30 V。起動時のデフォルト値は、11 (1.10 V)。
 SYSTEM(100)
 	変数格納領域(g_var_mem)へのポインターを返す。
 SYSTEM(101)
