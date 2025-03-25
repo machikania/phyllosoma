@@ -116,3 +116,6 @@ void video_init(void);
 
 void lcd_spi_init(void);
 // Set SPI baudrate again
+
+void set_gvram(unsigned char *gvram_draw,unsigned char *gvram_disp);
+// Set drawing and displaying graphic-VRAM

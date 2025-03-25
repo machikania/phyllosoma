@@ -769,3 +769,6 @@ void set_lcdalign(unsigned char align){
 void video_init(void){
 	init_palette();
 }
+
+// Dummy functions (not required for LCD)
+void set_gvram(unsigned char *gvram_draw,unsigned char *gvram_disp){}
