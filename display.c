@@ -341,9 +341,9 @@ int lib_display(int r0, int r1, int r2){
 						if (!pgvram1) pgvram1=calloc_memory(X_RES*Y_RES/4,permanent_block_number1);
 						set_videomode(VMODE_WIDEGRPH,pgvram1);
 						pgvram_draw=pgvram1;
-						cls();
 						//g_clearscreen();
 					}
+					cls();
 					break;
 				default:
 					if (PUERULUS) {
