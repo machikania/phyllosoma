@@ -504,7 +504,7 @@ void set_videomode(unsigned char m, unsigned char *gvram){
 		case VMODE_WIDEGRPH: // ワイドグラフィック＋テキスト42文字モード
 			GVRAM=gvram;
 			GVRAM_DISP=gvram;
-			g_clearscreen();
+//			g_clearscreen();
 			graphmode=GMODE_WIDEGRPH;
 			if(textmode!=TMODE_WIDETEXT){
 				textmode=TMODE_WIDETEXT;
