@@ -350,6 +350,7 @@ int lib_display(int r0, int r1, int r2){
 						// Allocate memory for graphic VRAM but not start graphic mode
 						if (!pgvram1) pgvram1=calloc_memory(X_RES*Y_RES/4,permanent_block_number1);
 						pgvram_draw=pgvram1;
+						set_gvram(pgvram_draw,pgvram_draw);
 					}
 					//cls();
 					break;
