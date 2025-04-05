@@ -239,6 +239,7 @@ Phyllosoma 1.20/KM-1502 (2023.1.28)
 　Four classes, CRDINI, CLDHEX, REGEXP, and STRING, are added to the library.
 
 Phyllosoma 1.30/KM-1503 (2023.9.30)
+　Raspberry Pi Pico W is supported.
 　WEATHER.BAS (get weather forecast from web), HDEAMON.BAS (construct web server) were added as a sample program.
 　Added HTTPD (construct HTTP deamon), IR_RX (IR receiver), IR_TX (IR transmitter), JSON (analyze JSON string) and WGET (web browsing) to the class library.
 　Added support for WiFi connection using Raspberry Pi Pico W. Following statements/functions are added: DNS$(), IFCONFIG$(), NTP, TCPACCEPT(), TCPCLIENT, TCPCLOSE, TCPRECEIVE, TCPSEND, TCPSERVER, TCPSTATUS, TLSCLIENT, WIFIERR(), WIFIERR$()
@@ -302,5 +303,7 @@ Phyllosoma 1.52/KM-1509 (2025.4.19)
 　Enabled stopping program execution not only with the "Break" key but also with the "Ctrl + Alt + Del" key.
 　Made it possible to retrieve the keyboard state using SYSTEM(40), SYSTEM(41), SYSTEM(42), and SYSTEM(43).
 　Added functionality to modify the CPU's clock speed and voltage using SYSTEM 50 and SYSTEM 51.
-　By holding the STOP button during startup, it's now possible to skip the automatic execution of MACHIKAP.BAS upon boot.
+　By holding the STAR button during startup, it's now possible to skip the automatic execution of MACHIKAP.BAS upon boot.
 　Added CPUCLOCK to the class library, making it possible to check available CPU clock frequencies.
+　Raspberry Pi Pico 2 W is supported.
+　Improved LCD transfer speed when using Raspberry Pi Pico 2.

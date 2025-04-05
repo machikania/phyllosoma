@@ -2,7 +2,7 @@
 
 MachiKania type P/PU ver 1.5.2から、CPUのクロック周波数を変更できるようになりました。これは、2025/02/19のPico SDK ver 2.1.1の公開に伴い、Raspberry Pi Picoなどに採用されているマイクロコントローラー、RP2040の認定動作速度が、133 MHzから200 MHzに引き上げられたことに対応するものです。
 
-MachiKaniaの起動時のCPUクロック周波数は、Type PかType PUかと、Raspberry Pi PicoなどのRP2040を用いた基板を使うかRaspberry Pi Pico 2などのRP2350を用いた基盤を使うかで異なっていて、以下の通りです。
+MachiKaniaの起動時のCPUクロック周波数は、Type PかType PUかと、Raspberry Pi PicoなどのRP2040を用いた基板を使うかRaspberry Pi Pico 2などのRP2350を用いた基板を使うかで異なっていて、以下の通りです。
 
 	Type P + RP2040 : 125 MHz
 	Type P + RP2350 : 150 MHz

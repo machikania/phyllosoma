@@ -239,6 +239,7 @@ Phyllosoma 1.20/KM-1502（2023.1.28）
 　・CRDINI・CLDHEX・REGEXP・STRINGの４つのクラスを、ライブラリーに追加
 
 Phyllosoma 1.30/KM-1503 (2023.9.30)
+　・Raspberry Pi Pico Wに対応。
 　・サンプルプログラムに、WEATHER.BAS(webページから天気予報を得る)と
 　HDEAMON.BAS(web サーバー構築を構築)を追加。
 　・クラスライブラリーに、HTTPD(HTTPサーバーを構築)、IR_RX(赤外線リモコン
@@ -308,6 +309,7 @@ Phyllosoma 1.52/KM-1509 (2025.4.19)
 　・「Break」キーだけでなく、「Ctrl + Alt + Del」キーでプログラムの実行を停止できるようにした。
 　・SYSTEM(40), SYSTEM(41), SYSTEM(42), SYSTEM(43)により、キーボードの状態を取得できるようにした。
 　・SYSTEM 50, SYSTEM 51により、CPUのクロック速度と電圧を変更できるようにした。
-　・STOPボタンを押しながら起動することにより、起動時のMACHIKAP.BAS自動実行をスキップすることが可能に。
+　・STARTボタンを押しながら起動することにより、起動時のMACHIKAP.BAS自動実行をスキップすることが可能に。
 　・クラスライブラリーにCPUCLOCKを追加。使用可能なCPUクロック周波数を調べることが可能に。
-　
+　・Raspberry Pi Pico 2 Wに対応。
+　・Raspberry Pi Pico 2 使用時のLCD液晶転送速度を改善。
