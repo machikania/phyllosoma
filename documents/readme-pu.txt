@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2024.2.22
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.4.19
 　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
 　　　　　　　　「MachiKania type PU」
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -98,6 +98,20 @@ MachiKaniaシリーズを利用していることについてもWebサイトや
 　　PCとRaspberry Pi PicoをUSB接続し書き込む
 　　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
 
+[pico2_w_ntsc]ディレクトリ
+　Raspberry Pi Pico 2 W を使う時の使うバイナリーを格納
+　-puerulus.uf2
+　　MachiKania type PU BASICシステム本体（PC connect機能対応版）
+　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　PC connect機能により、USBケーブルで接続したPCからBASICプログラムを転送可能
+　　WiFi接続が可能
+
+　-puerulus_kb.uf2
+　　MachiKania type PU BASICシステム本体（USBキーボード接続対応版）
+　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
+　　WiFi接続が可能
+
 [xiao_ntsc]ディレクトリ
 　XIAO-RP2040, TINY2040, RP2040-Zero を使う時の使うバイナリーを格納
 　-puerulus.uf2
@@ -125,6 +139,7 @@ MachiKaniaシリーズを利用していることについてもWebサイトや
 [pico_ntsc/embed]ディレクトリ
 [pico_w_ntsc/embed]ディレクトリ
 [pico2_ntsc/embed]ディレクトリ
+[pico2_w_ntsc/embed]ディレクトリ
 [xiao_ntsc/embed]ディレクトリ
 [xiao_rp2350_ntsc/embed]ディレクトリ
 　組み込み用途などMMC/SDカードなしでもBASICプログラムを実行することが
@@ -226,3 +241,13 @@ Puerulus 1.51/KM-1508 (2025.2.22)
 　・エディター使用時に画面下部の行番号が誤表示される不具合を修正。
 　・SPI・I2C・UART用のピン配置を、MACHIKAP.INIで自由に設定できるように変更。
 　・クラスライブラリーのREGEXPで、連続使用時にメモリーエラーが出る不具合を修正。
+
+Puerulus 1.52/KM-1509 (2025.4.19)
+　・「Break」キーだけでなく、「Ctrl + Alt + Del」キーでプログラムの実行を停止できるようにした。
+　・SYSTEM(40), SYSTEM(41), SYSTEM(42), SYSTEM(43)により、キーボードの状態を取得できるようにした。
+　・SYSTEM 50, SYSTEM 51により、CPUのクロック速度と電圧を変更できるようにした。
+　・STOPボタンを押しながら起動することにより、起動時のMACHIKAP.BAS自動実行をスキップすることが可能に。
+　・USEGRAPHICステートメントの第二引数指定により、２つのグラフィックRAM領域を用いた描画と表示が可能に。
+　・MACHIKAP.INIで、WIDTH80を指定することにより、起動時に横８０文字表示にすることが可能に。
+　・サンプルプログラムのRAYTRACE.BASを修正し、Type PUで表示できるようにした。
+　・クラスライブラリーにCPUCLOCKを追加。使用可能なCPUクロック周波数を調べることが可能に。

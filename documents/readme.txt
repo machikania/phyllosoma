@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.2.22
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.4.19
 　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
 　　　　　　　　「MachiKania type P」
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -100,9 +100,25 @@ MachiKaniaシリーズを利用していることについてもWebサイトや
 　　PCとRaspberry Pi PicoをUSB接続し書き込む
 　　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
 
+[pico2_w_ili9341]ディレクトリ
+　Raspberry Pi Pico 2 W と ILI9341 液晶の組み合わせのときに使うバイナリー
+　を格納
+　-phyllosoma.uf2
+　　MachiKania type P BASICシステム本体（PC connect機能対応版）
+　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　PC connect機能により、USBケーブルで接続したPCからBASICプログラムを転送可能
+　　WiFi接続が可能
+
+　-phyllosoma_kb.uf2
+　　MachiKania type P BASICシステム本体（USBキーボード接続対応版）
+　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
+　　WiFi接続が可能
+
 [pico_ili9341/embed]ディレクトリ
 [pico_w_ili9341/embed]ディレクトリ
 [pico2_ili9341/embed]ディレクトリ
+[pico2_w_ili9341/embed]ディレクトリ
 　組み込み用途などMMC/SDカードなしでもBASICプログラムを実行することが
 　できるようなツール類を格納
 
@@ -287,3 +303,11 @@ Phyllosoma 1.51/KM-1508 (2025.2.22)
 　・SPI・I2C・UART用のピン配置を、MACHIKAP.INIで自由に設定できるように変更。
 　・ピン配置をMACHIKAP.INIで設定できる事に伴い、XIAO embed版の配布を終了。
 　・クラスライブラリーのREGEXPで、連続使用時にメモリーエラーが出る不具合を修正。
+
+Phyllosoma 1.52/KM-1509 (2025.4.19)
+　・「Break」キーだけでなく、「Ctrl + Alt + Del」キーでプログラムの実行を停止できるようにした。
+　・SYSTEM(40), SYSTEM(41), SYSTEM(42), SYSTEM(43)により、キーボードの状態を取得できるようにした。
+　・SYSTEM 50, SYSTEM 51により、CPUのクロック速度と電圧を変更できるようにした。
+　・STOPボタンを押しながら起動することにより、起動時のMACHIKAP.BAS自動実行をスキップすることが可能に。
+　・クラスライブラリーにCPUCLOCKを追加。使用可能なCPUクロック周波数を調べることが可能に。
+　

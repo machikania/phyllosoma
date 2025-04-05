@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.2.22
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.4.19
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type P
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -100,9 +100,25 @@ use of the MachiKania series.
 　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
 
 
+[pico2_w_ili9341] directory
+　Stores binaries used when combining Raspberry Pi Pico 2 W and ILI9341 LCD
+　- phyllosoma.uf2
+　　MachiKania type P BASIC system (version supporting PC connect function)
+　　Connects the PC and Raspberry Pi Pico via USB and transfer the uf2 file
+　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
+　　WiFi connection is available.
+
+　- phyllosoma_kb.uf2
+　　MachiKania type P BASIC system main unit (USB keyboard connection version)
+　　Connects a PC and Raspberry Pi Pico via USB cable and transfer the uf2 file
+　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
+　　WiFi connection is available.
+
+
 [pico_ili9341/embed] directory
 [pico_w_ili9341/embed] directory
 [pico2_ili9341/embed] directory
+[pico2_w_ili9341/embed] directory
 　Stores tools that allow you to run BASIC programs without an SD card, e.g. for embedded applications
 
 
@@ -281,3 +297,10 @@ Phyllosoma 1.51/KM-1508 (2025.2.22)
 　Changed pin assignments for SPI, I2C, and UART to be freely configurable in MACHIKAP.INI.
 　Distribution of XIAO embed version was terminated due to the availability of MACHIKAP.INI to configure pin assignments.
 　Fixed a problem with REGEXP in the class library that caused a memory error when used continuously.
+
+Phyllosoma 1.52/KM-1509 (2025.4.19)
+　Enabled stopping program execution not only with the "Break" key but also with the "Ctrl + Alt + Del" key.
+　Made it possible to retrieve the keyboard state using SYSTEM(40), SYSTEM(41), SYSTEM(42), and SYSTEM(43).
+　Added functionality to modify the CPU's clock speed and voltage using SYSTEM 50 and SYSTEM 51.
+　By holding the STOP button during startup, it's now possible to skip the automatic execution of MACHIKAP.BAS upon boot.
+　Added CPUCLOCK to the class library, making it possible to check available CPU clock frequencies.

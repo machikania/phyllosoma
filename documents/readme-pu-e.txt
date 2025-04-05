@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2024.12.28
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.4.19
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type PU
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -98,6 +98,20 @@ by the use of the MachiKania series.
 　　Connects a PC and Raspberry Pi Pico via USB cable and writes
 　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
 
+[pico2_w_ntsc] directory
+　Stores binaries when using Raspberry Pi Pico 2 W
+　- puerulus.uf2
+　　MachiKania type PU BASIC system (version supporting PC connect function)
+　　Connects the PC and Raspberry Pi Pico via USB and writes
+　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
+　　WiFi connection is available.
+
+　- puerulus_kb.uf2
+　　MachiKania type PU BASIC system main unit (USB keyboard connection version)
+　　Connects a PC and Raspberry Pi Pico via USB cable and writes
+　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
+　　WiFi connection is available.
+
 [xiao_ntsc] directory
 　Stores binaries when using XIAO-RP2040, TINY2040, or RP2040-Zero
 　- puerulus.uf2
@@ -125,6 +139,7 @@ by the use of the MachiKania series.
 [pico_ntsc/embed] directory
 [pico_w_ntsc/embed] directory
 [pico2_ntsc/embed] directory
+[pico2_w_ntsc/embed] directory
 [xiao_ntsc/embed] directory
 [xiao_rp2350_ntsc/embed] directory
 　Stores tools that allow you to run BASIC programs without an SD card, 
@@ -225,3 +240,13 @@ Puerulus 1.51/KM-1508 (2025.2.22)
 　Fixed a bug that caused line numbers at the bottom of the screen to be displayed incorrectly when using the editor.
 　Changed pin assignments for SPI, I2C, and UART to be freely configurable in MACHIKAP.INI.
 　Fixed a problem with REGEXP in the class library that caused a memory error when used continuously.
+
+Phyllosoma 1.52/KM-1509 (2025.4.19)
+　Enabled stopping program execution not only with the "Break" key but also with the "Ctrl + Alt + Del" key.
+　Made it possible to retrieve the keyboard state using SYSTEM(40), SYSTEM(41), SYSTEM(42), and SYSTEM(43).
+　Added functionality to modify the CPU's clock speed and voltage using SYSTEM 50 and SYSTEM 51.
+　By holding the STOP button during startup, it's now possible to skip the automatic execution of MACHIKAP.BAS upon boot.
+　By specifying the second argument in the USEGRAPHIC statement, it is now possible to draw and display using two graphic RAM areas.
+　By setting WIDTH80 in MACHIKAP.INI, the system can be configured to display 80 characters horizontally at startup.
+　The sample program RAYTRACE.BAS has been modified so that it can be displayed with Type PU.
+　Added CPUCLOCK to the class library, making it possible to check available CPU clock frequencies.
