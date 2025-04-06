@@ -1,257 +1,257 @@
-@@@@@@@@@@@@@@@@@@@@@@@@@@2025.4.19
-@Raspberry Pi Pico—pBASICŽÀsŠÂ‹«ƒI[ƒvƒ“ƒvƒ‰ƒbƒgƒtƒH[ƒ€
-@@@@@@@@uMachiKania type PUv
-@@@@@@@@@@@@@@@@@@@@@by KenKen & Katsumi
+ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€2025.4.19
+ã€€Raspberry Pi Picoç”¨BASICå®Ÿè¡Œç’°å¢ƒã‚ªãƒ¼ãƒ—ãƒ³ãƒ—ãƒ©ãƒƒãƒˆãƒ•ã‚©ãƒ¼ãƒ 
+ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€ŒMachiKania type PUã€
+ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€by KenKen & Katsumi
 
-MachiKaniaiƒ}ƒ`ƒJƒjƒAj‚ÍBASICƒRƒ“ƒpƒCƒ‰‚ð“‹Ú‚µ‚½ƒ}ƒCƒRƒ“—p
-ƒI[ƒvƒ“ƒvƒ‰ƒbƒgƒtƒH[ƒ€‚Å‚·B
-MachiKania type PU‚Å‚ÍRaspberry Pi Pico (Pico 2, Pico W)‚ÆNTSC
-ƒrƒfƒIo—Í‰ñ˜H‚ð“‹Ú‚µAƒ|[ƒ^ƒuƒ‹‚ÈBASICŽÀsŠÂ‹«‚ðŽÀŒ»‚µ‚Ä‚¢
-‚Ü‚·B
-”Ä—pI/O‚âSPIAI2C‚Æ‚¢‚Á‚½ŠO•”‹@Ší‚Ì§Œä‚àBASIC‚©‚çŠÈ’P‚És‚¤
-‚±‚Æ‚ª‰Â”\‚Å‚·B
+MachiKaniaï¼ˆãƒžãƒã‚«ãƒ‹ã‚¢ï¼‰ã¯BASICã‚³ãƒ³ãƒ‘ã‚¤ãƒ©ã‚’æ­è¼‰ã—ãŸãƒžã‚¤ã‚³ãƒ³ç”¨
+ã‚ªãƒ¼ãƒ—ãƒ³ãƒ—ãƒ©ãƒƒãƒˆãƒ•ã‚©ãƒ¼ãƒ ã§ã™ã€‚
+MachiKania type PUã§ã¯Raspberry Pi Pico (Pico 2, Pico W)ã¨NTSC
+ãƒ“ãƒ‡ã‚ªå‡ºåŠ›å›žè·¯ã‚’æ­è¼‰ã—ã€ãƒãƒ¼ã‚¿ãƒ–ãƒ«ãªBASICå®Ÿè¡Œç’°å¢ƒã‚’å®Ÿç¾ã—ã¦ã„
+ã¾ã™ã€‚
+æ±Žç”¨I/Oã‚„SPIã€I2Cã¨ã„ã£ãŸå¤–éƒ¨æ©Ÿå™¨ã®åˆ¶å¾¡ã‚‚BASICã‹ã‚‰ç°¡å˜ã«è¡Œã†
+ã“ã¨ãŒå¯èƒ½ã§ã™ã€‚
 
-“‹Ú‚µ‚Ä‚¢‚éBASICƒRƒ“ƒpƒCƒ‰‚ÍKM-BASIC‚Å‚·BKM-BASIC‚Í32bit
-®”Œ^‚ÌBASIC‚Å‚·B
-‚Ü‚½A’P¸“x•‚“®¬”“_‰‰ŽZ‚àƒTƒ|[ƒg‚µ‚Ä‚¢‚Ü‚·B
-\‘¢‰»ƒvƒƒOƒ‰ƒ~ƒ“ƒOAƒIƒuƒWƒFƒNƒgŽwŒü‘Î‰ž‚às‚Á‚Ä‚¢‚Ü‚·B
-BASICƒvƒƒOƒ‰ƒ€‚ÍPC“™‚Åì¬‚µAMMC‚Ü‚½‚ÍSDƒJ[ƒhŒo—R‚Å“]‘—‚·‚é
-‚±‚Æ‚âAUSBƒP[ƒuƒ‹‚Æê—pƒ\ƒtƒg‚ð—p‚¢‚Ä“]‘—‚·‚é‚±‚Æ‚ª‰Â”\‚Å‚·B
-‚Ü‚½AUSBƒL[ƒ{[ƒh‚ðÚ‘±‚µA’¼ÚƒvƒƒOƒ‰ƒ€‚ð•ÒW‚µ‚ÄŽÀs‚·‚é
-‚±‚Æ‚à‰Â”\‚Å‚·B
+æ­è¼‰ã—ã¦ã„ã‚‹BASICã‚³ãƒ³ãƒ‘ã‚¤ãƒ©ã¯KM-BASICã§ã™ã€‚KM-BASICã¯32bit
+æ•´æ•°åž‹ã®BASICã§ã™ã€‚
+ã¾ãŸã€å˜ç²¾åº¦æµ®å‹•å°æ•°ç‚¹æ¼”ç®—ã‚‚ã‚µãƒãƒ¼ãƒˆã—ã¦ã„ã¾ã™ã€‚
+æ§‹é€ åŒ–ãƒ—ãƒ­ã‚°ãƒ©ãƒŸãƒ³ã‚°ã€ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæŒ‡å‘å¯¾å¿œã‚‚è¡Œã£ã¦ã„ã¾ã™ã€‚
+BASICãƒ—ãƒ­ã‚°ãƒ©ãƒ ã¯PCç­‰ã§ä½œæˆã—ã€MMCã¾ãŸã¯SDã‚«ãƒ¼ãƒ‰çµŒç”±ã§è»¢é€ã™ã‚‹
+ã“ã¨ã‚„ã€USBã‚±ãƒ¼ãƒ–ãƒ«ã¨å°‚ç”¨ã‚½ãƒ•ãƒˆã‚’ç”¨ã„ã¦è»¢é€ã™ã‚‹ã“ã¨ãŒå¯èƒ½ã§ã™ã€‚
+ã¾ãŸã€USBã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã‚’æŽ¥ç¶šã—ã€ç›´æŽ¥ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’ç·¨é›†ã—ã¦å®Ÿè¡Œã™ã‚‹
+ã“ã¨ã‚‚å¯èƒ½ã§ã™ã€‚
 
-“®ì‰ñ˜H‚â‚»‚Ì‘¼‚ÌÚ×‚ÍA‰º‹L‚ÌWebƒTƒCƒg‚ðŽQÆ‚µ‚Ä‚­‚¾‚³‚¢B
+å‹•ä½œå›žè·¯ã‚„ãã®ä»–ã®è©³ç´°ã¯ã€ä¸‹è¨˜ã®Webã‚µã‚¤ãƒˆã‚’å‚ç…§ã—ã¦ãã ã•ã„ã€‚
 http://www.ze.em-net.ne.jp/~kenken/machikania/typepu.html
 
 
-“¯«‚³‚ê‚éŽÀsŒ`Ž®ƒtƒ@ƒCƒ‹iuf2ƒtƒ@ƒCƒ‹j‚Í”ñ¤—p—˜—p‚ÉŒÀ‚è
-–³ž‚ÅŽ©—R‚É—˜—p‚·‚é‚±‚Æ‚ª‰Â”\‚Å‚·B
-‚Ü‚½A—˜—p‚µ‚½ì•i‚ðˆê”Ê‚ÉŒöŠJ‚·‚é‚±‚Æ‚à‰Â”\‚Å‚·B‚»‚Ìê‡A
-MachiKaniaƒVƒŠ[ƒY‚ð—˜—p‚µ‚Ä‚¢‚é‚±‚Æ‚É‚Â‚¢‚Ä‚àWebƒTƒCƒg‚â
-à–¾‘“™A‚¢‚¸‚ê‚©‚ÌêŠ‚É‹LÚ‚µ‚Ä‚­‚¾‚³‚¢B
-‚È‚¨A‚²—˜—p‚É‚æ‚Á‚Ä¶‚¶‚½”íŠQ‚â‘¹ŠQ‚É‚Â‚¢‚Ä‚ÍÓ”C‚ð•‰‚¢‚©‚Ë‚Ü‚·B
+åŒæ¢±ã•ã‚Œã‚‹å®Ÿè¡Œå½¢å¼ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆuf2ãƒ•ã‚¡ã‚¤ãƒ«ï¼‰ã¯éžå•†ç”¨åˆ©ç”¨ã«é™ã‚Š
+ç„¡å„Ÿã§è‡ªç”±ã«åˆ©ç”¨ã™ã‚‹ã“ã¨ãŒå¯èƒ½ã§ã™ã€‚
+ã¾ãŸã€åˆ©ç”¨ã—ãŸä½œå“ã‚’ä¸€èˆ¬ã«å…¬é–‹ã™ã‚‹ã“ã¨ã‚‚å¯èƒ½ã§ã™ã€‚ãã®å ´åˆã€
+MachiKaniaã‚·ãƒªãƒ¼ã‚ºã‚’åˆ©ç”¨ã—ã¦ã„ã‚‹ã“ã¨ã«ã¤ã„ã¦ã‚‚Webã‚µã‚¤ãƒˆã‚„
+èª¬æ˜Žæ›¸ç­‰ã€ã„ãšã‚Œã‹ã®å ´æ‰€ã«è¨˜è¼‰ã—ã¦ãã ã•ã„ã€‚
+ãªãŠã€ã”åˆ©ç”¨ã«ã‚ˆã£ã¦ç”Ÿã˜ãŸè¢«å®³ã‚„æå®³ã«ã¤ã„ã¦ã¯è²¬ä»»ã‚’è² ã„ã‹ã­ã¾ã™ã€‚
 
 
-ƒmachikania-pu.zipƒtƒ@ƒCƒ‹ƒRƒ“ƒeƒ“ƒc„
+ï¼œmachikania-pu.zipãƒ•ã‚¡ã‚¤ãƒ«ã‚³ãƒ³ãƒ†ãƒ³ãƒ„ï¼ž
 
-[documents]ƒfƒBƒŒƒNƒgƒŠ
-@ƒhƒLƒ…ƒƒ“ƒg—Þ‚ðŠi”[
-@- help.txt
-@- help-e.txt
-@@KM-BASIC‚ÌƒŠƒtƒ@ƒŒƒ“ƒXƒ}ƒjƒ…ƒAƒ‹
+[documents]ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
+ã€€ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆé¡žã‚’æ ¼ç´
+ã€€- help.txt
+ã€€- help-e.txt
+ã€€ã€€KM-BASICã®ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ãƒžãƒ‹ãƒ¥ã‚¢ãƒ«
 
-@- class.txt
-@- class-e.txt
-@@KM-BASIC‚ÅƒIƒuƒWƒFƒNƒgŽwŒü‰»ƒvƒƒOƒ‰ƒ~ƒ“ƒO‚ÌƒŠƒtƒ@ƒŒƒ“ƒXƒ}ƒjƒ…ƒAƒ‹
+ã€€- class.txt
+ã€€- class-e.txt
+ã€€ã€€KM-BASICã§ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæŒ‡å‘åŒ–ãƒ—ãƒ­ã‚°ãƒ©ãƒŸãƒ³ã‚°ã®ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ãƒžãƒ‹ãƒ¥ã‚¢ãƒ«
 
-@- embed.txt
-@- embed-e.txt
-@@ƒtƒ@ƒCƒ‹–„‚ßž‚ÝŽÀsƒtƒ@ƒCƒ‹ì¬•û–@‚É‚Â‚¢‚Ä
+ã€€- embed.txt
+ã€€- embed-e.txt
+ã€€ã€€ãƒ•ã‚¡ã‚¤ãƒ«åŸ‹ã‚è¾¼ã¿å®Ÿè¡Œãƒ•ã‚¡ã‚¤ãƒ«ä½œæˆæ–¹æ³•ã«ã¤ã„ã¦
 
-@- pcconnect.txt
-@- pcconnect-e.txt
-@@PC‚©‚çMachiKania‚Éƒtƒ@ƒCƒ‹‚ð“]‘—‚·‚é‚½‚ß‚Ì•û–@‚É‚Â‚¢‚Ä
+ã€€- pcconnect.txt
+ã€€- pcconnect-e.txt
+ã€€ã€€PCã‹ã‚‰MachiKaniaã«ãƒ•ã‚¡ã‚¤ãƒ«ã‚’è»¢é€ã™ã‚‹ãŸã‚ã®æ–¹æ³•ã«ã¤ã„ã¦
 
-@- shematic_ntsc.png
-@- shematic_xiao.png
-@@MachiKania type PU‰ñ˜H}
+ã€€- shematic_ntsc.png
+ã€€- shematic_xiao.png
+ã€€ã€€MachiKania type PUå›žè·¯å›³
 
-@- wifi.txt
-@- wifi-e.txt
-@@Raspberry Pi Pico W‚ðŽg‚Á‚ÄWiFiÚ‘±‚ðs‚¤‚Æ‚«‚ÌƒŠƒtƒ@ƒŒƒ“ƒXƒ}ƒjƒ…ƒAƒ‹
+ã€€- wifi.txt
+ã€€- wifi-e.txt
+ã€€ã€€Raspberry Pi Pico Wã‚’ä½¿ã£ã¦WiFiæŽ¥ç¶šã‚’è¡Œã†ã¨ãã®ãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹ãƒžãƒ‹ãƒ¥ã‚¢ãƒ«
 
-[pico_ntsc]ƒfƒBƒŒƒNƒgƒŠ
-@Raspberry Pi Pico ‚ðŽg‚¤Žž‚ÌŽg‚¤ƒoƒCƒiƒŠ[‚ðŠi”[
-@-puerulus.uf2
-@@MachiKania type PU BASICƒVƒXƒeƒ€–{‘ÌiPC connect‹@”\‘Î‰ž”Åj
-@@PC‚ÆRaspberry Pi Pico‚ðUSBÚ‘±‚µ‘‚«ž‚Þ
-@@PC connect‹@”\‚É‚æ‚èAUSBƒP[ƒuƒ‹‚ÅÚ‘±‚µ‚½PC‚©‚çBASICƒvƒƒOƒ‰ƒ€‚ð“]‘—‰Â”\
+[pico_ntsc]ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
+ã€€Raspberry Pi Pico ã‚’ä½¿ã†æ™‚ã®ä½¿ã†ãƒã‚¤ãƒŠãƒªãƒ¼ã‚’æ ¼ç´
+ã€€-puerulus.uf2
+ã€€ã€€MachiKania type PU BASICã‚·ã‚¹ãƒ†ãƒ æœ¬ä½“ï¼ˆPC connectæ©Ÿèƒ½å¯¾å¿œç‰ˆï¼‰
+ã€€ã€€PCã¨Raspberry Pi Picoã‚’USBæŽ¥ç¶šã—æ›¸ãè¾¼ã‚€
+ã€€ã€€PC connectæ©Ÿèƒ½ã«ã‚ˆã‚Šã€USBã‚±ãƒ¼ãƒ–ãƒ«ã§æŽ¥ç¶šã—ãŸPCã‹ã‚‰BASICãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’è»¢é€å¯èƒ½
 
-@-puerulus_kb.uf2
-@@MachiKania type PU BASICƒVƒXƒeƒ€–{‘ÌiUSBƒL[ƒ{[ƒhÚ‘±‘Î‰ž”Åj
-@@PC‚ÆRaspberry Pi Pico‚ðUSBÚ‘±‚µ‘‚«ž‚Þ
-@@“à‘ ƒGƒfƒBƒ^‚ÆUSBƒL[ƒ{[ƒh‚ÅBASICƒvƒƒOƒ‰ƒ€‚ð’¼Ú•ÒWAŽÀs‰Â”\
+ã€€-puerulus_kb.uf2
+ã€€ã€€MachiKania type PU BASICã‚·ã‚¹ãƒ†ãƒ æœ¬ä½“ï¼ˆUSBã‚­ãƒ¼ãƒœãƒ¼ãƒ‰æŽ¥ç¶šå¯¾å¿œç‰ˆï¼‰
+ã€€ã€€PCã¨Raspberry Pi Picoã‚’USBæŽ¥ç¶šã—æ›¸ãè¾¼ã‚€
+ã€€ã€€å†…è”µã‚¨ãƒ‡ã‚£ã‚¿ã¨USBã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã§BASICãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’ç›´æŽ¥ç·¨é›†ã€å®Ÿè¡Œå¯èƒ½
 
-[pico_w_ntsc]ƒfƒBƒŒƒNƒgƒŠ
-@Raspberry Pi Pico W ‚ðŽg‚¤Žž‚ÌŽg‚¤ƒoƒCƒiƒŠ[‚ðŠi”[
-@-puerulus.uf2
-@@MachiKania type PU BASICƒVƒXƒeƒ€–{‘ÌiPC connect‹@”\‘Î‰ž”Åj
-@@PC‚ÆRaspberry Pi Pico‚ðUSBÚ‘±‚µ‘‚«ž‚Þ
-@@PC connect‹@”\‚É‚æ‚èAUSBƒP[ƒuƒ‹‚ÅÚ‘±‚µ‚½PC‚©‚çBASICƒvƒƒOƒ‰ƒ€‚ð“]‘—‰Â”\
-@@WiFiÚ‘±‚ª‰Â”\
+[pico_w_ntsc]ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
+ã€€Raspberry Pi Pico W ã‚’ä½¿ã†æ™‚ã®ä½¿ã†ãƒã‚¤ãƒŠãƒªãƒ¼ã‚’æ ¼ç´
+ã€€-puerulus.uf2
+ã€€ã€€MachiKania type PU BASICã‚·ã‚¹ãƒ†ãƒ æœ¬ä½“ï¼ˆPC connectæ©Ÿèƒ½å¯¾å¿œç‰ˆï¼‰
+ã€€ã€€PCã¨Raspberry Pi Picoã‚’USBæŽ¥ç¶šã—æ›¸ãè¾¼ã‚€
+ã€€ã€€PC connectæ©Ÿèƒ½ã«ã‚ˆã‚Šã€USBã‚±ãƒ¼ãƒ–ãƒ«ã§æŽ¥ç¶šã—ãŸPCã‹ã‚‰BASICãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’è»¢é€å¯èƒ½
+ã€€ã€€WiFiæŽ¥ç¶šãŒå¯èƒ½
 
-@-puerulus_kb.uf2
-@@MachiKania type PU BASICƒVƒXƒeƒ€–{‘ÌiUSBƒL[ƒ{[ƒhÚ‘±‘Î‰ž”Åj
-@@PC‚ÆRaspberry Pi Pico‚ðUSBÚ‘±‚µ‘‚«ž‚Þ
-@@“à‘ ƒGƒfƒBƒ^‚ÆUSBƒL[ƒ{[ƒh‚ÅBASICƒvƒƒOƒ‰ƒ€‚ð’¼Ú•ÒWAŽÀs‰Â”\
-@@WiFiÚ‘±‚ª‰Â”\
+ã€€-puerulus_kb.uf2
+ã€€ã€€MachiKania type PU BASICã‚·ã‚¹ãƒ†ãƒ æœ¬ä½“ï¼ˆUSBã‚­ãƒ¼ãƒœãƒ¼ãƒ‰æŽ¥ç¶šå¯¾å¿œç‰ˆï¼‰
+ã€€ã€€PCã¨Raspberry Pi Picoã‚’USBæŽ¥ç¶šã—æ›¸ãè¾¼ã‚€
+ã€€ã€€å†…è”µã‚¨ãƒ‡ã‚£ã‚¿ã¨USBã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã§BASICãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’ç›´æŽ¥ç·¨é›†ã€å®Ÿè¡Œå¯èƒ½
+ã€€ã€€WiFiæŽ¥ç¶šãŒå¯èƒ½
 
-[pico2_ntsc]ƒfƒBƒŒƒNƒgƒŠ
-@Raspberry Pi Pico 2 ‚ðŽg‚¤Žž‚ÌŽg‚¤ƒoƒCƒiƒŠ[‚ðŠi”[
-@-puerulus.uf2
-@@MachiKania type PU BASICƒVƒXƒeƒ€–{‘ÌiPC connect‹@”\‘Î‰ž”Åj
-@@PC‚ÆRaspberry Pi Pico‚ðUSBÚ‘±‚µ‘‚«ž‚Þ
-@@PC connect‹@”\‚É‚æ‚èAUSBƒP[ƒuƒ‹‚ÅÚ‘±‚µ‚½PC‚©‚çBASICƒvƒƒOƒ‰ƒ€‚ð“]‘—‰Â”\
+[pico2_ntsc]ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
+ã€€Raspberry Pi Pico 2 ã‚’ä½¿ã†æ™‚ã®ä½¿ã†ãƒã‚¤ãƒŠãƒªãƒ¼ã‚’æ ¼ç´
+ã€€-puerulus.uf2
+ã€€ã€€MachiKania type PU BASICã‚·ã‚¹ãƒ†ãƒ æœ¬ä½“ï¼ˆPC connectæ©Ÿèƒ½å¯¾å¿œç‰ˆï¼‰
+ã€€ã€€PCã¨Raspberry Pi Picoã‚’USBæŽ¥ç¶šã—æ›¸ãè¾¼ã‚€
+ã€€ã€€PC connectæ©Ÿèƒ½ã«ã‚ˆã‚Šã€USBã‚±ãƒ¼ãƒ–ãƒ«ã§æŽ¥ç¶šã—ãŸPCã‹ã‚‰BASICãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’è»¢é€å¯èƒ½
 
-@-puerulus_kb.uf2
-@@MachiKania type PU BASICƒVƒXƒeƒ€–{‘ÌiUSBƒL[ƒ{[ƒhÚ‘±‘Î‰ž”Åj
-@@PC‚ÆRaspberry Pi Pico‚ðUSBÚ‘±‚µ‘‚«ž‚Þ
-@@“à‘ ƒGƒfƒBƒ^‚ÆUSBƒL[ƒ{[ƒh‚ÅBASICƒvƒƒOƒ‰ƒ€‚ð’¼Ú•ÒWAŽÀs‰Â”\
+ã€€-puerulus_kb.uf2
+ã€€ã€€MachiKania type PU BASICã‚·ã‚¹ãƒ†ãƒ æœ¬ä½“ï¼ˆUSBã‚­ãƒ¼ãƒœãƒ¼ãƒ‰æŽ¥ç¶šå¯¾å¿œç‰ˆï¼‰
+ã€€ã€€PCã¨Raspberry Pi Picoã‚’USBæŽ¥ç¶šã—æ›¸ãè¾¼ã‚€
+ã€€ã€€å†…è”µã‚¨ãƒ‡ã‚£ã‚¿ã¨USBã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã§BASICãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’ç›´æŽ¥ç·¨é›†ã€å®Ÿè¡Œå¯èƒ½
 
-[pico2_w_ntsc]ƒfƒBƒŒƒNƒgƒŠ
-@Raspberry Pi Pico 2 W ‚ðŽg‚¤Žž‚ÌŽg‚¤ƒoƒCƒiƒŠ[‚ðŠi”[
-@-puerulus.uf2
-@@MachiKania type PU BASICƒVƒXƒeƒ€–{‘ÌiPC connect‹@”\‘Î‰ž”Åj
-@@PC‚ÆRaspberry Pi Pico‚ðUSBÚ‘±‚µ‘‚«ž‚Þ
-@@PC connect‹@”\‚É‚æ‚èAUSBƒP[ƒuƒ‹‚ÅÚ‘±‚µ‚½PC‚©‚çBASICƒvƒƒOƒ‰ƒ€‚ð“]‘—‰Â”\
-@@WiFiÚ‘±‚ª‰Â”\
+[pico2_w_ntsc]ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
+ã€€Raspberry Pi Pico 2 W ã‚’ä½¿ã†æ™‚ã®ä½¿ã†ãƒã‚¤ãƒŠãƒªãƒ¼ã‚’æ ¼ç´
+ã€€-puerulus.uf2
+ã€€ã€€MachiKania type PU BASICã‚·ã‚¹ãƒ†ãƒ æœ¬ä½“ï¼ˆPC connectæ©Ÿèƒ½å¯¾å¿œç‰ˆï¼‰
+ã€€ã€€PCã¨Raspberry Pi Picoã‚’USBæŽ¥ç¶šã—æ›¸ãè¾¼ã‚€
+ã€€ã€€PC connectæ©Ÿèƒ½ã«ã‚ˆã‚Šã€USBã‚±ãƒ¼ãƒ–ãƒ«ã§æŽ¥ç¶šã—ãŸPCã‹ã‚‰BASICãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’è»¢é€å¯èƒ½
+ã€€ã€€WiFiæŽ¥ç¶šãŒå¯èƒ½
 
-@-puerulus_kb.uf2
-@@MachiKania type PU BASICƒVƒXƒeƒ€–{‘ÌiUSBƒL[ƒ{[ƒhÚ‘±‘Î‰ž”Åj
-@@PC‚ÆRaspberry Pi Pico‚ðUSBÚ‘±‚µ‘‚«ž‚Þ
-@@“à‘ ƒGƒfƒBƒ^‚ÆUSBƒL[ƒ{[ƒh‚ÅBASICƒvƒƒOƒ‰ƒ€‚ð’¼Ú•ÒWAŽÀs‰Â”\
-@@WiFiÚ‘±‚ª‰Â”\
+ã€€-puerulus_kb.uf2
+ã€€ã€€MachiKania type PU BASICã‚·ã‚¹ãƒ†ãƒ æœ¬ä½“ï¼ˆUSBã‚­ãƒ¼ãƒœãƒ¼ãƒ‰æŽ¥ç¶šå¯¾å¿œç‰ˆï¼‰
+ã€€ã€€PCã¨Raspberry Pi Picoã‚’USBæŽ¥ç¶šã—æ›¸ãè¾¼ã‚€
+ã€€ã€€å†…è”µã‚¨ãƒ‡ã‚£ã‚¿ã¨USBã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã§BASICãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’ç›´æŽ¥ç·¨é›†ã€å®Ÿè¡Œå¯èƒ½
+ã€€ã€€WiFiæŽ¥ç¶šãŒå¯èƒ½
 
-[xiao_ntsc]ƒfƒBƒŒƒNƒgƒŠ
-@XIAO-RP2040, TINY2040, RP2040-Zero ‚ðŽg‚¤Žž‚ÌŽg‚¤ƒoƒCƒiƒŠ[‚ðŠi”[
-@-puerulus.uf2
-@@MachiKania type PU BASICƒVƒXƒeƒ€–{‘ÌiPC connect‹@”\‘Î‰ž”Åj
-@@PC‚Æƒ}ƒCƒRƒ“ƒ{[ƒh‚ðUSBÚ‘±‚µ‘‚«ž‚Þ
-@@PC connect‹@”\‚É‚æ‚èAUSBƒP[ƒuƒ‹‚ÅÚ‘±‚µ‚½PC‚©‚çBASICƒvƒƒOƒ‰ƒ€‚ð“]‘—‰Â”\
+[xiao_ntsc]ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
+ã€€XIAO-RP2040, TINY2040, RP2040-Zero ã‚’ä½¿ã†æ™‚ã®ä½¿ã†ãƒã‚¤ãƒŠãƒªãƒ¼ã‚’æ ¼ç´
+ã€€-puerulus.uf2
+ã€€ã€€MachiKania type PU BASICã‚·ã‚¹ãƒ†ãƒ æœ¬ä½“ï¼ˆPC connectæ©Ÿèƒ½å¯¾å¿œç‰ˆï¼‰
+ã€€ã€€PCã¨ãƒžã‚¤ã‚³ãƒ³ãƒœãƒ¼ãƒ‰ã‚’USBæŽ¥ç¶šã—æ›¸ãè¾¼ã‚€
+ã€€ã€€PC connectæ©Ÿèƒ½ã«ã‚ˆã‚Šã€USBã‚±ãƒ¼ãƒ–ãƒ«ã§æŽ¥ç¶šã—ãŸPCã‹ã‚‰BASICãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’è»¢é€å¯èƒ½
 
-@-puerulus_kb.uf2
-@@MachiKania type PU BASICƒVƒXƒeƒ€–{‘ÌiUSBƒL[ƒ{[ƒhÚ‘±‘Î‰ž”Åj
-@@PC‚Æƒ}ƒCƒRƒ“ƒ{[ƒh‚ðUSBÚ‘±‚µ‘‚«ž‚Þ
-@@“à‘ ƒGƒfƒBƒ^‚ÆUSBƒL[ƒ{[ƒh‚ÅBASICƒvƒƒOƒ‰ƒ€‚ð’¼Ú•ÒWAŽÀs‰Â”\
+ã€€-puerulus_kb.uf2
+ã€€ã€€MachiKania type PU BASICã‚·ã‚¹ãƒ†ãƒ æœ¬ä½“ï¼ˆUSBã‚­ãƒ¼ãƒœãƒ¼ãƒ‰æŽ¥ç¶šå¯¾å¿œç‰ˆï¼‰
+ã€€ã€€PCã¨ãƒžã‚¤ã‚³ãƒ³ãƒœãƒ¼ãƒ‰ã‚’USBæŽ¥ç¶šã—æ›¸ãè¾¼ã‚€
+ã€€ã€€å†…è”µã‚¨ãƒ‡ã‚£ã‚¿ã¨USBã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã§BASICãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’ç›´æŽ¥ç·¨é›†ã€å®Ÿè¡Œå¯èƒ½
 
-[xiao_rp2350_ntsc]ƒfƒBƒŒƒNƒgƒŠ
-@XIAO-RP2350, TINY2350, RP2350-Zero ‚ðŽg‚¤Žž‚ÌŽg‚¤ƒoƒCƒiƒŠ[‚ðŠi”[
-@-puerulus.uf2
-@@MachiKania type PU BASICƒVƒXƒeƒ€–{‘ÌiPC connect‹@”\‘Î‰ž”Åj
-@@PC‚Æƒ}ƒCƒRƒ“ƒ{[ƒh‚ðUSBÚ‘±‚µ‘‚«ž‚Þ
-@@PC connect‹@”\‚É‚æ‚èAUSBƒP[ƒuƒ‹‚ÅÚ‘±‚µ‚½PC‚©‚çBASICƒvƒƒOƒ‰ƒ€‚ð“]‘—‰Â”\
+[xiao_rp2350_ntsc]ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
+ã€€XIAO-RP2350, TINY2350, RP2350-Zero ã‚’ä½¿ã†æ™‚ã®ä½¿ã†ãƒã‚¤ãƒŠãƒªãƒ¼ã‚’æ ¼ç´
+ã€€-puerulus.uf2
+ã€€ã€€MachiKania type PU BASICã‚·ã‚¹ãƒ†ãƒ æœ¬ä½“ï¼ˆPC connectæ©Ÿèƒ½å¯¾å¿œç‰ˆï¼‰
+ã€€ã€€PCã¨ãƒžã‚¤ã‚³ãƒ³ãƒœãƒ¼ãƒ‰ã‚’USBæŽ¥ç¶šã—æ›¸ãè¾¼ã‚€
+ã€€ã€€PC connectæ©Ÿèƒ½ã«ã‚ˆã‚Šã€USBã‚±ãƒ¼ãƒ–ãƒ«ã§æŽ¥ç¶šã—ãŸPCã‹ã‚‰BASICãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’è»¢é€å¯èƒ½
 
-@-puerulus_kb.uf2
-@@MachiKania type PU BASICƒVƒXƒeƒ€–{‘ÌiUSBƒL[ƒ{[ƒhÚ‘±‘Î‰ž”Åj
-@@PC‚Æƒ}ƒCƒRƒ“ƒ{[ƒh‚ðUSBÚ‘±‚µ‘‚«ž‚Þ
-@@“à‘ ƒGƒfƒBƒ^‚ÆUSBƒL[ƒ{[ƒh‚ÅBASICƒvƒƒOƒ‰ƒ€‚ð’¼Ú•ÒWAŽÀs‰Â”\
+ã€€-puerulus_kb.uf2
+ã€€ã€€MachiKania type PU BASICã‚·ã‚¹ãƒ†ãƒ æœ¬ä½“ï¼ˆUSBã‚­ãƒ¼ãƒœãƒ¼ãƒ‰æŽ¥ç¶šå¯¾å¿œç‰ˆï¼‰
+ã€€ã€€PCã¨ãƒžã‚¤ã‚³ãƒ³ãƒœãƒ¼ãƒ‰ã‚’USBæŽ¥ç¶šã—æ›¸ãè¾¼ã‚€
+ã€€ã€€å†…è”µã‚¨ãƒ‡ã‚£ã‚¿ã¨USBã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã§BASICãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’ç›´æŽ¥ç·¨é›†ã€å®Ÿè¡Œå¯èƒ½
 
-[pico_ntsc/embed]ƒfƒBƒŒƒNƒgƒŠ
-[pico_w_ntsc/embed]ƒfƒBƒŒƒNƒgƒŠ
-[pico2_ntsc/embed]ƒfƒBƒŒƒNƒgƒŠ
-[pico2_w_ntsc/embed]ƒfƒBƒŒƒNƒgƒŠ
-[xiao_ntsc/embed]ƒfƒBƒŒƒNƒgƒŠ
-[xiao_rp2350_ntsc/embed]ƒfƒBƒŒƒNƒgƒŠ
-@‘g‚Ýž‚Ý—p“r‚È‚ÇMMC/SDƒJ[ƒh‚È‚µ‚Å‚àBASICƒvƒƒOƒ‰ƒ€‚ðŽÀs‚·‚é‚±‚Æ‚ª
-@‚Å‚«‚é‚æ‚¤‚Èƒc[ƒ‹—Þ‚ðŠi”[
+[pico_ntsc/embed]ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
+[pico_w_ntsc/embed]ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
+[pico2_ntsc/embed]ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
+[pico2_w_ntsc/embed]ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
+[xiao_ntsc/embed]ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
+[xiao_rp2350_ntsc/embed]ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
+ã€€çµ„ã¿è¾¼ã¿ç”¨é€”ãªã©MMC/SDã‚«ãƒ¼ãƒ‰ãªã—ã§ã‚‚BASICãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’å®Ÿè¡Œã™ã‚‹ã“ã¨ãŒ
+ã€€ã§ãã‚‹ã‚ˆã†ãªãƒ„ãƒ¼ãƒ«é¡žã‚’æ ¼ç´
 
-[pcconnect]ƒfƒBƒŒƒNƒgƒŠ
-@USBƒP[ƒuƒ‹‚ð‰î‚µ‚ÄPC“à‚Ìƒtƒ@ƒCƒ‹‚ðMachiKania‚É“]‘—‚·‚é‚½‚ß‚Ìƒc[ƒ‹—Þ
-@‚ðŠi”[
+[pcconnect]ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
+ã€€USBã‚±ãƒ¼ãƒ–ãƒ«ã‚’ä»‹ã—ã¦PCå†…ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’MachiKaniaã«è»¢é€ã™ã‚‹ãŸã‚ã®ãƒ„ãƒ¼ãƒ«é¡ž
+ã€€ã‚’æ ¼ç´
 
 readme-pu.txt
-@‚±‚Ìƒtƒ@ƒCƒ‹
+ã€€ã“ã®ãƒ•ã‚¡ã‚¤ãƒ«
 
 readmeLib.txt
-@LIB ƒfƒBƒŒƒNƒgƒŠ[“à‚Ìƒ‰ƒCƒuƒ‰ƒŠ[à–¾‘
+ã€€LIB ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãƒ¼å†…ã®ãƒ©ã‚¤ãƒ–ãƒ©ãƒªãƒ¼èª¬æ˜Žæ›¸
 
-ƒ‚±‚±‚æ‚è‰º‚Ìƒtƒ@ƒCƒ‹‚¨‚æ‚ÑƒfƒBƒŒƒNƒgƒŠ‘S‚Ä‚ðSDƒJ[ƒh‚Ìƒ‹[ƒgƒfƒBƒŒƒNƒgƒŠ‚ÉƒRƒs[‚µ‚Ä‚­‚¾‚³‚¢„
+ï¼œã“ã“ã‚ˆã‚Šä¸‹ã®ãƒ•ã‚¡ã‚¤ãƒ«ãŠã‚ˆã³ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªå…¨ã¦ã‚’SDã‚«ãƒ¼ãƒ‰ã®ãƒ«ãƒ¼ãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã«ã‚³ãƒ”ãƒ¼ã—ã¦ãã ã•ã„ï¼ž
 
 MACHIKAP.INI
-@MachiKania type PU‚Ì‰ŠúÝ’èƒtƒ@ƒCƒ‹(type P‚Æ‹¤’Ê)
+ã€€MachiKania type PUã®åˆæœŸè¨­å®šãƒ•ã‚¡ã‚¤ãƒ«(type Pã¨å…±é€š)
 
-[LIB]ƒfƒBƒŒƒNƒgƒŠ
-@BASICƒvƒƒOƒ‰ƒ€‚©‚çŠÈ’P‚É—˜—p‰Â”\‚ÈƒNƒ‰ƒXƒ‰ƒCƒuƒ‰ƒŠ
-@SDƒJ[ƒh‚Ìƒ‹[ƒg‚ÉLIBƒfƒBƒŒƒNƒgƒŠ‚²‚ÆƒRƒs[‚µ‚Ä—˜—p
+[LIB]ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
+ã€€BASICãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‹ã‚‰ç°¡å˜ã«åˆ©ç”¨å¯èƒ½ãªã‚¯ãƒ©ã‚¹ãƒ©ã‚¤ãƒ–ãƒ©ãƒª
+ã€€SDã‚«ãƒ¼ãƒ‰ã®ãƒ«ãƒ¼ãƒˆã«LIBãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã”ã¨ã‚³ãƒ”ãƒ¼ã—ã¦åˆ©ç”¨
 
-[samples]ƒfƒBƒŒƒNƒgƒŠ
-@BASICƒTƒ“ƒvƒ‹ƒvƒƒOƒ‰ƒ€B‚±‚ê‚ç‚Ìƒtƒ@ƒCƒ‹‚ðSDƒJ[ƒh‚Ìƒ‹[ƒgƒfƒBƒŒƒNƒgƒŠ‚ÉƒRƒs[‚·‚é
-@i‚Ü‚½‚Í”CˆÓ‚ÌƒTƒuƒfƒBƒŒƒNƒgƒŠ‚ðì¬‚µ‚ÄƒRƒs[j
+[samples]ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª
+ã€€BASICã‚µãƒ³ãƒ—ãƒ«ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã€‚ã“ã‚Œã‚‰ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’SDã‚«ãƒ¼ãƒ‰ã®ãƒ«ãƒ¼ãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã«ã‚³ãƒ”ãƒ¼ã™ã‚‹
+ã€€ï¼ˆã¾ãŸã¯ä»»æ„ã®ã‚µãƒ–ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’ä½œæˆã—ã¦ã‚³ãƒ”ãƒ¼ï¼‰
 
-@3DWAVE.BAS
-@@”g–ä‚Ì3DƒOƒ‰ƒtƒBƒbƒN
+ã€€3DWAVE.BAS
+ã€€ã€€æ³¢ç´‹ã®3Dã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯
 
-@BLOCK.BAS
-@@‰‘ãMachiKaniaŒü‚¯‚Éì¬‚µ‚½ƒuƒƒbƒN•ö‚µƒQ[ƒ€
+ã€€BLOCK.BAS
+ã€€ã€€åˆä»£MachiKaniaå‘ã‘ã«ä½œæˆã—ãŸãƒ–ãƒ­ãƒƒã‚¯å´©ã—ã‚²ãƒ¼ãƒ 
 
-@COSMOS.BMPiPHOTO.BAS‚ÅŽg—pj
+ã€€COSMOS.BMPï¼ˆPHOTO.BASã§ä½¿ç”¨ï¼‰
 
-@FILEMAN.BAS
-@@MachiKania type P/PU—pƒtƒ@ƒCƒ‹ƒ}ƒl[ƒWƒƒ
+ã€€FILEMAN.BAS
+ã€€ã€€MachiKania type P/PUç”¨ãƒ•ã‚¡ã‚¤ãƒ«ãƒžãƒãƒ¼ã‚¸ãƒ£
 
-@HDAEMON.BAS
-@@HTTPDƒNƒ‰ƒX‚ðŽg‚Á‚Ä web ƒT[ƒo[\’z‚ð\’z‚·‚éƒTƒ“ƒvƒ‹ƒvƒƒOƒ‰ƒ€
-@@PC‚âƒXƒ}[ƒgƒtƒHƒ“‚©‚çÚ‘±‚µ‚ÄAPico W ‚Ì LED ‚ðƒIƒ“EƒIƒt‚Å‚«‚é
+ã€€HDAEMON.BAS
+ã€€ã€€HTTPDã‚¯ãƒ©ã‚¹ã‚’ä½¿ã£ã¦ web ã‚µãƒ¼ãƒãƒ¼æ§‹ç¯‰ã‚’æ§‹ç¯‰ã™ã‚‹ã‚µãƒ³ãƒ—ãƒ«ãƒ—ãƒ­ã‚°ãƒ©ãƒ 
+ã€€ã€€PCã‚„ã‚¹ãƒžãƒ¼ãƒˆãƒ•ã‚©ãƒ³ã‹ã‚‰æŽ¥ç¶šã—ã¦ã€Pico W ã® LED ã‚’ã‚ªãƒ³ãƒ»ã‚ªãƒ•ã§ãã‚‹
 
-@INVADE.BAS
-@@MachiKania type Z/M/P/PUŒü‚¯‚Éì¬‚µ‚½ƒCƒ“ƒx[ƒ_[ƒQ[ƒ€
+ã€€INVADE.BAS
+ã€€ã€€MachiKania type Z/M/P/PUå‘ã‘ã«ä½œæˆã—ãŸã‚¤ãƒ³ãƒ™ãƒ¼ãƒ€ãƒ¼ã‚²ãƒ¼ãƒ 
 
-@LCHIKA.BAS
-@@LED‚ð“_–Å‚³‚¹‚éƒTƒ“ƒvƒ‹ƒvƒƒOƒ‰ƒ€
+ã€€LCHIKA.BAS
+ã€€ã€€LEDã‚’ç‚¹æ»…ã•ã›ã‚‹ã‚µãƒ³ãƒ—ãƒ«ãƒ—ãƒ­ã‚°ãƒ©ãƒ 
 
-@MANDELBR.BAS
-@@ƒeƒLƒXƒg‚Åƒ}ƒ“ƒfƒ‹ƒuƒ[‚ðo—Í‚·‚éƒvƒƒOƒ‰ƒ€
+ã€€MANDELBR.BAS
+ã€€ã€€ãƒ†ã‚­ã‚¹ãƒˆã§ãƒžãƒ³ãƒ‡ãƒ«ãƒ–ãƒ­ãƒ¼ã‚’å‡ºåŠ›ã™ã‚‹ãƒ—ãƒ­ã‚°ãƒ©ãƒ 
 
-@MAZE3D.BAS
-@@—§‘Ì–À˜H’EoƒQ[ƒ€
+ã€€MAZE3D.BAS
+ã€€ã€€ç«‹ä½“è¿·è·¯è„±å‡ºã‚²ãƒ¼ãƒ 
 
-@MUSIC.BAS
-@@MUSIC–½—ßŽg—p‚ÌƒTƒ“ƒvƒ‹ƒvƒƒOƒ‰ƒ€
+ã€€MUSIC.BAS
+ã€€ã€€MUSICå‘½ä»¤ä½¿ç”¨ã®ã‚µãƒ³ãƒ—ãƒ«ãƒ—ãƒ­ã‚°ãƒ©ãƒ 
 
-@NIHONGO.BAS
-@@ƒ‰ƒCƒuƒ‰ƒŠ[‚ÌCKNJ16ƒNƒ‰ƒX‚ð—˜—p‚µ‚Ä“ú–{Œê‚ð•\Ž¦‚·‚éƒvƒƒOƒ‰ƒ€
+ã€€NIHONGO.BAS
+ã€€ã€€ãƒ©ã‚¤ãƒ–ãƒ©ãƒªãƒ¼ã®CKNJ16ã‚¯ãƒ©ã‚¹ã‚’åˆ©ç”¨ã—ã¦æ—¥æœ¬èªžã‚’è¡¨ç¤ºã™ã‚‹ãƒ—ãƒ­ã‚°ãƒ©ãƒ 
 
-@PCG.BAS
-@@PCG‚ð—˜—p‚µ‚½ƒTƒ“ƒvƒ‹ƒvƒƒOƒ‰ƒ€
+ã€€PCG.BAS
+ã€€ã€€PCGã‚’åˆ©ç”¨ã—ãŸã‚µãƒ³ãƒ—ãƒ«ãƒ—ãƒ­ã‚°ãƒ©ãƒ 
 
-@PEGSOL-G.BAS
-@@ƒyƒOƒ\ƒŠƒeƒAƒQ[ƒ€ƒvƒƒOƒ‰ƒ€
+ã€€PEGSOL-G.BAS
+ã€€ã€€ãƒšã‚°ã‚½ãƒªãƒ†ã‚¢ã‚²ãƒ¼ãƒ ãƒ—ãƒ­ã‚°ãƒ©ãƒ 
 
-@PHOTO.BAS
-@@BMPƒtƒ@ƒCƒ‹‚ð‰t»•\Ž¦‚·‚éƒvƒƒOƒ‰ƒ€
+ã€€PHOTO.BAS
+ã€€ã€€BMPãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ¶²æ™¶è¡¨ç¤ºã™ã‚‹ãƒ—ãƒ­ã‚°ãƒ©ãƒ 
 
-@RAYTRACE.BAS
-@@ƒŒƒCƒgƒŒ[ƒVƒ“ƒOƒvƒƒOƒ‰ƒ€
+ã€€RAYTRACE.BAS
+ã€€ã€€ãƒ¬ã‚¤ãƒˆãƒ¬ãƒ¼ã‚·ãƒ³ã‚°ãƒ—ãƒ­ã‚°ãƒ©ãƒ 
 
-@SOUND.BAS
-@@SOUND–½—ßŽg—p‚ÌƒTƒ“ƒvƒ‹ƒvƒƒOƒ‰ƒ€
+ã€€SOUND.BAS
+ã€€ã€€SOUNDå‘½ä»¤ä½¿ç”¨ã®ã‚µãƒ³ãƒ—ãƒ«ãƒ—ãƒ­ã‚°ãƒ©ãƒ 
 
-@STARTREK.BAS
-@@ƒXƒ^[ƒgƒŒƒbƒNƒQ[ƒ€ƒvƒƒOƒ‰ƒ€
+ã€€STARTREK.BAS
+ã€€ã€€ã‚¹ã‚¿ãƒ¼ãƒˆãƒ¬ãƒƒã‚¯ã‚²ãƒ¼ãƒ ãƒ—ãƒ­ã‚°ãƒ©ãƒ 
 
-@TIME-INT.BAS
-@@ƒ^ƒCƒ}[Š„‚èž‚Ý‚ÌƒTƒ“ƒvƒ‹ƒvƒƒOƒ‰ƒ€
+ã€€TIME-INT.BAS
+ã€€ã€€ã‚¿ã‚¤ãƒžãƒ¼å‰²ã‚Šè¾¼ã¿ã®ã‚µãƒ³ãƒ—ãƒ«ãƒ—ãƒ­ã‚°ãƒ©ãƒ 
 
-@WEATHER.BAS
-@@WGETƒNƒ‰ƒX‚ÆJSONƒNƒ‰ƒX‚ðŽg‚Á‚½Aƒlƒbƒgã‚Ìwebƒy[ƒW‚©‚çî•ñ‚ð“¾‚éƒTƒ“ƒvƒ‹ƒvƒƒOƒ‰ƒ€
-@@¡“ú‚Ì“ú•t‚Æ“V‹C—\•ñ‚ð•\Ž¦‚·‚é
-@
-@WFRAME.BAS
-@@ƒƒCƒ„[ƒtƒŒ[ƒ€ƒOƒ‰ƒtƒBƒbƒNƒvƒƒOƒ‰ƒ€
+ã€€WEATHER.BAS
+ã€€ã€€WGETã‚¯ãƒ©ã‚¹ã¨JSONã‚¯ãƒ©ã‚¹ã‚’ä½¿ã£ãŸã€ãƒãƒƒãƒˆä¸Šã®webãƒšãƒ¼ã‚¸ã‹ã‚‰æƒ…å ±ã‚’å¾—ã‚‹ã‚µãƒ³ãƒ—ãƒ«ãƒ—ãƒ­ã‚°ãƒ©ãƒ 
+ã€€ã€€ä»Šæ—¥ã®æ—¥ä»˜ã¨å¤©æ°—äºˆå ±ã‚’è¡¨ç¤ºã™ã‚‹
+ã€€
+ã€€WFRAME.BAS
+ã€€ã€€ãƒ¯ã‚¤ãƒ¤ãƒ¼ãƒ•ãƒ¬ãƒ¼ãƒ ã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ãƒ—ãƒ­ã‚°ãƒ©ãƒ 
 
 
 ------------------------------------------------------------------------
-MachiKania type PU BASICƒVƒXƒeƒ€‰ü”Å—š—ð
+MachiKania type PU BASICã‚·ã‚¹ãƒ†ãƒ æ”¹ç‰ˆå±¥æ­´
 
-Puerulus 1.50/KM-1507i2024.12.28j
-@EÅ‰‚ÌŒöŠJƒo[ƒWƒ‡ƒ“
+Puerulus 1.50/KM-1507ï¼ˆ2024.12.28ï¼‰
+ã€€ãƒ»æœ€åˆã®å…¬é–‹ãƒãƒ¼ã‚¸ãƒ§ãƒ³
 
 
 Puerulus 1.51/KM-1508 (2025.2.22)
-@EƒGƒfƒBƒ^[Žg—pŽž‚É‰æ–Ê‰º•”‚Ìs”Ô†‚ªŒë•\Ž¦‚³‚ê‚é•s‹ï‡‚ðC³B
-@ESPIEI2CEUART—p‚Ìƒsƒ“”z’u‚ðAMACHIKAP.INI‚ÅŽ©—R‚ÉÝ’è‚Å‚«‚é‚æ‚¤‚É•ÏXB
-@EƒNƒ‰ƒXƒ‰ƒCƒuƒ‰ƒŠ[‚ÌREGEXP‚ÅA˜A‘±Žg—pŽž‚Éƒƒ‚ƒŠ[ƒGƒ‰[‚ªo‚é•s‹ï‡‚ðC³B
+ã€€ãƒ»ã‚¨ãƒ‡ã‚£ã‚¿ãƒ¼ä½¿ç”¨æ™‚ã«ç”»é¢ä¸‹éƒ¨ã®è¡Œç•ªå·ãŒèª¤è¡¨ç¤ºã•ã‚Œã‚‹ä¸å…·åˆã‚’ä¿®æ­£ã€‚
+ã€€ãƒ»SPIãƒ»I2Cãƒ»UARTç”¨ã®ãƒ”ãƒ³é…ç½®ã‚’ã€MACHIKAP.INIã§è‡ªç”±ã«è¨­å®šã§ãã‚‹ã‚ˆã†ã«å¤‰æ›´ã€‚
+ã€€ãƒ»ã‚¯ãƒ©ã‚¹ãƒ©ã‚¤ãƒ–ãƒ©ãƒªãƒ¼ã®REGEXPã§ã€é€£ç¶šä½¿ç”¨æ™‚ã«ãƒ¡ãƒ¢ãƒªãƒ¼ã‚¨ãƒ©ãƒ¼ãŒå‡ºã‚‹ä¸å…·åˆã‚’ä¿®æ­£ã€‚
 
 Puerulus 1.52/KM-1509 (2025.4.19)
-@EuBreakvƒL[‚¾‚¯‚Å‚È‚­AuCtrl + Alt + DelvƒL[‚ÅƒvƒƒOƒ‰ƒ€‚ÌŽÀs‚ð’âŽ~‚Å‚«‚é‚æ‚¤‚É‚µ‚½B
-@ESYSTEM(40), SYSTEM(41), SYSTEM(42), SYSTEM(43)‚É‚æ‚èAƒL[ƒ{[ƒh‚Ìó‘Ô‚ðŽæ“¾‚Å‚«‚é‚æ‚¤‚É‚µ‚½B
-@ESYSTEM 50, SYSTEM 51‚É‚æ‚èACPU‚ÌƒNƒƒbƒN‘¬“x‚Æ“dˆ³‚ð•ÏX‚Å‚«‚é‚æ‚¤‚É‚µ‚½B
-@ESTARTƒ{ƒ^ƒ“‚ð‰Ÿ‚µ‚È‚ª‚ç‹N“®‚·‚é‚±‚Æ‚É‚æ‚èA‹N“®Žž‚ÌMACHIKAP.BASŽ©“®ŽÀs‚ðƒXƒLƒbƒv‚·‚é‚±‚Æ‚ª‰Â”\‚ÉB
-@EUSEGRAPHICƒXƒe[ƒgƒƒ“ƒg‚Ì‘æ“ñˆø”Žw’è‚É‚æ‚èA‚Q‚Â‚ÌƒOƒ‰ƒtƒBƒbƒNRAM—Ìˆæ‚ð—p‚¢‚½•`‰æ‚Æ•\Ž¦‚ª‰Â”\‚ÉB
-@EMACHIKAP.INI‚ÅAWIDTH80‚ðŽw’è‚·‚é‚±‚Æ‚É‚æ‚èA‹N“®Žž‚É‰¡‚W‚O•¶Žš•\Ž¦‚É‚·‚é‚±‚Æ‚ª‰Â”\‚ÉB
-@EƒTƒ“ƒvƒ‹ƒvƒƒOƒ‰ƒ€‚ÌRAYTRACE.BAS‚ðC³‚µAType PU‚Å•\Ž¦‚Å‚«‚é‚æ‚¤‚É‚µ‚½B
-@EƒNƒ‰ƒXƒ‰ƒCƒuƒ‰ƒŠ[‚ÉCPUCLOCK‚ð’Ç‰ÁBŽg—p‰Â”\‚ÈCPUƒNƒƒbƒNŽü”g”‚ð’²‚×‚é‚±‚Æ‚ª‰Â”\‚ÉB
-@ERaspberry Pi Pico 2 W‚É‘Î‰žB
-@ESPI Žg—pŽž‚Ì“]‘—‘¬“x‚ð‰ü‘PB
-@EƒTƒ“ƒvƒ‹ƒvƒƒOƒ‰ƒ€(MAZE3D.BAS, STARTREK.BAS)‚ðC³B
-@EƒTƒ“ƒvƒ‹ƒvƒƒOƒ‰ƒ€(POLYGON.BAS)‚ð’Ç‰ÁB
+ã€€ãƒ»ã€ŒBreakã€ã‚­ãƒ¼ã ã‘ã§ãªãã€ã€ŒCtrl + Alt + Delã€ã‚­ãƒ¼ã§ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã®å®Ÿè¡Œã‚’åœæ­¢ã§ãã‚‹ã‚ˆã†ã«ã—ãŸã€‚
+ã€€ãƒ»SYSTEM(40), SYSTEM(41), SYSTEM(42), SYSTEM(43)ã«ã‚ˆã‚Šã€ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®çŠ¶æ…‹ã‚’å–å¾—ã§ãã‚‹ã‚ˆã†ã«ã—ãŸã€‚
+ã€€ãƒ»SYSTEM 50, SYSTEM 51ã«ã‚ˆã‚Šã€CPUã®ã‚¯ãƒ­ãƒƒã‚¯é€Ÿåº¦ã¨é›»åœ§ã‚’å¤‰æ›´ã§ãã‚‹ã‚ˆã†ã«ã—ãŸã€‚
+ã€€ãƒ»STARTãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãªãŒã‚‰èµ·å‹•ã™ã‚‹ã“ã¨ã«ã‚ˆã‚Šã€èµ·å‹•æ™‚ã®MACHIKAP.BASè‡ªå‹•å®Ÿè¡Œã‚’ã‚¹ã‚­ãƒƒãƒ—ã™ã‚‹ã“ã¨ãŒå¯èƒ½ã«ã€‚
+ã€€ãƒ»USEGRAPHICã‚¹ãƒ†ãƒ¼ãƒˆãƒ¡ãƒ³ãƒˆã®ç¬¬äºŒå¼•æ•°æŒ‡å®šã«ã‚ˆã‚Šã€ï¼’ã¤ã®ã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯RAMé ˜åŸŸã‚’ç”¨ã„ãŸæç”»ã¨è¡¨ç¤ºãŒå¯èƒ½ã«ã€‚
+ã€€ãƒ»MACHIKAP.INIã§ã€WIDTH80ã‚’æŒ‡å®šã™ã‚‹ã“ã¨ã«ã‚ˆã‚Šã€èµ·å‹•æ™‚ã«æ¨ªï¼˜ï¼æ–‡å­—è¡¨ç¤ºã«ã™ã‚‹ã“ã¨ãŒå¯èƒ½ã«ã€‚
+ã€€ãƒ»ã‚µãƒ³ãƒ—ãƒ«ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã®RAYTRACE.BASã‚’ä¿®æ­£ã—ã€Type PUã§è¡¨ç¤ºã§ãã‚‹ã‚ˆã†ã«ã—ãŸã€‚
+ã€€ãƒ»ã‚¯ãƒ©ã‚¹ãƒ©ã‚¤ãƒ–ãƒ©ãƒªãƒ¼ã«CPUCLOCKã‚’è¿½åŠ ã€‚ä½¿ç”¨å¯èƒ½ãªCPUã‚¯ãƒ­ãƒƒã‚¯å‘¨æ³¢æ•°ã‚’èª¿ã¹ã‚‹ã“ã¨ãŒå¯èƒ½ã«ã€‚
+ã€€ãƒ»Raspberry Pi Pico 2 Wã«å¯¾å¿œã€‚
+ã€€ãƒ»SPI ä½¿ç”¨æ™‚ã®è»¢é€é€Ÿåº¦ã‚’æ”¹å–„ã€‚
+ã€€ãƒ»ã‚µãƒ³ãƒ—ãƒ«ãƒ—ãƒ­ã‚°ãƒ©ãƒ (MAZE3D.BAS, STARTREK.BAS)ã‚’ä¿®æ­£ã€‚
+ã€€ãƒ»ã‚µãƒ³ãƒ—ãƒ«ãƒ—ãƒ­ã‚°ãƒ©ãƒ (POLYGON.BAS)ã‚’è¿½åŠ ã€‚
