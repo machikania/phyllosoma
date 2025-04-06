@@ -1,0 +1,228 @@
+REM Polygon glass MachiKania type P/PU
+REM  Rotate by UP,DOWN,LEFT,RIGHT button
+REM  MachiKania type PU supports
+REM   double buffering of graphic VRAM
+
+REM Set core voltage & system clock
+REM Notice! Overclock can cause damage
+REM SYSTEM 51,15       :REM 1.3V
+REM SYSTEM 50,315000000:REM 315MHz
+REM SYSTEM 50,400000000:REM 400MHz
+
+USEVAR NX,NY,NZ,LX,LY,LZ
+USEGRAPHIC 2,2
+
+REM Light vector
+LX#=1.0:LY#=1.0:LZ#=1.0
+R#=SQRT#(LX#*LX#+LY#*LY#+LZ#*LZ#)
+LX#=LX#/R#:LY#=LY#/R#:LZ#=LZ#/R#
+
+REM Number of divisions
+D=17
+
+REM Set color palette
+FOR I=0 TO 63
+ B=I*156/64+100
+ PALETTE I+128,B,0,0:REM Front surface
+ PALETTE I+192,B,B,B:REM Back surface
+NEXT
+
+REM Read data
+A#=0.3:C#=0.2
+DIM P#(30),Q#(30)
+RESTORE DATA1
+N=0
+WHILE N<=30
+ P#(N)=FLOAT#(READ())
+ Q#(N)=FLOAT#(READ())
+ IF P#(N)<0 THEN N=N-1:BREAK
+ N=N+1
+WEND
+
+REM Main loop
+F=1
+DO
+ GCLS
+ GOSUB DRAW
+
+ REM Change display GVRAM
+ REM  for MachiKania type PU
+ USEGRAPHIC 3,F
+ F=3-F
+
+ REM Update rotation angle on X,Z axis
+ DO
+  K=KEYS()
+  IF K AND 1 THEN A#=A#-0.1
+  IF K AND 2 THEN A#=A#+0.1
+  IF K AND 4 THEN C#=C#-0.1
+  IF K AND 8 THEN C#=C#+0.1
+  WAIT 1
+ LOOP UNTIL K AND 15
+LOOP
+
+LABEL DRAW
+ USEVAR X1,X2,Y1,Y2,Z1,Z2
+ USEVAR U1,U2,V1,V2,W1,W2
+ VAR I,J,K,M,F
+ VAR U#,V#,W#,X#,Y#,Z#
+
+ IF SIN#(A#)<=0 THEN
+  REM Draw from top to bottom
+  I=0:M=N:K=1
+ ELSE
+  REM Draw from bottom to top
+  I=N:M=0:K=-1
+ ENDIF
+
+ DO
+  U#=P#(I)
+  V1#=Q#(I)
+  W1#=0
+  V#=GOSUB#(ROTATX,V1#,W1#,A#)
+  W1#=GOSUB#(ROTATY,V1#,W1#,A#)
+  U1#=GOSUB#(ROTATX,U#,V#,C#)
+  V1#=GOSUB#(ROTATY,U#,V#,C#)
+
+  U#=P#(I+K)
+  V2#=Q#(I+K)
+  W2#=0
+  V#=GOSUB#(ROTATX,V2#,W2#,A#)
+  W2#=GOSUB#(ROTATY,V2#,W2#,A#)
+  U2#=GOSUB#(ROTATX,U#,V#,C#)
+  V2#=GOSUB#(ROTATY,U#,V#,C#)
+
+  FOR J=1 TO D*2
+   F#=FLOAT#(J)/FLOAT#(D)*2*PI#
+
+   X1#=P#(I)*COS#(F#)
+   Y1#=Q#(I)
+   Z1#=P#(I)*SIN#(F#)
+   X#=X1#
+   Y#=GOSUB#(ROTATX,Y1#,Z1#,A#)
+   Z1#=GOSUB#(ROTATY,Y1#,Z1#,A#)
+   X1#=GOSUB#(ROTATX,X#,Y#,C#)
+   Y1#=GOSUB#(ROTATY,X#,Y#,C#)
+
+   X2#=P#(I+K)*COS#(F#)
+   Y2#=Q#(I+K)
+   Z2#=P#(I+K)*SIN#(F#)
+   X#=X2#
+   Y#=GOSUB#(ROTATX,Y2#,Z2#,A#)
+   Z2#=GOSUB#(ROTATY,Y2#,Z2#,A#)
+   X2#=GOSUB#(ROTATX,X#,Y#,C#)
+   Y2#=GOSUB#(ROTATY,X#,Y#,C#)
+
+   REM Draw quadrilateral (3D)
+   REM (U1,V1,W1) (U2,V2,W2)
+   REM (X1,Y1,Z1) (X2,Y2,Z2)
+
+   GOSUB DRWPGN,U1#,V1#,W1#,U2#,V2#,W2#,X2#,Y2#,Z2#,K,J<=D
+   GOSUB DRWPGN,U1#,V1#,W1#,X2#,Y2#,Z2#,X1#,Y1#,Z1#,K,J<=D
+
+   U1#=X1#:V1#=Y1#:W1#=Z1#
+   U2#=X2#:V2#=Y2#:W2#=Z2#
+  NEXT
+  I=I+K
+ LOOP UNTIL I=M
+RETURN
+
+REM Calculate rotation
+LABEL ROTATX
+ VAR R,S,T
+ R#=ARGS#(1):S#=ARGS#(2):T#=ARGS#(3)
+RETURN R#*COS#(T#)-S#*SIN#(T#)
+
+LABEL ROTATY
+ VAR R,S,T
+ R#=ARGS#(1):S#=ARGS#(2):T#=ARGS#(3)
+RETURN R#*SIN#(T#)+S#*COS#(T#)
+
+REM Draw Polygon (3D triangle)
+LABEL DRWPGN
+ USEVAR PX1,PX2,PX3,PY1,PY2,PY3,PZ1,PZ2,PZ3
+ VAR S,C,B
+
+ PX1#=ARGS#(1):PY1#=ARGS#(2):PZ1#=ARGS#(3)
+ PX2#=ARGS#(4):PY2#=ARGS#(5):PZ2#=ARGS#(6)
+ PX3#=ARGS#(7):PY3#=ARGS#(8):PZ3#=ARGS#(9)
+ GOSUB NVECT,PX2#-PX1#,PY2#-PY1#,PZ2#-PZ1#,PX3#-PX1#,PY3#-PY1#,PZ3#-PZ1#
+ IF ARGS(10)<0 THEN
+  NX#=-NX#:NY#=-NY#:NZ#=-NZ#
+ ENDIF
+
+ REM First round draw back surface
+ REM Second round front surface
+ IF ARGS(11) THEN
+  IF NZ#<0 THEN RETURN
+ ELSE
+  IF NZ#>0 THEN RETURN
+ ENDIF
+
+ S#=NX#*LX#+NY#*LY#+NZ#*LZ#
+ IF NZ#<0 THEN S#=-S#
+
+ REM Calculate brightness
+ C=INT(S#*63):IF C<0 THEN C=0
+ IF NZ#<=0 THEN
+  REM Front surface
+  C=C+128
+ ELSE
+  REM Back surface
+  C=C+192
+ ENDIF
+
+ GOSUB DRWTRI,INT(PX1#)+160,INT(PY1#)+120,INT(PX2#)+160,INT(PY2#)+120,INT(PX3#)+160,INT(PY3#)+120,C
+RETURN
+
+REM Calculate normal vector
+LABEL NVECT
+VAR R
+NX#=ARGS#(2)*ARGS#(6)-ARGS#(3)*ARGS#(5)
+NY#=ARGS#(3)*ARGS#(4)-ARGS#(1)*ARGS#(6)
+NZ#=ARGS#(1)*ARGS#(5)-ARGS#(2)*ARGS#(4)
+R#=SQRT#(NX#*NX#+NY#*NY#+NZ#*NZ#)
+NX#=NX#/R#:NY#=NY#/R#:NZ#=NZ#/R#
+RETURN
+
+REM Draw triangle (2D)
+LABEL DRWTRI
+ USEVAR TX1,TX2,TX3,TY1,TY2,TY3
+ USEVAR TSX,TEX,TA1,TA2
+
+ VAR X,Y,T
+ TX1=(ARGS(1)+$8000)<<16:TY1=ARGS(2)
+ TX2=(ARGS(3)+$8000)<<16:TY2=ARGS(4)
+ TX3=(ARGS(5)+$8000)<<16:TY3=ARGS(6)
+ IF TY1>TY2 THEN
+  T=TX1:TX1=TX2:TX2=T
+  T=TY1:TY1=TY2:TY2=T
+ ENDIF
+ IF TY1>TY3 THEN
+  T=TX1:TX1=TX3:TX3=T
+  T=TY1:TY1=TY3:TY3=T
+ ENDIF
+ IF TY2>TY3 THEN
+  T=TX2:TX2=TX3:TX3=T
+  T=TY2:TY2=TY3:TY3=T
+ ENDIF
+ IF TY1=TY3 THEN RETURN
+ TEX=TX1
+ TA2=(TX3-TX1)/(TY3-TY1)
+ IF TY1!=TY2 THEN
+  TSX=TX1:TA1=(TX2-TX1)/(TY2-TY1)
+ ENDIF
+ FOR Y=TY1 TO TY3
+  IF Y=TY2 AND TY3!=TY2 THEN
+   TSX=TX2:TA1=(TX3-TX2)/(TY3-TY2)
+  ENDIF
+  LINE (TSX>>16)-$8000,Y,(TEX>>16)-$8000,Y,ARGS(7)
+  TSX=TSX+TA1:TEX=TEX+TA2
+ NEXT
+RETURN
+
+REM 3D model's edge data
+LABEL DATA1
+DATA 55,-85,60,-50,60,-30,40,0
+DATA 5,20,5,60,40,70,40,80,1,80
+DATA -1,0
