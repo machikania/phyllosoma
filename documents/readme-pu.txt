@@ -253,3 +253,5 @@ Puerulus 1.52/KM-1509 (2025.4.19)
 　・クラスライブラリーにCPUCLOCKを追加。使用可能なCPUクロック周波数を調べることが可能に。
 　・Raspberry Pi Pico 2 Wに対応。
 　・SPI 使用時の転送速度を改善。
+　・サンプルプログラム(MAZE3D.BAS, STARTREK.BAS)を修正。
+　・サンプルプログラム(POLYGON.BAS)を追加。
