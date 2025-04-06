@@ -252,5 +252,5 @@ Phyllosoma 1.52/KM-1509 (2025.4.19)
 　Added CPUCLOCK to the class library, making it possible to check available CPU clock frequencies.
 　Raspberry Pi Pico 2 W is supported.
 　Improved transfer speed when using SPI.
-　Update BLOCK.BAS and PHOTO.BAS sample programs.
+　Update MAZE3D.BAS and STARTREK.BAS sample programs.
 　Added POLYGON.BAS sample program.
