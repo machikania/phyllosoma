@@ -1,10 +1,10 @@
-REM /*******************************************
-REM * Star Trek ver 0.3 for MachiKania type P  *
-REM * Constructed by Katsumi                   *
-REM * kmorimatsu@users.sourceforge.jp          *
-REM * http://hp.vector.co.jp/authors/VA016157/ *
-REM * The license of this program is LGPL 2.1  *
-REM ********************************************
+REM /***********************************************
+REM * Star Trek ver 0.3.1 for MachiKania type P/PU *
+REM * Constructed by Katsumi                       *
+REM * kmorimatsu@users.sourceforge.jp              *
+REM * http://hp.vector.co.jp/authors/VA016157/     *
+REM * The license of this program is LGPL 2.1      *
+REM ************************************************
 REM Strings
 REM   s$ Current sector map string (64 characters)
 REM     ".": None
@@ -51,7 +51,7 @@ REM The other valiables are used temporarily and can be destroyed in sub routine
 REM */
 
 REM Brighter blue color
-palette 1,0,128,255
+palette 1,0,192,255
 
 REM /******************************************
 REM * Begin the game                          *
