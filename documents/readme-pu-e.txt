@@ -245,6 +245,7 @@ Phyllosoma 1.52/KM-1509 (2025.4.19)
 　Enabled stopping program execution not only with the "Break" key but also with the "Ctrl + Alt + Del" key.
 　Made it possible to retrieve the keyboard state using SYSTEM(40), SYSTEM(41), SYSTEM(42), and SYSTEM(43).
 　Added functionality to modify the CPU's clock speed and voltage using SYSTEM 50 and SYSTEM 51.
+　Supports normal video signal output when the system clock is running at 315MHz.
 　By holding the SART button during startup, it's now possible to skip the automatic execution of MACHIKAP.BAS upon boot.
 　By specifying the second argument in the USEGRAPHIC statement, it is now possible to draw and display using two graphic RAM areas.
 　By setting WIDTH80 in MACHIKAP.INI, the system can be configured to display 80 characters horizontally at startup.
