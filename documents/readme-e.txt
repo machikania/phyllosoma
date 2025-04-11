@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.4.19
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.4.12
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type P
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -299,7 +299,7 @@ Phyllosoma 1.51/KM-1508 (2025.2.22)
 　Distribution of XIAO embed version was terminated due to the availability of MACHIKAP.INI to configure pin assignments.
 　Fixed a problem with REGEXP in the class library that caused a memory error when used continuously.
 
-Phyllosoma 1.52/KM-1509 (2025.4.19)
+Phyllosoma 1.52/KM-1509 (2025.4.12)
 　Enabled stopping program execution not only with the "Break" key but also with the "Ctrl + Alt + Del" key.
 　Made it possible to retrieve the keyboard state using SYSTEM(40), SYSTEM(41), SYSTEM(42), and SYSTEM(43).
 　Added functionality to modify the CPU's clock speed and voltage using SYSTEM 50 and SYSTEM 51.

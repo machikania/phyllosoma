@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.4.19
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.4.12
 　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
 　　　　　　　　「MachiKania type PU」
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -242,7 +242,7 @@ Puerulus 1.51/KM-1508 (2025.2.22)
 　・SPI・I2C・UART用のピン配置を、MACHIKAP.INIで自由に設定できるように変更。
 　・クラスライブラリーのREGEXPで、連続使用時にメモリーエラーが出る不具合を修正。
 
-Puerulus 1.52/KM-1509 (2025.4.19)
+Puerulus 1.52/KM-1509 (2025.4.12)
 　・「Break」キーだけでなく、「Ctrl + Alt + Del」キーでプログラムの実行を停止できるようにした。
 　・SYSTEM(40), SYSTEM(41), SYSTEM(42), SYSTEM(43)により、キーボードの状態を取得できるようにした。
 　・SYSTEM 50, SYSTEM 51により、CPUのクロック速度と電圧を変更できるようにした。
