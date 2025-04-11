@@ -1,289 +1,317 @@
-�@�@�@�@�@�@�@�@�@�@�@�@�@�@�@�@�@�@�@�@�@�@�@�@�@�@2025.2.22
-�@Raspberry Pi Pico�pBASIC���s���I�[�v���v���b�g�t�H�[��
-�@�@�@�@�@�@�@�@�uMachiKania type P�v
-�@�@�@�@�@�@�@�@�@�@�@�@�@�@�@�@�@�@�@�@�@by KenKen & Katsumi
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.4.12
+　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
+　　　　　　　　「MachiKania type P」
+　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
 
-MachiKania�i�}�`�J�j�A�j��BASIC�R���p�C���𓋍ڂ����}�C�R���p
-�I�[�v���v���b�g�t�H�[���ł��B
-MachiKania type P�ł�Raspberry Pi Pico (Pico 2, Pico W)�Ə��^
-�t�����W���[���𓋍ڂ��A�|�[�^�u����BASIC���s�����������Ă�
-�܂��B
-�ėpI/O��SPI�AI2C�Ƃ������O���@��̐����BASIC����ȒP�ɍs��
-���Ƃ��\�ł��B
+MachiKania（マチカニア）はBASICコンパイラを搭載したマイコン用
+オープンプラットフォームです。
+MachiKania type PではRaspberry Pi Pico (Pico 2, Pico W)と小型
+液晶モジュールを搭載し、ポータブルなBASIC実行環境を実現してい
+ます。
+汎用I/OやSPI、I2Cといった外部機器の制御もBASICから簡単に行う
+ことが可能です。
 
-���ڂ��Ă���BASIC�R���p�C����KM-BASIC�ł��BKM-BASIC��32bit
-�����^��BASIC�ł��B
-�܂��A�P���x���������_���Z���T�|�[�g���Ă��܂��B
-�\�����v���O���~���O�A�I�u�W�F�N�g�w���Ή����s���Ă��܂��B
-BASIC�v���O������PC���ō쐬���AMMC�܂���SD�J�[�h�o�R�œ]������
-���Ƃ�AUSB�P�[�u���Ɛ�p�\�t�g��p���ē]�����邱�Ƃ��\�ł��B
-�܂��AUSB�L�[�{�[�h��ڑ����A���ڃv���O������ҏW���Ď��s����
-���Ƃ��\�ł��B
+搭載しているBASICコンパイラはKM-BASICです。KM-BASICは32bit
+整数型のBASICです。
+また、単精度浮動小数点演算もサポートしています。
+構造化プログラミング、オブジェクト指向対応も行っています。
+BASICプログラムはPC等で作成し、MMCまたはSDカード経由で転送する
+ことや、USBケーブルと専用ソフトを用いて転送することが可能です。
+また、USBキーボードを接続し、直接プログラムを編集して実行する
+ことも可能です。
 
-�����H�₻�̑��̏ڍׂ́A���L��Web�T�C�g���Q�Ƃ��Ă��������B
+動作回路やその他の詳細は、下記のWebサイトを参照してください。
 http://www.ze.em-net.ne.jp/~kenken/machikania/typep.html
 
 
-�����������s�`���t�@�C���iuf2�t�@�C���j�͔񏤗p���p�Ɍ���
-�����Ŏ��R�ɗ��p���邱�Ƃ��\�ł��B
-�܂��A���p������i����ʂɌ��J���邱�Ƃ��\�ł��B���̏ꍇ�A
-MachiKania�V���[�Y�𗘗p���Ă��邱�Ƃɂ��Ă�Web�T�C�g��
-���������A�����ꂩ�̏ꏊ�ɋL�ڂ��Ă��������B
-�Ȃ��A�����p�ɂ���Đ�������Q�⑹�Q�ɂ��Ă͐ӔC�𕉂����˂܂��B
+同梱される実行形式ファイル（uf2ファイル）は非商用利用に限り
+無償で自由に利用することが可能です。
+また、利用した作品を一般に公開することも可能です。その場合、
+MachiKaniaシリーズを利用していることについてもWebサイトや
+説明書等、いずれかの場所に記載してください。
+なお、ご利用によって生じた被害や損害については責任を負いかねます。
 
 
-��machikania-p.zip�t�@�C���R���e���c��
+＜machikania-p.zipファイルコンテンツ＞
 
-[documents]�f�B���N�g��
-�@�h�L�������g�ނ��i�[
-�@- help.txt
-�@- help-e.txt
-�@�@KM-BASIC�̃��t�@�����X�}�j���A��
+[documents]ディレクトリ
+　ドキュメント類を格納
+　- help.txt
+　- help-e.txt
+　　KM-BASICのリファレンスマニュアル
 
-�@- class.txt
-�@- class-e.txt
-�@�@KM-BASIC�ŃI�u�W�F�N�g�w�����v���O���~���O�̃��t�@�����X�}�j���A��
+　- class.txt
+　- class-e.txt
+　　KM-BASICでオブジェクト指向化プログラミングのリファレンスマニュアル
 
-�@- embed.txt
-�@- embed-e.txt
-�@�@�t�@�C�����ߍ��ݎ��s�t�@�C���쐬���@�ɂ���
+　- embed.txt
+　- embed-e.txt
+　　ファイル埋め込み実行ファイル作成方法について
 
-�@- pcconnect.txt
-�@- pcconnect-e.txt
-�@�@PC����MachiKania�Ƀt�@�C����]�����邽�߂̕��@�ɂ���
+　- pcconnect.txt
+　- pcconnect-e.txt
+　　PCからMachiKaniaにファイルを転送するための方法について
 
-�@- shematic.png
-�@�@MachiKania type P��H�}
+　- shematic.png
+　　MachiKania type P回路図
 
-�@- wifi.txt
-�@- wifi-e.txt
-�@�@Raspberry Pi Pico W���g����WiFi�ڑ����s���Ƃ��̃��t�@�����X�}�j���A�� 
+　- wifi.txt
+　- wifi-e.txt
+　　Raspberry Pi Pico Wを使ってWiFi接続を行うときのリファレンスマニュアル 
 
-[pico_ili9341]�f�B���N�g��
-�@Raspberry Pi Pico �� ILI9341 �t���̑g�ݍ��킹�̂Ƃ��Ɏg���o�C�i���[
-�@���i�[
-�@-phyllosoma.uf2
-�@�@MachiKania type P BASIC�V�X�e���{�́iPC connect�@�\�Ή��Łj
-�@�@PC��Raspberry Pi Pico��USB�ڑ�����������
-�@�@PC connect�@�\�ɂ��AUSB�P�[�u���Őڑ�����PC����BASIC�v���O������]���\
+[pico_ili9341]ディレクトリ
+　Raspberry Pi Pico と ILI9341 液晶の組み合わせのときに使うバイナリー
+　を格納
+　-phyllosoma.uf2
+　　MachiKania type P BASICシステム本体（PC connect機能対応版）
+　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　PC connect機能により、USBケーブルで接続したPCからBASICプログラムを転送可能
 
-�@-phyllosoma_kb.uf2
-�@�@MachiKania type P BASIC�V�X�e���{�́iUSB�L�[�{�[�h�ڑ��Ή��Łj
-�@�@PC��Raspberry Pi Pico��USB�ڑ�����������
-�@�@�����G�f�B�^��USB�L�[�{�[�h��BASIC�v���O�����𒼐ڕҏW�A���s�\
+　-phyllosoma_kb.uf2
+　　MachiKania type P BASICシステム本体（USBキーボード接続対応版）
+　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
 
-[pico_w_ili9341]�f�B���N�g��
-�@Raspberry Pi Pico W �� ILI9341 �t���̑g�ݍ��킹�̂Ƃ��Ɏg���o�C�i���[
-�@���i�[
-�@-phyllosoma.uf2
-�@�@MachiKania type P BASIC�V�X�e���{�́iPC connect�@�\�Ή��Łj
-�@�@PC��Raspberry Pi Pico��USB�ڑ�����������
-�@�@PC connect�@�\�ɂ��AUSB�P�[�u���Őڑ�����PC����BASIC�v���O������]���\
-�@�@WiFi�ڑ����\
+[pico_w_ili9341]ディレクトリ
+　Raspberry Pi Pico W と ILI9341 液晶の組み合わせのときに使うバイナリー
+　を格納
+　-phyllosoma.uf2
+　　MachiKania type P BASICシステム本体（PC connect機能対応版）
+　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　PC connect機能により、USBケーブルで接続したPCからBASICプログラムを転送可能
+　　WiFi接続が可能
 
-�@-phyllosoma_kb.uf2
-�@�@MachiKania type P BASIC�V�X�e���{�́iUSB�L�[�{�[�h�ڑ��Ή��Łj
-�@�@PC��Raspberry Pi Pico��USB�ڑ�����������
-�@�@�����G�f�B�^��USB�L�[�{�[�h��BASIC�v���O�����𒼐ڕҏW�A���s�\
-�@�@WiFi�ڑ����\
+　-phyllosoma_kb.uf2
+　　MachiKania type P BASICシステム本体（USBキーボード接続対応版）
+　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
+　　WiFi接続が可能
 
-[pico2_ili9341]�f�B���N�g��
-�@Raspberry Pi Pico 2 �� ILI9341 �t���̑g�ݍ��킹�̂Ƃ��Ɏg���o�C�i���[
-�@���i�[
-�@-phyllosoma.uf2
-�@�@MachiKania type P BASIC�V�X�e���{�́iPC connect�@�\�Ή��Łj
-�@�@PC��Raspberry Pi Pico��USB�ڑ�����������
-�@�@PC connect�@�\�ɂ��AUSB�P�[�u���Őڑ�����PC����BASIC�v���O������]���\
+[pico2_ili9341]ディレクトリ
+　Raspberry Pi Pico 2 と ILI9341 液晶の組み合わせのときに使うバイナリー
+　を格納
+　-phyllosoma.uf2
+　　MachiKania type P BASICシステム本体（PC connect機能対応版）
+　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　PC connect機能により、USBケーブルで接続したPCからBASICプログラムを転送可能
 
-�@-phyllosoma_kb.uf2
-�@�@MachiKania type P BASIC�V�X�e���{�́iUSB�L�[�{�[�h�ڑ��Ή��Łj
-�@�@PC��Raspberry Pi Pico��USB�ڑ�����������
-�@�@�����G�f�B�^��USB�L�[�{�[�h��BASIC�v���O�����𒼐ڕҏW�A���s�\
+　-phyllosoma_kb.uf2
+　　MachiKania type P BASICシステム本体（USBキーボード接続対応版）
+　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
 
-[pico_ili9341/embed]�f�B���N�g��
-[pico_w_ili9341/embed]�f�B���N�g��
-[pico2_ili9341/embed]�f�B���N�g��
-�@�g�ݍ��ݗp�r�Ȃ�MMC/SD�J�[�h�Ȃ��ł�BASIC�v���O���������s���邱�Ƃ�
-�@�ł���悤�ȃc�[���ނ��i�[
+[pico2_w_ili9341]ディレクトリ
+　Raspberry Pi Pico 2 W と ILI9341 液晶の組み合わせのときに使うバイナリー
+　を格納
+　-phyllosoma.uf2
+　　MachiKania type P BASICシステム本体（PC connect機能対応版）
+　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　PC connect機能により、USBケーブルで接続したPCからBASICプログラムを転送可能
+　　WiFi接続が可能
 
-[pcconnect]�f�B���N�g��
-�@USB�P�[�u�������PC���̃t�@�C����MachiKania�ɓ]�����邽�߂̃c�[����
-�@���i�[
+　-phyllosoma_kb.uf2
+　　MachiKania type P BASICシステム本体（USBキーボード接続対応版）
+　　PCとRaspberry Pi PicoをUSB接続し書き込む
+　　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
+　　WiFi接続が可能
+
+[pico_ili9341/embed]ディレクトリ
+[pico_w_ili9341/embed]ディレクトリ
+[pico2_ili9341/embed]ディレクトリ
+[pico2_w_ili9341/embed]ディレクトリ
+　組み込み用途などMMC/SDカードなしでもBASICプログラムを実行することが
+　できるようなツール類を格納
+
+[pcconnect]ディレクトリ
+　USBケーブルを介してPC内のファイルをMachiKaniaに転送するためのツール類
+　を格納
 
 readme.txt
-�@���̃t�@�C��
+　このファイル
 
 readmeLib.txt
-�@LIB �f�B���N�g���[���̃��C�u�����[������
+　LIB ディレクトリー内のライブラリー説明書
 
-��������艺�̃t�@�C������уf�B���N�g���S�Ă�MMC/SD�J�[�h�̃��[�g�f�B���N�g���ɃR�s�[���Ă���������
+＜ここより下のファイルおよびディレクトリ全てをMMC/SDカードのルートディレクトリにコピーしてください＞
 
 MACHIKAP.INI
-�@MachiKania type P�̏����ݒ�t�@�C��
+　MachiKania type Pの初期設定ファイル
 
-[LIB]�f�B���N�g��
-�@BASIC�v���O��������ȒP�ɗ��p�\�ȃN���X���C�u����
-�@MMC/SD�J�[�h�̃��[�g��LIB�f�B���N�g�����ƃR�s�[���ė��p
+[LIB]ディレクトリ
+　BASICプログラムから簡単に利用可能なクラスライブラリ
+　MMC/SDカードのルートにLIBディレクトリごとコピーして利用
 
-[samples]�f�B���N�g��
-�@BASIC�T���v���v���O�����B�����̃t�@�C����SD�J�[�h�̃��[�g�f�B���N�g���ɃR�s�[����
-�@�i�܂��͔C�ӂ̃T�u�f�B���N�g�����쐬���ăR�s�[�j
+[samples]ディレクトリ
+　BASICサンプルプログラム。これらのファイルをSDカードのルートディレクトリにコピーする
+　（または任意のサブディレクトリを作成してコピー）
 
-�@3DWAVE.BAS
-�@�@�g���3D�O���t�B�b�N
+　3DWAVE.BAS
+　　波紋の3Dグラフィック
 
-�@BLOCK.BAS
-�@�@����MachiKania�����ɍ쐬�����u���b�N�����Q�[��
+　BLOCK.BAS
+　　初代MachiKania向けに作成したブロック崩しゲーム
 
-�@COSMOS.BMP�iPHOTO.BAS�Ŏg�p�j
+　COSMOS.BMP（PHOTO.BASで使用）
 
-�@FILEMAN.BAS
-�@�@MachiKania type P/PU�p�t�@�C���}�l�[�W��
+　FILEMAN.BAS
+　　MachiKania type P/PU用ファイルマネージャ
 
-�@HDAEMON.BAS
-�@�@HTTPD�N���X���g���� web �T�[�o�[�\�z���\�z����T���v���v���O����
-�@�@PC��X�}�[�g�t�H������ڑ����āAPico W �� LED ���I���E�I�t�ł���
+　HDAEMON.BAS
+　　HTTPDクラスを使って web サーバー構築を構築するサンプルプログラム
+　　PCやスマートフォンから接続して、Pico W の LED をオン・オフできる
 
-�@INVADE.BAS
-�@�@MachiKania type Z/M/P/PU�����ɍ쐬�����C���x�[�_�[�Q�[��
+　INVADE.BAS
+　　MachiKania type Z/M/P/PU向けに作成したインベーダーゲーム
 
-�@LCHIKA.BAS
-�@�@LED��_�ł�����T���v���v���O����
+　LCHIKA.BAS
+　　LEDを点滅させるサンプルプログラム
 
-�@MANDELBR.BAS
-�@�@�e�L�X�g�Ń}���f���u���[���o�͂���v���O����
+　MANDELBR.BAS
+　　テキストでマンデルブローを出力するプログラム
 
-�@MAZE3D.BAS
-�@�@���̖��H�E�o�Q�[��
+　MAZE3D.BAS
+　　立体迷路脱出ゲーム
 
-�@MUSIC.BAS
-�@�@MUSIC���ߎg�p�̃T���v���v���O����
+　MUSIC.BAS
+　　MUSIC命令使用のサンプルプログラム
 
-�@NIHONGO.BAS
-�@�@���C�u�����[��CKNJ16�N���X�𗘗p���ē��{���\������v���O����
+　NIHONGO.BAS
+　　ライブラリーのCKNJ16クラスを利用して日本語を表示するプログラム
 
-�@PCG.BAS
-�@�@PCG�𗘗p�����T���v���v���O����
+　PCG.BAS
+　　PCGを利用したサンプルプログラム
 
-�@PEGSOL-G.BAS
-�@�@�y�O�\���e�A�Q�[���v���O����
+　PEGSOL-G.BAS
+　　ペグソリテアゲームプログラム
 
-�@PHOTO.BAS
-�@�@BMP�t�@�C�����t���\������v���O����
+　PHOTO.BAS
+　　BMPファイルを液晶表示するプログラム
 
-�@RAYTRACE.BAS
-�@�@���C�g���[�V���O�v���O����
+　RAYTRACE.BAS
+　　レイトレーシングプログラム
 
-�@SOUND.BAS
-�@�@SOUND���ߎg�p�̃T���v���v���O����
+　SOUND.BAS
+　　SOUND命令使用のサンプルプログラム
 
-�@STARTREK.BAS
-�@�@�X�^�[�g���b�N�Q�[���v���O����
+　STARTREK.BAS
+　　スタートレックゲームプログラム
 
-�@TIME-INT.BAS
-�@�@�^�C�}�[���荞�݂̃T���v���v���O����
+　TIME-INT.BAS
+　　タイマー割り込みのサンプルプログラム
 
-�@WEATHER.BAS
-�@�@WGET�N���X��JSON�N���X���g�����A�l�b�g���web�y�[�W������𓾂�T���v���v���O����
-�@�@�����̓��t�ƓV�C�\���\������
-�@
-�@WFRAME.BAS
-�@�@���C���[�t���[���O���t�B�b�N�v���O����
+　WEATHER.BAS
+　　WGETクラスとJSONクラスを使った、ネット上のwebページから情報を得るサンプルプログラム
+　　今日の日付と天気予報を表示する
+　
+　WFRAME.BAS
+　　ワイヤーフレームグラフィックプログラム
 
 
 ------------------------------------------------------------------------
-MachiKania type P BASIC�V�X�e�����ŗ���
+MachiKania type P BASICシステム改版履歴
 
-Phyllosoma 1.00/KM-1500�i2022.8.27�j
-�@�E�ŏ��̌��J�o�[�W����
+Phyllosoma 1.00/KM-1500（2022.8.27）
+　・最初の公開バージョン
 
-Phyllosoma 1.10/KM-1501�i2022.10.1�j
-�@�EPC connect�@�\��ǉ�
-�@�ENOT#()�֐���ǉ�
-�@�E�N���X���ŕʂ̃N���X���g���ƃR���p�C���ł��Ȃ��s����C��
-�@�E�N���X�̃X�^�e�B�b�N�֐��Ăяo���̕s����C��
-�@�E�I�u�W�F�N�g�̃t�B�[���h�ɁA������E�z������蓖�Ă邱�Ƃ�����
-�@�E��莞�Ԍ��WAVE�t�@�C���̍Đ����~�܂�s����C��
-�@�E���荞�ݒ��ł�WAIT�EDELAYMS�EDELAYUS�X�e�[�g�����g�̎g�p������
-�@�EMUSIC�X�e�[�g�����g���ꕔ�̊��ŃG���[�Œ�~����s����C��
-�@�E�t�@�C���I����ʂ̕\�����P
-�@�EWS2812B�ESTRDIM�ESTRD2�EMA�̂S�̃N���X���A���C�u�����[�ɒǉ�
+Phyllosoma 1.10/KM-1501（2022.10.1）
+　・PC connect機能を追加
+　・NOT#()関数を追加
+　・クラス中で別のクラスを使うとコンパイルできない不具合を修正
+　・クラスのスタティック関数呼び出しの不具合を修正
+　・オブジェクトのフィールドに、文字列・配列を割り当てることを許可
+　・一定時間後にWAVEファイルの再生が止まる不具合を修正
+　・割り込み中でのWAIT・DELAYMS・DELAYUSステートメントの使用を許可
+　・MUSICステートメントが一部の環境でエラーで停止する不具合を修正
+　・ファイル選択画面の表示改善
+　・WS2812B・STRDIM・STRD2・MAの４つのクラスを、ライブラリーに追加
 
-Phyllosoma 1.20/KM-1502�i2023.1.28�j
-�@�EUSB�L�[�{�[�h�y�уG�f�B�^�[���T�|�[�g
-�@�EINKEY()�EREADKEY()�EINPUT$()��3�̊֐��ƁAINKEY���荞�݋@�\�𐮔�
-�@�E�N���X�t�@�C���R���p�C�����Ɉꕔ�̊��Ő�����s����C��
-�@�EALIGN4�X�e�[�g�����g�EDATAADDRESS()�֐��EFUNCADDRESS()�֐���ǉ�
-�@�E�^�C�}�[���荞�݂̃^�C�~���O����������Ă����̂��C��
-�@�ESYSTEM()�ɁA�������[�A���P�[�V�����֘A�̋@�\��ǉ�
-�@�E������Łu\r�v�u\t�v�̃G�X�P�[�v�V�[�N�G���X���g�p�\��
-�@�EOPTION CLASSCODE�ɑΉ�
-�@�EBASIC�v���O�������s���ł̃J�[�h�̔����������\��
-�@�E�t�@�C���I����ʂ�C����ō쐬����HEX�t�@�C���̃��[�h���\��
-�@�ECRDINI�ECLDHEX�EREGEXP�ESTRING�̂S�̃N���X���A���C�u�����[�ɒǉ�
+Phyllosoma 1.20/KM-1502（2023.1.28）
+　・USBキーボード及びエディターをサポート
+　・INKEY()・READKEY()・INPUT$()の3つの関数と、INKEY割り込み機能を整備
+　・クラスファイルコンパイル時に一部の環境で生じる不具合を修正
+　・ALIGN4ステートメント・DATAADDRESS()関数・FUNCADDRESS()関数を追加
+　・タイマー割り込みのタイミングが少しずれていたのを修正
+　・SYSTEM()に、メモリーアロケーション関連の機能を追加
+　・文字列で「\r」「\t」のエスケープシークエンスが使用可能に
+　・OPTION CLASSCODEに対応
+　・BASICプログラム実行中でのカードの抜き差しが可能に
+　・ファイル選択画面でC言語で作成したHEXファイルのロードが可能に
+　・CRDINI・CLDHEX・REGEXP・STRINGの４つのクラスを、ライブラリーに追加
 
 Phyllosoma 1.30/KM-1503 (2023.9.30)
-�@�E�T���v���v���O�����ɁAWEATHER.BAS(web�y�[�W����V�C�\��𓾂�)��
-�@HDEAMON.BAS(web �T�[�o�[�\�z���\�z)��ǉ��B
-�@�E�N���X���C�u�����[�ɁAHTTPD(HTTP�T�[�o�[���\�z)�AIR_RX(�ԊO�������R��
-�@��M���W���[�����g�p)�AIR_TX(�ԊO��LED�Ń����R���M���𑗐M)�AJSON(JSON������
-�@�����)�AWGET(�w���URL��������擾)��ǉ��B
-�@�ERaspberry Pi Pico W ��p���� WiFi �ڑ��ɑΉ��B���̖��߁E�֐���ǉ��F 
-�@�@DNS$(), IFCONFIG$(), NTP, TCPACCEPT(), TCPCLIENT, TCPCLOSE, TCPRECEIVE, 
-�@�@TCPSEND, TCPSERVER, TCPSTATUS, TLSCLIENT, WIFIERR(), WIFIERR$()
-�@�EGCOLOR()�֐��̕s����C��
-�@�E�ꕔUSB�L�[�{�[�h�ł̃L�[���͕s��ɑΉ�
-�@�EEOF�̎��AFGETC()�֐���-1��Ԃ��悤�ɂ���
-�@�Eembed�p��XIAO RP2040, RP2040-Zero, and Tiny-2040�ɑΉ�
-�@�ESPI�̑Ή��|�[�g��INI�t�@�C���Ŏw��o����悤�ɂ���
-�@�ESERIAL�X�e�[�g�����g�̑�3�������ȗ��������̕s����C��
-�@�E��O���g���b�v���ĉ�ʕ\������悤�ɂ���
-�@�ECORETIMER���d�������エ�悻2000�b�ォ��s����N���������C��
-�@�EILI9488�ɑΉ�
-�@�ERTC(Real Time Clock)���T�|�[�g�B���̖��߁E�֐���ǉ��F 
-�@�@GETTIME$(), SETTIME. STRFTIME$()
-�@�E�t�@�C���ۑ����̓����ݒ���T�|�[�g
-�@�ENTP�T�[�o�[�ɂ��RTC�̃Z�b�g���T�|�[�g
-�@�ESYSTEM 201 �Ăяo���ɂ��A�{�[�h�t����LED�̃I���E�I�t���o����悤�ɂ���
-�@�E�������[�A���P�[�V�����̕s����C��
-�@�EFREMOVE/SETDIR���̃t�@�C���֘A���߂��g�p���́A�K�x�[�W�R���N�V�����s����C��
-�@�EWAVE�v���[���[�̈��萫�����P
-�@�E�N���X�̃X�^�e�B�b�N���\�b�h�Ăяo���s����C��
-�@�EFFINGD$(), FINFO(), FINFO$()��3�̊֐���ǉ��B�t�@�C���ꗗ�̍쐬���\��
-�@�EREM ���Ɂu"�v���܂ލۂ̃R���p�C�����̕s����C��
+　・Raspberry Pi Pico Wに対応。
+　・サンプルプログラムに、WEATHER.BAS(webページから天気予報を得る)と
+　HDEAMON.BAS(web サーバー構築を構築)を追加。
+　・クラスライブラリーに、HTTPD(HTTPサーバーを構築)、IR_RX(赤外線リモコン
+　受信モジュールを使用)、IR_TX(赤外線LEDでリモコン信号を送信)、JSON(JSON文字列
+　を解析)、WGET(指定のURLから情報を取得)を追加。
+　・Raspberry Pi Pico W を用いた WiFi 接続に対応。次の命令・関数を追加： 
+　　DNS$(), IFCONFIG$(), NTP, TCPACCEPT(), TCPCLIENT, TCPCLOSE, TCPRECEIVE, 
+　　TCPSEND, TCPSERVER, TCPSTATUS, TLSCLIENT, WIFIERR(), WIFIERR$()
+　・GCOLOR()関数の不具合を修正
+　・一部USBキーボードでのキー入力不具合に対応
+　・EOFの時、FGETC()関数が-1を返すようにした
+　・embed用にXIAO RP2040, RP2040-Zero, and Tiny-2040に対応
+　・SPIの対応ポートをINIファイルで指定出来るようにした
+　・SERIALステートメントの第3引数を省略した時の不具合を修正
+　・例外をトラップして画面表示するようにした
+　・CORETIMERが電源投入後およそ2000秒後から不具合を起こす事を修正
+　・ILI9488に対応
+　・RTC(Real Time Clock)をサポート。次の命令・関数を追加： 
+　　GETTIME$(), SETTIME. STRFTIME$()
+　・ファイル保存時の日時設定をサポート
+　・NTPサーバーによるRTCのセットをサポート
+　・SYSTEM 201 呼び出しにより、ボード付属のLEDのオン・オフを出来るようにした
+　・メモリーアロケーションの不具合を修正
+　・FREMOVE/SETDIR等のファイル関連命令を使用時の、ガベージコレクション不具合を修正
+　・WAVEプレーヤーの安定性を改善
+　・クラスのスタティックメソッド呼び出し不具合を修正
+　・FFINGD$(), FINFO(), FINFO$()の3つの関数を追加。ファイル一覧の作成が可能に
+　・REM 文に「"」を含む際のコンパイル時の不具合を修正
 
 Phyllosoma 1.31/KM-1504 (2023.10.28)
-�@�Eembed�p��BASIC�v���O�����ŁA�t�@�C���̓ǂݎ��ɑΉ��B
-�@�Eembed�p�ɑg�ݍ��ނ��Ƃ��ł���t�@�C�������A���v16�ɑ����B
-�@�E���������_�̕\���╶����̈����̍ہA�Ԉ�����l�ɂȂ�s����C���B
+　・embed用のBASICプログラムで、ファイルの読み取りに対応。
+　・embed用に組み込むことができるファイル数が、合計16個に増加。
+　・浮動小数点の表示や文字列の扱いの際、間違った値になる不具合を修正。
 
 Phyllosoma 1.40/KM-1505 (2024.2.17)
-�@�E�T���v���v���O�����ɁAFILEMAN.BAS(�t�@�C���}�l�[�W���[)��ǉ��B
-�@�E�N���X���C�u�����[�ɁABUTTON(�{�^������), GEN3O(���m�p�S�V�b�N�\��), 
-�@�@QRCODE(QRCODE�\��), TSC2046(�^�b�`�p�l������)��ǉ��B
-�@�E�t�����g��Ȃ��ꍇ�ɁASPI���߂�spi1���g�������\�ɂ����B
-�@�EPUTBMP���߂ŁA�����������摜��\������ۂ̕s����C���B
-�@�E�t�@�C���ꗗ�\���̍ہA�t�@�C���X�V�����̕\�����\�ɂ����B
-�@�E�t�@�C���ꗗ�\���̍ۂ́A�t�@�C�����E�t�@�C���X�V�����ɂ��\�����ɑΉ��B
-�@�EILI9488�t���ŏc�u�̍ۂ̕\���s����C���B
-�@�EFRENAME, MKDIR���ߋy��FRENAME(), MKDIR()�֐��̒ǉ��B
-�@�E�⏕�R�[�h(auxcode)��ǉ��ł���@�\�������B
+　・サンプルプログラムに、FILEMAN.BAS(ファイルマネージャー)を追加。
+　・クラスライブラリーに、BUTTON(ボタン操作), GEN3O(源ノ角ゴシック表示), 
+　　QRCODE(QRCODE表示), TSC2046(タッチパネル操作)を追加。
+　・液晶を使わない場合に、SPI命令でspi1を使う事を可能にした。
+　・PUTBMP命令で、横幅が長い画像を表示する際の不具合を修正。
+　・ファイル一覧表示の際、ファイル更新日時の表示を可能にした。
+　・ファイル一覧表示の際の、ファイル名・ファイル更新日時による表示順に対応。
+　・ILI9488液晶で縦置の際の表示不具合を修正。
+　・FRENAME, MKDIR命令及びFRENAME(), MKDIR()関数の追加。
+　・補助コード(auxcode)を追加できる機能を実装。
 
 Phyllosoma 1.41/KM-1506 (2024.10.06)
-�@�ERaspberry Pi Pico 2�ɑΉ��B
-�@�EWEATHER.BAS�T���v���v���O�������X�V
+　・Raspberry Pi Pico 2に対応。
+　・WEATHER.BASサンプルプログラムを更新
 
 Phyllosoma 1.50/KM-1507 (2024.12.28)
-�@�E�T���v���v���O����(BLOCK.BAS, PHOTO.BAS)���C���B
-�@�E�N���X���C�u�����[��WS2812B��QRCODE���APico 2�ɑΉ�����悤�C���B
-�@�E�e�L�X�g�G�f�B�^�[�̃t�@�C���I���@�\�̃o�O�C���B
-�@�EPico/Pico2�������́AType P/PU���ƂɁA�ʁX�̃N���X�t�@�C����������悤�ɕύX�B
-�@�ESYSTEM(4)��������CPU�̎��s���x��Ԃ��悤�ɏC���B
-�@�ESYSTEM(6)��ǉ����ABASIC�̃I�u�W�F�N�gRAM�̈�̃T�C�Y�𓾂���悤�ɂ����B
-�@�EILI9488���g���Ă��鎞�A���܂Ŏw��ł��Ȃ���������WIDTH�X�e�[�g�����g�Ŏw��ł���悤�ɂ����B
-�@�EWAIT�X�e�[�g�����g�����s���Ă��鎞�ɁA�L�[�{�[�h��PAUSE/BREAK�L�[���������ƂŎ��s��~�ł���悤�ɂ����B
+　・サンプルプログラム(BLOCK.BAS, PHOTO.BAS)を修正。
+　・クラスライブラリーのWS2812BとQRCODEを、Pico 2に対応するよう修正。
+　・テキストエディターのファイル選択機能のバグ修正。
+　・Pico/Pico2もしくは、Type P/PUごとに、別々のクラスファイルを扱えるように変更。
+　・SYSTEM(4)が正しいCPUの実行速度を返すように修正。
+　・SYSTEM(6)を追加し、BASICのオブジェクトRAM領域のサイズを得られるようにした。
+　・ILI9488を使っている時、今まで指定できなかった幅をWIDTHステートメントで指定できるようにした。
+　・WAITステートメントを実行している時に、キーボードのPAUSE/BREAKキーを押すことで実行停止できるようにした。
 
 Phyllosoma 1.51/KM-1508 (2025.2.22)
-�@�ESPI�EI2C�EUART�p�̃s���z�u���AMACHIKAP.INI�Ŏ��R�ɐݒ�ł���悤�ɕύX�B
-�@�E�s���z�u��MACHIKAP.INI�Őݒ�ł��鎖�ɔ����AXIAO embed�ł̔z�z���I���B
-�@�E�N���X���C�u�����[��REGEXP�ŁA�A���g�p���Ƀ������[�G���[���o��s����C���B
+　・SPI・I2C・UART用のピン配置を、MACHIKAP.INIで自由に設定できるように変更。
+　・ピン配置をMACHIKAP.INIで設定できる事に伴い、XIAO embed版の配布を終了。
+　・クラスライブラリーのREGEXPで、連続使用時にメモリーエラーが出る不具合を修正。
+
+Phyllosoma 1.52/KM-1509 (2025.4.12)
+　・「Break」キーだけでなく、「Ctrl + Alt + Del」キーでプログラムの実行を停止できるようにした。
+　・SYSTEM(40), SYSTEM(41), SYSTEM(42), SYSTEM(43)により、キーボードの状態を取得できるようにした。
+　・SYSTEM 50, SYSTEM 51により、CPUのクロック速度と電圧を変更できるようにした。
+　・STARTボタンを押しながら起動することにより、起動時のMACHIKAP.BAS自動実行をスキップすることが可能に。
+　・クラスライブラリーにCPUCLOCKを追加。使用可能なCPUクロック周波数を調べることが可能に。
+　・Raspberry Pi Pico 2 Wに対応。
+　・Raspberry Pi Pico 2 使用時のLCD液晶転送速度を改善。
+　・サンプルプログラム(MAZE3D.BAS, STARTREK.BAS)を修正。
+　・サンプルプログラム(POLYGON.BAS)を追加。

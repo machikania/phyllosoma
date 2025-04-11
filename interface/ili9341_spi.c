@@ -366,6 +366,10 @@ unsigned short getColor(unsigned short x, unsigned short y)
 
 int attroffset; // TVRAMのカラー情報エリア位置
 
+void lcd_spi_init(void){
+	spi_init(LCD_SPICH, LCD_SPI_BAUDRATE);
+}
+
 void lcd_display_init(void){
 	// Enable SPI and connect to GPIOs
 	spi_init(LCD_SPICH, LCD_SPI_BAUDRATE);

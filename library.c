@@ -14,6 +14,9 @@
 #include "./display.h"
 #include "./sleep.h"
 #include "./debug.h"
+#include "./interface/usbkeyboard.h"
+#include "hardware/clocks.h"
+#include "hardware/vreg.h"
 
 /*
 	Local macros
@@ -562,7 +565,7 @@ int lib_var_pop(int r0, int r1, int r2){
 int lib_wait(int r0, int r1, int r2){
 	unsigned short n;
 	uint64_t t;
-	if (PUERULUS) {
+	if (PUERULUS && VALIDCLOCK4NTSC) {
 		n=drawcount;
 		while(0<r0){
 			if (check_break() && !g_interrupt_code) return lib_end(0,0,0);
@@ -685,17 +688,30 @@ int lib_system(int r0, int r1, int r2){
 		//	グラフィックディスプレイの、現在のY位置を返す。
 			return lib_display(4,0,0);
 		case 40:
-		//	PS/2キーボードを使用中かどうかを返す。
-			return 0;
+		//	キーボードを使用中かどうかを返す。
+			return usbkb_mounted();
 		case 41:
-		//	PS/2キーボード情報、vkeyを返す。
-			return 0;
+		//	キーボード情報、vkeyを返す。
+			return vkey;
 		case 42:
-		//	PS/2キーボード情報、lockkeyを返す。
-			return 0;
+		//	キーボード情報、lockkeyを返す。
+			return lockkey;
 		case 43:
-		//	PS/2キーボード情報、keytypeを返す。
-			return 0;
+		//	キーボード情報、keytypeを返す。
+			return keytype;
+		case 50:
+		//	CPUのクロック周波数を、Hzで指定。
+			set_sys_clock_hz(r1,false);
+			g_clock_hz=clock_get_hz(clk_sys);
+			if (r1!=g_clock_hz) stop_with_error(ERROR_BAD_FREQUENCY);
+			lcd_spi_init();
+			mmc_spi_init();
+			init_music();
+			break;
+		case 51:
+		//	CPUの電圧を指定。有効値：6-15 (0.85 - 1.30 V)。デフォルト：11 (1.10 V)。
+			if ((int)VREG_VOLTAGE_MIN<=r1 && r1<=(int)VREG_VOLTAGE_MAX) vreg_set_voltage(r1);
+			break;
 		case 100:
 		//	変数格納領域(g_var_mem)へのポインターを返す。
 			return (int)&kmbasic_variables[0];

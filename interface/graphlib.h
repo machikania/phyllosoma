@@ -113,3 +113,9 @@ extern unsigned char TVRAM[];
 
 void video_init(void);
 // Initialize video for running BASIC code
+
+void lcd_spi_init(void);
+// Set SPI baudrate again
+
+void set_gvram(unsigned char *gvram_draw,unsigned char *gvram_disp);
+// Set drawing and displaying graphic-VRAM

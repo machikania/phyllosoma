@@ -23,6 +23,9 @@ unsigned char *fileselect(void);
 // api.c
 void fileselect_init(void);
 
+//pico-sdmm.c
+void mmc_spi_init(void);
+
 // Prototypings follow
 void printint(int i);
 void printhex4(unsigned char c);

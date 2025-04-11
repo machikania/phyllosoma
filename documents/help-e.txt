@@ -406,7 +406,13 @@ USEGRAPHIC [x].
 	For Type P
 		This instruction clears the screen. Both graphics and characters are always available. If x=2, the palette is also initialized.
 	For Type PU
-		Use or disuse the graphic display. x=0 to disuse, x=1 to use, x=2 to clear the screen and palette, x=3 to reserve the graphic area but leave the display as a character display.
+		Use or disuse the graphic display. x=0 to disuse, x=1 to use, x=2 to clear the screen and palette, x=3 to reserve the graphic area without changing the display.
+		If you want to use double buffering (drawing and displaying with two graphic RAM areas), specify y as follows:
+			y=0: Draw in area 1, display from area 1.
+			y=1: Draw in area 2, display from area 1.
+			y=2: Draw in area 1, display from area 2.
+			y=3: Draw in area 2, display from area 2.
+		Note: When specifying x=3, previously drawn graphics are not cleared. Additionally, if areas 1 or 2 are not already allocated, they will be automatically allocated.
 
 GCOLOR(x,y)
 	Returns the palette number of the palette currently being displayed at graphic coordinates (x,y).
@@ -608,6 +614,10 @@ SYSTEM(42)
 	Return PS/2 keyboard information, lockkey.
 SYSTEM(43)
 	PS/2 keyboard information, keytype is returned.
+SYSTEM 50, x
+	Specify the CPU clock frequency in Hz units.
+SYSTEM 51, x
+	Set the CPU operating voltage as an integer value between 6 and 15. When x=6, the voltage is 0.85 V; when x=15, the voltage is 1.30 V. The default value at startup is 11 (1.10 V).
 SYSTEM(100)
 	Returns pointer to variable storage area (g_var_mem).
 SYSTEM(101)
@@ -749,6 +759,13 @@ If strings are handled consecutively in a line, an error message "String too com
 Be careful when accessing global variables in interrupt functions. If a variable of the same name is specified as a VAR in one of the subroutines and is also used as a local variable, depending on when the interrupt is triggered, the value of the variable may or may not belong to the global or local variable. Therefore, if you want to handle a global variable in an interrupt function, do not specify a variable of the same name as a VAR.
 
 <Version history>
+KM-1509 Released in April 2025.
+　Enabled stopping program execution not only with the "Break" key but also with the "Ctrl + Alt + Del" key.
+　Made it possible to retrieve the keyboard state using SYSTEM(40), SYSTEM(41), SYSTEM(42), and SYSTEM(43).
+　Added functionality to change CPU clock speed and voltage using SYSTEM 50 and SYSTEM 51.
+　Enhanced the USEGRAPHIC statement to optionally allow a second argument to be specified.  
+KM-1508 Released in February 2025.
+　None of change in BASIC functions.
 KM-1507 Released in December 2024.
 　Changed so that separate class files can be handled for Pico/Pico2 or Type P/PU.
 　Fix SYSTEM(4) to return correct CPU execution speed.

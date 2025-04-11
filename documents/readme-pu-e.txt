@@ -1,7 +1,7 @@
-@@@@@@@@@@@@@@@@@@@@@@@@@@2024.12.28
-@BASIC Execution Environment Open Platform for Raspberry Pi Pico
-@@@@@@@@MachiKania type PU
-@@@@@@@@@@@@@@@@@@@@@by KenKen & Katsumi
+ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€2025.4.12
+ã€€BASIC Execution Environment Open Platform for Raspberry Pi Pico
+ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€MachiKania type PU
+ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€by KenKen & Katsumi
 
 MachiKania is an open platform for microcontrollers with a BASIC compiler.
 MachiKania type PU is equipped with a Raspberry Pi Pico (Pico 2, Pico W) and an 
@@ -35,193 +35,223 @@ by the use of the MachiKania series.
 <machikania-pu.zip file contents>
 
 [documents] directory
-@Stores documents
-@- help.txt
-@- help-e.txt
-@@Reference manual for KM-BASIC
+ã€€Stores documents
+ã€€- help.txt
+ã€€- help-e.txt
+ã€€ã€€Reference manual for KM-BASIC
 
-@- class.txt
-@- class-e.txt
-@@Reference Manual for Object-Oriented Programming in KM-BASIC
+ã€€- class.txt
+ã€€- class-e.txt
+ã€€ã€€Reference Manual for Object-Oriented Programming in KM-BASIC
 
-@- embed.txt
-@- embed-e.txt
-@@How to Create File Embedded Executables
+ã€€- embed.txt
+ã€€- embed-e.txt
+ã€€ã€€How to Create File Embedded Executables
 
-@- pcconnect.txt
-@- pcconnect-e.txt
-@@How to transfer files from your PC to MachiKania
+ã€€- pcconnect.txt
+ã€€- pcconnect-e.txt
+ã€€ã€€How to transfer files from your PC to MachiKania
 
-@- shematic_ntsc.png
-@- shematic_xiao.png
-@@MachiKania type PU schematics
+ã€€- shematic_ntsc.png
+ã€€- shematic_xiao.png
+ã€€ã€€MachiKania type PU schematics
 
-@- wifi.txt
-@- wifi-e.txt
-@@Reference manual to use WiFi connection with Raspberry Pi Pico W
+ã€€- wifi.txt
+ã€€- wifi-e.txt
+ã€€ã€€Reference manual to use WiFi connection with Raspberry Pi Pico W
 
 [pico_ntsc] directory
-@Stores binaries when using Raspberry Pi Pico
-@- puerulus.uf2
-@@MachiKania type PU BASIC system (version supporting PC connect function)
-@@Connects the PC and Raspberry Pi Pico via USB and writes
-@@PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
+ã€€Stores binaries when using Raspberry Pi Pico
+ã€€- puerulus.uf2
+ã€€ã€€MachiKania type PU BASIC system (version supporting PC connect function)
+ã€€ã€€Connects the PC and Raspberry Pi Pico via USB and writes
+ã€€ã€€PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
 
-@- puerulus_kb.uf2
-@@MachiKania type PU BASIC system main unit (USB keyboard connection version)
-@@Connects a PC and Raspberry Pi Pico via USB cable and writes
-@@Directly edit and execute BASIC programs with the built-in editor and USB keyboard
+ã€€- puerulus_kb.uf2
+ã€€ã€€MachiKania type PU BASIC system main unit (USB keyboard connection version)
+ã€€ã€€Connects a PC and Raspberry Pi Pico via USB cable and writes
+ã€€ã€€Directly edit and execute BASIC programs with the built-in editor and USB keyboard
 
 [pico_w_ntsc] directory
-@Stores binaries when using Raspberry Pi Pico W
-@- puerulus.uf2
-@@MachiKania type PU BASIC system (version supporting PC connect function)
-@@Connects the PC and Raspberry Pi Pico via USB and writes
-@@PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
-@@WiFi connection is available.
+ã€€Stores binaries when using Raspberry Pi Pico W
+ã€€- puerulus.uf2
+ã€€ã€€MachiKania type PU BASIC system (version supporting PC connect function)
+ã€€ã€€Connects the PC and Raspberry Pi Pico via USB and writes
+ã€€ã€€PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
+ã€€ã€€WiFi connection is available.
 
-@- puerulus_kb.uf2
-@@MachiKania type PU BASIC system main unit (USB keyboard connection version)
-@@Connects a PC and Raspberry Pi Pico via USB cable and writes
-@@Directly edit and execute BASIC programs with the built-in editor and USB keyboard
-@@WiFi connection is available.
+ã€€- puerulus_kb.uf2
+ã€€ã€€MachiKania type PU BASIC system main unit (USB keyboard connection version)
+ã€€ã€€Connects a PC and Raspberry Pi Pico via USB cable and writes
+ã€€ã€€Directly edit and execute BASIC programs with the built-in editor and USB keyboard
+ã€€ã€€WiFi connection is available.
 
 [pico2_ntsc] directory
-@Stores binaries when using Raspberry Pi Pico 2
-@- puerulus.uf2
-@@MachiKania type PU BASIC system (version supporting PC connect function)
-@@Connects the PC and Raspberry Pi Pico via USB and writes
-@@PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
+ã€€Stores binaries when using Raspberry Pi Pico 2
+ã€€- puerulus.uf2
+ã€€ã€€MachiKania type PU BASIC system (version supporting PC connect function)
+ã€€ã€€Connects the PC and Raspberry Pi Pico via USB and writes
+ã€€ã€€PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
 
-@- puerulus_kb.uf2
-@@MachiKania type PU BASIC system main unit (USB keyboard connection version)
-@@Connects a PC and Raspberry Pi Pico via USB cable and writes
-@@Directly edit and execute BASIC programs with the built-in editor and USB keyboard
+ã€€- puerulus_kb.uf2
+ã€€ã€€MachiKania type PU BASIC system main unit (USB keyboard connection version)
+ã€€ã€€Connects a PC and Raspberry Pi Pico via USB cable and writes
+ã€€ã€€Directly edit and execute BASIC programs with the built-in editor and USB keyboard
+
+[pico2_w_ntsc] directory
+ã€€Stores binaries when using Raspberry Pi Pico 2 W
+ã€€- puerulus.uf2
+ã€€ã€€MachiKania type PU BASIC system (version supporting PC connect function)
+ã€€ã€€Connects the PC and Raspberry Pi Pico via USB and writes
+ã€€ã€€PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
+ã€€ã€€WiFi connection is available.
+
+ã€€- puerulus_kb.uf2
+ã€€ã€€MachiKania type PU BASIC system main unit (USB keyboard connection version)
+ã€€ã€€Connects a PC and Raspberry Pi Pico via USB cable and writes
+ã€€ã€€Directly edit and execute BASIC programs with the built-in editor and USB keyboard
+ã€€ã€€WiFi connection is available.
 
 [xiao_ntsc] directory
-@Stores binaries when using XIAO-RP2040, TINY2040, or RP2040-Zero
-@- puerulus.uf2
-@@MachiKania type PU BASIC system (version supporting PC connect function)
-@@Connects the PC and micro-contoller board via USB and writes
-@@PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
+ã€€Stores binaries when using XIAO-RP2040, TINY2040, or RP2040-Zero
+ã€€- puerulus.uf2
+ã€€ã€€MachiKania type PU BASIC system (version supporting PC connect function)
+ã€€ã€€Connects the PC and micro-contoller board via USB and writes
+ã€€ã€€PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
 
-@- puerulus_kb.uf2
-@@MachiKania type PU BASIC system main unit (USB keyboard connection version)
-@@Connects a PC and micro-contoller board via USB cable and writes
-@@Directly edit and execute BASIC programs with the built-in editor and USB keyboard
+ã€€- puerulus_kb.uf2
+ã€€ã€€MachiKania type PU BASIC system main unit (USB keyboard connection version)
+ã€€ã€€Connects a PC and micro-contoller board via USB cable and writes
+ã€€ã€€Directly edit and execute BASIC programs with the built-in editor and USB keyboard
 
 [xiao_rp2350_ntsc] directory
-@Stores binaries when using XIAO-RP2350, TINY2350, or RP2350-Zero
-@- puerulus.uf2
-@@MachiKania type PU BASIC system (version supporting PC connect function)
-@@Connects the PC and micro-contoller board via USB and writes
-@@PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
+ã€€Stores binaries when using XIAO-RP2350, TINY2350, or RP2350-Zero
+ã€€- puerulus.uf2
+ã€€ã€€MachiKania type PU BASIC system (version supporting PC connect function)
+ã€€ã€€Connects the PC and micro-contoller board via USB and writes
+ã€€ã€€PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
 
-@- puerulus_kb.uf2
-@@MachiKania type PU BASIC system main unit (USB keyboard connection version)
-@@Connects a PC and micro-contoller board via USB cable and writes
-@@Directly edit and execute BASIC programs with the built-in editor and USB keyboard
+ã€€- puerulus_kb.uf2
+ã€€ã€€MachiKania type PU BASIC system main unit (USB keyboard connection version)
+ã€€ã€€Connects a PC and micro-contoller board via USB cable and writes
+ã€€ã€€Directly edit and execute BASIC programs with the built-in editor and USB keyboard
 
 [pico_ntsc/embed] directory
 [pico_w_ntsc/embed] directory
 [pico2_ntsc/embed] directory
+[pico2_w_ntsc/embed] directory
 [xiao_ntsc/embed] directory
 [xiao_rp2350_ntsc/embed] directory
-@Stores tools that allow you to run BASIC programs without an SD card, 
-@e.g. for embedded applications
+ã€€Stores tools that allow you to run BASIC programs without an SD card, 
+ã€€e.g. for embedded applications
 
 [pcconnect] directory
-@Contains tools for transferring files in a PC to MachiKania via USB 
-@cable
+ã€€Contains tools for transferring files in a PC to MachiKania via USB 
+ã€€cable
 
 readme.txt
-@This file
+ã€€This file
 
 readmeLib.txt
-@Library documentation in the LIB directory
+ã€€Library documentation in the LIB directory
 
 <Copy all files and directories below here to the root directory of the SD card>
 
 MACHIKAP.INI
-@Initialization file for MachiKania type PU (shared with type P)
+ã€€Initialization file for MachiKania type PU (shared with type P)
 
 [LIB] directory
-@Class library that can be easily used from BASIC programs. Copy the entire 
-@LIB directory to the root of the SD card and use it
+ã€€Class library that can be easily used from BASIC programs. Copy the entire 
+ã€€LIB directory to the root of the SD card and use it
 
 [samples] directory
-@BASIC sample programs. Copy these files to the root directory of the 
-@SD card (or create any subdirectory and copy)
+ã€€BASIC sample programs. Copy these files to the root directory of the 
+ã€€SD card (or create any subdirectory and copy)
 
-@3DWAVE.BAS
-@@3D graphic of ripples
+ã€€3DWAVE.BAS
+ã€€ã€€3D graphic of ripples
 
-@BLOCK.BAS
-@@Block breaking game created for the first MachiKania
+ã€€BLOCK.BAS
+ã€€ã€€Block breaking game created for the first MachiKania
 
-@COSMOS.BMP (used in PHOTO.BAS)
+ã€€COSMOS.BMP (used in PHOTO.BAS)
 
-@FILEMAN.BAS
-@@File manager for MachiKania type P/PU
+ã€€FILEMAN.BAS
+ã€€ã€€File manager for MachiKania type P/PU
 
-@HDAEMON.BAS
-@@Sample program to build a web server construction using the HTTPD class
-@@Connect from PC or smartphone to turn on/off LEDs on Pico W
+ã€€HDAEMON.BAS
+ã€€ã€€Sample program to build a web server construction using the HTTPD class
+ã€€ã€€Connect from PC or smartphone to turn on/off LEDs on Pico W
 
-@INVADE.BAS
-@@Invader game created for MachiKania type Z/M/P/PU
+ã€€INVADE.BAS
+ã€€ã€€Invader game created for MachiKania type Z/M/P/PU
 
-@LCHIKA.BAS
-@@Sample program to blink LEDs
+ã€€LCHIKA.BAS
+ã€€ã€€Sample program to blink LEDs
 
-@MANDELBR.BAS
-@@Program to output Mandelbrot in text
+ã€€MANDELBR.BAS
+ã€€ã€€Program to output Mandelbrot in text
 
-@MAZE3D.BAS
-@@Three-dimensional maze escape game
+ã€€MAZE3D.BAS
+ã€€ã€€Three-dimensional maze escape game
 
-@MUSIC.BAS
-@@Sample program using the MUSIC instruction
+ã€€MUSIC.BAS
+ã€€ã€€Sample program using the MUSIC instruction
 
-@NIHONGO.BAS
-@@Program to display Japanese language using CKNJ16 class in the library
+ã€€NIHONGO.BAS
+ã€€ã€€Program to display Japanese language using CKNJ16 class in the library
 
-@PCG.BAS
-@@Sample program using PCG
+ã€€PCG.BAS
+ã€€ã€€Sample program using PCG
 
-@PEGSOL-G.BAS
-@@Peg solitaire game program
+ã€€PEGSOL-G.BAS
+ã€€ã€€Peg solitaire game program
 
-@PHOTO.BAS
-@@Program to display BMP files on LCD
+ã€€PHOTO.BAS
+ã€€ã€€Program to display BMP files on LCD
 
-@RAYTRACE.BAS
-@@Ray tracing program
+ã€€RAYTRACE.BAS
+ã€€ã€€Ray tracing program
 
-@SOUND.BAS
-@@Sample program using the SOUND instruction
+ã€€SOUND.BAS
+ã€€ã€€Sample program using the SOUND instruction
 
-@STARTREK.BAS
-@@Star Trek game program
+ã€€STARTREK.BAS
+ã€€ã€€Star Trek game program
 
-@TIME-INT.BAS
-@@Sample program for timer interrupt
+ã€€TIME-INT.BAS
+ã€€ã€€Sample program for timer interrupt
 
-@WEATHER.BAS
-@@Sample program to get information from web pages on the net using WGET and JSON classes
-@@Display today's date and weather forecast
-@
-@WFRAME.BAS
-@@Wireframe graphics program
+ã€€WEATHER.BAS
+ã€€ã€€Sample program to get information from web pages on the net using WGET and JSON classes
+ã€€ã€€Display today's date and weather forecast
+ã€€
+ã€€WFRAME.BAS
+ã€€ã€€Wireframe graphics program
 
 
 ------------------------------------------------------------------------
 MachiKania type PU BASIC System Revision History
 
 Puerulus 1.50/KM-1507 (2024.12.28)
-@First public version
+ã€€First public version
 
 Puerulus 1.51/KM-1508 (2025.2.22)
-@Fixed a bug that caused line numbers at the bottom of the screen to be displayed incorrectly when using the editor.
-@Changed pin assignments for SPI, I2C, and UART to be freely configurable in MACHIKAP.INI.
-@Fixed a problem with REGEXP in the class library that caused a memory error when used continuously.
+ã€€Fixed a bug that caused line numbers at the bottom of the screen to be displayed incorrectly when using the editor.
+ã€€Changed pin assignments for SPI, I2C, and UART to be freely configurable in MACHIKAP.INI.
+ã€€Fixed a problem with REGEXP in the class library that caused a memory error when used continuously.
+
+Phyllosoma 1.52/KM-1509 (2025.4.12)
+ã€€Enabled stopping program execution not only with the "Break" key but also with the "Ctrl + Alt + Del" key.
+ã€€Made it possible to retrieve the keyboard state using SYSTEM(40), SYSTEM(41), SYSTEM(42), and SYSTEM(43).
+ã€€Added functionality to modify the CPU's clock speed and voltage using SYSTEM 50 and SYSTEM 51.
+ã€€Supports normal video signal output when the system clock is running at 315MHz.
+ã€€By holding the SART button during startup, it's now possible to skip the automatic execution of MACHIKAP.BAS upon boot.
+ã€€By specifying the second argument in the USEGRAPHIC statement, it is now possible to draw and display using two graphic RAM areas.
+ã€€By setting WIDTH80 in MACHIKAP.INI, the system can be configured to display 80 characters horizontally at startup.
+ã€€The sample program RAYTRACE.BAS has been modified so that it can be displayed with Type PU.
+ã€€Added CPUCLOCK to the class library, making it possible to check available CPU clock frequencies.
+ã€€Raspberry Pi Pico 2 W is supported.
+ã€€Improved transfer speed when using SPI.
+ã€€Update MAZE3D.BAS and STARTREK.BAS sample programs.
+ã€€Added POLYGON.BAS sample program.

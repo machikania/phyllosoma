@@ -55,6 +55,7 @@
 #define ERROR_OPTION_CLASSCODE (-23)
 #define ERROR_EXCEPTION (-24)
 #define ERROR_FUNCTION_CALL (-25)
+#define ERROR_BAD_FREQUENCY (-26)
 
 /*
 	Libraries
@@ -344,6 +345,8 @@
 #define INTERRUPT_WAVE      5
 #define INTERRUPT_CORETIMER 6
 
+#define VALIDCLOCK4NTSC (g_clock_hz==157500000 || g_clock_hz==315000000)
+
 /*
 	Variables
 */
@@ -420,6 +423,8 @@ extern unsigned char show_timestamp;
 extern unsigned char filesortby;
 
 extern unsigned int g_clock_hz;
+extern unsigned int g_clock_hz_default;
+extern char g_cpu_voltage_default;
 
 /*
 	Prototypes

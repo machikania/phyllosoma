@@ -28,13 +28,15 @@ caused by using this program.
 #include "hardware/dma.h"
 #include "hardware/pwm.h"
 #include "hardware/clocks.h"
+#include "hardware/vreg.h"
 #include "rp2040_pwm_ntsc_textgraph.h"
 
 // デバッグ用、割込み処理中HIGHになるピン
 //#define PIN_DEBUG_BUSY 15
 
-uint8_t TVRAM[WIDTH_XMAX*WIDTH_Y*2+1];
-uint8_t *GVRAM=0; //グラフィックVRAM開始位置のポインタ
+uint8_t TVRAM[WIDTH_XMAX*WIDTH_Y*2+1] __attribute__ ((aligned (4)));
+uint8_t *GVRAM=0; //グラフィックVRAM（描画用）開始位置のポインタ
+static uint8_t *GVRAM_DISP; //グラフィックVRAM（表示用）開始位置のポインタ
 uint8_t *cursor=TVRAM;
 uint8_t cursorcolor=7;
 
@@ -47,6 +49,10 @@ unsigned char videomode=0xff,textmode=0xff,graphmode=0xff; //画面モード
 int WIDTH_X = 42; // 横方向文字数
 int attroffset; // TVRAMのカラー情報エリア位置
 uint8_t* fontp; //現在のフォントパターンの先頭アドレス
+
+static uint pwm_slice_num; //ビデオ出力ポートのPWM slice number
+static uint16_t black_level, white_level;
+static uint8_t ntsc_speed; //1:通常 2:倍速
 
 // DMAピンポンバッファ
 uint16_t dma_buffer[2][NUM_LINE_SAMPLES] __attribute__ ((aligned (4)));
@@ -78,7 +84,7 @@ static void __not_in_flash_func() makeDmaBuffer(uint16_t* buf, size_t line_num)
 	{
 		//垂直同期信号生成
 		for (int j = 0; j < NUM_LINE_SAMPLES-H_SYNC; j++) *b++ = 0;
-		while (b < buf + NUM_LINE_SAMPLES) *b++ = 2;
+		while (b < buf + NUM_LINE_SAMPLES) *b++ = black_level;
 	}
 	if(videomode==VMODE_MONOTEXT){
 		//モノクロテキストモード
@@ -86,7 +92,7 @@ static void __not_in_flash_func() makeDmaBuffer(uint16_t* buf, size_t line_num)
 		{
 			//水平同期
 			for (int j = 0; j < H_SYNC; j++) *b++ = 0;
-			while (b < buf + NUM_LINE_SAMPLES) *b++ = 2;
+			while (b < buf + NUM_LINE_SAMPLES) *b++ = black_level;
 		}
 		else if(line_num>=V_SYNC+V_PREEQ && line_num<V_SYNC+V_PREEQ+Y_RES)
 		{
@@ -105,10 +111,10 @@ static void __not_in_flash_func() makeDmaBuffer(uint16_t* buf, size_t line_num)
 				for(int j=0;j<8;j++)
 				{
 					if(d & 0x80){
-						*b=9; //white level
+						*b=white_level; //white level
 					}
 					else{
-						*b=2; //black level
+						*b=black_level; //black level
 					}
 					b++;
 					d<<=1;
@@ -123,15 +129,15 @@ static void __not_in_flash_func() makeDmaBuffer(uint16_t* buf, size_t line_num)
 		{
 			//水平同期＋バースト信号生成
 			for (int j = 0; j < H_SYNC; j++) *b++ = 0;
-			for (int j = 0; j < 8; j++) *b++ = 2;
+			for (int j = 0; j < 8; j++) *b++ = black_level;
 			for (int j = 0; j < 9; j++)
 			{
-				*b++=2;
-				*b++=1;
-				*b++=2;
-				*b++=3;
+				*b++=black_level;
+				*b++=black_level-ntsc_speed;
+				*b++=black_level;
+				*b++=black_level+ntsc_speed;
 			}
-			while (b < buf + NUM_LINE_SAMPLES) *b++ = 2;
+			while (b < buf + NUM_LINE_SAMPLES) *b++ = black_level;
 		}
 		else if(line_num>=V_SYNC+V_PREEQ && line_num<V_SYNC+V_PREEQ+Y_RES)
 		{
@@ -175,7 +181,7 @@ static void __not_in_flash_func() makeDmaBuffer(uint16_t* buf, size_t line_num)
 				}
 			}
 			else if(videomode==VMODE_WIDEGRPH){
-				fbp = GVRAM+(line_num-(V_SYNC + V_PREEQ))*X_RES;
+				fbp = GVRAM_DISP+(line_num-(V_SYNC + V_PREEQ))*X_RES;
 				//グラフィック＋テキストモード
 				for(int i=0;i<WIDTH_XCL;i++)
 				{
@@ -216,7 +222,7 @@ static void __not_in_flash_func() makeDmaBuffer(uint16_t* buf, size_t line_num)
 		}
 		//映像領域信号消去
 		b+=H_PICTURE;
-		for(int i=0;i<X_RES*2;i++) *b++ = 2;
+		for(int i=0;i<X_RES*2;i++) *b++ = black_level;
 	}
 }
 
@@ -247,13 +253,13 @@ void set_palette_main(unsigned short c,unsigned char b,unsigned char r,unsigned 
 	int32_t b_y_2=(b-y)*764;
 	int32_t r_y_2=(r-y)*(-786);
 
-	s=(y*1792 + b_y_1 + r_y_1 + 2*65536+32768)/65536;
+	s=(y*1792 + b_y_1 + r_y_1 + 2*65536+32768)*ntsc_speed/65536;
 	color_tbl[c*4] = s<0 ? 0 : s;
-	s=(y*1792 + b_y_2 + r_y_2 + 2*65536+32768)/65536;
+	s=(y*1792 + b_y_2 + r_y_2 + 2*65536+32768)*ntsc_speed/65536;
 	color_tbl[c*4+1] = s<0 ? 0 : s;
-	s=(y*1792 - b_y_1 - r_y_1 + 2*65536+32768)/65536;
+	s=(y*1792 - b_y_1 - r_y_1 + 2*65536+32768)*ntsc_speed/65536;
 	color_tbl[c*4+2] = s<0 ? 0 : s;
-	s=(y*1792 - b_y_2 - r_y_2 + 2*65536+32768)/65536;
+	s=(y*1792 - b_y_2 - r_y_2 + 2*65536+32768)*ntsc_speed/65536;
 	color_tbl[c*4+3] = s<0 ? 0 : s;
 }
 
@@ -375,6 +381,10 @@ void rp2040_pwm_ntsc_init(uint8_t n)
 	gpio_init(PIN_DEBUG_BUSY);
 	gpio_set_dir(PIN_DEBUG_BUSY, GPIO_OUT);
 #endif
+	black_level=2;
+	white_level=9;
+	ntsc_speed=1;
+
 	//ビデオモード初期化
 	set_videomode(VMODE_WIDETEXT,0);
 	init_palette();
@@ -392,7 +402,7 @@ void rp2040_pwm_ntsc_init(uint8_t n)
 	set_sys_clock_khz(freq_khz, true);
 
 	gpio_set_function(n, GPIO_FUNC_PWM);
-	uint pwm_slice_num = pwm_gpio_to_slice_num(n);
+	pwm_slice_num = pwm_gpio_to_slice_num(n);
 
 	pwm_config config = pwm_get_default_config();
 	pwm_config_set_clkdiv(&config, 1);
@@ -445,6 +455,24 @@ void rp2040_pwm_ntsc_init(uint8_t n)
 	dma_channel_start(pwm_dma_chan0);
 }
 
+//システムクロックの切り替え
+// s 1:157.5MHz, 2:315.0MHz
+void ntsc_changeclock(int s){
+	if(s<1 || s>2 || s==ntsc_speed) return;
+	stop_composite();
+	ntsc_speed=s;
+	if(ntsc_speed==1){
+		black_level=2;
+		white_level=9;
+	}else{
+		black_level=5;
+		white_level=18;
+	}
+	pwm_set_wrap(pwm_slice_num, 11*ntsc_speed - 1);
+	init_palette();
+	start_composite();
+}
+
 //ビデオモードの切り替え
 // m:ビデオモード
 // gvram:グラフィック用メモリ先頭アドレス
@@ -475,7 +503,8 @@ void set_videomode(unsigned char m, unsigned char *gvram){
 			break;
 		case VMODE_WIDEGRPH: // ワイドグラフィック＋テキスト42文字モード
 			GVRAM=gvram;
-			g_clearscreen();
+			GVRAM_DISP=gvram;
+//			g_clearscreen();
 			graphmode=GMODE_WIDEGRPH;
 			if(textmode!=TMODE_WIDETEXT){
 				textmode=TMODE_WIDETEXT;
@@ -487,4 +516,10 @@ void set_videomode(unsigned char m, unsigned char *gvram){
 	}
 	videomode=m;
 //	start_composite();
+}
+
+//描画用ビデオメモリと表示用メモリの設定
+void set_gvram(uint8_t *gvram_draw,uint8_t *gvram_disp){
+	GVRAM=gvram_draw;
+	GVRAM_DISP=gvram_disp;
 }

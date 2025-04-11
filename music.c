@@ -16,7 +16,14 @@
 /*
 	clkdiv=138.75, clock=125000000
 	440 Hz: 2048 (125000000/138.75/440 = 2047.50) (138.72=125000000/901120)
+	138.72= (125000000/225280)/4.0
 */
+
+/*
+	Use 1/2 clock divider for CPU clock of >200 MHz
+*/
+
+#define SOUND_PWM_MUL (g_clock_hz>200000000 ? 2:1)
 
 /*
 	c:  1722
@@ -116,8 +123,8 @@ void musicint(void){
 					if (i!=g_pwm_wrap) {
 						g_pwm_wrap=i;
 						pwm_set_enabled(AUDIO_SLICE, false);
-						pwm_set_wrap(AUDIO_SLICE, i-1);
-						pwm_set_chan_level(AUDIO_SLICE, AUDIO_CHAN, i/2);
+						pwm_set_wrap(AUDIO_SLICE, i*SOUND_PWM_MUL-1);
+						pwm_set_chan_level(AUDIO_SLICE, AUDIO_CHAN, i*SOUND_PWM_MUL/2);
 						pwm_set_counter(AUDIO_SLICE, 0);
 					}
 					pwm_set_enabled(AUDIO_SLICE, true);
@@ -152,8 +159,8 @@ void musicint(void){
 					if (i!=g_pwm_wrap) {
 						g_pwm_wrap=i;
 						pwm_set_enabled(AUDIO_SLICE, false);
-						pwm_set_wrap(AUDIO_SLICE, i-1);
-						pwm_set_chan_level(AUDIO_SLICE, AUDIO_CHAN, i/2);
+						pwm_set_wrap(AUDIO_SLICE, i*SOUND_PWM_MUL-1);
+						pwm_set_chan_level(AUDIO_SLICE, AUDIO_CHAN, i*SOUND_PWM_MUL/2);
 						pwm_set_counter(AUDIO_SLICE, 0);
 					}
 					pwm_set_enabled(AUDIO_SLICE, true);
@@ -220,7 +227,7 @@ void stop_music(void){
 	// Allocate GPIO to the PWM
 	gpio_set_function(AUDIO_PORT, GPIO_FUNC_PWM);
 	// Set clock divier for fastest frequency
-	pwm_set_clkdiv(AUDIO_SLICE, (float)(g_clock_hz/901120));
+	pwm_set_clkdiv(AUDIO_SLICE, 0.25 * (float)(g_clock_hz/SOUND_PWM_MUL/225280));
 	// 2048 cycles PWM (an example for 440 Hz)
 	pwm_set_wrap(AUDIO_SLICE, 2047);
 	// Set duty to 50%

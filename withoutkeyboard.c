@@ -27,9 +27,11 @@
 
 const char g_active_usb_keyboard=0;
 
-// Dummy global vars for USB keyboard follow
+// Dummy global vars and function for USB keyboard follow
+uint16_t vkey;
 uint8_t lockkey=0;
 uint8_t keytype=0;
+bool usbkb_mounted(void){ return false; } 
 
 void post_inifile(void){
 	// Connect to PC

@@ -54,6 +54,9 @@ void read_ini(void){
 			set_lcdalign(VERTICAL | LCD180TURN);
 		} else if (!strncmp(str,"LCD180TURN",10)) {
 			set_lcdalign(HORIZONTAL | LCD180TURN);
+		} else if ('1'<=str[5] && str[5]<='9' && !strncmp(str,"WIDTH",5)) {
+			sscanf(str+5,"%d",&g_scratch_int[0]);
+			lib_display(0,g_scratch_int[0],DISPLAY_WIDTH);
 		} else if (!strncmp(str,"ROTATEBUTTONS",13)) {
 			g_enable_button_rotation=1;
 		} else if (!strncmp(str,"NOROTATEBUTTONS",15)) {
@@ -129,7 +132,7 @@ int main() {
 	post_inifile();
 	
 	// Get filename to compile
-	if (file_exists(g_autoexec)) {
+	if (file_exists(g_autoexec) && gpio_get(GPIO_KEYSTART)) {
 		str=&g_autoexec[0];
 	} else {
 		// Open text editor if USB keyboard mode

@@ -38,8 +38,11 @@ int lib_display(int r0, int r1, int r2){
 	static unsigned char cursorcolor=7;
 	static unsigned char gcolor=7;
 	static unsigned char* ppcg=0;
-	static unsigned char* pgvram=0;
-	static int permanent_block_number=0;
+	static unsigned char* pgvram1=0;
+	static unsigned char* pgvram2=0;
+	static unsigned char* pgvram_draw=0;
+	static int permanent_block_number1=0;
+	static int permanent_block_number2=0;
 	static int prevx1=0,prevy1=0;
 	int* sp=(int*)r1;
 	int i,j,gc;
@@ -50,8 +53,11 @@ int lib_display(int r0, int r1, int r2){
 		ppcg=0;
 		prevx1=0;
 		prevy1=0;
-		pgvram=0;
-		permanent_block_number=0;
+		pgvram1=0;
+		pgvram2=0;
+		pgvram_draw=0;
+		permanent_block_number1=0;
+		permanent_block_number2=0;
 		return r0;
 	} else if (0==r2) {
 		// Return the static data
@@ -67,13 +73,13 @@ int lib_display(int r0, int r1, int r2){
 			case 4:
 				return prevy1;
 			case 5:
-				return (int)pgvram;
+				return (int)pgvram_draw;
 			default:
 				return 0;
 		}
 	}
 	// Check if graphic function is available
-	if ( (DISPLAY_USE_GRAPHIC & (1<<r2)) && (!pgvram) && PUERULUS ) stop_with_error(ERROR_FUNCTION_CALL);
+	if ( (DISPLAY_USE_GRAPHIC & (1<<r2)) && (!pgvram_draw) && PUERULUS ) stop_with_error(ERROR_FUNCTION_CALL);
 	// Set x1,y1,x2,y2 for graphic
 	if (DISPLAY_USE_STACK & (1<<r2)) {
 		// r1 is a pointer to stack
@@ -291,16 +297,19 @@ int lib_display(int r0, int r1, int r2){
 			prevy1=y1;
 			break;
 		case DISPLAY_USEGRAPHIC:
-			if (PUERULUS && !permanent_block_number) permanent_block_number=get_permanent_block_number();
-			switch(r0&3){
+			// The first parameter (r1) processing
+			if (PUERULUS && !permanent_block_number1) permanent_block_number1=get_permanent_block_number();
+			switch(r1&3){
 				case 0:
 					if (PHYLLOSOMA) g_clearscreen();
 					if (PUERULUS) {
-						if (pgvram) {
-							delete_memory(pgvram);
-							pgvram=0;
+						if (pgvram_draw) {
+							delete_memory(pgvram1);
+							delete_memory(pgvram2);
+							pgvram_draw=pgvram1=pgvram2=0;
 						} else {
-							pgvram=calloc_memory(X_RES*Y_RES/4,permanent_block_number);
+							pgvram1=calloc_memory(X_RES*Y_RES/4,permanent_block_number1);
+							pgvram_draw=pgvram1;
 						}
 						set_videomode(VMODE_WIDETEXT,0);
 					}
@@ -320,22 +329,58 @@ int lib_display(int r0, int r1, int r2){
 					cls();
 					if (PUERULUS) {
 						// Allocate memory for graphic VRAM and start graphic mode
-						if (!pgvram) pgvram=calloc_memory(X_RES*Y_RES/4,permanent_block_number);
-						set_videomode(VMODE_WIDEGRPH,pgvram);
+						if (!pgvram1) pgvram1=calloc_memory(X_RES*Y_RES/4,permanent_block_number1);
+						set_videomode(VMODE_WIDEGRPH,pgvram1);
+						pgvram_draw=pgvram1;
 					}
 					g_clearscreen();
 					break;
 				case 1:
 					if (PUERULUS) {
 						// Allocate memory for graphic VRAM and start graphic mode
-						if (!pgvram) pgvram=calloc_memory(X_RES*Y_RES/4,permanent_block_number);
-						set_videomode(VMODE_WIDEGRPH,pgvram);
-						cls();
-						g_clearscreen();
-						break;
+						if (!pgvram1) pgvram1=calloc_memory(X_RES*Y_RES/4,permanent_block_number1);
+						set_videomode(VMODE_WIDEGRPH,pgvram1);
+						pgvram_draw=pgvram1;
+						//g_clearscreen();
 					}
-				default:
 					cls();
+					break;
+				default:
+					if (PUERULUS) {
+						// Allocate memory for graphic VRAM but not start graphic mode
+						if (!pgvram1) pgvram1=calloc_memory(X_RES*Y_RES/4,permanent_block_number1);
+						pgvram_draw=pgvram1;
+						set_gvram(pgvram_draw,pgvram_draw);
+					}
+					//cls();
+					break;
+			}
+			// The second parameter (r0) processing (only for PUERULUS)
+			if (!PUERULUS) break;
+			if (r0<0 || 3<r0) break; // r0 should be between 0 and 3
+			if (r0<=2 && !pgvram1) {
+				pgvram1=calloc_memory(X_RES*Y_RES/4,permanent_block_number1);
+			}
+			if (1<=r0 && !pgvram2) {
+				if (!permanent_block_number2) permanent_block_number2=get_permanent_block_number();
+				pgvram2=calloc_memory(X_RES*Y_RES/4,permanent_block_number2);
+			}
+			switch(r0){ //void set_gvram(uint8_t *gvram_draw,uint8_t *gvram_disp);
+				case 0:
+					set_gvram(pgvram1,pgvram1);
+					pgvram_draw=pgvram1;
+					break;
+				case 1:
+					set_gvram(pgvram2,pgvram1);
+					pgvram_draw=pgvram2;
+					break;
+				case 2:
+					set_gvram(pgvram1,pgvram2);
+					pgvram_draw=pgvram1;
+					break;
+				default:
+					set_gvram(pgvram2,pgvram2);
+					pgvram_draw=pgvram2;
 					break;
 			}
 			break;
@@ -586,10 +631,12 @@ int putbmp_statement(void){
 }
 
 int usegraphic_statement(void){
-	// USEGRAPHIC [x]
+	// USEGRAPHIC [x[,y]]
 	g_default_args[1]=1;
+	g_default_args[2]=255;
 	return argn_function(LIB_DISPLAY_FUNCTION,
 		ARG_INTEGER_OPTIONAL<<ARG1 | 
+		ARG_INTEGER_OPTIONAL<<ARG2 | 
 		DISPLAY_USEGRAPHIC<<LIBOPTION);
 }
 

@@ -93,7 +93,14 @@ int lib_input(int r0, int r1, int r2){
 }
 
 int check_break(void){
-	return usbkb_keystatus[VK_PAUSE] ?1:0;
+	if (usbkb_keystatus[VK_PAUSE]) return 1; // Break/Pause key
+	if (usbkb_keystatus[VK_LCONTROL] || usbkb_keystatus[VK_RCONTROL]) { // control keys
+		if (usbkb_keystatus[VK_LMENU] || usbkb_keystatus[VK_RMENU]) { // alt keys
+			if (usbkb_keystatus[VK_BACK]) return 1;      // backspace key
+			if (usbkb_keystatus[VK_DELETE]) return 1;    // delete key
+		}
+	}
+	return 0;
 }
 
 int check_keypress(void){

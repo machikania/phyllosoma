@@ -1,7 +1,7 @@
 REM **********************
 REM * 3D Maze by Katsumi *
 REM *   for MachiKania   *
-REM *      ver 0.2       *
+REM *      ver 0.2 .1    *
 REM **********************
 REM The size of 3D view is 24 x 24
 REM It's shown in (1,1)-(24,24)
@@ -86,9 +86,11 @@ if x=27 AND y=25 then GOAL
 
 REM Key check and move/rotate
 label KEYIN
+wait 2
 if 59<drawcount() then drawcount drawcount()-60:t=t+1:gosub PTIME
 if keys() then KEYIN
 label KEYIN2
+wait 2
 if 59<drawcount() then drawcount drawcount()-60:t=t+1:gosub PTIME
 k=keys()
 if k=0 then KEYIN2

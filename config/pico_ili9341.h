@@ -99,7 +99,7 @@
 #define LCD_SPICH spi1
 #define LCD_COLUMN_RES 240
 #define LCD_ROW_RES 320
-#define LCD_SPI_BAUDRATE (32*1000*1000)
+#define LCD_SPI_BAUDRATE (50*1000*1000)
 #define LCD_SPI_BAUDRATE_R (15*1000*1000)
 
 // File system SPI settings

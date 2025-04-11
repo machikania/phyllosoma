@@ -19,6 +19,7 @@ caused by using this program.
 //　テキスト＋グラフィックビデオ出力用ライブラリ
 
 #include "rp2040_pwm_ntsc_textgraph.h"
+#include "../compiler.h"
 
 // x,yにカラー番号cのドットを描画
 void g_pset(int x, int y, unsigned char c)
@@ -477,7 +478,24 @@ void video_init(void){
 	init_palette();
 }
 
-// Dummy function (not required for NTSC)
+void lcd_spi_init(void){
+	// SPI is not used for NTSC video
+	// Instead, change some settings for 157.5 and 315 MHz CPU speeds.
+	switch(g_clock_hz){
+		case 157500000:
+			// Normal mode NTSC video
+			ntsc_changeclock(1);
+			break;
+		case 315000000:
+			// Double speed mode NTSC video
+			ntsc_changeclock(2);
+			break;
+		default:
+			break;
+	}
+}
+
+// Dummy functions (not required for NTSC)
 void putcursorchar(void){}
 void textredraw(void){}
 void set_lcdalign(unsigned char align){}

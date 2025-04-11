@@ -10,7 +10,7 @@
 static char* g_error_file;
 static int g_error_line;
 
-static const char* g_error_text[26]={
+static const char* g_error_text[]={
 	"No error",
 	"Syntax error",                  // #define ERROR_SYNTAX _throw_error(-1)
 	"Unknown error",                 // #define ERROR_UNKNOWN _throw_error(-2)
@@ -37,6 +37,7 @@ static const char* g_error_text[26]={
 	"",                              // #define ERROR_OPTION_CLASSCODE (-23)
 	"Exception",                     // #define ERROR_EXCEPTION (-24)
 	"Function call error",           // #define ERROR_FUNCTION_CALL (-25)
+	"Unsupported clock frequency",   // #define ERROR_BAD_FREQUENCY (-26)
 };
 
 int show_error(int e, int pos){

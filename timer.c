@@ -151,15 +151,28 @@ bool repeating_drawcount_callback(struct repeating_timer *t) {
 		drop_interrupt_flag(INTERRUPT_INKEY);
 	}
 	if (0<t->delay_us) {
+		// This callback is called by NTSC video (see trigger_drawcount_callback_once())
 		return false;
 	} else {
+		// This callback is called every 16667 micro seconds (see timer_init())
 		return true;
 	}
 }
 
 void trigger_drawcount_callback_once(void) {
-	cancel_repeating_timer(&g_drawcount_timer);
-	add_repeating_timer_us(1, repeating_drawcount_callback, NULL, &g_drawcount_timer);
+	// This function is called by NTSC video routine
+	if (VALIDCLOCK4NTSC) {
+		cancel_repeating_timer(&g_drawcount_timer);
+		add_repeating_timer_us(1, repeating_drawcount_callback, NULL, &g_drawcount_timer);
+	} else if (0<g_drawcount_timer.delay_us) {
+		// Previously, repeating_drawcount_callback was called by NTSC routine every 1/60 second
+		// As the CPU clock is invalid for NTSC video routine, go back to calling it every 16667 micro seconds
+		cancel_repeating_timer(&g_drawcount_timer);
+		add_repeating_timer_us(-16667, repeating_drawcount_callback, NULL, &g_drawcount_timer);
+	} else {
+		// The CPU clock is invalid for NTSC video routine
+		// Continue to calling repeating_drawcount_callback every 16667 seconds
+	}
 }
 
 int64_t alarm_coretimer_callback(alarm_id_t id, void *user_data) {
