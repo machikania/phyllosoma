@@ -9,7 +9,6 @@ cmake and make. The pico-sdk (ver 2.1.1 is confirmed for building) with all subm
   
 1. set(MACHIKANIA_BUILD pico_ili9341) : for Raspberry Pi Pico + ILI9341 LCD  
 2. set(MACHIKANIA_BUILD pico_ili9488) : for Raspberry Pi Pico + ILI9488 LCD  
-3. set(MACHIKANIA_BUILD xiao_embed) : for Seeed XIAO RP2040 for embedded development (deprecated; edit MACHIKAP.INI for changing pin numbers for SPI/I2C/UART, instead)
 
 ## how to compile for Raspberry Pi Pico W
 

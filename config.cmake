@@ -12,10 +12,6 @@ set(MACHIKANIA_BUILD pico_ili9341)
 # YD-RP2040 + ILI9488 LCD
 #set(MACHIKANIA_BUILD pico_ili9488)
 
-# Seeed XIAO RP2040 for embedded development  
-# Useful for using UART with XIAO RP2040
-#set(MACHIKANIA_BUILD xiao_embed)
-
 # Raspberry Pi Pico + NTSC Video out for Puerulus
 # YD-RP2040 + NTSC Video
 #set(MACHIKANIA_BUILD pico_ntsc)
@@ -26,11 +22,6 @@ set(MACHIKANIA_BUILD pico_ili9341)
 ################################
 # Do not touch the lines below #
 ################################
-
-# Force DEBUG_MODE for XIAO board
-if (MACHIKANIA_BUILD STREQUAL "xiao_embed")
-	set(MACHIKANIA_DEBUG_MODE 1)
-endif()
 
 # Select graphic library
 if (MACHIKANIA_BUILD STREQUAL "pico_ili9488")
