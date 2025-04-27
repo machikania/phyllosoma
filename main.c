@@ -54,6 +54,8 @@ void read_ini(void){
 			set_lcdalign(VERTICAL | LCD180TURN);
 		} else if (!strncmp(str,"LCD180TURN",10)) {
 			set_lcdalign(HORIZONTAL | LCD180TURN);
+		} else if (!strncmp(str,"LCDINVERT",9)) {
+			set_lcdalign(LCDINVERT);
 		} else if ('1'<=str[5] && str[5]<='9' && !strncmp(str,"WIDTH",5)) {
 			sscanf(str+5,"%d",&g_scratch_int[0]);
 			lib_display(0,g_scratch_int[0],DISPLAY_WIDTH);

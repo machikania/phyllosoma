@@ -742,6 +742,15 @@ void init_textgraph(unsigned char align){
 	set_lcdalign(align);
 }
 void set_lcdalign(unsigned char align){
+	// 縦横以外の設定
+	switch(align){
+		case LCDINVERT:
+			// IPS液晶サポート
+			LCD_WriteComm(0x21);
+			return;
+		default:
+			break;
+	}
 	// 液晶の縦横設定
 	LCD_ALIGNMENT=align;
 	LCD_WriteComm(0x36);

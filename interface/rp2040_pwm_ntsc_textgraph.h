@@ -53,6 +53,7 @@ extern int WIDTH_X; // 横方向文字数
 #define HORIZONTAL 1
 #define LCD0TURN 0
 #define LCD180TURN 2
+#define LCDINVERT 64
 
 void g_clearscreen(void);
 void clearscreen(void);
