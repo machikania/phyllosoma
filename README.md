@@ -66,6 +66,8 @@ GP29 ADC3
 The phyllosoma_kb.uf2 firmware supports using USB keyboard. Connect the USB keyboard to micro B socket of Raspberry Pi pico (or Pico W) through an USB-OTG cable, and supply 5V power to VBUS pin (#40).  
 Alternatevely, as before, the phyllosoma.uf2 firmware supports the USB serial connection between MachiKania and PC.
 
+## LCD settings
+Several LCD settings can be done by editing MACHIKAP.INI. Set "HORIZONTAL" or "VERTICAL" for desired direction. "LCD180TURN" and "LCD90TURN" are also possible. When using the IPS-LCD, activate "LCDINVERT" for proper color display.
 
 
 ---
