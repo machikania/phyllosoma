@@ -363,6 +363,8 @@ int lib_analog(int r0, int r1, int r2){
 		// Make sure GPIO is high-impedance, no pullups etc
 		gpio_disable_pulls(port);
 		adc_gpio_init(port);
+		g_gpio_out&=~(1<<port);
+		g_gpio_in&=~(1<<port);
 		// Select ADC input 0
 		adc_select_input(input);
 	}
@@ -491,6 +493,8 @@ int lib_spi(int r0, int r1, int r2){
 			gpio_init(cs_port);
 			gpio_set_dir(cs_port, GPIO_OUT);
 			gpio_put(cs_port,1);
+			g_gpio_out&=~(1<<cs_port);
+			g_gpio_in&=~(1<<cs_port);
 			// Init SPI
 			spi_init(g_io_spi_ch,sp[0]*1000);
 		    gpio_set_function(g_io_spi_rx, GPIO_FUNC_SPI);
