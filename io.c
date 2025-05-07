@@ -493,7 +493,7 @@ int lib_spi(int r0, int r1, int r2){
 			gpio_init(cs_port);
 			gpio_set_dir(cs_port, GPIO_OUT);
 			gpio_put(cs_port,1);
-			g_gpio_out&=~(1<<cs_port);
+			g_gpio_out|=1<<cs_port;
 			g_gpio_in&=~(1<<cs_port);
 			// Init SPI
 			spi_init(g_io_spi_ch,sp[0]*1000);
