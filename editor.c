@@ -1400,6 +1400,14 @@ int loadtextfile(char *filename){
 	_tbuf *bp;
 	int ix,n,i,er;
 	unsigned char *ps,*pd;
+
+	//  HEXファイルの場合エディタ終了して実行
+	for(i=0;filename[i];i++);
+	if (!strncmp(&filename[i-4],".HEX",4)){
+		cls();
+		runHex(filename);
+	}
+
 	er=0;//エラーコード
 	if(f_open(&Fil, filename, FA_READ)) return ERR_CANTFILEOPEN;
 	inittextbuf();
@@ -1839,6 +1847,17 @@ int getfilelist(int *p_num_dir){
 	//拡張子 HTMファイルのサーチ
 	if(filenum<MAXFILENUM){
 		fr = f_findfirst(&dj, &fno, temppath, "*.HTM"); // HTMファイル
+		while (fr == FR_OK && fno.fname[0]){ // Repeat while an item is found
+			files[filenum]=fno;
+			filenum++;
+			if (filenum >= MAXFILENUM) break;
+			fr = f_findnext(&dj, &fno); // Search for next item
+		}
+		f_closedir(&dj);
+	}
+	//拡張子 HEXファイルのサーチ
+	if(filenum<MAXFILENUM){
+		fr = f_findfirst(&dj, &fno, temppath, "*.HEX"); // HEXファイル
 		while (fr == FR_OK && fno.fname[0]){ // Repeat while an item is found
 			files[filenum]=fno;
 			filenum++;
