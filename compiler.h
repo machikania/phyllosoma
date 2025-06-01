@@ -426,6 +426,9 @@ extern unsigned int g_clock_hz;
 extern unsigned int g_clock_hz_default;
 extern char g_cpu_voltage_default;
 
+extern char g_emulate_buttons;
+extern unsigned char g_emulate_button_array[6];
+
 /*
 	Prototypes
 */

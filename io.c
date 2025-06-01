@@ -242,6 +242,11 @@ int lib_keys(int r0, int r1, int r2){
 	res|=(k&KEYRIGHT) ?  8:0;
 	res|=(k&KEYSTART) ? 16:0;
 	res|=(k&KEYFIRE)  ? 32:0;
+	if (g_emulate_buttons) {
+		for(k=0;k<6;k++){
+			if (g_emulate_button_array[k]) res|=lib_inkey(g_emulate_button_array[k],0,0) ? (1<<k):0;
+		}
+	}
 	return res&r0;
 }
 

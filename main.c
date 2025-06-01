@@ -98,6 +98,30 @@ void read_ini(void){
 			show_timestamp=1;
 		} else if (!strncmp(str,"FILESORTBY=",11)) {
 			sscanf(str+11,"%hhd",&filesortby);
+		} else if (!strncmp(str,"EMULATEBUTTONUP=",16)) {
+			sscanf(str+16,"%d",&i);
+			g_emulate_button_array[0]=i;
+			g_emulate_buttons=1;
+		} else if (!strncmp(str,"EMULATEBUTTONDOWN=",18)) {
+			sscanf(str+18,"%d",&i);
+			g_emulate_button_array[1]=i;
+			g_emulate_buttons=1;
+		} else if (!strncmp(str,"EMULATEBUTTONLEFT=",18)) {
+			sscanf(str+18,"%d",&i);
+			g_emulate_button_array[2]=i;
+			g_emulate_buttons=1;
+		} else if (!strncmp(str,"EMULATEBUTTONRIGHT=",19)) {
+			sscanf(str+19,"%d",&i);
+			g_emulate_button_array[3]=i;
+			g_emulate_buttons=1;
+		} else if (!strncmp(str,"EMULATEBUTTONSTART=",19)) {
+			sscanf(str+19,"%d",&i);
+			g_emulate_button_array[4]=i;
+			g_emulate_buttons=1;
+		} else if (!strncmp(str,"EMULATEBUTTONFIRE=",18)) {
+			sscanf(str+18,"%d",&i);
+			g_emulate_button_array[5]=i;
+			g_emulate_buttons=1;
 		}
 	}
 	// Close file

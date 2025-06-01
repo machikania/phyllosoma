@@ -123,6 +123,10 @@ unsigned int g_clock_hz;
 unsigned int g_clock_hz_default;
 char g_cpu_voltage_default;
 
+// Emulation of buttons by keyboard
+char g_emulate_buttons=0;
+unsigned char g_emulate_button_array[6];
+
 // Reserved words
 
 const char* const g_reserved_words[189]={
