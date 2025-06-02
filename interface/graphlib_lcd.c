@@ -276,9 +276,17 @@ void g_boxfill(int x1,int y1,int x2,int y2,unsigned char c)
 	if(y2<0 || y1>=Y_RES) return;
 	if(y1<0) y1=0;
 	if(y2>=Y_RES) y2=Y_RES-1;
+#ifdef LCD_SPI_BAUDRATE2
+	//一時的に高速転送モードにする
+	lcd_spi_init_highspeed();
+#endif
 	while(y1<=y2){
 		g_hline(x1,x2,y1++,c);
 	}
+#ifdef LCD_SPI_BAUDRATE2
+	//元の速度に戻す
+	lcd_spi_init_normalspeed();
+#endif
 }
 void g_circlefill(int x0,int y0,unsigned int r,unsigned char c)
 // (x0,y0)を中心に、半径r、カラーパレット番号cで塗られた円を描画
@@ -287,6 +295,10 @@ void g_circlefill(int x0,int y0,unsigned int r,unsigned char c)
 	x=r;
 	y=0;
 	f=-2*r+3;
+#ifdef LCD_SPI_BAUDRATE2
+	//一時的に高速転送モードにする
+	lcd_spi_init_highspeed();
+#endif
 	while(x>=y){
 		g_hline(x0-x,x0+x,y0-y,c);
 		g_hline(x0-x,x0+x,y0+y,c);
@@ -299,6 +311,10 @@ void g_circlefill(int x0,int y0,unsigned int r,unsigned char c)
 		y++;
 		f+=y*4+2;
 	}
+#ifdef LCD_SPI_BAUDRATE2
+	//元の速度に戻す
+	lcd_spi_init_normalspeed();
+#endif
 }
 void g_putfont(int x,int y,unsigned char c,int bc,unsigned char n)
 //8*8ドットのアルファベットフォント表示
@@ -531,6 +547,10 @@ void textredraw(void){
 	int i,j,x,y;
 	unsigned short c;
 	unsigned char d,b,*p,*p2;
+#ifdef LCD_SPI_BAUDRATE2
+	//一時的に高速転送モードにする
+	lcd_spi_init_highspeed();
+#endif
 
 	LCD_setAddrWindow(0,0,WIDTH_X*8,WIDTH_Y*8);
 	p=TVRAM;
@@ -572,6 +592,10 @@ void textredraw(void){
 		}
 	}
 	checkSPIfinish();
+#ifdef LCD_SPI_BAUDRATE2
+	//元の速度に戻す
+	lcd_spi_init_normalspeed();
+#endif
 }
 
 void windowscroll(int y1,int y2){

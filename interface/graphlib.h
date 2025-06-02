@@ -117,5 +117,11 @@ void video_init(void);
 void lcd_spi_init(void);
 // Set SPI baudrate again
 
+void lcd_spi_init_normalspeed(void);
+// Set SPI baudrate highspeed
+
+void lcd_spi_init_highspeed(void);
+// Set SPI baudrate highspeed
+
 void set_gvram(unsigned char *gvram_draw,unsigned char *gvram_disp);
 // Set drawing and displaying graphic-VRAM

@@ -255,6 +255,7 @@ void LCD_Clear(unsigned short color)
 {
 	int i;
     unsigned int d;
+	lcd_spi_init_highspeed();
 	LCD_setAddrWindow(0,0,X_RES,Y_RES);
 	lcd_dc_hi();
 	lcd_cs_lo();
@@ -263,6 +264,7 @@ void LCD_Clear(unsigned short color)
 		spi_write_blocking_notfinish(LCD_SPICH, (unsigned char *)&d, 2);
 	}
 	checkSPIfinish();
+	lcd_spi_init_normalspeed();
 }
 
 void drawPixel(unsigned short x, unsigned short y, unsigned short color)
@@ -281,6 +283,14 @@ int attroffset; // TVRAMのカラー情報エリア位置
 
 void lcd_spi_init(void){
 	spi_init(LCD_SPICH, LCD_SPI_BAUDRATE);
+}
+
+inline void lcd_spi_init_normalspeed(void){
+	spi_set_baudrate(LCD_SPICH, LCD_SPI_BAUDRATE);
+}
+
+inline void lcd_spi_init_highspeed(void){
+	spi_set_baudrate(LCD_SPICH, LCD_SPI_BAUDRATE2);
 }
 
 void lcd_display_init(void){

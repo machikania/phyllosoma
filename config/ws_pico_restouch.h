@@ -100,6 +100,7 @@
 #define LCD_COLUMN_RES 320
 #define LCD_ROW_RES 480
 #define LCD_SPI_BAUDRATE (16*1000*1000)
+#define LCD_SPI_BAUDRATE2 (50*1000*1000)
 #define LCD_SPI_BAUDRATE_R (10*1000*1000)
 
 // File system SPI settings
