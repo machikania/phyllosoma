@@ -27,8 +27,8 @@
 	GP21 I/O bit14 / button5 (START)
 	GP22 SD-CS
 	GP26 I/O bit15 / button6 (FIRE) / ADC0
-	GP27 ADC1
-	GP28 SOUND OUT / ADC2
+	GP27 SOUND OUT / ADC1
+	GP28 ADC2
 	GP29 ADC3
 */
 
@@ -85,9 +85,9 @@
 #define GPIO_KEYFIRE 26
 
 // Audio settings
-#define AUDIO_PORT 28
-#define AUDIO_SLICE 6
-#define AUDIO_CHAN PWM_CHAN_A
+#define AUDIO_PORT 27
+#define AUDIO_SLICE 5
+#define AUDIO_CHAN PWM_CHAN_B
 
 // LCD settings
 #define LCD_CS 9
