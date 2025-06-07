@@ -2092,7 +2092,7 @@ int fileload(void){
 }
 // 画面縦横の切り替え
 void changewidth(void){
-	set_lcdalign(LCD_ALIGNMENT^HORIZONTAL); //縦横切り替え
+	set_lcdalign((LCD_ALIGNMENT+1)&3); //縦横切り替え
 	EDITWIDTHY=WIDTH_Y-1; //エディタ画面行数設定
 	cursor_top(); //カーソルをテキストバッファの先頭に設定
 	redraw(); //再描画
