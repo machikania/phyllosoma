@@ -63,7 +63,7 @@ void g_putbmpmn(int x,int y,unsigned short m,unsigned short n,const unsigned cha
 			p=bmp;
 		}
 		for(;i<y+n;i++){
-			if(i>=Y_RES) return; //画面下部に切れる場合
+			if(i>=Y_RES) break; //画面下部に切れる場合
 			if(x<0){ //画面左に切れる場合は残る部分のみ描画
 				j=0;
 				p+=-x;
@@ -104,7 +104,7 @@ void g_putbmpmn(int x,int y,unsigned short m,unsigned short n,const unsigned cha
 			p=bmp;
 		}
 		for(;j<x+m;j++){
-			if(j>=X_RES) return; //画面右部に切れる場合
+			if(j>=X_RES) break; //画面右部に切れる場合
 			if(y<0){ //画面上に切れる場合は残る部分のみ描画
 				i=0;
 				p+=-y*m;
