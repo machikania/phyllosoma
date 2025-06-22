@@ -285,11 +285,13 @@ void lcd_spi_init(void){
 	spi_init(LCD_SPICH, LCD_SPI_BAUDRATE);
 }
 
+static uint spi_normalspeed=LCD_SPI_BAUDRATE;
 inline void lcd_spi_init_normalspeed(void){
-	spi_set_baudrate(LCD_SPICH, LCD_SPI_BAUDRATE);
+	spi_set_baudrate(LCD_SPICH, spi_normalspeed);
 }
 
 inline void lcd_spi_init_highspeed(void){
+	spi_normalspeed=spi_get_baudrate(LCD_SPICH);
 	spi_set_baudrate(LCD_SPICH, LCD_SPI_BAUDRATE2);
 }
 
