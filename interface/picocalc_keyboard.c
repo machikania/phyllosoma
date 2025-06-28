@@ -226,8 +226,57 @@ unsigned char usbkb_readkey(void){
 	ascii=keycodebufp2[0]&255;
 	vkey=keycodebufp2[0]&0xff00;
 	vkey|=g_i2c_to_vkey[ascii];
+	// Special case conversions
+	if (vkey&(CHK_ALT<<8)) {
+		// Alt key + xx
+		switch(vkey&255){
+			case VK_UP:    // Alt + UP -> Page UP
+				vkey=vkey&0xff00;
+				vkey|=VK_PRIOR;
+				break;
+			case VK_DOWN:  // Alt + DOWN -> Page DOWN
+				vkey=vkey&0xff00;
+				vkey|=VK_NEXT;
+				break;
+			case VK_RIGHT: // Alt + RIGHT -> Shift + RIGHT
+				vkey=CHK_SHIFT<<8;
+				vkey|=VK_RIGHT;
+				break;
+			case VK_LEFT:  // Alt + LEFT -> Shift + LEFT
+				vkey=CHK_SHIFT<<8;
+				vkey|=VK_LEFT;
+				break;
+			case VK_TAB:    // Alt + TAB -> HOME
+				vkey=vkey&0xff00;
+				vkey|=VK_HOME;
+				break;
+			case VK_DELETE: // Alt + DEL -> END
+				vkey=vkey&0xff00;
+				vkey|=VK_END;
+				break;
+			default:
+				break;
+		}
+	} 
+	if (vkey&(CHK_SHIFT<<8)) {
+		// Shift key + xx
+		switch(vkey&255){
+			case VK_TAB:    // Shift + TAB -> Shift + HOME
+				vkey=vkey&0xff00;
+				vkey|=VK_HOME;
+				break;
+			case VK_DELETE: // Shift + DEL -> Shift + END
+				vkey=vkey&0xff00;
+				vkey|=VK_END;
+				break;
+			default:
+				break;
+		}
+	}
 	keycodebufp2++;
 	if(keycodebufp2==keycodebuf+KEYCODEBUFSIZE) keycodebufp2=keycodebuf;
+	// If ALT/CTRL key is pressed, return 0
+	if (vkey&( (CHK_ALT|CHK_CTRL) <<8 )) return 0;
 	// If alphabet or character, return ascii code
 	if (0x20<=ascii && ascii<0x7f) return ascii;
 	// Otherwise, return 0;

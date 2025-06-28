@@ -1,5 +1,5 @@
 # phyllosoma
-MachiKania Phyllosoma for PicoCalc  
+MachiKania type P (aka MachiKania Phyllosoma) for PicoCalc  
 ![photo.png](photo.png)
 
 ## MachiKania Phyllosoma
