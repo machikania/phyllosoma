@@ -254,6 +254,10 @@ unsigned char usbkb_readkey(void){
 				vkey=vkey&0xff00;
 				vkey|=VK_END;
 				break;
+			case 'I':       // Alt + I -> Ins
+				vkey=vkey&0xff00;
+				vkey|=VK_INSERT;
+				break;
 			default:
 				break;
 		}
