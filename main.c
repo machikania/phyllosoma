@@ -18,7 +18,31 @@
 #include "./interface/usbkeyboard.h"
 
 char g_autoexec[13]="MACHIKAP.BAS";
+void set_default_ini(void){
+    set_lcdalign(VERTICAL);
+    set_lcdalign(LCDINVERT);
+    g_enable_button_rotation=1;
+    g_disable_printf=0;
 
+    g_emulate_button_array[0]=38;//EMULATEBUTTONUP=38
+    g_emulate_button_array[1]=40;//EMULATEBUTTONDOWN=40
+    g_emulate_button_array[2]=37;//EMULATEBUTTONLEFT=37
+    g_emulate_button_array[3]=39;//EMULATEBUTTONRIGHT=39
+    g_emulate_button_array[4]=13;//EMULATEBUTTONSTART=13
+    g_emulate_button_array[5]=32;//EMULATEBUTTONFIRE=32
+    g_emulate_buttons=1;
+
+    g_disable_lcd_out=0;
+    g_disable_debugwait2500=0;
+    g_reset_at_end=0;
+    g_wait_at_begin=500;
+    g_wait_for_keyboard=2000;
+    keytype=1;
+    lockkey|=1;
+    lockkey|=2;
+
+    filesortby=0;
+}
 void read_ini(void){
 	int i;
 	FIL fpo;
@@ -148,6 +172,7 @@ int main() {
 	init_machikania_rtc();
 	g_clock_hz=clock_get_hz(clk_sys);
 	// Read MACHIKAP.INI
+    set_default_ini();//
 	read_ini();
 	sleep_ms(g_wait_at_begin-500);
 	

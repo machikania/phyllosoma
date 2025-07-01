@@ -2295,7 +2295,7 @@ void displaybottomline(void){
 	}
 	else{
 		setcursor(0,WIDTH_Y-1,COLOR_BOTTOMLINE);
-		printstr("LOAD|SAVE|    |RUN |");
+		printstr("F1-LOAD|F2-SAVE|    |F4-RUN |");
 		setcursorcolor(COLOR_ERRORTEXT);
 		t=line_no;
 		if(t==0) t=1;
