@@ -58,6 +58,16 @@ included MACHIKAP.INI file in the root directory of the MMC/SD card.
 The built-in keyboard of the PicoCalc is supported. Please note that external 
 USB keyboards are not recognized.
 
+The differences in operation between a USB keyboard and the PicoCalc keyboard 
+are as follows:
+
+  - Since "Shift + Right" and "Shift + Left" cannot be used, use "Alt + Right" 
+    and "Alt + Left" instead.
+  - Since there are no "Page Up" and "Page Down" buttons, use "Alt + Up" and 
+    "Alt + Down" instead.
+  - If you want to use "Home" and "End" without the "Shift" key, press 
+    "Alt + Tab" and "Alt + Del" respectively.
+
 
 <Button switches>
 
