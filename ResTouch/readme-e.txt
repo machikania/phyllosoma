@@ -28,7 +28,7 @@ instructions, or in any other place.
 Please note that we are not responsible for any damage or loss caused by the 
 use of the MachiKania series.
 
-When using the PicoCalc-compatible version of MachiKania, please note the 
+When using the ResTouch-compatible version of MachiKania, please note the 
 following points.
 
 <Supported Pi Pico boards>
@@ -39,57 +39,44 @@ file for your board from the distributed archive. For WiFi-compatible versions,
 connecting to the internet via WiFi is also possible.
 
 To install the .uf2 file, follow these steps:
-  1. Turn off the power to the PicoCalc.
-  2. Flip the PicoCalc over, then while pressing and holding the “BOOTSEL” 
+  1. Turn off the power to the ResTouch (unplug the USB micro B cable).
+  2. Flip the ResTouch over, then while pressing and holding the“BOOTSEL” 
      button on the Raspberry Pi Pico board, connect it to your PC using a USB 
      micro B cable.
   3. A drive named RPI-RP2 or RP2350 will appear on your PC. Drag and drop the 
      phyllosoma_kb.uf2 file into that drive.
-  4. Disconnect the USB micro B plug and turn the PicoCalc power back on.
+
 
 <MACHIKAP.INI>
 
-To ensure that MachiKania works properly on PicoCalc, make sure to place the 
+To ensure that MachiKania works properly on ResTouch, make sure to place the 
 included MACHIKAP.INI file in the root directory of the MMC/SD card.
 
 
 <Keyboard>
 
-The built-in keyboard of the PicoCalc is supported. Please note that external 
-USB keyboards are not recognized.
+For programs that do not use the touch panel, the keyboard is the only input 
+device. Please connect a USB keyboard using a USB-OTG cable. Be sure to use 
+a Micro-B USB-OTG cable with power input.
 
-The differences in operation between a USB keyboard and the PicoCalc keyboard 
-are as follows:
-
-  - Since "Shift + Right" and "Shift + Left" cannot be used, use "Alt + Right" 
-    and "Alt + Left" instead.
-  - Since there are no "Page Up" and "Page Down" buttons, use "Alt + Up" and 
-    "Alt + Down" instead.
-  - If you want to use "Home" and "End" without the "Shift" key, press 
-    "Alt + Tab" and "Alt + Del" respectively.
+For general use, please install phyllosoma_kb.uf2, which supports USB keyboards. 
+The phyllosoma.uf2 file is intended for special use cases such as operating 
+solely with the touch panel or communicating with a PC via serial connection, 
+without using a USB keyboard.
 
 
 <Button switches>
 
 MachiKania is operated using six buttons: Up, Down, Left, Right, Fire, and 
-Start. Since PicoCalc does not have these physical buttons, they are emulated 
+Start. Since ResTouch does not have these physical buttons, they are emulated 
 via the keyboard. By default, the arrow keys correspond to directional controls, 
-the Space key to Fire, and the Enter key to Start. If you wish to change these 
+the "F" key to Fire, and the "S" key to Start. If you wish to change these 
 key mappings, please edit the MACHIKAP.INI file. Settings like "EMULATEBUTTONUP=" 
 control these mappings. The value on the right side represents the virtual key 
 code in decimal format. To find the virtual key code for a specific key, run the 
 BASIC program below and press the desired key.
 
   DO:PRINT INKEY():LOOP
-
-
-<Using I2C>
-
-The keyboard interface uses the I2C function (GP6, GP7; I2C1). If you wish to 
-use I2C for other purposes, please use I2C0 instead (such as GP0/GP1). This can 
-be configured using the "I2CSDA=" and "I2CSCL=" settings in the MACHIKAP.INI file. 
-Be careful not to use ports associated with I2C1 (like GP2/GP3) in this setting, 
-as the keyboard may no longer be recognized.
 
 
 <Stopping a BASIC program mid-execution>
@@ -99,7 +86,7 @@ simultaneously. This will interrupt the program. However, please note that in ce
 loops (such as those without any PRINT commands) the program may not stop as expected.
 
 
-<machikania-pc.zip file contents>
+<machikania-rt.zip file contents>
 
 [documents] directory
 　Stores documents
@@ -128,32 +115,54 @@ loops (such as those without any PRINT commands) the program may not stop as exp
 
 [pico] directory
 　Stores binaries used with Raspberry Pi Pico
+　- phyllosoma.uf2
+　　MachiKania type P BASIC system (version supporting PC connect function)
+　　Connects the PC and Raspberry Pi Pico via USB and transfer the uf2 file
+　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
+
 　- phyllosoma_kb.uf2
-　　MachiKania type P BASIC system main unit (keyboard connection version)
+　　MachiKania type P BASIC system main unit (USB keyboard connection version)
 　　Connects a PC and Raspberry Pi Pico via USB cable and transfer the uf2 file
-　　Directly edit and execute BASIC programs with the built-in editor and keyboard
+　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
 
 [pico_w] directory
 　Stores binaries used with Raspberry Pi Pico W
+　- phyllosoma.uf2
+　　MachiKania type P BASIC system (version supporting PC connect function)
+　　Connects the PC and Raspberry Pi Pico via USB and transfer the uf2 file
+　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
+　　WiFi connection is available.
+
 　- phyllosoma_kb.uf2
-　　MachiKania type P BASIC system main unit (keyboard connection version)
+　　MachiKania type P BASIC system main unit (USB keyboard connection version)
 　　Connects a PC and Raspberry Pi Pico via USB cable and transfer the uf2 file
-　　Directly edit and execute BASIC programs with the built-in editor and keyboard
+　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
 　　WiFi connection is available.
 
 [pico2] directory
 　Stores binaries used with Raspberry Pi Pico 2
+　- phyllosoma.uf2
+　　MachiKania type P BASIC system (version supporting PC connect function)
+　　Connects the PC and Raspberry Pi Pico via USB and transfer the uf2 file
+　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
+
 　- phyllosoma_kb.uf2
-　　MachiKania type P BASIC system main unit (keyboard connection version)
+　　MachiKania type P BASIC system main unit (USB keyboard connection version)
 　　Connects a PC and Raspberry Pi Pico via USB cable and transfer the uf2 file
-　　Directly edit and execute BASIC programs with the built-in editor and keyboard
+　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
 
 [pico2_w] directory
 　Stores binaries used with Raspberry Pi Pico 2 W
+　- phyllosoma.uf2
+　　MachiKania type P BASIC system (version supporting PC connect function)
+　　Connects the PC and Raspberry Pi Pico via USB and transfer the uf2 file
+　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
+　　WiFi connection is available.
+
 　- phyllosoma_kb.uf2
-　　MachiKania type P BASIC system main unit (keyboard connection version)
+　　MachiKania type P BASIC system main unit (USB keyboard connection version)
 　　Connects a PC and Raspberry Pi Pico via USB cable and transfer the uf2 file
-　　Directly edit and execute BASIC programs with the built-in editor and keyboard
+　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
 　　WiFi connection is available.
 
 readme-e.txt
