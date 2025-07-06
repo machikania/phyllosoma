@@ -1,5 +1,5 @@
 # phyllosoma
-MachiKania type P (aka MachiKania Phyllosoma) for PicoCalc  
+MachiKania type P (aka MachiKania Phyllosoma) for ResTouch  
 ![photo.png](photo.png)
 
 ## MachiKania Phyllosoma
@@ -23,7 +23,7 @@ Add "-DPICO_BOARD=pico2 -DPICO_PLATFORM=rp2350-arm-s" parameter to execute cmake
 Add "-DPICO_BOARD=pico2_w -DPICO_PLATFORM=rp2350-arm-s" parameter to execute cmake, then execute make. The config.cmake setting is the same as above.
 
 ## how to use
-Connect USB-micro B adaptor to PicoCalc with pushing BOOTSEL button of Raspberry Pi Pico. Copy "phyllosoma_kb.uf2" to the RPI-RP2 (or RP2350) drive of Raspberry Pi Pico or Pico W. 
+Connect USB-micro B adaptor to ResTouch with pushing BOOTSEL button of Raspberry Pi Pico. Copy "phyllosoma_kb.uf2" to the RPI-RP2 (or RP2350) drive of Raspberry Pi Pico or Pico W. 
 
 ## License
 Most of codes (written in C) are provided with LGPL 2.1 license, but some codes are provided with the other licenses. See the comment of each file.

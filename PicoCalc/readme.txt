@@ -197,10 +197,16 @@ MACHIKAP.INI
 　　LEDを点滅させるサンプルプログラム
 
 　MANDELBR.BAS
-　　テキストでマンデルブローを出力するプログラム
+　　グラフィックでマンデルブローを出力するプログラム
 
 　MAZE3D.BAS
 　　立体迷路脱出ゲーム
+
+　MOZART.BAS
+　　WAVファイル再生サンプルプログラム
+
+　MOZART.WAV
+　　MOZART.BASで使用
 
 　MUSIC.BAS
 　　MUSIC命令使用のサンプルプログラム

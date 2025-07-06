@@ -167,10 +167,16 @@ MACHIKAP.INI
 　　Sample program to blink LEDs
 
 　MANDELBR.BAS
-　　Program to output Mandelbrot in text
+　　Program to output Mandelbrot in graphic
 
 　MAZE3D.BAS
 　　Three-dimensional maze escape game
+
+　MOZART.BAS
+　　Playing WAV file sample program
+
+　MOZART.WAV
+　　Used by MOZART.BAS
 
 　MUSIC.BAS
 　　Sample program using the MUSIC instruction
