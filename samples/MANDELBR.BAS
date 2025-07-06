@@ -1,5 +1,6 @@
 REM Mandelbrot set for MachiKania
 
+usegraphic
 usevar X_MIN,X_MAX,Y_MIN,Y_MAX,MAX_ITER
 
 W = SYSTEM(22)
