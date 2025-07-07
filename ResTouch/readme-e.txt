@@ -86,6 +86,35 @@ simultaneously. This will interrupt the program. However, please note that in ce
 loops (such as those without any PRINT commands) the program may not stop as expected.
 
 
+<Touch Panel>
+
+When using the touch panel, please use the TSC2046 class. During class initialization, 
+specify ports 9 and 10 in the INIT() method as shown below:
+
+  TSC2046::INIT(9,10)
+
+
+<LCD Backlight>
+
+The LCD backlight brightness can be controlled via I/O bit 8 or PWM1. For example:
+
+  PWM 200
+
+This will dim the display (specify a value between 0–1000). To restore the original brightness:
+
+  PWM 1000
+
+You can also turn the backlight on (OUT 8,1) or off (OUT 8,0) using "OUT" statement.
+
+
+<Receiving Data from the LCD>
+
+Although ResTouch can send data to the LCD, it cannot receive data from it. 
+As a result, certain graphic commands—such as the GCOLOR function—are not 
+supported. For example, the sample program INVADE.BAS, which uses this feature, 
+does not operate correctly.
+
+
 <machikania-rt.zip file contents>
 
 [documents] directory
