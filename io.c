@@ -460,6 +460,18 @@ void spi_send_option(int bit_num, unsigned int* sp, int sp_num){
 	}
 }
 
+void spi_pre_read(){
+	if (SD_SPICH==g_io_spi_ch && SD_SPI_RX!=g_io_spi_rx) gpio_set_function(SD_SPI_RX, GPIO_FUNC_NULL);
+	else if (LCD_SPICH==g_io_spi_ch && LCD_SPI_RX!=g_io_spi_rx) gpio_set_function(LCD_SPI_RX, GPIO_FUNC_NULL);
+	gpio_set_function(g_io_spi_rx, GPIO_FUNC_SPI);
+}
+
+void spi_post_read(){
+	gpio_set_function(g_io_spi_rx, GPIO_FUNC_NULL);
+	if (SD_SPICH==g_io_spi_ch && SD_SPI_RX!=g_io_spi_rx) gpio_set_function(SD_SPI_RX, GPIO_FUNC_SPI);
+	else if (LCD_SPICH==g_io_spi_ch && LCD_SPI_RX!=g_io_spi_rx) gpio_set_function(LCD_SPI_RX, GPIO_FUNC_SPI);
+}
+
 int lib_spi(int r0, int r1, int r2){
 	static char cs_port=-1;
 	static unsigned char bit_num;
@@ -502,7 +514,7 @@ int lib_spi(int r0, int r1, int r2){
 			g_gpio_in&=~(1<<cs_port);
 			// Init SPI
 			spi_init(g_io_spi_ch,sp[0]*1000);
-		    gpio_set_function(g_io_spi_rx, GPIO_FUNC_SPI);
+		    //gpio_set_function(g_io_spi_rx, GPIO_FUNC_SPI);
 		    gpio_set_function(g_io_spi_tx, GPIO_FUNC_SPI);
 		    gpio_set_function(g_io_spi_sck, GPIO_FUNC_SPI);
 			gpio_set_pulls(g_io_spi_rx, true, false); // pull-up DO
@@ -536,6 +548,7 @@ int lib_spi(int r0, int r1, int r2){
 			io_spi_sspcr[1]=g_io_spi_sspcr[1];
 			break;
 		case LIB_SPI_SPIREAD:
+			spi_pre_read();
 			spi_send_option(bit_num,sp,r0);
 			switch(bit_num){
 				case 8:
@@ -552,11 +565,13 @@ int lib_spi(int r0, int r1, int r2){
 					r0=(unsigned int)g_scratch_int[0];
 					break;
 			}
+			spi_post_read();
 			break;
 		case LIB_SPI_SPIWRITE:
 			spi_send_option(bit_num,sp,r0);
 			break;
 		case LIB_SPI_SPIREADDATA:
+			spi_pre_read();
 			spi_send_option(bit_num,&sp[2],r0-2);
 			switch(bit_num){
 				case 8:
@@ -570,6 +585,7 @@ int lib_spi(int r0, int r1, int r2){
 					spi_read32_blocking(g_io_spi_ch,0xffffffff,(unsigned long*)sp[0],sp[1]);
 					break;
 			}
+			spi_post_read();
 			break;
 		case LIB_SPI_SPIWRITEDATA:
 			spi_send_option(bit_num,&sp[2],r0-2);
@@ -587,6 +603,7 @@ int lib_spi(int r0, int r1, int r2){
 			}
 			break;
 		case LIB_SPI_SPISWAPDATA:
+			spi_pre_read();
 			spi_send_option(bit_num,&sp[2],r0-2);
 			switch(bit_num){
 				case 8:
@@ -600,6 +617,7 @@ int lib_spi(int r0, int r1, int r2){
 					spi_write32_read32_blocking(g_io_spi_ch,(unsigned long*)sp[0],(unsigned long*)sp[0],sp[1]);
 					break;
 			}
+			spi_post_read();
 			break;
 		default:
 			// Invalid
