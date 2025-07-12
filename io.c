@@ -462,14 +462,14 @@ void spi_send_option(int bit_num, unsigned int* sp, int sp_num){
 
 void spi_pre_read(){
 	if (SD_SPICH==g_io_spi_ch && SD_SPI_RX!=g_io_spi_rx) gpio_set_function(SD_SPI_RX, GPIO_FUNC_NULL);
-	else if (LCD_SPICH==g_io_spi_ch && LCD_SPI_RX!=g_io_spi_rx) gpio_set_function(LCD_SPI_RX, GPIO_FUNC_NULL);
+	else if (LCD_SPICH && LCD_SPICH==g_io_spi_ch && LCD_SPI_RX!=g_io_spi_rx) gpio_set_function(LCD_SPI_RX, GPIO_FUNC_NULL);
 	gpio_set_function(g_io_spi_rx, GPIO_FUNC_SPI);
 }
 
 void spi_post_read(){
 	gpio_set_function(g_io_spi_rx, GPIO_FUNC_NULL);
 	if (SD_SPICH==g_io_spi_ch && SD_SPI_RX!=g_io_spi_rx) gpio_set_function(SD_SPI_RX, GPIO_FUNC_SPI);
-	else if (LCD_SPICH==g_io_spi_ch && LCD_SPI_RX!=g_io_spi_rx) gpio_set_function(LCD_SPI_RX, GPIO_FUNC_SPI);
+	else if (LCD_SPICH && LCD_SPICH==g_io_spi_ch && LCD_SPI_RX!=g_io_spi_rx) gpio_set_function(LCD_SPI_RX, GPIO_FUNC_SPI);
 }
 
 int lib_spi(int r0, int r1, int r2){
