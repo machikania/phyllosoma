@@ -96,6 +96,10 @@ static const unsigned char Message2[]="File System Error\n";
 static const unsigned char Message3[]="Retry:[Enter] / Quit:[ESC]\n";
 static const unsigned char ROOTDIR[]="/";
 
+static unsigned char searchtext[SEARCHTEXTMAX]; //文字列検索用バッファ
+// 区切り文字チェック、区切り文字以外はTrueを返す
+#define delimitercheck(x) (x>='@' && x<='Z' || x>='a' && x<='z' || x=='_' || x>='0' && x<='9')
+
 //配列EDITORRAM[]内にサイズsizeの領域を確保し、先頭アドレスを返す
 //確保できない場合は、エラー表示し動作停止
 unsigned char * editormalloc(int size){
@@ -594,7 +598,94 @@ void redraw(){
 			vp++;
 		}
 	}
-	if(written) textredraw(); //液晶に出力
+
+	if(written){
+		// BASIC予約語に色付け
+		int i=0; //検索テキスト文字数
+
+		// 画面上部外を検索
+		if(delimitercheck(*TVRAM)){
+			bp2=disptopbp;
+			ix2=disptopix;
+			while(1){
+				if(ix2==0){
+					if(bp2->prev==NULL) break;
+					bp2=bp2->prev;
+					ix2=bp2->n;
+					continue;
+				}
+				ix2--;
+				ch=bp2->Buf[ix2];
+				if(delimitercheck(ch)){
+					searchtext[i++]=ch;
+					if(i>=SEARCHTEXTMAX) break;
+				}
+				else break;
+			}
+			if(i>0){
+				// 文字列反転
+				for(int j=0;j<i/2;j++){
+					unsigned char temp=searchtext[j];
+					searchtext[j]=searchtext[i-j-1];
+					searchtext[i-j-1]=temp;
+				}
+			}
+		}
+
+		// 画面先頭から検索
+		for(vp=TVRAM;vp<TVRAM+WIDTH_X*EDITWIDTHY;vp++){
+			ch=*vp;
+			if(delimitercheck(ch)){
+				if(i<SEARCHTEXTMAX){
+					if(ch>='a' && ch<='z') searchtext[i]=ch-32;
+					else searchtext[i]=ch;
+				}
+				i++;
+			}
+			else{
+				if(i>0 && i<=SEARCHTEXTMAX){
+					if(check_if_reserved(searchtext,i)){
+						// 予約語に色付け
+						unsigned char * vp2=vp-i+attroffset;
+						if(vp2<TVRAM+attroffset) vp2=TVRAM+attroffset;
+						for(;vp2<vp+attroffset;vp2++){
+							if(*vp2!=COLOR_AREASELECTTEXT) *vp2=COLOR_RESERVEDWORD;
+						}
+					}
+				}
+				i=0;
+			}
+		}
+
+		// 画面下部外を検索
+		if(i>0){
+			vp-=i;
+			while(i<=SEARCHTEXTMAX){
+				while(ix>=bp->n){
+					bp=bp->next;
+					ix=0;
+					if(bp==NULL) break;
+				}
+				if(bp==NULL) break; //バッファ最終
+				ch=bp->Buf[ix++];
+				if(delimitercheck(ch)){
+					if(i<SEARCHTEXTMAX) searchtext[i]=ch;
+					i++;
+				}
+				else break;
+			}
+			if(i<=SEARCHTEXTMAX){
+				if(check_if_reserved(searchtext,i)){
+					// 予約語に色付け
+					for(vp=vp+attroffset;vp<TVRAM+WIDTH_X*EDITWIDTHY+attroffset;vp++){
+						if(*vp!=COLOR_AREASELECTTEXT) *vp=COLOR_RESERVEDWORD;
+					}
+				}
+			}
+		}
+
+		textredraw(); //液晶に出力
+	}
 }
 
 //カーソルを1つ前に移動
