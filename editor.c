@@ -2233,6 +2233,14 @@ void changewidth(void){
 	textredraw(); //液晶に強制出力
 }
 
+// エディタ用カラーパレット初期化
+void init_palette_editor(void){
+	init_palette();
+	set_palette(COLOR_QUOATTEXT,0,255,128);
+	set_palette(COLOR_REMARKTEXT,0,0,192);
+	set_palette(COLOR_RESERVEDWORD,255,64,192);
+}
+
 //KM-BASICコンパイル＆実行
 // test 0:コンパイルと実行、0以外:コンパイルのみで終了
 void run(int test){
@@ -2331,7 +2339,7 @@ void run(int test){
 	do usbkb_readkey(); //キーバッファが空になるまで読み出し
 	while(vkey!=0);
 	inputchar(); //1文字入力待ち
-	init_palette();	//カラーパレット初期化
+	init_palette_editor();	//カラーパレット初期化
 	set_lcdalign(alignment);
 
 	while(1){
@@ -2665,6 +2673,7 @@ void texteditor(void){
 	FIL Fil;	 /* File object needed for each open file */
 	FRESULT fr;
 
+	init_palette_editor();	//カラーパレット初期化
 	editormallocp=EDITORRAM;
 	TextBuffer=(_tbuf *)editormalloc(sizeof(_tbuf)*TBUFMAXLINE);
 	clipboard=editormalloc(attroffset);

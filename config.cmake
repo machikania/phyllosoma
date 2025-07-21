@@ -13,15 +13,15 @@
 #set(MACHIKANIA_BUILD pico_ili9488)
 
 # Raspberry Pi Pico + Waveshare Pico-ResTouch
-# YD-RP2040 + ILI9341 LCD
-#set(MACHIKANIA_BUILD ws_pico_restouch)
+# YD-RP2040 + Waveshare Pico-ResTouch
+set(MACHIKANIA_BUILD ws_pico_restouch)
 
 # Raspberry Pi Pico + PicoCalc
 #set(MACHIKANIA_BUILD pico_picocalc)
 
 # Raspberry Pi Pico + NTSC Video out for Puerulus
 # YD-RP2040 + NTSC Video
-set(MACHIKANIA_BUILD pico_ntsc)
+#set(MACHIKANIA_BUILD pico_ntsc)
 
 # Seeed XIAO RP2040 + NTSC Video out for Puerulus
 #set(MACHIKANIA_BUILD xiao_ntsc)

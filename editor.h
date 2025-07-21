@@ -28,9 +28,9 @@ caused by using this program.
 #define COLOR_AREASELECTTEXT 4 //範囲選択テキスト色
 #define COLOR_BOTTOMLINE 6 //画面最下行の色
 #define COLOR_DIR 6 //ディレクトリ名表示の色
-#define COLOR_RESERVEDWORD 5 //予約語表示の色
-#define COLOR_REMARKTEXT 12 //REM文表示の色
-#define COLOR_QUOATTEXT 3 //引用符内表示の色
+#define COLOR_RESERVEDWORD 16 //予約語表示の色
+#define COLOR_REMARKTEXT 17 //REM文表示の色
+#define COLOR_QUOATTEXT 18 //引用符内表示の色
 #define COLOR_INV 128 //モノクロモード時の反転
 #define FILEBUFSIZE 256 //ファイルアクセス用バッファサイズ
 #define MAXFILENUM 256 //利用可能ファイル最大数
