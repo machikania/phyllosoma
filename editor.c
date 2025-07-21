@@ -602,9 +602,14 @@ void redraw(){
 	if(written){
 		// BASIC予約語に色付け
 		int i=0; //検索テキスト文字数
+		int inSelected=0; //選択範囲の中
+		int inRemark=0; //REM文の中
+		int inQuotation=0; //引用符の中
+		int inReserved=0; //予約語の中
 
 		// 画面上部外を検索
-		if(delimitercheck(*TVRAM)){
+		if(*TVRAM!=0){
+			// 画面外の行頭まで遡る
 			bp2=disptopbp;
 			ix2=disptopix;
 			while(1){
@@ -614,20 +619,33 @@ void redraw(){
 					ix2=bp2->n;
 					continue;
 				}
+				if(bp2->Buf[ix2-1]=='\n') break;
 				ix2--;
-				ch=bp2->Buf[ix2];
-				if(delimitercheck(ch)){
-					searchtext[i++]=ch;
-					if(i>=SEARCHTEXTMAX) break;
-				}
-				else break;
 			}
-			if(i>0){
-				// 文字列反転
-				for(int j=0;j<i/2;j++){
-					unsigned char temp=searchtext[j];
-					searchtext[j]=searchtext[i-j-1];
-					searchtext[i-j-1]=temp;
+			while(i<=SEARCHTEXTMAX){
+				while(ix2>=bp2->n){
+					bp2=bp2->next;
+					ix2=0;
+					if(bp2==disptopbp && ix2==disptopix) break; //画面先頭
+				}
+				if(bp2==disptopbp && ix2==disptopix) break; //画面先頭
+				ch=bp2->Buf[ix2++];
+				if(delimitercheck(ch)){
+					if(i<SEARCHTEXTMAX){
+						if(ch>='a' && ch<='z') searchtext[i]=ch-32;
+						else searchtext[i]=ch;
+					}
+					i++;
+				}
+				else{
+					// REM文チェック
+					if(i==3 && searchtext[0]=='R' && searchtext[1]=='E' && searchtext[2]=='M'){
+						inRemark=1;
+						i=0;
+						break;
+					}
+					if(ch==0x22) inQuotation=!inQuotation; // 引用符チェック
+					i=0;
 				}
 			}
 		}
@@ -635,7 +653,14 @@ void redraw(){
 		// 画面先頭から検索
 		for(vp=TVRAM;vp<TVRAM+WIDTH_X*EDITWIDTHY;vp++){
 			ch=*vp;
-			if(delimitercheck(ch)){
+			if(inRemark){
+				if(*(vp+attroffset)!=COLOR_AREASELECTTEXT) *(vp+attroffset)=COLOR_REMARKTEXT;
+			}
+			else if(inQuotation){
+				if(ch==0x22) inQuotation=0;
+				else if(*(vp+attroffset)!=COLOR_AREASELECTTEXT) *(vp+attroffset)=COLOR_QUOATTEXT;
+			}
+			else if(delimitercheck(ch)){
 				if(i<SEARCHTEXTMAX){
 					if(ch>='a' && ch<='z') searchtext[i]=ch-32;
 					else searchtext[i]=ch;
@@ -653,7 +678,18 @@ void redraw(){
 						}
 					}
 				}
+				// REM文チェック
+				if(i==3 && searchtext[0]=='R' && searchtext[1]=='E' && searchtext[2]=='M'){
+					inRemark=1;
+				}
+				else if(ch==0x22) inQuotation=1; // 引用符チェック
 				i=0;
+			}
+			if(ch==0){
+				// 改行とみなす
+				inRemark=0;
+				inQuotation=0;
+				inReserved=0;
 			}
 		}
 
