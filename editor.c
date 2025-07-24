@@ -570,10 +570,21 @@ void redraw(){
 			if(bp==bp2 && ix==ix2) cl=COLOR_NORMALTEXT;
 			ch=bp->Buf[ix++];
 			if(ch=='\n') break;
-			if(*vp!=ch || *(vp+attroffset)!=cl){
+			if(*vp!=ch){
 				*vp=ch;
-				*(vp+attroffset)=cl;
 				written=1;
+			}
+			if(cl==COLOR_AREASELECTTEXT){
+				if(*(vp+attroffset)!=cl){
+					*(vp+attroffset)=cl;
+					written=1;
+				}
+			}
+			else{
+				if(*(vp+attroffset)==COLOR_AREASELECTTEXT){
+					written=1;
+				}
+				*(vp+attroffset)=cl;
 			}
 			vp++;
 		}
@@ -599,68 +610,37 @@ void redraw(){
 		}
 	}
 
-	if(written){
-		// BASIC予約語に色付け
-		int i=0; //検索テキスト文字数
-		int inSelected=0; //選択範囲の中
-		int inRemark=0; //REM文の中
-		int inQuotation=0; //引用符の中
-		int inReserved=0; //予約語の中
+	// BASIC予約語に色付け
+	int i=0; //検索テキスト文字数
+	int inSelected=0; //選択範囲の中
+	int inRemark=0; //REM文の中
+	int inQuotation=0; //引用符の中
+	int inReserved=0; //予約語の中
 
-		// 画面上部外を検索
-		if(*TVRAM!=0){
-			// 画面外の行頭まで遡る
-			bp2=disptopbp;
-			ix2=disptopix;
-			while(1){
-				if(ix2==0){
-					if(bp2->prev==NULL) break;
-					bp2=bp2->prev;
-					ix2=bp2->n;
-					continue;
-				}
-				if(bp2->Buf[ix2-1]=='\n') break;
-				ix2--;
+	// 画面上部外を検索
+	if(*TVRAM!=0){
+		// 画面外の行頭まで遡る
+		bp2=disptopbp;
+		ix2=disptopix;
+		while(1){
+			if(ix2==0){
+				if(bp2->prev==NULL) break;
+				bp2=bp2->prev;
+				ix2=bp2->n;
+				continue;
 			}
-			while(i<=SEARCHTEXTMAX){
-				while(ix2>=bp2->n){
-					if(bp2==disptopbp && ix2==disptopix) break; //画面先頭
-					bp2=bp2->next;
-					ix2=0;
-				}
-				if(bp2==disptopbp && ix2==disptopix) break; //画面先頭
-				ch=bp2->Buf[ix2++];
-				if(delimitercheck(ch)){
-					if(i<SEARCHTEXTMAX){
-						if(ch>='a' && ch<='z') searchtext[i]=ch-32;
-						else searchtext[i]=ch;
-					}
-					i++;
-				}
-				else{
-					// REM文チェック
-					if(i==3 && searchtext[0]=='R' && searchtext[1]=='E' && searchtext[2]=='M'){
-						inRemark=1;
-						i=0;
-						break;
-					}
-					if(ch==0x22) inQuotation=!inQuotation; // 引用符チェック
-					i=0;
-				}
-			}
+			if(bp2->Buf[ix2-1]=='\n') break;
+			ix2--;
 		}
-
-		// 画面先頭から検索
-		for(vp=TVRAM;vp<TVRAM+WIDTH_X*EDITWIDTHY;vp++){
-			ch=*vp;
-			if(inRemark){
-				if(*(vp+attroffset)!=COLOR_AREASELECTTEXT) *(vp+attroffset)=COLOR_REMARKTEXT;
+		while(i<=SEARCHTEXTMAX){
+			while(ix2>=bp2->n){
+				if(bp2==disptopbp && ix2==disptopix) break; //画面先頭
+				bp2=bp2->next;
+				ix2=0;
 			}
-			else if(inQuotation){
-				if(*(vp+attroffset)!=COLOR_AREASELECTTEXT) *(vp+attroffset)=COLOR_QUOATTEXT;
-				if(ch==0x22) inQuotation=0;
-			}
-			else if(delimitercheck(ch)){
+			if(bp2==disptopbp && ix2==disptopix) break; //画面先頭
+			ch=bp2->Buf[ix2++];
+			if(delimitercheck(ch)){
 				if(i<SEARCHTEXTMAX){
 					if(ch>='a' && ch<='z') searchtext[i]=ch-32;
 					else searchtext[i]=ch;
@@ -671,64 +651,93 @@ void redraw(){
 				// REM文チェック
 				if(i==3 && searchtext[0]=='R' && searchtext[1]=='E' && searchtext[2]=='M'){
 					inRemark=1;
+					i=0;
+					break;
 				}
-				else if(ch==0x22){
-					// 引用符チェック
-					inQuotation=1;
-					if(*(vp+attroffset)!=COLOR_AREASELECTTEXT) *(vp+attroffset)=COLOR_QUOATTEXT;
- 				}
-				if(i>0 && i<=SEARCHTEXTMAX){
-					if(check_if_reserved(searchtext,i)){
-						// 予約語に色付け
-						unsigned char * vp2=vp-i+attroffset;
-						if(vp2<TVRAM+attroffset) vp2=TVRAM+attroffset;
-						for(;vp2<vp+attroffset;vp2++){
-							if(*vp2!=COLOR_AREASELECTTEXT){
-								if(inRemark) *vp2=COLOR_REMARKTEXT;
-								else *vp2=COLOR_RESERVEDWORD;
-							}
+				if(ch==0x22) inQuotation=!inQuotation; // 引用符チェック
+				i=0;
+			}
+		}
+	}
+
+	// 画面先頭から検索
+	for(vp=TVRAM;vp<TVRAM+WIDTH_X*EDITWIDTHY;vp++){
+		ch=*vp;
+		if(inRemark){
+			if(ch!=0 && *(vp+attroffset)!=COLOR_AREASELECTTEXT) *(vp+attroffset)=COLOR_REMARKTEXT;
+		}
+		else if(inQuotation){
+			if(ch!=0 && *(vp+attroffset)!=COLOR_AREASELECTTEXT) *(vp+attroffset)=COLOR_QUOATTEXT;
+			if(ch==0x22) inQuotation=0;
+		}
+		else if(delimitercheck(ch)){
+			if(i<SEARCHTEXTMAX){
+				if(ch>='a' && ch<='z') searchtext[i]=ch-32;
+				else searchtext[i]=ch;
+			}
+			i++;
+		}
+		else{
+			// REM文チェック
+			if(i==3 && searchtext[0]=='R' && searchtext[1]=='E' && searchtext[2]=='M'){
+				inRemark=1;
+			}
+			else if(ch==0x22){
+				// 引用符チェック
+				inQuotation=1;
+				if(*(vp+attroffset)!=COLOR_AREASELECTTEXT) *(vp+attroffset)=COLOR_QUOATTEXT;
+			}
+			if(i>0 && i<=SEARCHTEXTMAX){
+				if(check_if_reserved(searchtext,i)){
+					// 予約語に色付け
+					unsigned char * vp2=vp-i+attroffset;
+					if(vp2<TVRAM+attroffset) vp2=TVRAM+attroffset;
+					for(;vp2<vp+attroffset;vp2++){
+						if(*vp2!=COLOR_AREASELECTTEXT){
+							if(inRemark) *vp2=COLOR_REMARKTEXT;
+							else *vp2=COLOR_RESERVEDWORD;
 						}
 					}
 				}
-				i=0;
 			}
-			if(ch==0){
-				// 改行とみなす
-				inRemark=0;
-				inQuotation=0;
-				inReserved=0;
-			}
+			i=0;
 		}
-
-		// 画面下部外を検索
-		if(i>0){
-			vp-=i;
-			while(i<=SEARCHTEXTMAX){
-				while(ix>=bp->n){
-					bp=bp->next;
-					ix=0;
-					if(bp==NULL) break;
-				}
-				if(bp==NULL) break; //バッファ最終
-				ch=bp->Buf[ix++];
-				if(delimitercheck(ch)){
-					if(i<SEARCHTEXTMAX) searchtext[i]=ch;
-					i++;
-				}
-				else break;
-			}
-			if(i<=SEARCHTEXTMAX){
-				if(check_if_reserved(searchtext,i)){
-					// 予約語に色付け
-					for(vp=vp+attroffset;vp<TVRAM+WIDTH_X*EDITWIDTHY+attroffset;vp++){
-						if(*vp!=COLOR_AREASELECTTEXT) *vp=COLOR_RESERVEDWORD;
-					}
-				}
-			}
+		if(ch==0){
+			// 改行とみなす
+			inRemark=0;
+			inQuotation=0;
+			inReserved=0;
 		}
-
-		textredraw(); //液晶に出力
 	}
+
+	// 画面下部外を検索
+	if(i>0){
+		vp-=i;
+		while(i<=SEARCHTEXTMAX){
+			while(ix>=bp->n){
+				bp=bp->next;
+				ix=0;
+				if(bp==NULL) break;
+			}
+			if(bp==NULL) break; //バッファ最終
+			ch=bp->Buf[ix++];
+			if(delimitercheck(ch)){
+				if(i<SEARCHTEXTMAX) searchtext[i]=ch;
+				i++;
+			}
+			else break;
+		}
+		if(i<=SEARCHTEXTMAX){
+			if(check_if_reserved(searchtext,i)){
+				// 予約語に色付け
+				for(vp=vp+attroffset;vp<TVRAM+WIDTH_X*EDITWIDTHY+attroffset;vp++){
+					if(*vp!=COLOR_AREASELECTTEXT) *vp=COLOR_RESERVEDWORD;
+				}
+			}
+		}
+	}
+
+	if(written) textredraw(); //液晶に出力
 }
 
 //カーソルを1つ前に移動
