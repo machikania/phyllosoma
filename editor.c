@@ -612,10 +612,8 @@ void redraw(){
 
 	// BASIC予約語に色付け
 	int i=0; //検索テキスト文字数
-	int inSelected=0; //選択範囲の中
 	int inRemark=0; //REM文の中
 	int inQuotation=0; //引用符の中
-	int inReserved=0; //予約語の中
 
 	// 画面上部外を検索
 	if(*TVRAM!=0){
@@ -632,7 +630,7 @@ void redraw(){
 			if(bp2->Buf[ix2-1]=='\n') break;
 			ix2--;
 		}
-		while(i<=SEARCHTEXTMAX){
+		while(1){
 			while(ix2>=bp2->n){
 				if(bp2==disptopbp && ix2==disptopix) break; //画面先頭
 				bp2=bp2->next;
@@ -640,7 +638,10 @@ void redraw(){
 			}
 			if(bp2==disptopbp && ix2==disptopix) break; //画面先頭
 			ch=bp2->Buf[ix2++];
-			if(delimitercheck(ch)){
+			if(inQuotation){
+				if(ch==0x22) inQuotation=0;
+			}
+			else if(delimitercheck(ch)){
 				if(i<SEARCHTEXTMAX){
 					if(ch>='a' && ch<='z') searchtext[i]=ch-32;
 					else searchtext[i]=ch;
@@ -654,7 +655,7 @@ void redraw(){
 					i=0;
 					break;
 				}
-				if(ch==0x22) inQuotation=!inQuotation; // 引用符チェック
+				if(ch==0x22) inQuotation=1; // 引用符チェック
 				i=0;
 			}
 		}
@@ -706,7 +707,6 @@ void redraw(){
 			// 改行とみなす
 			inRemark=0;
 			inQuotation=0;
-			inReserved=0;
 		}
 	}
 
