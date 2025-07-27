@@ -315,3 +315,21 @@ Phyllosoma 1.52/KM-1509 (2025.4.12)
 　Improved LCD transfer speed when using Raspberry Pi Pico 2.
 　Update MAZE3D.BAS and STARTREK.BAS sample programs.
 　Added POLYGON.BAS sample program.
+
+Phyllosoma 1.60/KM-1510 (2025.8.??)
+　Added support for Waveshare ResTouch LCD 3.5
+　Added support for ClockworkPi PicoCalc
+　Code editor for LCD now highlights reserved words, strings, and comments
+　Button operations can now be emulated via keyboard input
+　Added support for IPS-type LCDs
+　HEX files can now be executed directly from the editor
+　File selection screen in editor now supports 80-character width
+　SPI baud rate for ILI9488 LCD changed from 32 MHz to 50 MHz
+　Sample program MANDELBR.BAS changed from text-based to graphical version
+　Added sample program MOZART.BAS
+　Modified sample program FILEMAN.BAS to accept lowercase y/n for confirmation prompts
+　Updated TSC2046 class to work with ResTouch
+　Enabled the ability to retrieve and modify SPI communication speed for LCD and MMC via the SYSTEM function/statement
+　Fixed a bug where executing the OUT statement caused brief, unexpected output fluctuations
+　Extended support for WAVE files in the PLAYWAVE statement to include sampling frequencies between 15700–16000 Hz
+　Resolved an issue in SPI MISO where the specified port could not be used
