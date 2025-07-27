@@ -11,6 +11,9 @@ MachiKania type PではRaspberry Pi Pico (Pico 2, Pico W)と小型
 汎用I/OやSPI、I2Cといった外部機器の制御もBASICから簡単に行う
 ことが可能です。
 
+このドキュメントでは、Waveshare Pico-ResTouch-LCD-3.5（以降
+ResTOuchと記載）用のMachiKaniaについて述べます。
+
 搭載しているBASICコンパイラはKM-BASICです。KM-BASICは32bit
 整数型のBASICです。
 また、単精度浮動小数点演算もサポートしています。

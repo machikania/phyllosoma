@@ -1,5 +1,5 @@
 # phyllosoma
-MachiKania type P (aka MachiKania Phyllosoma) for ResTouch  
+MachiKania type P (aka MachiKania Phyllosoma) for Waveshare Pico-ResTouch-LCD-3.5 (hereafter referred to as ResTouch)  
 ![photo.png](photo.png)
 
 ## MachiKania Phyllosoma

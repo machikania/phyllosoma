@@ -10,6 +10,9 @@ a small LCD module to realize a portable BASIC execution environment.
 External devices such as general-purpose I/O, SPI, and I2C can be easily 
 controlled from BASIC.
 
+This document describes MachiKania for the Waveshare Pico-ResTouch-LCD-3.5 
+(hereafter referred to as ResTouch).
+
 
 The on-board BASIC compiler is KM-BASIC, which is a 32-bit integer BASIC.
 It also supports single-precision floating-point arithmetic.
