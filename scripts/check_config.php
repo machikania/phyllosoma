@@ -2,8 +2,8 @@
 
 $version_p=array(
 	"Phyllosoma",
-	"1.5.2.0",
-	"KM-1509",
+	"1.6.0.0",
+	"KM-1510",
 );
 $version_pu=$version_p;
 $version_pu[0]="Puerulus";
@@ -23,11 +23,17 @@ $configs=array(
 	'./config/pico_ntsc.h',
 	'./config/pico_w_ntsc.h',
 	'./config/xiao_ntsc.h',
+	'./config/pico_picocalc.h',
+	'./config/pico_w_picocalc.h',
+	'./config/pico_restouch.h',
+	'./config/pico_w_restouch.h',
 );
 
 check_dir('machikania-p','machikania-p');
 check_dir('machikania-p2','machikania-p2');
 check_dir('machikania-pu','machikania-pu');
+check_dir('machikania-pc','machikania-pc');
+check_dir('machikania-rt','machikania-rt');
 
 function check_dir($dir,$fullpath){
 	global $version_p, $version_pu;

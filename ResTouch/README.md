@@ -8,7 +8,7 @@ MachiKania Phyllosoma is a BASIC compiler for ARMv6-M, especially for Raspberry 
 ## how to compile for Raspberry Pi Pico
 cmake and make. The pico-sdk (ver 2.1.1 is confirmed for building) with all submodules (execute "Submodule Update" for git clone) is required. In config.cmake, select configuration option to build by enabling "set()" command. Currently, there is following option:  
   
-1. set(MACHIKANIA_BUILD ws_pico_restouch) : for ResTouch
+1. set(MACHIKANIA_BUILD pico_restouch) : for ResTouch
 
 ## how to compile for Raspberry Pi Pico W
 
