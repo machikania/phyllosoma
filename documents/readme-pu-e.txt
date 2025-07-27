@@ -247,7 +247,7 @@ Puerulus 1.51/KM-1508 (2025.2.22)
 　Changed pin assignments for SPI, I2C, and UART to be freely configurable in MACHIKAP.INI.
 　Fixed a problem with REGEXP in the class library that caused a memory error when used continuously.
 
-Phyllosoma 1.52/KM-1509 (2025.4.12)
+Puerulus 1.52/KM-1509 (2025.4.12)
 　Enabled stopping program execution not only with the "Break" key but also with the "Ctrl + Alt + Del" key.
 　Made it possible to retrieve the keyboard state using SYSTEM(40), SYSTEM(41), SYSTEM(42), and SYSTEM(43).
 　Added functionality to modify the CPU's clock speed and voltage using SYSTEM 50 and SYSTEM 51.
@@ -262,7 +262,7 @@ Phyllosoma 1.52/KM-1509 (2025.4.12)
 　Update MAZE3D.BAS and STARTREK.BAS sample programs.
 　Added POLYGON.BAS sample program.
 
-Phyllosoma 1.60/KM-1510 (2025.8.??)
+Puerulus 1.60/KM-1510 (2025.8.??)
 　Button operations can now be emulated via keyboard input
 　HEX files can now be executed directly from the editor
 　File selection screen in editor now supports 80-character width

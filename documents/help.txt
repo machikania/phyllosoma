@@ -622,9 +622,9 @@ SYSTEM(55)
 	MMC用のSPIボーレートを返す
 SYSTEM(56)
 	LCD用のSPIボーレートを返す
-SYSTEM 55,x
+SYSTEM 57,x
 	MMC用のSPIボーレートをxに設定
-SYSTEM 56,x
+SYSTEM 58,x
 	LCD用のSPIボーレートをxに設定
 SYSTEM(100)
 	変数格納領域(g_var_mem)へのポインターを返す。

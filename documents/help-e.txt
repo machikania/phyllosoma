@@ -622,9 +622,9 @@ SYSTEM(55)
 	Returns the current baud rate of SPI used for MMC
 SYSTEM(56)
 	Returns the current baud rate of SPI used for LCD
-SYSTEM 55,x
+SYSTEM 57,x
 	Specify the baud rate of SPI used for MMC
-SYSTEM 56,x
+SYSTEM 58,x
 	Specify the baud rate of SPI used for LCD
 SYSTEM(100)
 	Returns pointer to variable storage area (g_var_mem).

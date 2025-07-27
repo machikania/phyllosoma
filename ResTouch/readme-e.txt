@@ -393,9 +393,9 @@ Phyllosoma 1.60/KM-1510 (2025.8.??)
 　Code editor for LCD now highlights reserved words, strings, and comments
 　Button operations can now be emulated via keyboard input
 　Added support for IPS-type LCDs
+　Update the LCD's file selection interface and editor to allow a single screen rotation
 　HEX files can now be executed directly from the editor
-　File selection screen in editor now supports 80-character width
-　SPI baud rate for ILI9488 LCD changed from 32 MHz to 50 MHz
+　Improved ILI9488 SPI transfer speed
 　Sample program MANDELBR.BAS changed from text-based to graphical version
 　Added sample program MOZART.BAS
 　Modified sample program FILEMAN.BAS to accept lowercase y/n for confirmation prompts
