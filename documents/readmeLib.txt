@@ -61,6 +61,9 @@ JSON
 MA
 	メモリーアロケーションの為のクラス。STRDIMで使用。
 
+PLAYAVI
+	AVIファイル再生用のクラス(Type PU用)
+
 QRCODE
 	画面にQRCODEを表示するためのクラス。
 

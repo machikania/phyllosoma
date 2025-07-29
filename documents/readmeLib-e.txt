@@ -55,6 +55,9 @@ JSON
 MA
 	Class for memory allocation, used in STRDIM.
 
+PLAYAVI
+	Class for playing AVI file in Type PU
+
 QRCODE
 	Class for displaying QRCODE on the screen.
 
