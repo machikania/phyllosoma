@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.4.12
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.8.17
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type PU
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -262,7 +262,7 @@ Puerulus 1.52/KM-1509 (2025.4.12)
 　Update MAZE3D.BAS and STARTREK.BAS sample programs.
 　Added POLYGON.BAS sample program.
 
-Puerulus 1.60/KM-1510 (2025.8.??)
+Puerulus 1.60/KM-1510 (2025.8.17)
 　Button operations can now be emulated via keyboard input
 　HEX files can now be executed directly from the editor
 　File selection screen in editor now supports 80-character width

@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.??.??
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.8.17
 　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
 　　　　　　　　「MachiKania type P」
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -10,6 +10,9 @@ MachiKania type PではRaspberry Pi Pico (Pico 2, Pico W)と小型
 ます。
 汎用I/OやSPI、I2Cといった外部機器の制御もBASICから簡単に行う
 ことが可能です。
+
+このドキュメントでは、ClockworkPi PicoCalc（以降 PicoCalcと
+記載）用のMachiKaniaについて述べます。
 
 搭載しているBASICコンパイラはKM-BASICです。KM-BASICは32bit
 整数型のBASICです。
@@ -352,7 +355,7 @@ Phyllosoma 1.52/KM-1509 (2025.4.12)
 　・サンプルプログラム(MAZE3D.BAS, STARTREK.BAS)を修正。
 　・サンプルプログラム(POLYGON.BAS)を追加。
 
-Phyllosoma 1.60/KM-1510 (2025.8.??)
+Phyllosoma 1.60/KM-1510 (2025.8.17)
 　・Waveshare ResTouch LCD 3.5に対応
 　・ClockworkPi PicoCalcに対応
 　・LCD用のコードエディターで、予約語・文字列・コメントの色付けに対応

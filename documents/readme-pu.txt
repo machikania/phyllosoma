@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.4.12
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.8.17
 　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
 　　　　　　　　「MachiKania type PU」
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -263,7 +263,7 @@ Puerulus 1.52/KM-1509 (2025.4.12)
 　・サンプルプログラム(MAZE3D.BAS, STARTREK.BAS)を修正。
 　・サンプルプログラム(POLYGON.BAS)を追加。
 
-Puerulus 1.60/KM-1510 (2025.8.??)
+Puerulus 1.60/KM-1510 (2025.8.17)
 　・ボタン操作を、キーボードでもエミュレートできるようにした
 　・エディターからのHEXファイル実行に対応
 　・エディターでのファイル選択画面を80文字幅にも対応

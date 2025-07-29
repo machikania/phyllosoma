@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.4.12
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.8.17
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type P
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -316,7 +316,7 @@ Phyllosoma 1.52/KM-1509 (2025.4.12)
 　Update MAZE3D.BAS and STARTREK.BAS sample programs.
 　Added POLYGON.BAS sample program.
 
-Phyllosoma 1.60/KM-1510 (2025.8.??)
+Phyllosoma 1.60/KM-1510 (2025.8.17)
 　Added support for Waveshare ResTouch LCD 3.5
 　Added support for ClockworkPi PicoCalc
 　Code editor for LCD now highlights reserved words, strings, and comments

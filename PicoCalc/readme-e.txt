@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.xx.xx
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.8.17
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type P
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -10,6 +10,9 @@ a small LCD module to realize a portable BASIC execution environment.
 External devices such as general-purpose I/O, SPI, and I2C can be easily 
 controlled from BASIC.
 
+
+This document describes MachiKania for the ClockworkPi PicoCalc (hereafter
+ referred to as PicoCalc).
 
 The on-board BASIC compiler is KM-BASIC, which is a 32-bit integer BASIC.
 It also supports single-precision floating-point arithmetic.
@@ -346,7 +349,7 @@ Phyllosoma 1.52/KM-1509 (2025.4.12)
 　Update MAZE3D.BAS and STARTREK.BAS sample programs.
 　Added POLYGON.BAS sample program.
 
-Phyllosoma 1.60/KM-1510 (2025.8.??)
+Phyllosoma 1.60/KM-1510 (2025.8.17)
 　Added support for Waveshare ResTouch LCD 3.5
 　Added support for ClockworkPi PicoCalc
 　Code editor for LCD now highlights reserved words, strings, and comments

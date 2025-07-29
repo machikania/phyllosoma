@@ -122,6 +122,6 @@ Phyllosoma/Puerulus 1.51/KM-1508 (2025.2.22)
 Phyllosoma 1.52/KM-1509 (2025.4.12)
 　CPUCLOCK added
 
-Phyllosoma/Puerulus 1.60/KM-1510 (2025.8.??)
+Phyllosoma/Puerulus 1.60/KM-1510 (2025.8.17)
 　PLAYAVI added (Type PU only)
 　TSC2046 ver 0.2.1 (Type P only)
