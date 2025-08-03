@@ -361,6 +361,7 @@ Phyllosoma 1.60/KM-1510 (2025.8.17)
 　Sample program MANDELBR.BAS changed from text-based to graphical version
 　Added sample program MOZART.BAS
 　Modified sample program FILEMAN.BAS to accept lowercase y/n for confirmation prompts
+　Updated the WS2812B.BAS class library to improve operation on the Pico 2
 　Updated TSC2046 class to work with ResTouch
 　Enabled the ability to retrieve and modify SPI communication speed for LCD and MMC via the SYSTEM function/statement
 　Fixed a bug where executing the OUT statement caused brief, unexpected output fluctuations
