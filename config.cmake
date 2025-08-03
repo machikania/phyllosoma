@@ -13,7 +13,6 @@
 #set(MACHIKANIA_BUILD pico_ili9488)
 
 # Raspberry Pi Pico + Waveshare Pico-ResTouch
-# YD-RP2040 + Waveshare Pico-ResTouch
 set(MACHIKANIA_BUILD pico_restouch)
 
 # Raspberry Pi Pico + PicoCalc
