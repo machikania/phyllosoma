@@ -118,6 +118,14 @@ supported. For example, the sample program INVADE.BAS, which uses this feature,
 does not operate correctly.
 
 
+<Audio Output>
+
+ResTouch does not have a built-in audio output device. Therefore, in order to run 
+programs that output sound, you need to connect an external audio device (such as 
+a piezo buzzer or headphone jack) to ResTouch. Audio from MachiKania is output 
+through GP27 on the Raspberry Pi Pico, so please use this pin along with the GND pin.
+
+
 <machikania-rt.zip file contents>
 
 [documents] directory
