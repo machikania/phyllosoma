@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.xx.xx
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.8.17
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type P
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -9,6 +9,9 @@ MachiKania type P is equipped with a Raspberry Pi Pico (Pico 2, Pico W) and
 a small LCD module to realize a portable BASIC execution environment.
 External devices such as general-purpose I/O, SPI, and I2C can be easily 
 controlled from BASIC.
+
+This document describes MachiKania for the Waveshare Pico-ResTouch-LCD-3.5 
+(hereafter referred to as ResTouch).
 
 
 The on-board BASIC compiler is KM-BASIC, which is a 32-bit integer BASIC.
@@ -113,6 +116,14 @@ Although ResTouch can send data to the LCD, it cannot receive data from it.
 As a result, certain graphic commands—such as the GCOLOR function—are not 
 supported. For example, the sample program INVADE.BAS, which uses this feature, 
 does not operate correctly.
+
+
+<Audio Output>
+
+ResTouch does not have a built-in audio output device. Therefore, in order to run 
+programs that output sound, you need to connect an external audio device (such as 
+a piezo buzzer or headphone jack) to ResTouch. Audio from MachiKania is output 
+through GP27 on the Raspberry Pi Pico, so please use this pin along with the GND pin.
 
 
 <machikania-rt.zip file contents>
@@ -383,3 +394,22 @@ Phyllosoma 1.52/KM-1509 (2025.4.12)
 　Improved LCD transfer speed when using Raspberry Pi Pico 2.
 　Update MAZE3D.BAS and STARTREK.BAS sample programs.
 　Added POLYGON.BAS sample program.
+
+Phyllosoma 1.60/KM-1510 (2025.8.17)
+　Added support for Waveshare ResTouch LCD 3.5
+　Added support for ClockworkPi PicoCalc
+　Code editor for LCD now highlights reserved words, strings, and comments
+　Button operations can now be emulated via keyboard input
+　Added support for IPS-type LCDs
+　Update the LCD's file selection interface and editor to allow a single screen rotation
+　HEX files can now be executed directly from the editor
+　Improved ILI9488 SPI transfer speed
+　Sample program MANDELBR.BAS changed from text-based to graphical version
+　Added sample program MOZART.BAS
+　Modified sample program FILEMAN.BAS to accept lowercase y/n for confirmation prompts
+　Updated the WS2812B.BAS class library to improve operation on the Pico 2
+　Updated TSC2046 class to work with ResTouch
+　Enabled the ability to retrieve and modify SPI communication speed for LCD and MMC via the SYSTEM function/statement
+　Fixed a bug where executing the OUT statement caused brief, unexpected output fluctuations
+　Extended support for WAVE files in the PLAYWAVE statement to include sampling frequencies between 15700–16000 Hz
+　Resolved an issue in SPI MISO where the specified port could not be used

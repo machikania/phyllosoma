@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.4.12
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.8.17
 　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
 　　　　　　　　「MachiKania type P」
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -321,3 +321,22 @@ Phyllosoma 1.52/KM-1509 (2025.4.12)
 　・Raspberry Pi Pico 2 使用時のLCD液晶転送速度を改善。
 　・サンプルプログラム(MAZE3D.BAS, STARTREK.BAS)を修正。
 　・サンプルプログラム(POLYGON.BAS)を追加。
+
+Phyllosoma 1.60/KM-1510 (2025.8.17)
+　・Waveshare ResTouch LCD 3.5に対応
+　・ClockworkPi PicoCalcに対応
+　・LCD用のコードエディターで、予約語・文字列・コメントの色付けに対応
+　・ボタン操作を、キーボードでもエミュレートできるようにした
+　・IPSタイプのLCDに対応
+　・LCD用のファイル選択画面およびエディタで画面の向きを1回転できるように変更
+　・エディターからのHEXファイル実行に対応
+　・ILI9488液晶使用時の転送速度を改善
+　・サンプルプログラム、MANDELBR.BASを、テキストベースの物からグラフィックに変更
+　・サンプルプログラム、MOZART.BASを追加
+　・サンプルプログラム、FILEMAN.BASを修正。Y/Nの確認に小文字のy/nも受け付けるようにした
+　・クラスライブラリーのWS2812B.BASを更新。Pico 2での動作を改善
+　・TSC2046クラスをResTouchで使用できるように修正
+　・SYSTEM関数/ステートメントで、LCD及びMMC用のSPI通信速度を、取得したり変更したりできるようにした
+　・OUTステートメント実行時に、短時間予期しない出力変化が発生する不具合を解消
+　・PLAYWAVEステートメントで対応できるWAVEファイルのサンプリング周波数を、15700-16000 Hzの任意のものに対応
+　・SPI MISOで、指定したポートが使用できなかった不具合を解消

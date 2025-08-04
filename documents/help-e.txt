@@ -91,7 +91,7 @@ LABEL xxx
 MUSIC x$[,y].
 	Plays background music. For details, see <MUSIC> below. The y is invalid for Type P and Type PU.
 PLAYWAVE x$[,y].
-	Plays a WAVE file for music (specified by x$ as the file name). The WAVE format is mono, bit length is 8, and sampling frequency is 15700 Hz or 16000 Hz. If y is specified, playback starts at the specified point (if you want playback from the first second, specify 15700 or 16000). If x$ is a zero-length string, which stops the currently playing music.
+	Plays a WAVE file for music (specified by x$ as the file name). The WAVE format is mono, bit length is 8, and sampling frequency is between 15700 Hz and 16000 Hz. If y is specified, playback starts at the specified point (if you want playback from the first second, specify 15700 or 16000). If x$ is a zero-length string, which stops the currently playing music.
 PALETTE n,r,g,b
 	Palette specification.
 PCG x,y,z
@@ -618,6 +618,14 @@ SYSTEM 50, x
 	Specify the CPU clock frequency in Hz units.
 SYSTEM 51, x
 	Set the CPU operating voltage as an integer value between 6 and 15. When x=6, the voltage is 0.85 V; when x=15, the voltage is 1.30 V. The default value at startup is 11 (1.10 V).
+SYSTEM(55)
+	Returns the current baud rate of SPI used for MMC
+SYSTEM(56)
+	Returns the current baud rate of SPI used for LCD
+SYSTEM 57,x
+	Specify the baud rate of SPI used for MMC
+SYSTEM 58,x
+	Specify the baud rate of SPI used for LCD
 SYSTEM(100)
 	Returns pointer to variable storage area (g_var_mem).
 SYSTEM(101)
@@ -759,6 +767,11 @@ If strings are handled consecutively in a line, an error message "String too com
 Be careful when accessing global variables in interrupt functions. If a variable of the same name is specified as a VAR in one of the subroutines and is also used as a local variable, depending on when the interrupt is triggered, the value of the variable may or may not belong to the global or local variable. Therefore, if you want to handle a global variable in an interrupt function, do not specify a variable of the same name as a VAR.
 
 <Version history>
+KM-1510 Released in August 2025.
+	Enabled the ability to retrieve and modify SPI communication speed for LCD and MMC via the SYSTEM function/statement
+	Fixed a bug where executing the OUT statement caused brief, unexpected output fluctuations
+	Extended support for WAVE files in the PLAYWAVE statement to include sampling frequencies between 15700–16000 Hz
+	Resolved an issue in SPI MISO where the specified port could not be used
 KM-1509 Released in April 2025.
 　Enabled stopping program execution not only with the "Break" key but also with the "Ctrl + Alt + Del" key.
 　Made it possible to retrieve the keyboard state using SYSTEM(40), SYSTEM(41), SYSTEM(42), and SYSTEM(43).

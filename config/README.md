@@ -15,6 +15,12 @@ YD-RP2040 + ILI9341 LCD + MMC
 Raspberry Pi Pico + ILI9488 LCD + MMC  
 YD-RP2040 + ILI9341 LCD + MMC
 
+## pico_restouch
+Waveshare Pico-ResTouch-LCD-3.5
+
+## pico_picocalc
+ClockworkPi PicoCalc
+
 ## Configuration files for MachiKania Puerulus
 The configuration filess used for MachiKania Puerulus are placed in this directry. To select a target to build from the list, edit the config.cmake file.
 

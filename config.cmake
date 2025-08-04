@@ -13,15 +13,14 @@
 #set(MACHIKANIA_BUILD pico_ili9488)
 
 # Raspberry Pi Pico + Waveshare Pico-ResTouch
-# YD-RP2040 + ILI9341 LCD
-#set(MACHIKANIA_BUILD ws_pico_restouch)
+set(MACHIKANIA_BUILD pico_restouch)
 
 # Raspberry Pi Pico + PicoCalc
 #set(MACHIKANIA_BUILD pico_picocalc)
 
 # Raspberry Pi Pico + NTSC Video out for Puerulus
 # YD-RP2040 + NTSC Video
-set(MACHIKANIA_BUILD pico_ntsc)
+#set(MACHIKANIA_BUILD pico_ntsc)
 
 # Seeed XIAO RP2040 + NTSC Video out for Puerulus
 #set(MACHIKANIA_BUILD xiao_ntsc)
@@ -35,7 +34,7 @@ if (MACHIKANIA_BUILD STREQUAL "pico_ili9488")
 	set(MACHIKANIA_GRAPH_LIB ili9488_spi)
 elseif (MACHIKANIA_BUILD STREQUAL "pico_picocalc")
 	set(MACHIKANIA_GRAPH_LIB ili9488_spi)
-elseif (MACHIKANIA_BUILD STREQUAL "ws_pico_restouch")
+elseif (MACHIKANIA_BUILD STREQUAL "pico_restouch")
 	set(MACHIKANIA_GRAPH_LIB ws_pico_restouch)
 elseif (MACHIKANIA_BUILD STREQUAL "pico_ntsc")
 	set(MACHIKANIA_GRAPH_LIB rp2040_pwm_ntsc_textgraph)
@@ -73,8 +72,8 @@ if (PICO_BOARD STREQUAL "pico_w" OR PICO_BOARD STREQUAL "pico2_w")
 		set(MACHIKANIA_BUILD pico_w_ntsc)
 	elseif (MACHIKANIA_BUILD STREQUAL "pico_ili9488")
 		set(MACHIKANIA_BUILD pico_w_ili9488)
-	elseif (MACHIKANIA_BUILD STREQUAL "ws_pico_restouch")
-		set(MACHIKANIA_BUILD pico_w_ws_pico_restouch)
+	elseif (MACHIKANIA_BUILD STREQUAL "pico_restouch")
+		set(MACHIKANIA_BUILD pico_w_restouch)
 	elseif (MACHIKANIA_BUILD STREQUAL "pico_picocalc")
 		set(MACHIKANIA_BUILD pico_w_picocalc)
 	else()

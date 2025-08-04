@@ -1,5 +1,5 @@
 # phyllosoma
-MachiKania type P (aka MachiKania Phyllosoma) for PicoCalc  
+MachiKania type P (aka MachiKania Phyllosoma) for ClockworkPi PicoCalc (hereafter referred to as PicoCalc)  
 ![photo.png](photo.png)
 
 ## MachiKania Phyllosoma
