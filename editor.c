@@ -21,37 +21,32 @@ caused by using this program.
 #include "./editor.h"
 #include "./keyinput.h"
 #include "./compiler.h"
+#include "./autocomplete.h"
 #include "./interface/usbkeyboard.h"
 #include "./interface/graphlib.h"
 #include "./interface/videodriver.h"
 #include "./interface/ff.h"
 
-//リンク付きのテキストバッファ
-struct _TBUF{
-	struct _TBUF *prev;//前方へのリンク。NULLの場合先頭または空き
-	struct _TBUF *next;//後方へのリンク。NULLの場合最後
-	unsigned short n;//現在の使用バイト数
-	unsigned char Buf[TBUFSIZE];//バッファ
-} ;
-typedef struct _TBUF _tbuf;
+// exported variables
+_tbuf *cursorbp; //現在のカーソル位置のテキストバッファ
+int edited; //保存後に変更されたかを表すフラグ
+int cx,cy; //カーソル座標
+int cx2; //上下移動時の仮カーソルX座標
+int EDITWIDTHY; //エディタ画面の行数
+unsigned short cursorix; //現在のカーソル位置のテキストバッファ先頭からの位置
 
 //_tbuf TextBuffer[TBUFMAXLINE]; //テキストバッファ
 static _tbuf *TextBuffer; //実体は配列RAM[]の中に確保する
 
 static _tbuf *TBufstart; //テキストバッファの先頭位置
-static _tbuf *cursorbp; //現在のカーソル位置のテキストバッファ
-static unsigned short cursorix; //現在のカーソル位置のテキストバッファ先頭からの位置
+static unsigned short cursorix1; //範囲選択時のカーソルスタート位置のテキストバッファ先頭からの位置
 static _tbuf *disptopbp; //現在表示中画面左上のテキストバッファ
 static unsigned short disptopix; //現在表示中画面左上のテキストバッファ先頭からの位置
 static int num; //現在バッファ内に格納されている文字数
-static int cx,cy; //カーソル座標
-static int cx2; //上下移動時の仮カーソルX座標
 static _tbuf *cursorbp1; //範囲選択時のカーソルスタート位置のテキストバッファ、範囲選択モードでない場合NULL
-static unsigned short cursorix1; //範囲選択時のカーソルスタート位置のテキストバッファ先頭からの位置
 static int cx1,cy1; //範囲選択時のカーソルスタート座標
 static int line_no; //現在のカーソル位置の行
 static int line_no1; //範囲選択時のカーソルスタート位置の行
-static int EDITWIDTHY; //エディタ画面の行数
 
 // カーソル関連位置の一時避難用
 static _tbuf *cursorbp_t;
@@ -64,7 +59,6 @@ static int cx_t,cy_t,line_no_t;
 static unsigned char *clipboard; //実体は配列RAM[]の中に確保する
 
 static int clipsize; //現在クリップボードに格納されている文字数
-static int edited; //保存後に変更されたかを表すフラグ
 
 //各種配列用確保メモリ
 static unsigned char *EDITORRAM=(unsigned char *)kmbasic_object;
@@ -738,6 +732,12 @@ void redraw(){
 	}
 
 	if(written) textredraw(); //液晶に出力
+
+    // Show autocomplete popup if active
+    if (autocomplete_show && autocomplete_count > 0) {
+        show_autocomplete_popup();
+        textredraw(); // Ensure popup is displayed
+    }
 }
 
 //カーソルを1つ前に移動
@@ -2469,6 +2469,9 @@ void normal_code_process(unsigned char k){
 	int i;
 
 	edited=1; //編集済みフラグ
+
+	update_autocomplete(k);
+
 	if(insertmode || k=='\n' || cursorbp1!=NULL){ //挿入モード
 		if(cursorbp1!=NULL) deletearea();//選択範囲を削除
 		i=insertchar(cursorbp,cursorix,k,0);//テキストバッファに１文字挿入
@@ -2494,6 +2497,17 @@ void normal_code_process(unsigned char k){
 // k:制御文字の仮想キーコード
 // sh:シフト関連キー状態
 void control_code_process(unsigned char k,unsigned char sh){
+    // Check if autocomplete should handle this key
+    if (handle_autocomplete_key(k, sh)) {
+        return;
+    }
+    // Hide autocomplete on most navigation keys
+    if (k == VK_LEFT || k == VK_RIGHT || k == VK_UP || k == VK_DOWN ||
+        k == VK_HOME || k == VK_END || k == VK_PRIOR || k == VK_NEXT ||
+        k == VK_DELETE || k == VK_BACK) {
+        autocomplete_show = 0;
+        autocomplete_pos = 0;
+    }
 	save_cursor(); //カーソル関連変数退避（カーソル移動できなかった場合戻すため）
 	switch(k){
 		case VK_LEFT:
@@ -2677,6 +2691,39 @@ void control_code_process(unsigned char k,unsigned char sh){
 			//CTRL+Z、アンドゥ
 			if(sh & CHK_CTRL) undoexec();
 			break;
+		// Autocompletion
+        case VK_TAB:
+            // Handle Tab key for autocomplete
+            if (autocomplete_show && autocomplete_count > 0) {
+                insert_autocomplete();
+            } else {
+                // Check if we should start autocomplete
+                check_autocomplete_start();
+                if (!autocomplete_show) {
+                    // Insert tab character or spaces
+                    for (int i = 0; i < 4; i++) {
+                        int result = insertchar(cursorbp, cursorix, ' ', 0);
+                        if (result > 0) {
+                            gabagecollect2();
+                            result = insertchar(cursorbp, cursorix, ' ', 0);
+                        }
+                        if (result == 0) {
+                            cursor_right();
+                            edited = 1;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            }
+            break;
+            
+        case 'I':
+            // Ctrl+I for manual autocomplete trigger
+            if (sh & CHK_CTRL) {
+                check_autocomplete_start();
+            }
+            break;
 	}
 }
 //テキストエディター本体

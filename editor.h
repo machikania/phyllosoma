@@ -53,3 +53,12 @@ caused by using this program.
 #define UNDO_CONTDEL 6
 
 #define EDITORRAMSIZE (50*1024)
+
+//リンク付きのテキストバッファ
+struct _TBUF{
+	struct _TBUF *prev;//前方へのリンク。NULLの場合先頭または空き
+	struct _TBUF *next;//後方へのリンク。NULLの場合最後
+	unsigned short n;//現在の使用バイト数
+	unsigned char Buf[TBUFSIZE];//バッファ
+} ;
+typedef struct _TBUF _tbuf;
