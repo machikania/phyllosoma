@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.4.12
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.8.17
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type P
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -167,10 +167,16 @@ MACHIKAP.INI
 　　Sample program to blink LEDs
 
 　MANDELBR.BAS
-　　Program to output Mandelbrot in text
+　　Program to output Mandelbrot in graphic
 
 　MAZE3D.BAS
 　　Three-dimensional maze escape game
+
+　MOZART.BAS
+　　Playing WAV file sample program
+
+　MOZART.WAV
+　　Used by MOZART.BAS
 
 　MUSIC.BAS
 　　Sample program using the MUSIC instruction
@@ -309,3 +315,22 @@ Phyllosoma 1.52/KM-1509 (2025.4.12)
 　Improved LCD transfer speed when using Raspberry Pi Pico 2.
 　Update MAZE3D.BAS and STARTREK.BAS sample programs.
 　Added POLYGON.BAS sample program.
+
+Phyllosoma 1.60/KM-1510 (2025.8.17)
+　Added support for Waveshare ResTouch LCD 3.5
+　Added support for ClockworkPi PicoCalc
+　Code editor for LCD now highlights reserved words, strings, and comments
+　Button operations can now be emulated via keyboard input
+　Added support for IPS-type LCDs
+　Update the LCD's file selection interface and editor to allow a single screen rotation
+　HEX files can now be executed directly from the editor
+　Improved ILI9488 SPI transfer speed
+　Sample program MANDELBR.BAS changed from text-based to graphical version
+　Added sample program MOZART.BAS
+　Modified sample program FILEMAN.BAS to accept lowercase y/n for confirmation prompts
+　Updated the WS2812B.BAS class library to improve operation on the Pico 2
+　Updated TSC2046 class to work with ResTouch
+　Enabled the ability to retrieve and modify SPI communication speed for LCD and MMC via the SYSTEM function/statement
+　Fixed a bug where executing the OUT statement caused brief, unexpected output fluctuations
+　Extended support for WAVE files in the PLAYWAVE statement to include sampling frequencies between 15700–16000 Hz
+　Resolved an issue in SPI MISO where the specified port could not be used

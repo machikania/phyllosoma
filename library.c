@@ -17,6 +17,7 @@
 #include "./interface/usbkeyboard.h"
 #include "hardware/clocks.h"
 #include "hardware/vreg.h"
+#include "hardware/spi.h"
 
 /*
 	Local macros
@@ -711,6 +712,21 @@ int lib_system(int r0, int r1, int r2){
 		case 51:
 		//	CPUの電圧を指定。有効値：6-15 (0.85 - 1.30 V)。デフォルト：11 (1.10 V)。
 			if ((int)VREG_VOLTAGE_MIN<=r1 && r1<=(int)VREG_VOLTAGE_MAX) vreg_set_voltage(r1);
+			break;
+		case 55:
+		//	MMC用のSPIボーレートを返す
+			return spi_get_baudrate (SD_SPICH);
+		case 56:
+		//	LCD用のSPIボーレートを返す
+			if (LCD_SPICH) return spi_get_baudrate (LCD_SPICH);
+			else return 0;
+		case 57:
+		//	MMC用のSPIボーレートを設定
+			spi_set_baudrate(SD_SPICH,r1);
+			break;
+		case 58:
+		//	LCD用のSPIボーレートを設定
+			if (LCD_SPICH) spi_set_baudrate(LCD_SPICH,r1);
 			break;
 		case 100:
 		//	変数格納領域(g_var_mem)へのポインターを返す。

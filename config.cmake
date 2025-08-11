@@ -6,15 +6,17 @@
 
 # Raspberry Pi Pico + ILI9341 LCD
 # YD-RP2040 + ILI9341 LCD
-set(MACHIKANIA_BUILD pico_ili9341)
+#set(MACHIKANIA_BUILD pico_ili9341)
 
 # Raspberry Pi Pico + ILI9488 LCD
 # YD-RP2040 + ILI9488 LCD
 #set(MACHIKANIA_BUILD pico_ili9488)
 
-# Seeed XIAO RP2040 for embedded development  
-# Useful for using UART with XIAO RP2040
-#set(MACHIKANIA_BUILD xiao_embed)
+# Raspberry Pi Pico + Waveshare Pico-ResTouch
+set(MACHIKANIA_BUILD pico_restouch)
+
+# Raspberry Pi Pico + PicoCalc
+#set(MACHIKANIA_BUILD pico_picocalc)
 
 # Raspberry Pi Pico + NTSC Video out for Puerulus
 # YD-RP2040 + NTSC Video
@@ -27,20 +29,26 @@ set(MACHIKANIA_BUILD pico_ili9341)
 # Do not touch the lines below #
 ################################
 
-# Force DEBUG_MODE for XIAO board
-if (MACHIKANIA_BUILD STREQUAL "xiao_embed")
-	set(MACHIKANIA_DEBUG_MODE 1)
-endif()
-
 # Select graphic library
 if (MACHIKANIA_BUILD STREQUAL "pico_ili9488")
 	set(MACHIKANIA_GRAPH_LIB ili9488_spi)
+elseif (MACHIKANIA_BUILD STREQUAL "pico_picocalc")
+	set(MACHIKANIA_GRAPH_LIB ili9488_spi)
+elseif (MACHIKANIA_BUILD STREQUAL "pico_restouch")
+	set(MACHIKANIA_GRAPH_LIB ws_pico_restouch)
 elseif (MACHIKANIA_BUILD STREQUAL "pico_ntsc")
 	set(MACHIKANIA_GRAPH_LIB rp2040_pwm_ntsc_textgraph)
 elseif (MACHIKANIA_BUILD STREQUAL "xiao_ntsc")
 	set(MACHIKANIA_GRAPH_LIB rp2040_pwm_ntsc_textgraph)
 else()
 	set(MACHIKANIA_GRAPH_LIB ili9341_spi)
+endif()
+
+# Select keyboard library
+if (MACHIKANIA_BUILD STREQUAL "pico_picocalc")
+	set(MACHIKANIA_KEYBOARD picocalc_keyboard)
+else()
+	set(MACHIKANIA_KEYBOARD usbkeyboard)
 endif()
 
 # Select monitor library
@@ -64,6 +72,10 @@ if (PICO_BOARD STREQUAL "pico_w" OR PICO_BOARD STREQUAL "pico2_w")
 		set(MACHIKANIA_BUILD pico_w_ntsc)
 	elseif (MACHIKANIA_BUILD STREQUAL "pico_ili9488")
 		set(MACHIKANIA_BUILD pico_w_ili9488)
+	elseif (MACHIKANIA_BUILD STREQUAL "pico_restouch")
+		set(MACHIKANIA_BUILD pico_w_restouch)
+	elseif (MACHIKANIA_BUILD STREQUAL "pico_picocalc")
+		set(MACHIKANIA_BUILD pico_w_picocalc)
 	else()
 		set(MACHIKANIA_BUILD pico_w_ili9341)
 	endif()

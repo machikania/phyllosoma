@@ -19,6 +19,7 @@ caused by using this program.
 #define HORIZONTAL 1
 #define LCD0TURN 0
 #define LCD180TURN 2
+#define LCDINVERT 64
 
 extern int LCD_ALIGNMENT;
 extern int X_RES; // 横方向解像度

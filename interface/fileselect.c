@@ -441,8 +441,8 @@ unsigned char *fileselect(void){
 				}
 				else{
 					//画面の縦横変更、タイムスタンプ非表示
-					set_lcdalign(LCD_ALIGNMENT^HORIZONTAL);
-					show_timestamp=0;
+					set_lcdalign((LCD_ALIGNMENT+1)&3);
+					if(WIDTH_X>=30) show_timestamp=0;
 				}
 				if(show_timestamp) mx=1; else mx=WIDTH_X/13;
 				my = WIDTH_Y-1;

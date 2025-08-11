@@ -124,7 +124,11 @@ char* runHexMain(char* fname){
 	}
 	f_close(fp);
 	printstr("OK");
-	watchdog_reboot(start_address,0x20040000,1000);
+	if (KMBASIC_RP2350) {
+		watchdog_reboot(start_address,0x20080000,1000);
+	} else {
+		watchdog_reboot(start_address,0x20040000,1000);
+	}
 	sleep_ms(2000);
 }
 

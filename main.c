@@ -54,6 +54,8 @@ void read_ini(void){
 			set_lcdalign(VERTICAL | LCD180TURN);
 		} else if (!strncmp(str,"LCD180TURN",10)) {
 			set_lcdalign(HORIZONTAL | LCD180TURN);
+		} else if (!strncmp(str,"LCDINVERT",9)) {
+			set_lcdalign(LCDINVERT);
 		} else if ('1'<=str[5] && str[5]<='9' && !strncmp(str,"WIDTH",5)) {
 			sscanf(str+5,"%d",&g_scratch_int[0]);
 			lib_display(0,g_scratch_int[0],DISPLAY_WIDTH);
@@ -96,6 +98,30 @@ void read_ini(void){
 			show_timestamp=1;
 		} else if (!strncmp(str,"FILESORTBY=",11)) {
 			sscanf(str+11,"%hhd",&filesortby);
+		} else if (!strncmp(str,"EMULATEBUTTONUP=",16)) {
+			sscanf(str+16,"%d",&i);
+			g_emulate_button_array[0]=i;
+			g_emulate_buttons=1;
+		} else if (!strncmp(str,"EMULATEBUTTONDOWN=",18)) {
+			sscanf(str+18,"%d",&i);
+			g_emulate_button_array[1]=i;
+			g_emulate_buttons=1;
+		} else if (!strncmp(str,"EMULATEBUTTONLEFT=",18)) {
+			sscanf(str+18,"%d",&i);
+			g_emulate_button_array[2]=i;
+			g_emulate_buttons=1;
+		} else if (!strncmp(str,"EMULATEBUTTONRIGHT=",19)) {
+			sscanf(str+19,"%d",&i);
+			g_emulate_button_array[3]=i;
+			g_emulate_buttons=1;
+		} else if (!strncmp(str,"EMULATEBUTTONSTART=",19)) {
+			sscanf(str+19,"%d",&i);
+			g_emulate_button_array[4]=i;
+			g_emulate_buttons=1;
+		} else if (!strncmp(str,"EMULATEBUTTONFIRE=",18)) {
+			sscanf(str+18,"%d",&i);
+			g_emulate_button_array[5]=i;
+			g_emulate_buttons=1;
 		}
 	}
 	// Close file

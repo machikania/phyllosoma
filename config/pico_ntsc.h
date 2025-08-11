@@ -105,6 +105,10 @@
 
 #define NTSC_VIDEO_OUT 15
 
+// Null LCD SPI setting
+#define LCD_SPICH 0
+#define LCD_SPI_RX 0
+
 // File system SPI settings
 #define SD_SPI_CS 17
 #define SD_SPI_TX 19

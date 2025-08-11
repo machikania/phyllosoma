@@ -2,8 +2,8 @@
 
 $version_p=array(
 	"Phyllosoma",
-	"1.5.2.0",
-	"KM-1509",
+	"1.6.0.0",
+	"KM-1510",
 );
 $version_pu=$version_p;
 $version_pu[0]="Puerulus";
@@ -13,7 +13,6 @@ $configs=array(
 	'./config/pico_w_ili9341.h (embed)',
 	'./config/pico_ili9488.h (embed)',
 	'./config/pico_w_ili9488.h (embed)',
-	'./config/xiao_embed.h (embed)',
 	'./config/pico_ntsc.h (embed)',
 	'./config/pico_w_ntsc.h (embed)',
 	'./config/xiao_ntsc.h (embed)',
@@ -24,11 +23,17 @@ $configs=array(
 	'./config/pico_ntsc.h',
 	'./config/pico_w_ntsc.h',
 	'./config/xiao_ntsc.h',
+	'./config/pico_picocalc.h',
+	'./config/pico_w_picocalc.h',
+	'./config/pico_restouch.h',
+	'./config/pico_w_restouch.h',
 );
 
 check_dir('machikania-p','machikania-p');
 check_dir('machikania-p2','machikania-p2');
 check_dir('machikania-pu','machikania-pu');
+check_dir('machikania-pc','machikania-pc');
+check_dir('machikania-rt','machikania-rt');
 
 function check_dir($dir,$fullpath){
 	global $version_p, $version_pu;
@@ -61,7 +66,7 @@ function check_uf2($filename,$fullpath,$version){
 	// Check config
 	if (!preg_match('@/([^/]*)@',$fullpath,$m)) exit ("Error ".__LINE__);
 	$config_file=$m[1];
-	$embed_file=preg_match('@(/embed|xiao_embed|xiao_rp2350_embed)@',$fullpath);
+	$embed_file=preg_match('@/embed@',$fullpath);
 	foreach($configs as $config){
 		if (!strpos_ex($uf2file,$config)) continue;
 		echo $config,"\n";

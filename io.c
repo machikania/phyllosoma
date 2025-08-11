@@ -141,6 +141,13 @@ static int io_uart_buff_write_pos;
 static unsigned int io_spi_sspcr[2];
 static unsigned int sd_spi_sspcr[2];
 
+// GPIO status buffer (both 0: used not for GPIO)
+static unsigned int g_gpio_out;
+static unsigned int g_gpio_in;
+
+// Analog port used
+static char g_analog_port;
+
 void io_init(void){
 	int i;
 	// Clear all GPIO settings and let all ports to be input
@@ -149,6 +156,10 @@ void io_init(void){
 	for(i=0;i<29;i++){
 		if (GPIO_ALL_MASK & (1<<i) ) gpio_pull_up(i);
 	}
+	// Reset GPIO status
+	g_gpio_in=GPIO_ALL_MASK;
+	g_gpio_out=0;
+	g_analog_port=0;
 	// Disable PWMs
 	pwm_set_enabled(IO_PWM1_SLICE, false);
 	pwm_set_enabled(IO_PWM2_SLICE, false);
@@ -231,6 +242,11 @@ int lib_keys(int r0, int r1, int r2){
 	res|=(k&KEYRIGHT) ?  8:0;
 	res|=(k&KEYSTART) ? 16:0;
 	res|=(k&KEYFIRE)  ? 32:0;
+	if (g_emulate_buttons) {
+		for(k=0;k<6;k++){
+			if (g_emulate_button_array[k]) res|=lib_inkey(g_emulate_button_array[k],0,0) ? (1<<k):0;
+		}
+	}
 	return res&r0;
 }
 
@@ -275,6 +291,8 @@ int lib_pwm(int r0, int r1, int r2){
 	}
 	// Allocate GPIO to the PWM
 	gpio_set_function(port, GPIO_FUNC_PWM);
+	g_gpio_out&=~(1<<port);
+	g_gpio_in&=~(1<<port);
 	if (g_clock_hz/100000<=r1) {
 		// Set clock divier for frequency
 		pwm_set_clkdiv(slice,((float)(g_clock_hz/1000)) / ((float)r1));
@@ -341,15 +359,20 @@ int lib_analog(int r0, int r1, int r2){
 			// Invalid
 			return -1;
 	}
-	if (!init) {
-		init=1;
-		adc_init();
+	if (port!=g_analog_port) {
+		g_analog_port=port;
+		if (!init) {
+			init=1;
+			adc_init();
+		}
+		// Make sure GPIO is high-impedance, no pullups etc
+		gpio_disable_pulls(port);
+		adc_gpio_init(port);
+		g_gpio_out&=~(1<<port);
+		g_gpio_in&=~(1<<port);
+		// Select ADC input 0
+		adc_select_input(input);
 	}
-	// Make sure GPIO is high-impedance, no pullups etc
-	gpio_disable_pulls(port);
-	adc_gpio_init(port);
-	// Select ADC input 0
-	adc_select_input(input);
 	// Read
 	return adc_read();	
 }
@@ -437,6 +460,18 @@ void spi_send_option(int bit_num, unsigned int* sp, int sp_num){
 	}
 }
 
+void spi_pre_read(){
+	if (SD_SPICH==g_io_spi_ch && SD_SPI_RX!=g_io_spi_rx) gpio_set_function(SD_SPI_RX, GPIO_FUNC_NULL);
+	else if (LCD_SPICH && LCD_SPICH==g_io_spi_ch && LCD_SPI_RX!=g_io_spi_rx) gpio_set_function(LCD_SPI_RX, GPIO_FUNC_NULL);
+	gpio_set_function(g_io_spi_rx, GPIO_FUNC_SPI);
+}
+
+void spi_post_read(){
+	gpio_set_function(g_io_spi_rx, GPIO_FUNC_NULL);
+	if (SD_SPICH==g_io_spi_ch) gpio_set_function(SD_SPI_RX, GPIO_FUNC_SPI);
+	else if (LCD_SPICH && LCD_SPICH==g_io_spi_ch) gpio_set_function(LCD_SPI_RX, GPIO_FUNC_SPI);
+}
+
 int lib_spi(int r0, int r1, int r2){
 	static char cs_port=-1;
 	static unsigned char bit_num;
@@ -475,12 +510,20 @@ int lib_spi(int r0, int r1, int r2){
 			gpio_init(cs_port);
 			gpio_set_dir(cs_port, GPIO_OUT);
 			gpio_put(cs_port,1);
+			g_gpio_out|=1<<cs_port;
+			g_gpio_in&=~(1<<cs_port);
 			// Init SPI
 			spi_init(g_io_spi_ch,sp[0]*1000);
-		    gpio_set_function(g_io_spi_rx, GPIO_FUNC_SPI);
+		    //gpio_set_function(g_io_spi_rx, GPIO_FUNC_SPI);
 		    gpio_set_function(g_io_spi_tx, GPIO_FUNC_SPI);
 		    gpio_set_function(g_io_spi_sck, GPIO_FUNC_SPI);
 			gpio_set_pulls(g_io_spi_rx, true, false); // pull-up DO
+			g_gpio_out&=~(1<<g_io_spi_rx);
+			g_gpio_in&=~(1<<g_io_spi_rx);
+			g_gpio_out&=~(1<<g_io_spi_tx);
+			g_gpio_in&=~(1<<g_io_spi_tx);
+			g_gpio_out&=~(1<<g_io_spi_sck);
+			g_gpio_in&=~(1<<g_io_spi_sck);
 			// Set format
 			// Note: order must be SPI_MSB_FIRST, no other values supported on the PL022 
 			switch(sp[2]){
@@ -505,6 +548,7 @@ int lib_spi(int r0, int r1, int r2){
 			io_spi_sspcr[1]=g_io_spi_sspcr[1];
 			break;
 		case LIB_SPI_SPIREAD:
+			spi_pre_read();
 			spi_send_option(bit_num,sp,r0);
 			switch(bit_num){
 				case 8:
@@ -521,11 +565,13 @@ int lib_spi(int r0, int r1, int r2){
 					r0=(unsigned int)g_scratch_int[0];
 					break;
 			}
+			spi_post_read();
 			break;
 		case LIB_SPI_SPIWRITE:
 			spi_send_option(bit_num,sp,r0);
 			break;
 		case LIB_SPI_SPIREADDATA:
+			spi_pre_read();
 			spi_send_option(bit_num,&sp[2],r0-2);
 			switch(bit_num){
 				case 8:
@@ -539,6 +585,7 @@ int lib_spi(int r0, int r1, int r2){
 					spi_read32_blocking(g_io_spi_ch,0xffffffff,(unsigned long*)sp[0],sp[1]);
 					break;
 			}
+			spi_post_read();
 			break;
 		case LIB_SPI_SPIWRITEDATA:
 			spi_send_option(bit_num,&sp[2],r0-2);
@@ -556,6 +603,7 @@ int lib_spi(int r0, int r1, int r2){
 			}
 			break;
 		case LIB_SPI_SPISWAPDATA:
+			spi_pre_read();
 			spi_send_option(bit_num,&sp[2],r0-2);
 			switch(bit_num){
 				case 8:
@@ -569,6 +617,7 @@ int lib_spi(int r0, int r1, int r2){
 					spi_write32_read32_blocking(g_io_spi_ch,(unsigned long*)sp[0],(unsigned long*)sp[0],sp[1]);
 					break;
 			}
+			spi_post_read();
 			break;
 		default:
 			// Invalid
@@ -677,6 +726,10 @@ int lib_i2c(int r0, int r1, int r2){
 			gpio_set_function(g_io_i2c_scl, GPIO_FUNC_I2C);
 			gpio_pull_up(g_io_i2c_sda);
 			gpio_pull_up(g_io_i2c_scl);
+			g_gpio_out&=~(1<<g_io_i2c_sda);
+			g_gpio_in&=~(1<<g_io_i2c_sda);
+			g_gpio_out&=~(1<<g_io_i2c_scl);
+			g_gpio_in&=~(1<<g_io_i2c_scl);
 			return r0;
 		case LIB_I2C_I2CERROR:
 			// PICO_OK = 0,
@@ -788,6 +841,10 @@ int lib_serial(int r0, int r1, int r2){
 			uart_init(g_io_uart_ch, 2400);
 			gpio_set_function(g_io_uart_tx, GPIO_FUNC_UART);
 			gpio_set_function(g_io_uart_rx, GPIO_FUNC_UART);
+			g_gpio_out&=~(1<<g_io_uart_tx);
+			g_gpio_in&=~(1<<g_io_uart_tx);
+			g_gpio_out&=~(1<<g_io_uart_rx);
+			g_gpio_in&=~(1<<g_io_uart_rx);
 			uart_set_baudrate(g_io_uart_ch, sp[0]);
 			uart_set_hw_flow(g_io_uart_ch, false, false);
 			switch(sp[1]){
@@ -894,48 +951,80 @@ int lib_gpio(int r0, int r1, int r2){
 		case LIB_GPIO_IN:
 			if (r0<0 || (sizeof gpio_table)<=r0) return -1;
 			i=gpio_table[r0];
-			gpio_init(i);
-			gpio_set_dir(i,GPIO_IN);
-			gpio_pull_up(i);
+			if (!(g_gpio_in&(1<<i))) {
+				gpio_init(i);
+				gpio_set_dir(i,GPIO_IN);
+				gpio_pull_up(i);
+				g_gpio_in|=1<<i;
+				g_gpio_out&=~(1<<i);
+			}
 			return gpio_get(i) ? 1:0;
 		case LIB_GPIO_IN8H:
-			gpio_init_mask(IO_GPIO_8H_MASK);
-			gpio_set_dir_in_masked(IO_GPIO_8H_MASK);
-			for(i=8;i<16;i++) gpio_pull_up(gpio_table[i]);
+			if (IO_GPIO_8H_MASK!=(g_gpio_in&IO_GPIO_8H_MASK)) {
+				gpio_init_mask(IO_GPIO_8H_MASK);
+				gpio_set_dir_in_masked(IO_GPIO_8H_MASK);
+				for(i=8;i<16;i++) gpio_pull_up(gpio_table[i]);
+				g_gpio_in|=IO_GPIO_8H_MASK;
+				g_gpio_out&=~IO_GPIO_8H_MASK;
+			}
 			r0=gpio_get_all() & IO_GPIO_8H_MASK;
 			return io_gpio_inh_conversion(r0);
 		case LIB_GPIO_IN8L:
-			gpio_init_mask(IO_GPIO_8L_MASK);
-			gpio_set_dir_in_masked(IO_GPIO_8L_MASK);
-			for(i=0;i<8;i++) gpio_pull_up(gpio_table[i]);
+			if (IO_GPIO_8L_MASK!=(g_gpio_in&IO_GPIO_8L_MASK)) {
+				gpio_init_mask(IO_GPIO_8L_MASK);
+				gpio_set_dir_in_masked(IO_GPIO_8L_MASK);
+				for(i=0;i<8;i++) gpio_pull_up(gpio_table[i]);
+				g_gpio_in|=IO_GPIO_8L_MASK;
+				g_gpio_out&=~IO_GPIO_8L_MASK;
+			}
 			r0=gpio_get_all() & IO_GPIO_8L_MASK;
 			return io_gpio_inl_conversion(r0);
 		case LIB_GPIO_IN16:
-			gpio_init_mask(IO_GPIO_16_MASK);
-			gpio_set_dir_in_masked(IO_GPIO_16_MASK);
-			for(i=0;i<16;i++) gpio_pull_up(gpio_table[i]);
+			if (IO_GPIO_16_MASK!=(g_gpio_in&IO_GPIO_16_MASK)) {
+				gpio_init_mask(IO_GPIO_16_MASK);
+				gpio_set_dir_in_masked(IO_GPIO_16_MASK);
+				for(i=0;i<16;i++) gpio_pull_up(gpio_table[i]);
+				g_gpio_in|=IO_GPIO_16_MASK;
+				g_gpio_out&=~IO_GPIO_16_MASK;
+			}
 			r0=gpio_get_all() & IO_GPIO_16_MASK;
 			return io_gpio_in16_conversion(r0);
 		case LIB_GPIO_OUT:
 			if (r1<0 || (sizeof gpio_table)<=r1) return r0;
 			i=gpio_table[r1];
-			gpio_init(i);
-			gpio_set_dir(i, GPIO_OUT);
+			if (!(g_gpio_out&(1<<i))) {
+				gpio_init(i);
+				gpio_set_dir(i, GPIO_OUT);
+				g_gpio_out|=1<<i;
+				g_gpio_in&=~(1<<i);
+			}
 			gpio_put(i, r0 ? 1:0);
 			return r0;
 		case LIB_GPIO_OUT8H:
-			gpio_init_mask(IO_GPIO_8H_MASK);
-			gpio_set_dir_out_masked(IO_GPIO_8H_MASK);
+			if (IO_GPIO_8H_MASK!=(g_gpio_out&IO_GPIO_8H_MASK)) {
+				gpio_init_mask(IO_GPIO_8H_MASK);
+				gpio_set_dir_out_masked(IO_GPIO_8H_MASK);
+				g_gpio_out|=IO_GPIO_8H_MASK;
+				g_gpio_in&=~IO_GPIO_8H_MASK;
+			}
 			gpio_put_masked(IO_GPIO_8H_MASK,io_gpio_outh_conversion(r0));
 			return r0;
 		case LIB_GPIO_OUT8L:
-			gpio_init_mask(IO_GPIO_8L_MASK);
-			gpio_set_dir_out_masked(IO_GPIO_8L_MASK);
+			if (IO_GPIO_8L_MASK!=(g_gpio_out&IO_GPIO_8L_MASK)) {
+				gpio_init_mask(IO_GPIO_8L_MASK);
+				gpio_set_dir_out_masked(IO_GPIO_8L_MASK);
+				g_gpio_out|=IO_GPIO_8L_MASK;
+				g_gpio_in&=~IO_GPIO_8L_MASK;
+			}
 			gpio_put_masked(IO_GPIO_8L_MASK,io_gpio_outl_conversion(r0));
 			return r0;
 		case LIB_GPIO_OUT16:
-			gpio_init_mask(IO_GPIO_16_MASK);
-			gpio_set_dir_out_masked(IO_GPIO_16_MASK);
+			if (IO_GPIO_16_MASK!=(g_gpio_out&IO_GPIO_16_MASK)) {
+				gpio_init_mask(IO_GPIO_16_MASK);
+				gpio_set_dir_out_masked(IO_GPIO_16_MASK);
+				g_gpio_out|=IO_GPIO_16_MASK;
+				g_gpio_in&=~IO_GPIO_16_MASK;
+			}
 			gpio_put_masked(IO_GPIO_16_MASK,io_gpio_out16_conversion(r0));
 			return r0;
 		default:

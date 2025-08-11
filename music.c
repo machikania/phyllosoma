@@ -605,6 +605,7 @@ int checkChars(char* str1, char* str2, int num){
 
 void set_wave(char* filename, int start){
 	int i;
+	int* intp;
 	// If previous WAVE is still beeing played, force quit previous one
 	if (g_fhandle) f_close(g_fhandle);
 	g_fhandle=0;
@@ -631,17 +632,22 @@ void set_wave(char* filename, int start){
 	i+=checkChars((char*)&g_wavtable[0],"RIFF",4);                      // Check RIFF
 	i+=checkChars((char*)&g_wavtable[8],"WAVEfmt ",8);                  // Check WAVE and fmt
 	i+=checkChars((char*)&g_wavtable[16],"\x10\x00\x00\x00\x01\x00",6); // Check if liear PCM
-	if (!checkChars((char*)&g_wavtable[22],"\x01\x00\x80\x3e\x00\x00\x80\x3e\x00\x00\x01\x00",12)) {
-		// Monaural 16000 Hz
-	} else if (!checkChars((char*)&g_wavtable[22],"\x01\x00\x54\x3d\x00\x00\x54\x3d\x00\x00\x01\x00",12)) {
-		// Monaural 15700 Hz
+	intp=(int*)&g_wavtable[24];
+	if (intp[0]==intp[1] && 15700<=intp[0] && intp[0]<=16000 && g_wavtable[22]==0x01 && g_wavtable[23]==0x00 && g_wavtable[32]==0x01 && g_wavtable[33]==0x00) {
+		// Monaural, between 15700 and 16000 Hz, 8 bit
 	} else {
 		i=1;
 	}
-	i+=checkChars((char*)&g_wavtable[34],"\x08\x00\x64\x61\x74\x61",6); // Check bit # and data
+	//i+=checkChars((char*)&g_wavtable[34],"\x08\x00\x64\x61\x74\x61",6); // Check bit # and data
+	i+=checkChars((char*)&g_wavtable[34],"\x08\x00",2); // Check bit #
 	if (i) err_music("WAVE format error");
+	// Search "data"
+	for(i=0x2c;i<128;i++){
+		// [i-8]: skip "data" and length chunk
+		if (!checkChars((char*)&g_wavtable[i-8],"\x64\x61\x74\x61",4)) break;
+	}
 	// Support defined start position here to skip file pointer here.
-	f_lseek(g_fhandle, start+0x2c);
+	f_lseek(g_fhandle, start+i);
 	// Read first data.
 	if (f_read(g_fhandle,(void*)&g_wavtable[0],WAVE_BUFFER_SIZE/2,(unsigned int*)&g_scratch_int[0])) stop_with_error(ERROR_FILE);
 	g_wave_writepos=WAVE_BUFFER_SIZE/2;

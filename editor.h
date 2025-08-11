@@ -26,13 +26,17 @@ caused by using this program.
 #define COLOR_NORMALTEXT 7 //通常テキスト色
 #define COLOR_ERRORTEXT 4 //エラーメッセージテキスト色
 #define COLOR_AREASELECTTEXT 4 //範囲選択テキスト色
-#define COLOR_BOTTOMLINE 5 //画面最下行の色
+#define COLOR_BOTTOMLINE 6 //画面最下行の色
 #define COLOR_DIR 6 //ディレクトリ名表示の色
+#define COLOR_RESERVEDWORD 16 //予約語表示の色
+#define COLOR_REMARKTEXT 17 //REM文表示の色
+#define COLOR_QUOATTEXT 18 //引用符内表示の色
 #define COLOR_INV 128 //モノクロモード時の反転
 #define FILEBUFSIZE 256 //ファイルアクセス用バッファサイズ
 #define MAXFILENUM 256 //利用可能ファイル最大数
 #define PATHNAMEMAX 128 //ワーキングディレクトリパス名の最大値
 #define UNDOBUFSIZE 2048 //アンドゥ用バッファサイズ
+#define SEARCHTEXTMAX 32 //検索用最大文字数
 
 #define ERR_FILETOOBIG -1
 #define ERR_CANTFILEOPEN -2

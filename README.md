@@ -1,5 +1,5 @@
 # phyllosoma
-MachiKania Phyllosoma
+MachiKania type P (aka MachiKania Phyllosoma)
 
 ## MachiKania Phyllosoma
 MachiKania Phyllosoma is a BASIC compiler for ARMv6-M, especially for Raspberry Pi Pico.
@@ -9,7 +9,6 @@ cmake and make. The pico-sdk (ver 2.1.1 is confirmed for building) with all subm
   
 1. set(MACHIKANIA_BUILD pico_ili9341) : for Raspberry Pi Pico + ILI9341 LCD  
 2. set(MACHIKANIA_BUILD pico_ili9488) : for Raspberry Pi Pico + ILI9488 LCD  
-3. set(MACHIKANIA_BUILD xiao_embed) : for Seeed XIAO RP2040 for embedded development (deprecated; edit MACHIKAP.INI for changing pin numbers for SPI/I2C/UART, instead)
 
 ## how to compile for Raspberry Pi Pico W
 
@@ -67,6 +66,8 @@ GP29 ADC3
 The phyllosoma_kb.uf2 firmware supports using USB keyboard. Connect the USB keyboard to micro B socket of Raspberry Pi pico (or Pico W) through an USB-OTG cable, and supply 5V power to VBUS pin (#40).  
 Alternatevely, as before, the phyllosoma.uf2 firmware supports the USB serial connection between MachiKania and PC.
 
+## LCD settings
+Several LCD settings can be done by editing MACHIKAP.INI. Set "HORIZONTAL" or "VERTICAL" for desired direction. "LCD180TURN" and "LCD90TURN" are also possible. When using the IPS-LCD, activate "LCDINVERT" for proper color display.
 
 
 ---

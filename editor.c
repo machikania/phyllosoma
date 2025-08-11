@@ -96,6 +96,10 @@ static const unsigned char Message2[]="File System Error\n";
 static const unsigned char Message3[]="Retry:[Enter] / Quit:[ESC]\n";
 static const unsigned char ROOTDIR[]="/";
 
+static unsigned char searchtext[SEARCHTEXTMAX]; //文字列検索用バッファ
+// 区切り文字チェック、区切り文字以外はTrueを返す
+#define delimitercheck(x) (x>='@' && x<='Z' || x>='a' && x<='z' || x=='_' || x>='0' && x<='9')
+
 //配列EDITORRAM[]内にサイズsizeの領域を確保し、先頭アドレスを返す
 //確保できない場合は、エラー表示し動作停止
 unsigned char * editormalloc(int size){
@@ -566,10 +570,21 @@ void redraw(){
 			if(bp==bp2 && ix==ix2) cl=COLOR_NORMALTEXT;
 			ch=bp->Buf[ix++];
 			if(ch=='\n') break;
-			if(*vp!=ch || *(vp+attroffset)!=cl){
+			if(*vp!=ch){
 				*vp=ch;
-				*(vp+attroffset)=cl;
 				written=1;
+			}
+			if(cl==COLOR_AREASELECTTEXT){
+				if(*(vp+attroffset)!=cl){
+					*(vp+attroffset)=cl;
+					written=1;
+				}
+			}
+			else{
+				if(*(vp+attroffset)==COLOR_AREASELECTTEXT){
+					written=1;
+				}
+				*(vp+attroffset)=cl;
 			}
 			vp++;
 		}
@@ -594,6 +609,134 @@ void redraw(){
 			vp++;
 		}
 	}
+
+	// BASIC予約語に色付け
+	int i=0; //検索テキスト文字数
+	int inRemark=0; //REM文の中
+	int inQuotation=0; //引用符の中
+
+	// 画面上部外を検索
+	if(*TVRAM!=0){
+		// 画面外の行頭まで遡る
+		bp2=disptopbp;
+		ix2=disptopix;
+		while(1){
+			if(ix2==0){
+				if(bp2->prev==NULL) break;
+				bp2=bp2->prev;
+				ix2=bp2->n;
+				continue;
+			}
+			if(bp2->Buf[ix2-1]=='\n') break;
+			ix2--;
+		}
+		while(1){
+			while(ix2>=bp2->n){
+				if(bp2==disptopbp && ix2==disptopix) break; //画面先頭
+				bp2=bp2->next;
+				ix2=0;
+			}
+			if(bp2==disptopbp && ix2==disptopix) break; //画面先頭
+			ch=bp2->Buf[ix2++];
+			if(inQuotation){
+				if(ch==0x22) inQuotation=0;
+			}
+			else if(delimitercheck(ch)){
+				if(i<SEARCHTEXTMAX){
+					if(ch>='a' && ch<='z') searchtext[i]=ch-32;
+					else searchtext[i]=ch;
+				}
+				i++;
+			}
+			else{
+				// REM文チェック
+				if(i==3 && searchtext[0]=='R' && searchtext[1]=='E' && searchtext[2]=='M'){
+					inRemark=1;
+					i=0;
+					break;
+				}
+				if(ch==0x22) inQuotation=1; // 引用符チェック
+				i=0;
+			}
+		}
+	}
+
+	// 画面先頭から検索
+	for(vp=TVRAM;vp<TVRAM+WIDTH_X*EDITWIDTHY;vp++){
+		ch=*vp;
+		if(inRemark){
+			if(ch!=0 && *(vp+attroffset)!=COLOR_AREASELECTTEXT) *(vp+attroffset)=COLOR_REMARKTEXT;
+		}
+		else if(inQuotation){
+			if(ch!=0 && *(vp+attroffset)!=COLOR_AREASELECTTEXT) *(vp+attroffset)=COLOR_QUOATTEXT;
+			if(ch==0x22) inQuotation=0;
+		}
+		else if(delimitercheck(ch)){
+			if(i<SEARCHTEXTMAX){
+				if(ch>='a' && ch<='z') searchtext[i]=ch-32;
+				else searchtext[i]=ch;
+			}
+			i++;
+		}
+		else{
+			// REM文チェック
+			if(i==3 && searchtext[0]=='R' && searchtext[1]=='E' && searchtext[2]=='M'){
+				inRemark=1;
+			}
+			else if(ch==0x22){
+				// 引用符チェック
+				inQuotation=1;
+				if(*(vp+attroffset)!=COLOR_AREASELECTTEXT) *(vp+attroffset)=COLOR_QUOATTEXT;
+			}
+			if(i>0 && i<=SEARCHTEXTMAX){
+				if(check_if_reserved(searchtext,i)){
+					// 予約語に色付け
+					unsigned char * vp2=vp-i+attroffset;
+					if(vp2<TVRAM+attroffset) vp2=TVRAM+attroffset;
+					for(;vp2<vp+attroffset;vp2++){
+						if(*vp2!=COLOR_AREASELECTTEXT){
+							if(inRemark) *vp2=COLOR_REMARKTEXT;
+							else *vp2=COLOR_RESERVEDWORD;
+						}
+					}
+				}
+			}
+			i=0;
+		}
+		if(ch==0){
+			// 改行とみなす
+			inRemark=0;
+			inQuotation=0;
+		}
+	}
+
+	// 画面下部外を検索
+	if(i>0){
+		vp-=i;
+		while(i<=SEARCHTEXTMAX){
+			while(ix>=bp->n){
+				bp=bp->next;
+				ix=0;
+				if(bp==NULL) break;
+			}
+			if(bp==NULL) break; //バッファ最終
+			ch=bp->Buf[ix++];
+			if(delimitercheck(ch)){
+				if(i<SEARCHTEXTMAX) searchtext[i]=ch;
+				i++;
+			}
+			else break;
+		}
+		if(i<=SEARCHTEXTMAX){
+			if(check_if_reserved(searchtext,i)){
+				// 予約語に色付け
+				for(vp=vp+attroffset;vp<TVRAM+WIDTH_X*EDITWIDTHY+attroffset;vp++){
+					if(*vp!=COLOR_AREASELECTTEXT) *vp=COLOR_RESERVEDWORD;
+				}
+			}
+		}
+	}
+
 	if(written) textredraw(); //液晶に出力
 }
 
@@ -1400,6 +1543,14 @@ int loadtextfile(char *filename){
 	_tbuf *bp;
 	int ix,n,i,er;
 	unsigned char *ps,*pd;
+
+	//  HEXファイルの場合エディタ終了して実行
+	for(i=0;filename[i];i++);
+	if (!strncmp(&filename[i-4],".HEX",4)){
+		cls();
+		runHex(filename);
+	}
+
 	er=0;//エラーコード
 	if(f_open(&Fil, filename, FA_READ)) return ERR_CANTFILEOPEN;
 	inittextbuf();
@@ -1847,6 +1998,17 @@ int getfilelist(int *p_num_dir){
 		}
 		f_closedir(&dj);
 	}
+	//拡張子 HEXファイルのサーチ
+	if(filenum<MAXFILENUM){
+		fr = f_findfirst(&dj, &fno, temppath, "*.HEX"); // HEXファイル
+		while (fr == FR_OK && fno.fname[0]){ // Repeat while an item is found
+			files[filenum]=fno;
+			filenum++;
+			if (filenum >= MAXFILENUM) break;
+			fr = f_findnext(&dj, &fno); // Search for next item
+		}
+		f_closedir(&dj);
+	}
 	if(filenum-*p_num_dir>1){
 		file_sort(files,*p_num_dir,filenum-1); //ファイル名順に並べ替え
 	}
@@ -2073,11 +2235,19 @@ int fileload(void){
 }
 // 画面縦横の切り替え
 void changewidth(void){
-	set_lcdalign(LCD_ALIGNMENT^HORIZONTAL); //縦横切り替え
+	set_lcdalign((LCD_ALIGNMENT+1)&3); //縦横切り替え
 	EDITWIDTHY=WIDTH_Y-1; //エディタ画面行数設定
 	cursor_top(); //カーソルをテキストバッファの先頭に設定
 	redraw(); //再描画
 	textredraw(); //液晶に強制出力
+}
+
+// エディタ用カラーパレット初期化
+void init_palette_editor(void){
+	init_palette();
+	set_palette(COLOR_QUOATTEXT,0,255,128);
+	set_palette(COLOR_REMARKTEXT,0,0,192);
+	set_palette(COLOR_RESERVEDWORD,255,64,192);
 }
 
 //KM-BASICコンパイル＆実行
@@ -2178,7 +2348,7 @@ void run(int test){
 	do usbkb_readkey(); //キーバッファが空になるまで読み出し
 	while(vkey!=0);
 	inputchar(); //1文字入力待ち
-	init_palette();	//カラーパレット初期化
+	init_palette_editor();	//カラーパレット初期化
 	set_lcdalign(alignment);
 
 	while(1){
@@ -2512,6 +2682,7 @@ void texteditor(void){
 	FIL Fil;	 /* File object needed for each open file */
 	FRESULT fr;
 
+	init_palette_editor();	//カラーパレット初期化
 	editormallocp=EDITORRAM;
 	TextBuffer=(_tbuf *)editormalloc(sizeof(_tbuf)*TBUFMAXLINE);
 	clipboard=editormalloc(attroffset);
