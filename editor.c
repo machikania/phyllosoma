@@ -1868,6 +1868,9 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 				f=-2;//現在選択中のファイル番号
 				disp_dir_file_list(filenum,top,num_dir,msg); //ファイル一覧を画面に表示
 				break;
+			case VK_F4:
+				// Gapepad specific recognition
+				if (USB_PERIPHERAL_GAMEPAD!=g_usb_peripheral) break;
 			case VK_RETURN: //Enterキー
 			case VK_SEPARATOR: //テンキーのEnter
 				if(f==-2){
@@ -2168,7 +2171,7 @@ int fileload(void){
 				save_as(0); //名前を付けて保存
 				break;
 			}
-			else if(vk==VK_ESCAPE) break;
+			else if(vk==VK_ESCAPE || vk==VK_F4 && USB_PERIPHERAL_GAMEPAD==g_usb_peripheral) break;
 		}
 	}
 	//カレントディレクトリを変数cwdpathにコピー

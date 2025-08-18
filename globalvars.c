@@ -127,6 +127,9 @@ char g_cpu_voltage_default;
 char g_emulate_buttons=0;
 unsigned char g_emulate_button_array[6];
 
+// USB peripheral detection
+unsigned char g_usb_peripheral=0;
+
 // Reserved words
 
 const char* const g_reserved_words[189]={

@@ -429,6 +429,12 @@ extern char g_cpu_voltage_default;
 extern char g_emulate_buttons;
 extern unsigned char g_emulate_button_array[6];
 
+// USB peripheral derection
+extern unsigned char g_usb_peripheral;
+#define USB_PERIPHERAL_NONE     0
+#define USB_PERIPHERAL_KEYBOARD 1
+#define USB_PERIPHERAL_GAMEPAD  2
+
 /*
 	Prototypes
 */
