@@ -142,6 +142,7 @@ int connect_wifi(char show_progress){
 	if (!g_usewifi) {
 		// First time calling this function. This must be done in main().
 		// Second time calling this function must be from BASIC code.
+		cyw43_arch_init();
 		g_usewifi=1;
 		return 0;
 	}
