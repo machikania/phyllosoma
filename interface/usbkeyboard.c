@@ -198,6 +198,10 @@ void usbkbled_task(void){
 	}
 }
 
+bool usb_set_report(void* report, uint16_t len){
+	return tuh_hid_set_report(USBKB_dev_addr,USBKB_instance,0,HID_REPORT_TYPE_OUTPUT,report,len);
+}
+
 //--------------------------------------------------------------------+
 // Mouse
 //--------------------------------------------------------------------+
