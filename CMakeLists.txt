@@ -119,6 +119,7 @@ if (TARGET tinyusb_device)
 	# xxxxx_kb.uf2
 	add_executable(${MACHIKANIA_CODE_NAME}_kb
 		${MACHIKANIA_EDITOR}.c
+		autocomplete.c
 		interface/${MACHIKANIA_KEYBOARD}.c
 		interface/hid_virtual_keytable.c
 		interface/keyinput.c
