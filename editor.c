@@ -2498,7 +2498,7 @@ void disphelp(void){
 		else break;
 		i++;
 	}
-	if(i>=WORDMAX+1) return; // Too long word
+	if(i==0 || i>=WORDMAX+1) return; // No word or too long word
 	searchtext[i]=0;
 	unsigned char *helptext=get_help(searchtext);
 	if(helptext==NULL) return; // No help text
