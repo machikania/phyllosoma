@@ -4,11 +4,23 @@
    https://github.com/kmorimatsu
 */
 
+#include <string.h>
 #include "./compiler.h"
 #include "./api.h"
 
 char g_help_file[64]="/docume~1/help-e.txt";
-//char g_help_file[64]="help-e.txt";
+
+int ini_file_help(char* line){
+	int i;
+	if (!strncmp(line,"HELPFILE=",9)) {
+		line+=9;
+		for(i=0;line[i] && i<63;i++) g_help_file[i]=line[i];
+		g_help_file[i]=0;
+	} else {
+		return 0;
+	}
+	return 1;
+}
 
 char* get_help(const char* word){
 	// Longest words are I2CWRITEDATA/SPIWRITEDATA (12 bytes)

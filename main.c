@@ -35,6 +35,8 @@ void read_ini(void){
 			continue;
 		} else if (ini_file_io(str)) {
 			continue;
+		} else if (ini_file_help(str)) {
+			continue;
 		} else if (!strncmp(str,"AUTOEXEC=",9)) {
 			// Get file name
 			for(i=0;i<12;i++){

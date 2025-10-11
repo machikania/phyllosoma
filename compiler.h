@@ -709,6 +709,7 @@ int lib_aux(int r0, int r1, int r2);
 
 // help.c
 char* get_help(const char* word);
+int ini_file_help(char* line);
 
 // For debugging
 void dump_cmpdata(void);
