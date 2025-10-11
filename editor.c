@@ -2463,6 +2463,58 @@ void displaybottomline(void){
 	cursor=p; //カーソル位置戻し
 	cursorcolor=c;
 }
+
+#define WORDMAX 12 // 予約語最長文字数
+// ヘルプ表示
+void disphelp(void){
+	_tbuf *bp;
+	int ix;
+	int i;
+
+	bp=cursorbp;
+	ix=cursorix;
+	while(1){
+		if(ix==0){
+			if(bp->prev==NULL) break;
+			bp=bp->prev;
+			ix=bp->n;
+			continue;
+		}
+		unsigned char t=bp->Buf[ix-1];
+		if(!((t>='A' && t<='Z') || (t>='a' && t<='z') || (t>='1' && t<='9'))) break;
+		ix--;
+	}
+	i=0;
+	while(i<=WORDMAX+1){
+		while(ix>=bp->n){
+			bp=bp->next;
+			ix=0;
+			if(bp==NULL) break;
+		}
+		if(bp==NULL) break; //バッファ最終
+		unsigned char t=bp->Buf[ix++];
+		if((t>='A' && t<='Z') || (t>='1' && t<='9')) searchtext[i]=t;
+		else if(t>='a' && t<='z') searchtext[i]=t-0x20;
+		else break;
+		i++;
+	}
+	if(i>=WORDMAX+1) return; // Too long word
+	searchtext[i]=0;
+	unsigned char *helptext=get_help(searchtext);
+	if(helptext==NULL) return; // No help text
+
+	// ヘルプ表示
+	cls();
+	setcursor(0,0,COLOR_RESERVEDWORD);
+	printstr(searchtext);
+	setcursor(0,1,COLOR_NORMALTEXT);
+	printstr(helptext);
+	printchar('\n');
+	printstr((unsigned char *)Message1);// Hit Any Key
+	inputchar(); //1文字入力待ち
+
+}
+
 // 通常文字入力処理
 // k:入力された文字コード
 void normal_code_process(unsigned char k){
@@ -2676,6 +2728,10 @@ void control_code_process(unsigned char k,unsigned char sh){
 		case 'Z':
 			//CTRL+Z、アンドゥ
 			if(sh & CHK_CTRL) undoexec();
+			break;
+		case 'H':
+			//CTRL+H、HELP表示
+			if(sh & CHK_CTRL) disphelp();
 			break;
 	}
 }
