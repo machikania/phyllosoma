@@ -24,10 +24,57 @@ int ini_file_help(char* line){
 
 char* get_help(const char* word){
 	// Longest words are I2CWRITEDATA/SPIWRITEDATA (12 bytes)
-	int i,j;
-	char* ret;
+	int i,num_lines;
+	unsigned int hash;
 	FIL fpo;
 	FIL* fp=&fpo;
+	// Get hash
+	hash=cmpdata_nhash(word,0);
+	// Special cases
+	num_lines=1;
+	switch(hash){
+		case 0x00047392: //FOR
+		case 0x0000154f: //TO
+		case 0x01495110: //STEP
+		case 0x013c4654: //NEXT
+			word="FOR";
+			num_lines=2;
+			break;
+		case 0x0000114f: //DO
+		case 0x0134e390: //LOOP
+		case 0x543d520c: //UNTIL
+			word="DO";
+			num_lines=8;
+			break;
+		case 0x56248345: //WHILE
+		case 0x015843c4: //WEND
+			word="WHILE";
+			num_lines=2;
+			break;
+		case 0x00001206: //IF
+		case 0x0154910e: //THEN
+		case 0x0110d485: //ELSE
+		case 0x0d484217: //ELSEIF
+		case 0x443c5206: //ENDIF
+			word="IF";
+			num_lines=8;
+			break;
+		case 0x0004d114: //LET
+			word="[LET]";
+			break;
+		case 0x130576fa: //INTERRUPT
+		case 0x47204344: //FIELD
+		case 0x95015217: //STATIC
+			num_lines=2;
+			break;
+			num_lines=2;
+			break;
+		case 0x98495119: //SYSTEM
+			num_lines=3;
+			break;
+		default:
+			break;
+	}
 	// Open the help file
 	if (f_open(fp,g_help_file,FA_READ)) return 0;
 	// Search the help file
@@ -43,7 +90,17 @@ char* get_help(const char* word){
 			case '(': case '$': case '#':
 				// The word found. Add the next line
 				for(i=0;g_file_buffer[i] && i<g_file_buffer_size-1;i++); // Goto \x0
-				f_gets(&g_file_buffer[i], g_file_buffer_size-i, fp);
+				while(i<g_file_buffer_size-1 && !f_eof(fp)) {
+					f_gets(&g_file_buffer[i], g_file_buffer_size-i, fp);
+					if ('\t'!=g_file_buffer[i]) {
+						// Next statement description started
+						if ((--num_lines)<1) break;
+					}
+					// Statement description continued
+					for(i=i;g_file_buffer[i] && i<g_file_buffer_size-1;i++); // Goto \x0
+				}
+				g_file_buffer[i]=0x00;
+				if (g_file_buffer_size-1<=i) g_file_buffer[i-3]=g_file_buffer[i-2]=g_file_buffer[i-1]='.'; // Exceeds 1024 bytes
 				// Close the file and return pointer
 				f_close(fp);
 				return g_file_buffer;

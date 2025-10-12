@@ -551,7 +551,7 @@ int* cmpdata_nsearch_string(unsigned int type,unsigned char* str,int num);
 int* cmpdata_search_string(unsigned int type,unsigned char* str);
 int* cmpdata_nsearch_string_first(unsigned int type,unsigned char* str,int num);
 int* cmpdata_search_string_first(unsigned int type,unsigned char* str);
-int cmpdata_nhash(unsigned char* str, int num);
+int cmpdata_nhash(const unsigned char* str, int num);
 int cmpdata_hash(unsigned char* str);
 unsigned char* cmpdata_insert_string_stack(int num);
 void cmpdata_delete_string_stack(unsigned char* str);
