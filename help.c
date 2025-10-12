@@ -74,6 +74,13 @@ char* get_help(const char* word){
 		case 0x98495119: //SYSTEM
 			num_lines=3;
 			break;
+		case 0x00000041: //A
+		case 0x00059392: //XOR
+		case 0x000403c4: //AND
+		case 0x00001392: //OR
+		case 0x43012203: //BASIC
+			// Invalid words
+			return 0;
 		default:
 			break;
 	}
