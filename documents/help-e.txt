@@ -151,7 +151,7 @@ FUNCADDRESS(xxx)
 GOSUB(xxx [, yyy [, zzz [, ... ]]])
 	Same as the GOSUB instruction, but with a return value (see RETURN). xxx is a label or line number. yyy, zzz, etc. are arguments that are passed on to the subroutine (see ARGS() function).
 INKEY([x])
-	If x is not specified, returns the ASCII value of the currently pressed key. If x is specified with an ASCII value, returns whether the key is pressed or not.
+	If x is not specified, returns the key code of the currently pressed key. If x is specified with a key code, returns whether the key is pressed or not.
 INT(x#)
 	Converts the real value x# to an integer and returns it.
 KEYS([x])
