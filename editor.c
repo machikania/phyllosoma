@@ -2507,9 +2507,10 @@ void disphelp(void){
 	cls();
 	setcursor(0,0,COLOR_RESERVEDWORD);
 	printstr(searchtext);
-	setcursor(0,1,COLOR_NORMALTEXT);
+	setcursor(0,2,COLOR_NORMALTEXT);
 	printstr(helptext);
 	printchar('\n');
+	setcursorcolor(COLOR_ERRORTEXT);
 	printstr((unsigned char *)Message1);// Hit Any Key
 	inputchar(); //1文字入力待ち
 
