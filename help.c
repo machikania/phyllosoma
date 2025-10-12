@@ -8,6 +8,8 @@
 #include "./compiler.h"
 #include "./api.h"
 
+extern FATFS g_FatFs;
+
 char g_help_file[64]="/docume~1/help-e.txt";
 
 int ini_file_help(char* line){
@@ -76,7 +78,11 @@ char* get_help(const char* word){
 			break;
 	}
 	// Open the help file
-	if (f_open(fp,g_help_file,FA_READ)) return 0;
+	if (f_open(fp,g_help_file,FA_READ)) {
+		// Mount and open again
+		if (f_mount(&g_FatFs, "", 0)) return 0;
+		if (f_open(fp,g_help_file,FA_READ)) return 0;
+	}
 	// Search the help file
 	while(!f_eof(fp)){
 		if (!f_gets(g_file_buffer, g_file_buffer_size, fp)) continue;

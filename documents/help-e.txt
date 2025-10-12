@@ -756,11 +756,11 @@ STRFTIME$(x$[,y$]])
 Since MachiKania ver 1.2, the RETURN statement can be used in the middle of the FOR-NEXT loop, WHILE-WEND loop, and DO-LOOP loop. However, jumping outside the loop with the GOTO statement will cause unexpected results (e.g., equipment reset). It is also possible to use the GOSUB statement to call a subroutine or nest another loop.
 
 ON GOTO statement and ON GOSUB statement are not supported. However, it is possible to cause similar behavior by writing, for example, the following
- GOSUB 10000+A
- ....
- 10000 PRINT "A=0" : RETURN
- 10001 PRINT "A=1" : RETURN
- 10002 PRINT "A=2" : RETURN
+	GOSUB 10000+A
+	....
+	10000 PRINT "A=0" : RETURN
+	10001 PRINT "A=1" : RETURN
+	10002 PRINT "A=2" : RETURN
 
 If strings are handled consecutively in a line, an error message "String too complexed" may appear and the program may stop. In this case, try using a separate line for each string instruction, or try dividing the string-related operations into several steps, one line for each.
 

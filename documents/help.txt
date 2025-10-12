@@ -756,11 +756,11 @@ STRFTIME$(x$[,y$]])
 MachiKania ver 1.2 以降、FOR-NEXTループ、WHILE-WENDループ、DO-LOOPループの途中で、RETURN文が使えるようになりました。ただし、GOTO文でループの外に飛ぶと、予期せぬ結果（機器のリセット等）を引き起こします。また、GOSUB文でサブルーチンを呼んだり、別のループをネストして使う事は可能です。
 
 ON GOTO文やON GOSUB文はサポートしていません。ただし、例えば次のように記述することで、同様の動作をさせることは可能です。
- GOSUB 10000+A
- ....
- 10000 PRINT "A=0" : RETURN
- 10001 PRINT "A=1" : RETURN
- 10002 PRINT "A=2" : RETURN
+	GOSUB 10000+A
+	....
+	10000 PRINT "A=0" : RETURN
+	10001 PRINT "A=1" : RETURN
+	10002 PRINT "A=2" : RETURN
 
 一行中で連続して文字列を扱うと、"String too complexed"というエラーがでて、停止することがあります。この場合は、文字列を扱う命令を独立した行するか、文字列関連の演算を幾つかのステップに分けて、それぞれ１行ずつの記述にして試してみて下さい。
 
