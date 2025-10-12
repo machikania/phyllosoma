@@ -2449,7 +2449,7 @@ void displaybottomline(void){
 	}
 	else{
 		setcursor(0,WIDTH_Y-1,COLOR_BOTTOMLINE);
-		printstr("LOAD|SAVE|    |RUN |");
+		printstr("LOAD|SAVE|HELP|RUN |");
 		setcursorcolor(COLOR_ERRORTEXT);
 		t=line_no;
 		if(t==0) t=1;
@@ -2720,6 +2720,7 @@ void control_code_process(unsigned char k,unsigned char sh){
 			break;
 		case VK_F3: //F3キー
 			if(sh & CHK_SHIFT) changewidth(); //画面縦横の切り替え
+			else disphelp(); //HELP表示
 			break;
 		case VK_F4: //F4キー
 			if(num==0) break;
