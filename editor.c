@@ -2505,9 +2505,13 @@ void disphelp(void){
 
 	// ヘルプ表示
 	cls();
-	setcursor(0,0,COLOR_RESERVEDWORD);
+	setcursor(0,0,COLOR_NORMALTEXT);
+	printstr("Help: ");
+	setcursorcolor(COLOR_RESERVEDWORD);
 	printstr(searchtext);
-	setcursor(0,2,COLOR_NORMALTEXT);
+	printchar('\n');
+	printchar('\n');
+	setcursorcolor(COLOR_NORMALTEXT);
 	printstr(helptext);
 	printchar('\n');
 	setcursorcolor(COLOR_ERRORTEXT);
