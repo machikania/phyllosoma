@@ -68,6 +68,7 @@ char* get_help(const char* word){
 			break;
 		case 0x0004d114: //LET
 			word="[LET]";
+			num_lines=3;
 			break;
 		case 0x130576fa: //INTERRUPT
 		case 0x47204344: //FIELD
