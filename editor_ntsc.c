@@ -96,6 +96,8 @@ static const unsigned char Message2[]="File System Error\n";
 static const unsigned char Message3[]="Retry:[Enter] / Quit:[ESC]\n";
 static const unsigned char ROOTDIR[]="/";
 
+static unsigned char searchtext[SEARCHTEXTMAX]; //文字列検索用バッファ
+
 //配列EDITORRAM[]内にサイズsizeの領域を確保し、先頭アドレスを返す
 //確保できない場合は、エラー表示し動作停止
 unsigned char * editormalloc(int size){
@@ -2114,6 +2116,14 @@ void changewidth(void){
 	redraw(); //再描画
 }
 
+// エディタ用カラーパレット初期化
+void init_palette_editor(void){
+	init_palette();
+	set_palette(COLOR_QUOATTEXT,0,255,128);
+	set_palette(COLOR_REMARKTEXT,0,0,192);
+	set_palette(COLOR_RESERVEDWORD,255,64,192);
+}
+
 //KM-BASICコンパイル＆実行
 // test 0:コンパイルと実行、0以外:コンパイルのみで終了
 void run(int test){
@@ -2318,11 +2328,11 @@ void displaybottomline(void){
 	else{
 		if(videomode!=VMODE_MONOTEXT){
 			setcursor(0,WIDTH_Y-1,COLOR_BOTTOMLINE);
-			printstr("|LOAD |SAVE |     | RUN |");
+			printstr("|LOAD |SAVE |HELP | RUN |");
 		}
 		else{
 			setcursor(0,WIDTH_Y-1,COLOR_INV);
-			printstr(" LOAD \x87 SAVE \x87      \x87 RUN  \x87\x87");
+			printstr(" LOAD \x87 SAVE \x87 HELP \x87 RUN  \x87\x87");
 		}
 		setcursorcolor(COLOR_ERRORTEXT);
 		t=line_no;
@@ -2337,6 +2347,63 @@ void displaybottomline(void){
 	cursor=p; //カーソル位置戻し
 	cursorcolor=c;
 }
+
+#define WORDMAX 12 // 予約語最長文字数
+// ヘルプ表示
+void disphelp(void){
+	_tbuf *bp;
+	int ix;
+	int i;
+
+	bp=cursorbp;
+	ix=cursorix;
+	while(1){
+		if(ix==0){
+			if(bp->prev==NULL) break;
+			bp=bp->prev;
+			ix=bp->n;
+			continue;
+		}
+		unsigned char t=bp->Buf[ix-1];
+		if(!((t>='A' && t<='Z') || (t>='a' && t<='z') || (t>='1' && t<='9'))) break;
+		ix--;
+	}
+	i=0;
+	while(i<=WORDMAX+1){
+		while(ix>=bp->n){
+			bp=bp->next;
+			ix=0;
+			if(bp==NULL) break;
+		}
+		if(bp==NULL) break; //バッファ最終
+		unsigned char t=bp->Buf[ix++];
+		if((t>='A' && t<='Z') || (t>='1' && t<='9')) searchtext[i]=t;
+		else if(t>='a' && t<='z') searchtext[i]=t-0x20;
+		else break;
+		i++;
+	}
+	if(i==0 || i>=WORDMAX+1) return; // No word or too long word
+	searchtext[i]=0;
+	unsigned char *helptext=get_help(searchtext);
+	if(helptext==NULL) return; // No help text
+
+	// ヘルプ表示
+	cls();
+	setcursor(0,0,COLOR_NORMALTEXT);
+	printstr("Help: ");
+	setcursorcolor(COLOR_RESERVEDWORD);
+	printstr(searchtext);
+	printchar('\n');
+	printchar('\n');
+	setcursorcolor(COLOR_NORMALTEXT);
+	printstr(helptext);
+	printchar('\n');
+	setcursorcolor(COLOR_ERRORTEXT);
+	printstr((unsigned char *)Message1);// Hit Any Key
+	inputchar(); //1文字入力待ち
+
+}
+
 // 通常文字入力処理
 // k:入力された文字コード
 void normal_code_process(unsigned char k){
@@ -2540,7 +2607,8 @@ void control_code_process(unsigned char k,unsigned char sh){
 			else save_as(0); //ファイル名を付けて保存
 			break;
 		case VK_F3: //F3キー
-			if(sh & CHK_SHIFT) changewidth(); //画面縦横の切り替え
+			if(sh & CHK_SHIFT) changewidth(); //画面幅の切り替え
+			else disphelp(); //HELP表示
 			break;
 		case VK_F4: //F4キー
 			if(num==0) break;
@@ -2551,6 +2619,10 @@ void control_code_process(unsigned char k,unsigned char sh){
 			//CTRL+Z、アンドゥ
 			if(sh & CHK_CTRL) undoexec();
 			break;
+		case 'H':
+			//CTRL+H、HELP表示
+			if(sh & CHK_CTRL) disphelp();
+			break;
 	}
 }
 //テキストエディター本体
@@ -2559,6 +2631,7 @@ void texteditor(void){
 	FIL Fil;	 /* File object needed for each open file */
 	FRESULT fr;
 
+	init_palette_editor();	//カラーパレット初期化
 	editormallocp=EDITORRAM;
 	TextBuffer=(_tbuf *)editormalloc(sizeof(_tbuf)*TBUFMAXLINE);
 	clipboard=editormalloc(ATTROFFSETBW);
