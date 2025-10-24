@@ -46,7 +46,11 @@ int ini_file_io(char* line){
 		if (11==i || 15==i || 27==i) g_io_spi_tx=i;
 	} else if (!strncmp(line,"SPICLK=",7)) {
 		i=atoi(line+7);
-		if (2==i || 6==i || 18==i || 22==i) g_io_spi_sck=i;
+		if (2==i || 6==i || 18==i || 22==i) {
+			g_io_spi_sck=i;
+			g_io_spi_ch=spi0;
+			g_io_spi_sspcr=((volatile unsigned int*)(SPI0_BASE + SPI_SSPCR0_OFFSET));
+		}
 		if (10==i || 14==i || 26==i) {
 			g_io_spi_sck=i;
 			g_io_spi_ch=spi1;
