@@ -778,6 +778,24 @@ void set_lcdalign(unsigned char align){
 	// 液晶の縦横設定
 	LCD_ALIGNMENT=align;
 	LCD_WriteComm(0x36);
+#if MACHIKANIA_GRAPH==rp2350_lcd_1_47
+	if(!(align&HORIZONTAL)){
+		if (align&LCD180TURN) LCD_WriteData(0xC0);
+		else LCD_WriteData(0x00);
+		X_RES=LCD_COLUMN_RES;
+		Y_RES=LCD_ROW_RES;
+		WIDTH_X=LCD_COLUMN_RES/8;
+		WIDTH_Y=LCD_ROW_RES/8;
+	}
+	else{
+		if (align&LCD180TURN) LCD_WriteData(0x80);
+		else LCD_WriteData(0x40);
+		X_RES=LCD_ROW_RES;
+		Y_RES=LCD_COLUMN_RES;
+		WIDTH_X=LCD_ROW_RES/8;
+		WIDTH_Y=LCD_COLUMN_RES/8;
+	}
+#else
 	if(!(align&HORIZONTAL)){
 		if (align&LCD180TURN) LCD_WriteData(0x8C);
 		else LCD_WriteData(0x48);
@@ -794,6 +812,7 @@ void set_lcdalign(unsigned char align){
 		WIDTH_X=LCD_ROW_RES/8;
 		WIDTH_Y=LCD_COLUMN_RES/8;
 	}
+#endif
 	clearscreen();
 }
 

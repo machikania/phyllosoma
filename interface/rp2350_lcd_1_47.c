@@ -289,11 +289,11 @@ void LCD_setAddrWindow(unsigned short x,unsigned short y,unsigned short w,unsign
 {
 	if(!(LCD_ALIGNMENT&HORIZONTAL)){
 		LCD_WriteComm(0x2a);
-		LCD_WriteData2(x);
-		LCD_WriteData2(x+w-1);
+		LCD_WriteData2(x+34);
+		LCD_WriteData2(x+34+w-1);
 		LCD_WriteComm(0x2b);
-		LCD_WriteData2(y+34);
-		LCD_WriteData2(y+34+h-1);
+		LCD_WriteData2(y);
+		LCD_WriteData2(y+h-1);
 	}
 	else{
 		LCD_WriteComm(0x2a);

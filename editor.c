@@ -1699,8 +1699,10 @@ void disp_dir_file_list(int filenum,int top,int num_dir, unsigned char* msg){
 	setcursor(5,0,COLOR_ERRORTEXT);
 	if(WIDTH_X>=40)
 		printstr("[Enter]/[Esc] F1:View F3:Sort");
-	else
+	else if(WIDTH_X>=26)
 		printstr("[Enter][ESC][F1][F3]");
+	else
+		printstr("Enter/ESC");
 	setcursor(WIDTH_X-5,0,COLOR_BOTTOMLINE);
 	switch (filesortby)
 	{
@@ -1739,6 +1741,7 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 	unsigned char vk,sh;
 	int mx;
 
+	if(WIDTH_X<30) show_timestamp=0;
 	if(show_timestamp) mx=1; else mx=WIDTH_X/13;
 	top=-2;//画面一番先頭のファイル番号
 	f=-2;//現在選択中のファイル番号
@@ -1876,7 +1879,8 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 				if(f==-2){
 					//新規ファイル
 					setcursor(0,WIDTH_Y-1,COLOR_ERRORTEXT);
-					printstr("Input File Name: ");
+					if(WIDTH_X>=30) printstr("Input File Name: ");
+					else printstr("FN:");
 					setcursorcolor(COLOR_NORMALTEXT);
 					//ファイル名入力
 					*tempfile=0;
@@ -1886,14 +1890,16 @@ int select_dir_file(int filenum,int num_dir, unsigned char* msg){
 				else if(f==-1){
 					//新規ディレクトリ
 					setcursor(0,WIDTH_Y-1,COLOR_ERRORTEXT);
-					printstr("Input Dir Name: ");
+					if(WIDTH_X>=30) printstr("Input Dir Name: ");
+					else printstr("DN:");
 					setcursorcolor(COLOR_NORMALTEXT);
 					//ディレクトリ名入力
 					*tempfile=0;
 					if(lineinput(tempfile,8+1+3)<0) break; //ESCキー
 					if(f_mkdir(tempfile)){
 						setcursor(0,WIDTH_Y-1,COLOR_ERRORTEXT);
-						printstr("Cannot Make Directory        ");
+						if(WIDTH_X>=30) printstr("Cannot Make Directory        ");
+						else printstr("Error");
 						break;
 					}
 				}
@@ -2436,29 +2442,35 @@ void displaybottomline(void){
 	c=cursorcolor;
 	if(shiftkeys() & CHK_SHIFT){
 		setcursor(0,WIDTH_Y-1,COLOR_BOTTOMLINE);
-		printstr("NEW |    |H/V |TEST|");
-		setcursorcolor(COLOR_ERRORTEXT);
-		t=TBUFMAXSIZE-num;
-		if(t==0) t=1;
-		while(t<10000){
-			printchar(' ');
-			t*=10;
+		if(WIDTH_X>=30){
+			printstr("NEW |    |H/V |TEST|");
+			setcursorcolor(COLOR_ERRORTEXT);
+			t=TBUFMAXSIZE-num;
+			if(t==0) t=1;
+			while(t<10000){
+				printchar(' ');
+				t*=10;
+			}
+			printstr("LEFT:");
+			printnum(TBUFMAXSIZE-num);
 		}
-		printstr("LEFT:");
-		printnum(TBUFMAXSIZE-num);
+		else printstr("NEW|   |H/V|TST");
 	}
 	else{
 		setcursor(0,WIDTH_Y-1,COLOR_BOTTOMLINE);
-		printstr("LOAD|SAVE|HELP|RUN |");
-		setcursorcolor(COLOR_ERRORTEXT);
-		t=line_no;
-		if(t==0) t=1;
-		while(t<10000){
-			printchar(' ');
-			t*=10;
+		if(WIDTH_X>=30){
+			printstr("LOAD|SAVE|    |RUN |");
+			setcursorcolor(COLOR_ERRORTEXT);
+			t=line_no;
+			if(t==0) t=1;
+			while(t<10000){
+				printchar(' ');
+				t*=10;
+			}
+			printstr("LINE:");
+			printnum(line_no);
 		}
-		printstr("LINE:");
-		printnum(line_no);
+		else printstr("LD |SV |   |RUN");
 	}
 	cursor=p; //カーソル位置戻し
 	cursorcolor=c;
