@@ -177,6 +177,28 @@ void LCD_WriteDataN_notfinish(unsigned char *b,int n)
 	spi_write_blocking_notfinish(LCD_SPICH, b,n);
 }
 
+void sw_read_blocking(unsigned char *p,int n)
+// Read Data N bytes from 'SPI_TX' pin by software SPI
+{
+	for(;n>0;n--){
+		for(int i=0;i<8;i++){
+		    gpio_put(LCD_SPI_SCK, 0);
+		    asm volatile("nop \n nop \n nop");
+		    asm volatile("nop \n nop \n nop");
+		    asm volatile("nop \n nop \n nop");
+		    gpio_put(LCD_SPI_SCK, 1);
+		    asm volatile("nop \n nop \n nop");
+		    asm volatile("nop \n nop \n nop");
+		    asm volatile("nop \n nop \n nop");
+		    asm volatile("nop \n nop \n nop");
+		    asm volatile("nop \n nop \n nop");
+			*p<<=1;
+			if(gpio_get(LCD_SPI_TX)) *p+=1;
+		}
+		p++;
+	}
+}
+
 void LCD_Read(unsigned char com,unsigned char *b,int n){
 	lcd_cs_lo();
 // Write Command
@@ -184,11 +206,23 @@ void LCD_Read(unsigned char com,unsigned char *b,int n){
 	spi_write_blocking(LCD_SPICH, &com , 1);
 // Read Data
 	lcd_dc_hi();
-	spi_set_baudrate(LCD_SPICH, LCD_SPI_BAUDRATE_R);
-	spi_read_blocking(LCD_SPICH, 0, b, 1); // dummy read
-	spi_read_blocking(LCD_SPICH, 0, b, n);
-	spi_set_baudrate(LCD_SPICH, LCD_SPI_BAUDRATE);
+
+// Temporarily disable the hardware SPI
+// and initialize SCK/TX port for software SPI
+	gpio_init(LCD_SPI_SCK);
+	gpio_put(LCD_SPI_SCK, 0);
+	gpio_set_dir(LCD_SPI_SCK, GPIO_OUT);
+	gpio_init(LCD_SPI_TX);
+	gpio_set_dir(LCD_SPI_TX, GPIO_IN);
+
+	sw_read_blocking(b, 1); // dummy read
+	sw_read_blocking(b, n);
+
 	lcd_cs_hi();
+
+	// Reconfigure the hardware SPI.
+	gpio_set_function(LCD_SPI_TX, GPIO_FUNC_SPI);
+	gpio_set_function(LCD_SPI_SCK, GPIO_FUNC_SPI);
 }
 
 void LCD_Init()
@@ -347,7 +381,10 @@ void drawPixel(unsigned short x, unsigned short y, unsigned short color)
 
 unsigned short getColor(unsigned short x, unsigned short y)
 {
-	return 0;
+	unsigned int d=0;
+	LCD_SetCursor(x,y);
+	LCD_Read(0x2e, (unsigned char *)&d, 3);
+	return ((d&0xf8)<<8)|((d&0xfc00)>>5)|((d&0xf80000)>>19); //RGB565 format
 }
 
 int attroffset; // TVRAMのカラー情報エリア位置
