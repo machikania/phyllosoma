@@ -2459,7 +2459,7 @@ void displaybottomline(void){
 	else{
 		setcursor(0,WIDTH_Y-1,COLOR_BOTTOMLINE);
 		if(WIDTH_X>=30){
-			printstr("LOAD|SAVE|    |RUN |");
+			printstr("LOAD|SAVE|HELP|RUN |");
 			setcursorcolor(COLOR_ERRORTEXT);
 			t=line_no;
 			if(t==0) t=1;
@@ -2470,7 +2470,7 @@ void displaybottomline(void){
 			printstr("LINE:");
 			printnum(line_no);
 		}
-		else printstr("LD |SV |   |RUN");
+		else printstr("LD |SV |HLP|RUN");
 	}
 	cursor=p; //カーソル位置戻し
 	cursorcolor=c;
