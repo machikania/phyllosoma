@@ -60,10 +60,12 @@
 #define KMBASIC_RP2040 1
 #endif
 
+#ifndef IO_SPI_TX
 #define IO_SPI_TX SD_SPI_TX
 #define IO_SPI_RX SD_SPI_RX
 #define IO_SPI_SCK SD_SPI_SCK
 #define IO_SPI_CH SD_SPICH
+#endif
 
 #define KEYUP (1 << GPIO_KEYUP)
 #define KEYLEFT (1 << GPIO_KEYLEFT)

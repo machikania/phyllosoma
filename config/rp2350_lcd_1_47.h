@@ -41,6 +41,10 @@
 
 // IO settings
 #define IO_SPI_CS 3
+#define IO_SPI_TX 27
+#define IO_SPI_RX 8
+#define IO_SPI_SCK 26
+#define IO_SPI_CH spi1
 #define IO_SPI_SSPCR0 ((volatile unsigned int*)(SPI1_BASE + SPI_SSPCR0_OFFSET))
 #define IO_I2C_SDA 6
 #define IO_I2C_SCL 7
