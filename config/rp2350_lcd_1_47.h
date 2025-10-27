@@ -117,3 +117,6 @@
 #define SD_SPI_SCK 10
 #define SD_SPICH spi1
 #define SD_SPI_BAUDRATE (10*1000*1000)
+
+// LCD type setting
+#define LCD_ST7789

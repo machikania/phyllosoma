@@ -60,6 +60,15 @@
 #define KMBASIC_RP2040 1
 #endif
 
+#ifdef LCD_ST7789
+#undef LCD_ST7789
+#define LCD_ST7789 1
+#define LCD_ILI9xxx 0
+#else
+#define LCD_ST7789 0
+#define LCD_ILI9xxx 1
+#endif
+
 #ifndef IO_SPI_TX
 #define IO_SPI_TX SD_SPI_TX
 #define IO_SPI_RX SD_SPI_RX
