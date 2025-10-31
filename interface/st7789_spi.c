@@ -1,6 +1,6 @@
 /*----------------------------------------------------------------------------
 
-Copyright (C) 2025, KenKen, all right reserved.
+Copyright (C) 2022, KenKen, all right reserved.
 
 This program supplied herewith by KenKen is free software; you can
 redistribute it and/or modify it under the terms of the same license written
@@ -177,28 +177,6 @@ void LCD_WriteDataN_notfinish(unsigned char *b,int n)
 	spi_write_blocking_notfinish(LCD_SPICH, b,n);
 }
 
-void sw_read_blocking(unsigned char *p,int n)
-// Read Data N bytes from 'SPI_TX' pin by software SPI
-{
-	for(;n>0;n--){
-		for(int i=0;i<8;i++){
-		    gpio_put(LCD_SPI_SCK, 0);
-		    asm volatile("nop \n nop \n nop");
-		    asm volatile("nop \n nop \n nop");
-		    asm volatile("nop \n nop \n nop");
-		    gpio_put(LCD_SPI_SCK, 1);
-		    asm volatile("nop \n nop \n nop");
-		    asm volatile("nop \n nop \n nop");
-		    asm volatile("nop \n nop \n nop");
-		    asm volatile("nop \n nop \n nop");
-		    asm volatile("nop \n nop \n nop");
-			*p<<=1;
-			if(gpio_get(LCD_SPI_TX)) *p+=1;
-		}
-		p++;
-	}
-}
-
 void LCD_Read(unsigned char com,unsigned char *b,int n){
 	lcd_cs_lo();
 // Write Command
@@ -206,112 +184,35 @@ void LCD_Read(unsigned char com,unsigned char *b,int n){
 	spi_write_blocking(LCD_SPICH, &com , 1);
 // Read Data
 	lcd_dc_hi();
-
-// Temporarily disable the hardware SPI
-// and initialize SCK/TX port for software SPI
-	gpio_init(LCD_SPI_SCK);
-	gpio_put(LCD_SPI_SCK, 0);
-	gpio_set_dir(LCD_SPI_SCK, GPIO_OUT);
-	gpio_init(LCD_SPI_TX);
-	gpio_set_dir(LCD_SPI_TX, GPIO_IN);
-
-	sw_read_blocking(b, 1); // dummy read
-	sw_read_blocking(b, n);
-
+	spi_set_baudrate(LCD_SPICH, LCD_SPI_BAUDRATE_R);
+	spi_read_blocking(LCD_SPICH, 0, b, 1); // dummy read
+	spi_read_blocking(LCD_SPICH, 0, b, n);
+	spi_set_baudrate(LCD_SPICH, LCD_SPI_BAUDRATE);
 	lcd_cs_hi();
-
-	// Reconfigure the hardware SPI.
-	gpio_set_function(LCD_SPI_TX, GPIO_FUNC_SPI);
-	gpio_set_function(LCD_SPI_SCK, GPIO_FUNC_SPI);
 }
 
 void LCD_Init()
 {
+	lcd_cs_hi();
+	lcd_dc_hi();
+
 	// Reset controller
 	lcd_reset_hi();
-	sleep_ms(100);
-	lcd_reset_lo();
-	sleep_ms(100);
-	lcd_reset_hi();
 	sleep_ms(1);
+	lcd_reset_lo();
+	sleep_ms(10);
+	lcd_reset_hi();
+	sleep_ms(120);
 
 //************* Start Initial Sequence **********//
-	LCD_WriteComm(0x11);
-	sleep_ms(120);
-//	LCD_WriteComm(0x36);
-
-	LCD_WriteComm(0x3A);
+	LCD_WriteComm(0x3A);	 
 	LCD_WriteData(0x05);
 
-	LCD_WriteComm(0xB2);
-	LCD_WriteData(0x0C);
-	LCD_WriteData(0x0C);
-	LCD_WriteData(0x00);
-	LCD_WriteData(0x33);
-	LCD_WriteData(0x33);
+	LCD_WriteComm(0xC0);	 
+	LCD_WriteData(0x00);   
 
-	LCD_WriteComm(0xB7);
-	LCD_WriteData(0x35);
-
-	LCD_WriteComm(0xBB);
-	LCD_WriteData(0x35);
-
-	LCD_WriteComm(0xC0);
-	LCD_WriteData(0x00);
-//	LCD_WriteData(0x2C);
-
-	LCD_WriteComm(0xC2);
-	LCD_WriteData(0x01);
-
-	LCD_WriteComm(0xC3);
-	LCD_WriteData(0x13);
-
-	LCD_WriteComm(0xC4);
-	LCD_WriteData(0x20);
-
-	LCD_WriteComm(0xC6);
-	LCD_WriteData(0x0F);
-
-	LCD_WriteComm(0xD0);
-	LCD_WriteData(0xA4);
-	LCD_WriteData(0xA1);
-
-	LCD_WriteComm(0xD6);
-	LCD_WriteData(0xA1);
-
-	LCD_WriteComm(0xE0);
-	LCD_WriteData(0xF0);
-	LCD_WriteData(0x00);
-	LCD_WriteData(0x04);
-	LCD_WriteData(0x04);
-	LCD_WriteData(0x04);
-	LCD_WriteData(0x05);
-	LCD_WriteData(0x29);
-	LCD_WriteData(0x33);
-	LCD_WriteData(0x3E);
-	LCD_WriteData(0x38);
-	LCD_WriteData(0x12);
-	LCD_WriteData(0x12);
-	LCD_WriteData(0x28);
-	LCD_WriteData(0x30);
-
-	LCD_WriteComm(0xE1);
-	LCD_WriteData(0xF0);
-	LCD_WriteData(0x07);
-	LCD_WriteData(0x0A);
-	LCD_WriteData(0x0D);
-	LCD_WriteData(0x0B);
-	LCD_WriteData(0x07);
-	LCD_WriteData(0x28);
-	LCD_WriteData(0x33);
-	LCD_WriteData(0x3E);
-	LCD_WriteData(0x36);
-	LCD_WriteData(0x14);
-	LCD_WriteData(0x14);
-	LCD_WriteData(0x29);
-	LCD_WriteData(0x32);
-
-	LCD_WriteComm(0x21); // invert
+	LCD_WriteComm(0xF0);	 
+	LCD_WriteData(0x69);   
 
 	LCD_WriteComm(0x11);
 	sleep_ms(120);
@@ -324,16 +225,16 @@ void LCD_setAddrWindow(unsigned short x,unsigned short y,unsigned short w,unsign
 {
 	if(!(LCD_ALIGNMENT&HORIZONTAL)){
 		LCD_WriteComm(0x2a);
-		LCD_WriteData2(x+34);
-		LCD_WriteData2(x+34+w-1);
+		LCD_WriteData2(x);
+		LCD_WriteData2(x+w-1);
 		LCD_WriteComm(0x2b);
 		LCD_WriteData2(y);
 		LCD_WriteData2(y+h-1);
 	}
 	else{
 		LCD_WriteComm(0x2a);
-		LCD_WriteData2(y+34);
-		LCD_WriteData2(y+34+h-1);
+		LCD_WriteData2(y);
+		LCD_WriteData2(y+h-1);
 		LCD_WriteComm(0x2b);
 		LCD_WriteData2(x);
 		LCD_WriteData2(x+w-1);
@@ -397,7 +298,7 @@ void lcd_spi_init(void){
 void lcd_display_init(void){
 	// Enable SPI and connect to GPIOs
 	spi_init(LCD_SPICH, LCD_SPI_BAUDRATE);
-//	gpio_set_function(LCD_SPI_RX, GPIO_FUNC_SPI);
+	gpio_set_function(LCD_SPI_RX, GPIO_FUNC_SPI);
 	gpio_set_function(LCD_SPI_TX, GPIO_FUNC_SPI);
 	gpio_set_function(LCD_SPI_SCK, GPIO_FUNC_SPI);
 	
@@ -410,9 +311,6 @@ void lcd_display_init(void){
 	gpio_init(LCD_RESET);
 	gpio_put(LCD_RESET, 1);
 	gpio_set_dir(LCD_RESET, GPIO_OUT);
-	gpio_init(LCD_BL);
-	gpio_put(LCD_BL, 1);
-	gpio_set_dir(LCD_BL, GPIO_OUT);
 	
 	init_textgraph(HORIZONTAL);
 

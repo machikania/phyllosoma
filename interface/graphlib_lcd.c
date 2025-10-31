@@ -779,30 +779,16 @@ void set_lcdalign(unsigned char align){
 	LCD_ALIGNMENT=align;
 	LCD_WriteComm(0x36);
 	if(!(align&HORIZONTAL)){
-		if (LCD_ST7789) {
-			// ST7789
-			if (align&LCD180TURN) LCD_WriteData(0xC0);
-			else LCD_WriteData(0x00);
-		} else {
-			// ILI9xxx
-			if (align&LCD180TURN) LCD_WriteData(0x8C);
-			else LCD_WriteData(0x48);
-		}
+		if (align&LCD180TURN) LCD_WriteData(0x8C);
+		else LCD_WriteData(0x48);
 		X_RES=LCD_COLUMN_RES;
 		Y_RES=LCD_ROW_RES;
 		WIDTH_X=LCD_COLUMN_RES/8;
 		WIDTH_Y=LCD_ROW_RES/8;
 	}
 	else{
-		if (LCD_ST7789) {
-			// ST7789
-			if (align&LCD180TURN) LCD_WriteData(0x80);
-			else LCD_WriteData(0x40);
-		} else {
-			// ILI9xxx
-			if (align&LCD180TURN) LCD_WriteData(0xC8);
-			else LCD_WriteData(0x0C);
-		}
+		if (align&LCD180TURN) LCD_WriteData(0xC8);
+		else LCD_WriteData(0x0C);
 		X_RES=LCD_ROW_RES;
 		Y_RES=LCD_COLUMN_RES;
 		WIDTH_X=LCD_ROW_RES/8;

@@ -1,5 +1,5 @@
 /*
-	Configuration file for Waveshare RP2350-LCD-1.47
+	Configuration file for Raspberry Pi Pico + ST7789 LCD + MMC card
 
 	Peripheral assignment
 
@@ -11,41 +11,34 @@
 	GP5 I/O bit5 / UART RX
 	GP6 I/O bit6 / I2C SDA
 	GP7 I/O bit7 / I2C SCL
-	GP8 I/O bit8 / button1 (UP) / SPI RX
+	GP8 I/O bit8 / button1 (UP)
 	GP9 I/O bit9 / button2 (LEFT)
-	GP10 SD-SCLK
-	GP11 SD_DI(MOSI)
-	GP12 SD_DO(MISO)
-	GP13 SD_D1
-	GP14 SD_D2
-	GP15 SD_CS
-	GP16 LCD_DC
-	GP17 LCD_CS
-	GP18 LCD_CLK
-	GP19 LCD_DIN(MOSI)
-	GP20 LCD_RST
-	GP21 LCD_BL
-	GP22 I/O bit15 / RGB_IO(WS2812B)
-	GP23 (NC)
-	GP24 (NC)
-	GP25 I/O bit10 / button3 (RIGHT)
-	GP26 I/O bit11 / button4 (DOWN) / ADC0 / SCK
-	GP27 I/O bit12 / button5 (START) / ADC1 / SPI TX
-	GP28 I/O bit13 / SOUND OUT / ADC2
-	GP29 I/O bit14 / button6 (FIRE) / ADC3
+	GP10 LCD-DC
+	GP11 LCD-RESET
+	GP12 LCD-MISO
+	GP13 LCD-CS
+	GP14 LCD-SCK
+	GP15 LCD-MOSI
+	GP16 SD-DO(MISO) / SPI RX (pulled up by a 10k ohm resistor)
+	GP17 SD-CS
+	GP18 SD-SCLK / SCK
+	GP19 SD-DI(MOSI) / SPI TX
+	GP20 I/O bit10 / button3 (RIGHT)
+	GP21 I/O bit11 / button4 (DOWN)
+	GP22 I/O bit12 / button5 (START)
+	GP26 I/O bit13 / button6 (FIRE) / ADC0
+	GP27 I/O bit14 / ADC1
+	GP28 I/O bit15 / SOUND OUT / ADC2
+	GP29 ADC3
 */
 
 //                     31     24      16       8       0
 //                      |      |       |       |       |
-#define GPIO_ALL_MASK 0b00111110010000000000001111111111
+#define GPIO_ALL_MASK 0b00011100011100000000001111111111
 
 // IO settings
 #define IO_SPI_CS 3
-#define IO_SPI_TX 27
-#define IO_SPI_RX 8
-#define IO_SPI_SCK 26
-#define IO_SPI_CH spi1
-#define IO_SPI_SSPCR0 ((volatile unsigned int*)(SPI1_BASE + SPI_SSPCR0_OFFSET))
+#define IO_SPI_SSPCR0 ((volatile unsigned int*)(SPI0_BASE + SPI_SSPCR0_OFFSET))
 #define IO_I2C_SDA 6
 #define IO_I2C_SCL 7
 #define IO_I2C_CH i2c1
@@ -76,20 +69,20 @@
 #define IO_GPIO7  7
 #define IO_GPIO8  8
 #define IO_GPIO9  9
-#define IO_GPIO10 25
-#define IO_GPIO11 26
-#define IO_GPIO12 27
-#define IO_GPIO13 28
-#define IO_GPIO14 29
-#define IO_GPIO15 22
+#define IO_GPIO10 20
+#define IO_GPIO11 21
+#define IO_GPIO12 22
+#define IO_GPIO13 26
+#define IO_GPIO14 27
+#define IO_GPIO15 28
 
 // Buttons settings
 #define GPIO_KEYUP 8
 #define GPIO_KEYLEFT 9
-#define GPIO_KEYRIGHT 25
-#define GPIO_KEYDOWN 26
-#define GPIO_KEYSTART 27
-#define GPIO_KEYFIRE 29
+#define GPIO_KEYRIGHT 20
+#define GPIO_KEYDOWN 21
+#define GPIO_KEYSTART 22
+#define GPIO_KEYFIRE 26
 
 // Audio settings
 #define AUDIO_PORT 28
@@ -97,23 +90,22 @@
 #define AUDIO_CHAN PWM_CHAN_A
 
 // LCD settings
-#define LCD_CS 17
-#define LCD_DC 16
-#define LCD_RESET 20
-#define LCD_BL 21
-#define LCD_SPI_TX 19
-#define LCD_SPI_RX 31 // dummy
-#define LCD_SPI_SCK 18
-#define LCD_SPICH spi0
-#define LCD_COLUMN_RES 172
+#define LCD_CS 13
+#define LCD_DC 10
+#define LCD_RESET 11
+#define LCD_SPI_TX 15
+#define LCD_SPI_RX 12
+#define LCD_SPI_SCK 14
+#define LCD_SPICH spi1
+#define LCD_COLUMN_RES 240
 #define LCD_ROW_RES 320
 #define LCD_SPI_BAUDRATE (50*1000*1000)
 #define LCD_SPI_BAUDRATE_R (15*1000*1000)
 
 // File system SPI settings
-#define SD_SPI_CS 15
-#define SD_SPI_TX 11
-#define SD_SPI_RX 12
-#define SD_SPI_SCK 10
-#define SD_SPICH spi1
+#define SD_SPI_CS 17
+#define SD_SPI_TX 19
+#define SD_SPI_RX 16
+#define SD_SPI_SCK 18
+#define SD_SPICH spi0
 #define SD_SPI_BAUDRATE (10*1000*1000)
