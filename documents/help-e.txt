@@ -236,6 +236,8 @@ PI#
 	Returns 3.141593.
 POW#(x#,y#)
 	Returns the y# power of x# as a real number.
+RND#()
+	Returns a random number greater than or equal to 0 and less than 1.
 SIN#(x#)
 	Returns the sine of x# as a real number.
 SINH#(x#)

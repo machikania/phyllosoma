@@ -85,6 +85,7 @@ char* get_help(const char* word){
 		case 0x8238d383: //GCOLOR
 		case 0xea9ef7dc: //CORETIMER
 		case 0x5520c112: //TIMER
+		case 0x000533c4: //RND
 			num_funcs=2;
 			break;
 		case 0x46392502: //GOSUB
