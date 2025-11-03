@@ -392,6 +392,9 @@ int attroffset; // TVRAMのカラー情報エリア位置
 
 void lcd_spi_init(void){
 	spi_init(LCD_SPICH, LCD_SPI_BAUDRATE);
+	gpio_init(LCD_BL);
+	gpio_put(LCD_BL, 1);
+	gpio_set_dir(LCD_BL, GPIO_OUT);
 }
 
 void lcd_display_init(void){
