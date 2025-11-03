@@ -34,6 +34,9 @@ void* g_io_i2c_ch=IO_I2C_CH;
 unsigned char g_io_i2c_sda=IO_I2C_SDA;
 unsigned char g_io_i2c_scl=IO_I2C_SCL;
 
+// PMW4-PMW9 port settings
+unsigned char g_pwm_aux[6]={255,255,255,255,255,255};
+
 int ini_file_io(char* line){
 	int i;
 	if (!strncmp(line,"SPIMISO=",8)) {
@@ -94,6 +97,10 @@ int ini_file_io(char* line){
 			g_io_i2c_scl=i;
 			g_io_i2c_ch=i2c1;
 		}
+	} else if ('4'<=line[3] && line[3]<='9' && '='==line[4] &!strncmp(line,"PWM",3)) {
+		// PMW4-PMW9 port settings
+		i=atoi(line+5);
+		if (0<=i && i<=29) g_pwm_aux[line[3]-'4']=i;
 	} else return 0;
 	return 1;
 }
@@ -168,6 +175,9 @@ void io_init(void){
 	pwm_set_enabled(IO_PWM1_SLICE, false);
 	pwm_set_enabled(IO_PWM2_SLICE, false);
 	pwm_set_enabled(IO_PWM3_SLICE, false);
+	for(i=0;i<0;i++) {
+		if (g_pwm_aux[i]<=29) pwm_set_enabled(g_pwm_aux[i], false);
+	}
 	// Disable I2C and UART
 	i2c_deinit(g_io_i2c_ch);
 	uart_deinit(g_io_uart_ch);
@@ -292,6 +302,12 @@ int lib_pwm(int r0, int r1, int r2){
 			port=IO_PWM3;
 			slice=IO_PWM3_SLICE;
 			channel=IO_PWM3_CHANNEL;
+			break;
+		case 4: case 5: case 6: case 7: case 8: case 9:
+			port=g_pwm_aux[r0-4];
+			if (29<port) return r0;
+			slice=pwm_gpio_to_slice_num(port);
+			channel=pwm_gpio_to_channel(port);
 			break;
 		default:
 			// Invalid
