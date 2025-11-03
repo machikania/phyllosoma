@@ -176,7 +176,7 @@ void io_init(void){
 	pwm_set_enabled(IO_PWM2_SLICE, false);
 	pwm_set_enabled(IO_PWM3_SLICE, false);
 	for(i=0;i<6;i++) {
-		if (g_pwm_aux[i]<=29) pwm_set_enabled(g_pwm_aux[i], false);
+		if (g_pwm_aux[i]<=29) pwm_set_enabled(pwm_gpio_to_slice_num(g_pwm_aux[i]), false);
 	}
 	// Disable I2C and UART
 	i2c_deinit(g_io_i2c_ch);
