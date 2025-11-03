@@ -28,7 +28,7 @@ int int_function(void){
 }
 
 int rnd_function(void){
-	return call_lib_code(LIB_RND);
+	return argn_function(LIB_RND,RANDOM_INT<<LIBOPTION);
 }
 
 

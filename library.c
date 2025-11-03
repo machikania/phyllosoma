@@ -230,13 +230,23 @@ int lib_dim(int argsnum, int varnum, int r2){
 };
 
 int lib_rnd(int r0, int r1, int r2){
+	// Marsaglia, G. (2003). Xorshift RNGs. Journal of Statistical Software, 8(14), 1–6. https://doi.org/10.18637/jss.v008.i14
 	int y;
 	y=g_rnd_seed;
 	y = y ^ (y << 13);
 	y = y ^ (y >> 17);
 	y = y ^ (y << 5);
 	g_rnd_seed=y;
-	return y&0x7fff;
+	switch(r2){
+		case RANDOM_FLOAT:
+			// Float (0-0.999999)
+			g_scratch_float[0]=(float)(y&0x7fffff)/(float)(0x800000);
+			return g_scratch_int[0];
+		case RANDOM_INT:
+		default:
+			// Integer (0-32767)
+			return y&0x7fff;
+	}
 }
 
 int lib_int(int r0, int r1, int r2){

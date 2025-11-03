@@ -345,6 +345,9 @@
 #define INTERRUPT_WAVE      5
 #define INTERRUPT_CORETIMER 6
 
+#define RANDOM_INT 0
+#define RANDOM_FLOAT 1
+
 #define VALIDCLOCK4NTSC (g_clock_hz==157500000 || g_clock_hz==315000000)
 
 /*
