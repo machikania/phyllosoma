@@ -10,7 +10,6 @@
 #include <stdlib.h>
 #include "pico/stdlib.h"
 #include "hardware/clocks.h"
-#include "./io.h"
 #include "./compiler.h"
 #include "./api.h"
 #include "./debug.h"

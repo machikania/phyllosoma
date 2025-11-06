@@ -122,12 +122,6 @@
 
 #define KMBASIC_OBJECT_KBYTES 192
 
-// Disable all port number conversion
-#undef io_gpio_outh_conversion
-#undef io_gpio_inh_conversion
-#undef io_gpio_out16_conversion
-#undef io_gpio_in16_conversion
+// The port number conversion that is specific to this configuration
 #define io_gpio_outh_conversion(a) (((a)&0xff)<<8)
 #define io_gpio_inh_conversion(a) (((a)>>8)&0xff)
-#define io_gpio_out16_conversion(a) (a)
-#define io_gpio_in16_conversion(a) (a)
