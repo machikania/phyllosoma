@@ -117,3 +117,15 @@
 #define SD_SPI_SCK 10
 #define SD_SPICH spi1
 #define SD_SPI_BAUDRATE (10*1000*1000)
+
+// The port number conversion that is specific to this configuration
+#define io_gpio_outh_conversion(a) (\
+		(((a)&0x03)<<8) |\
+		(((a)&0x7c)<<23) |\
+		(((a)&0x80)<<15) \
+	)
+#define io_gpio_inh_conversion(a) (\
+		(((a)>>8)&0x03) |\
+		(((a)>>23)&0x7c) |\
+		(((a)>>15)&0x80) \
+	)

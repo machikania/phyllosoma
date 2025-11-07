@@ -123,5 +123,23 @@
 #define KMBASIC_OBJECT_KBYTES 192
 
 // The port number conversion that is specific to this configuration
+#define io_gpio_outl_conversion(a) (\
+		((a)&0x03)|\
+		(((a)&0x04)<<19)|\
+		(((a)&0x08)<<18)|\
+		(((a)&0x10)<<17)|\
+		((a)&0x20)|\
+		(((a)&0x40)<<15)|\
+		(((a)&0x80)<<14)|\
+	)
+#define io_gpio_inl_conversion(a) (\
+		((a)&0x03)|\
+		(((a)>>19)&0x04)|\
+		(((a)>>18)&0x08)|\
+		(((a)>>17)&0x10)|\
+		((a)&0x20)|\
+		(((a)>>15)&0x40)|\
+		(((a)>>14)&0x80)|\
+	)
 #define io_gpio_outh_conversion(a) (((a)&0xff)<<8)
 #define io_gpio_inh_conversion(a) (((a)>>8)&0xff)
