@@ -115,10 +115,10 @@
 #define io_gpio_outh_conversion(a) (\
 		(((a)&0x01)<<13) |\
 		(((a)&0x7e)<<15) |\
-		(((a)&0x80)<<25) \
+		(((a)&0x80)<<19) \
 	)
 #define io_gpio_inh_conversion(a) (\
 		(((a)>>13)&0x01) |\
 		(((a)>>15)&0x7e) |\
-		(((a)>>25)&0x80) \
+		(((a)>>19)&0x80) \
 	)
