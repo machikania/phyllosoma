@@ -58,10 +58,8 @@ FRESULT chdir_sub_directory(char* fname,const char* subdir){
 	return f_chdir(g_file_buffer);
 }
 
-int compile_file(unsigned char* fname, char isclass){
+int compile_file_sub(FIL* fp, unsigned char* fname, char isclass){
 	int e,i,num,class_id;
-	FIL fpo;
-	FIL* fp=&fpo;
 	unsigned char* classfile;
 	unsigned char curdir[64];
 	unsigned short* bl;
@@ -154,7 +152,7 @@ int compile_file(unsigned char* fname, char isclass){
 			// Compile the class
 			num=g_class_id;
 			classfile=g_class_file;
-			e=compile_file(classfile,1);
+			e=compile_file_sub(fp,classfile,1);
 			if (e) return e;
 			e=post_compilling_a_class();
 			if (e) return e;
@@ -194,6 +192,10 @@ int compile_file(unsigned char* fname, char isclass){
 	// Delete the temporary string for current directory
 	cmpdata_delete_string_stack(curdir);
 	return end_file_compiler();
+}
+int compile_file(unsigned char* fname, char isclass){
+	FIL fpo;
+	return compile_file_sub(&fpo,fname,isclass);
 }
 
 FIL* g_pFileHandles[2];
