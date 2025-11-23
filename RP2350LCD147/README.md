@@ -9,7 +9,8 @@ MachiKania Phyllosoma is a BASIC compiler for ARMv6-M, especially for Raspberry 
 cmake and make. The pico-sdk (ver 2.2.0 is confirmed for building) with all submodules (execute "Submodule Update" for git clone) is required. In config.cmake, select configuration option to build by enabling "set()" command. Currently, there is following option:  
   
 1. set(MACHIKANIA_BUILD rp2350_lcd_1_47)  
-2. Add "-DPICO_BOARD=pico2 -DPICO_PLATFORM=rp2350-arm-s" parameter to execute cmake, then execute make.  
+
+Add "-DPICO_BOARD=pico2 -DPICO_PLATFORM=rp2350-arm-s" parameter to execute cmake, then execute make.  
 
 ## License
 Most of codes (written in C) are provided with LGPL 2.1 license, but some codes are provided with the other licenses. See the comment of each file.
