@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.8.17
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.11.23
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type P
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -10,9 +10,9 @@ a small LCD module to realize a portable BASIC execution environment.
 External devices such as general-purpose I/O, SPI, and I2C can be easily 
 controlled from BASIC.
 
-This document describes MachiKania for the Waveshare Pico-ResTouch-LCD-3.5 
-(hereafter referred to as ResTouch).
 
+This document describes MachiKania for the Waveshare RP2350-LCD-1.47 (hereafter
+ referred to as RP2350-LCD-1.47).
 
 The on-board BASIC compiler is KM-BASIC, which is a 32-bit integer BASIC.
 It also supports single-precision floating-point arithmetic.
@@ -31,47 +31,32 @@ instructions, or in any other place.
 Please note that we are not responsible for any damage or loss caused by the 
 use of the MachiKania series.
 
-When using the ResTouch-compatible version of MachiKania, please note the 
+When using the RP2350-LCD-1.47-compatible version of MachiKania, please note the 
 following points.
-
-<Supported Pi Pico boards>
-
-It supports four models: Raspberry Pi Pico, Raspberry Pi Pico 2, Raspberry Pi 
-Pico W, and Raspberry Pi Pico 2 W. Please install the appropriate phyllosoma_kb.uf2 
-file for your board from the distributed archive. For WiFi-compatible versions, 
-connecting to the internet via WiFi is also possible.
-
-To install the .uf2 file, follow these steps:
-  1. Turn off the power to the ResTouch (unplug the USB micro B cable).
-  2. Flip the ResTouch over, then while pressing and holding the“BOOTSEL” 
-     button on the Raspberry Pi Pico board, connect it to your PC using a USB 
-     micro B cable.
-  3. A drive named RPI-RP2 or RP2350 will appear on your PC. Drag and drop the 
-     phyllosoma_kb.uf2 file into that drive.
 
 
 <MACHIKAP.INI>
 
-To ensure that MachiKania works properly on ResTouch, make sure to place the 
+To ensure that MachiKania works properly on RP2350-LCD-1.47, make sure to place the 
 included MACHIKAP.INI file in the root directory of the MMC/SD card.
 
 
 <Keyboard>
 
-For programs that do not use the touch panel, the keyboard is the only input 
+For programs that do not use the gpio input(s), the keyboard is the only input 
 device. Please connect a USB keyboard using a USB-OTG cable. Be sure to use 
-a Micro-B USB-OTG cable with power input.
+a Micro-C USB-OTG cable with power input.
 
 For general use, please install phyllosoma_kb.uf2, which supports USB keyboards. 
 The phyllosoma.uf2 file is intended for special use cases such as operating 
-solely with the touch panel or communicating with a PC via serial connection, 
+solely without the input or communicating with a PC via serial connection, 
 without using a USB keyboard.
 
 
 <Button switches>
 
 MachiKania is operated using six buttons: Up, Down, Left, Right, Fire, and 
-Start. Since ResTouch does not have these physical buttons, they are emulated 
+Start. Since RP2350-LCD-1.47 does not have these physical buttons, they are emulated 
 via the keyboard. By default, the arrow keys correspond to directional controls, 
 the "F" key to Fire, and the "S" key to Start. If you wish to change these 
 key mappings, please edit the MACHIKAP.INI file. Settings like "EMULATEBUTTONUP=" 
@@ -89,44 +74,7 @@ simultaneously. This will interrupt the program. However, please note that in ce
 loops (such as those without any PRINT commands) the program may not stop as expected.
 
 
-<Touch Panel>
-
-When using the touch panel, please use the TSC2046 class. During class initialization, 
-specify ports 9 and 10 in the INIT() method as shown below:
-
-  TSC2046::INIT(9,10)
-
-
-<LCD Backlight>
-
-The LCD backlight brightness can be controlled via I/O bit 8 or PWM1. For example:
-
-  PWM 200
-
-This will dim the display (specify a value between 0–1000). To restore the original brightness:
-
-  PWM 1000
-
-You can also turn the backlight on (OUT 8,1) or off (OUT 8,0) using "OUT" statement.
-
-
-<Receiving Data from the LCD>
-
-Although ResTouch can send data to the LCD, it cannot receive data from it. 
-As a result, certain graphic commands—such as the GCOLOR function—are not 
-supported. For example, the sample program INVADE.BAS, which uses this feature, 
-does not operate correctly.
-
-
-<Audio Output>
-
-ResTouch does not have a built-in audio output device. Therefore, in order to run 
-programs that output sound, you need to connect an external audio device (such as 
-a piezo buzzer or headphone jack) to ResTouch. Audio from MachiKania is output 
-through GP27 on the Raspberry Pi Pico, so please use this pin along with the GND pin.
-
-
-<machikania-rt.zip file contents>
+<machikania-rl.zip file contents>
 
 [documents] directory
 　Stores documents
@@ -138,72 +86,21 @@ through GP27 on the Raspberry Pi Pico, so please use this pin along with the GND
 　- class-e.txt
 　　Reference Manual for Object-Oriented Programming in KM-BASIC
 
-　- embed.txt
-　- embed-e.txt
-　　How to Create File Embedded Executables
-
 　- pcconnect.txt
 　- pcconnect-e.txt
 　　How to transfer files from your PC to MachiKania
-
-　- shematic.png
-　　MachiKania type P schematic
-
-　- wifi.txt
-　- wifi-e.txt
-　　Reference manual to use WiFi connection with Raspberry Pi Pico W
-
-[pico] directory
-　Stores binaries used with Raspberry Pi Pico
-　- phyllosoma.uf2
-　　MachiKania type P BASIC system (version supporting PC connect function)
-　　Connects the PC and Raspberry Pi Pico via USB and transfer the uf2 file
-　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
-
-　- phyllosoma_kb.uf2
-　　MachiKania type P BASIC system main unit (USB keyboard connection version)
-　　Connects a PC and Raspberry Pi Pico via USB cable and transfer the uf2 file
-　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
-
-[pico_w] directory
-　Stores binaries used with Raspberry Pi Pico W
-　- phyllosoma.uf2
-　　MachiKania type P BASIC system (version supporting PC connect function)
-　　Connects the PC and Raspberry Pi Pico via USB and transfer the uf2 file
-　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
-　　WiFi connection is available.
-
-　- phyllosoma_kb.uf2
-　　MachiKania type P BASIC system main unit (USB keyboard connection version)
-　　Connects a PC and Raspberry Pi Pico via USB cable and transfer the uf2 file
-　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
-　　WiFi connection is available.
 
 [pico2] directory
 　Stores binaries used with Raspberry Pi Pico 2
 　- phyllosoma.uf2
 　　MachiKania type P BASIC system (version supporting PC connect function)
-　　Connects the PC and Raspberry Pi Pico via USB and transfer the uf2 file
+　　Connects the PC and RP2350-LCD-1.47 via USB and transfer the uf2 file
 　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
 
 　- phyllosoma_kb.uf2
 　　MachiKania type P BASIC system main unit (USB keyboard connection version)
-　　Connects a PC and Raspberry Pi Pico via USB cable and transfer the uf2 file
+　　Connects a PC and RP2350-LCD-1.47 via USB cable and transfer the uf2 file
 　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
-
-[pico2_w] directory
-　Stores binaries used with Raspberry Pi Pico 2 W
-　- phyllosoma.uf2
-　　MachiKania type P BASIC system (version supporting PC connect function)
-　　Connects the PC and Raspberry Pi Pico via USB and transfer the uf2 file
-　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
-　　WiFi connection is available.
-
-　- phyllosoma_kb.uf2
-　　MachiKania type P BASIC system main unit (USB keyboard connection version)
-　　Connects a PC and Raspberry Pi Pico via USB cable and transfer the uf2 file
-　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
-　　WiFi connection is available.
 
 readme-e.txt
 　This file
