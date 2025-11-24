@@ -51,7 +51,7 @@ GP28 I/O bit13 / SOUND OUT / ADC2
 GP29 I/O bit14 / button6 (FIRE) / ADC3
 ```
 ## Using Keyboard
-The phyllosoma_kb.uf2 firmware supports using USB keyboard. Connect the USB keyboard to micro C socket of RP2350-LCD-1.47-A through an USB-OTG cable with power port.
+The phyllosoma_kb.uf2 firmware supports using USB keyboard. Connect the USB keyboard to Type-C socket of RP2350-LCD-1.47-A through an USB-OTG cable with power port.
 
 ## Using arrow keys for button function
 The four arrow keys and S/F keys of keyboard emulate button functions of MachiKania. To change the assignment (which keys are used for which button), edit MACHIKAP.INI (EMULATEBUTTONxx=yyy etc). 
