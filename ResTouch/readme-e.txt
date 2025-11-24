@@ -84,7 +84,7 @@ BASIC program below and press the desired key.
 
 <Stopping a BASIC program mid-execution>
 
-To stop a BASIC program while it is running, press the Ctrl + Alt + Del keys 
+To stop a BASIC program while it is running, press the Pause key or the Ctrl + Alt + Del keys 
 simultaneously. This will interrupt the program. However, please note that in certain 
 loops (such as those without any PRINT commands) the program may not stop as expected.
 

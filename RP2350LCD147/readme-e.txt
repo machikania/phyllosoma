@@ -45,7 +45,8 @@ included MACHIKAP.INI file in the root directory of the MMC/SD card.
 
 For programs that do not use the gpio input(s), the keyboard is the only input 
 device. Please connect a USB keyboard using a USB-OTG cable. Be sure to use 
-a Micro-C USB-OTG cable with power input.
+a Type-C USB-OTG cable with power input. Additionally, power can also be supplied 
+from the 5V pin and GND pin (pins 10 and 11) of the RP2350-LCD-1.47.
 
 For general use, please install phyllosoma_kb.uf2, which supports USB keyboards. 
 The phyllosoma.uf2 file is intended for special use cases such as operating 
@@ -69,7 +70,7 @@ BASIC program below and press the desired key.
 
 <Stopping a BASIC program mid-execution>
 
-To stop a BASIC program while it is running, press the Ctrl + Alt + Del keys 
+To stop a BASIC program while it is running, press the Pause key or the Ctrl + Alt + Del keys 
 simultaneously. This will interrupt the program. However, please note that in certain 
 loops (such as those without any PRINT commands) the program may not stop as expected.
 
