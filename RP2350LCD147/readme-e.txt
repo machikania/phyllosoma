@@ -75,6 +75,11 @@ simultaneously. This will interrupt the program. However, please note that in ce
 loops (such as those without any PRINT commands) the program may not stop as expected.
 
 
+<LCD>
+Please note that the RP2350-LCD-1.47's LCD has rounded corners, so the display is missing
+at the four corners.
+
+
 <machikania-rl.zip file contents>
 
 [documents] directory

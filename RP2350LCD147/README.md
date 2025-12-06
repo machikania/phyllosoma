@@ -50,6 +50,8 @@ GP27 I/O bit12 / button5 (START) / ADC1 / SPI TX
 GP28 I/O bit13 / SOUND OUT / ADC2
 GP29 I/O bit14 / button6 (FIRE) / ADC3
 ```
+For the pin layout of the RP2350-LCD-1.47, please refer to [Waveshare's wiki site](https://www.waveshare.com/wiki/RP2350-LCD-1.47-A).
+
 ## Using Keyboard
 The phyllosoma_kb.uf2 firmware supports using USB keyboard. Connect the USB keyboard to Type-C socket of RP2350-LCD-1.47-A through an USB-OTG cable with power port.
 
@@ -59,4 +61,5 @@ The four arrow keys and S/F keys of keyboard emulate button functions of MachiKa
 ## LCD settings
 To adjust direction of LCD, set "HORIZONTAL", "VERTICAL", "LCD180TURN", or "LCD90TURN" in MACHIKAP.INI.
 
-
+## Notice
+Please note that the RP2350-LCD-1.47's LCD has rounded corners, so the display is missing at the four corners.
