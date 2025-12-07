@@ -10,7 +10,7 @@
 
 extern FATFS g_FatFs;
 
-char g_help_file[64]="/docume~1/help-e.txt";
+char g_help_file[64]="/docs/help-e.txt";
 
 int ini_file_help(char* line){
 	int i;
