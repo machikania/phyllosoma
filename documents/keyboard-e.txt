@@ -21,7 +21,7 @@ F1(CTRL+O)
 	Loads an existing file. If there is a file before saving, there is confirmation of saving.
 F2
 	Saves the file by specifying a file name
-F3
+F3 (CTRL+H)
 	Show help for the statement or function
 F4
 	Execute BASIC program (RUN)
