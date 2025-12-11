@@ -83,28 +83,6 @@ at the four corners.
 
 <machikania-rl.zip file contents>
 
-[docs] directory
-　Stores documents
-　- help.txt
-　- help-e.txt
-　　Reference manual for KM-BASIC
-
-　- class.txt
-　- class-e.txt
-　　Reference Manual for Object-Oriented Programming in KM-BASIC
-
-　- cpuclock.txt
-　- cpuclock-e.txt
-　　How to adjust the CPU clock frequency
-
-　- keyboard.txt
-　- keyboard-e.txt
-　　How to connect and use a keyboard
-
-　- pcconnect.txt
-　- pcconnect-e.txt
-　　How to transfer files from your PC to MachiKania
-
 [pico2] directory
 　Stores binaries used with Raspberry Pi Pico 2
 　- phyllosoma.uf2
@@ -131,6 +109,28 @@ MACHIKAP.INI
 [LIB] directory
 　Class library that can be easily used from BASIC programs 
 　Copy the entire LIB directory to the root of the MMC/SD card and use it
+
+[docs] directory
+　Stores documents
+　- help.txt
+　- help-e.txt
+　　Reference manual for KM-BASIC
+
+　- class.txt
+　- class-e.txt
+　　Reference Manual for Object-Oriented Programming in KM-BASIC
+
+　- cpuclock.txt
+　- cpuclock-e.txt
+　　How to adjust the CPU clock frequency
+
+　- keyboard.txt
+　- keyboard-e.txt
+　　How to connect and use a keyboard
+
+　- pcconnect.txt
+　- pcconnect-e.txt
+　　How to transfer files from your PC to MachiKania
 
 [samples] directory
 　BASIC sample programs. Copy these files to the root directory of the SD card 

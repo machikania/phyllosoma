@@ -34,40 +34,6 @@ MachiKaniaシリーズを利用していることについてもWebサイトや
 
 ＜machikania-pu.zipファイルコンテンツ＞
 
-[docs]ディレクトリ
-　ドキュメント類を格納
-　- help.txt
-　- help-e.txt
-　　KM-BASICのリファレンスマニュアル
-
-　- class.txt
-　- class-e.txt
-　　KM-BASICでオブジェクト指向化プログラミングのリファレンスマニュアル
-
-　- cpuclock.txt
-　- cpuclock-e.txt
-　　CPUのクロック周波数を調整する方法について
-
-　- embed.txt
-　- embed-e.txt
-　　ファイル埋め込み実行ファイル作成方法について
-
-　- keyboard.txt
-　- keyboard-e.txt
-　　キーボードを接続して使用する方法について
-
-　- pcconnect.txt
-　- pcconnect-e.txt
-　　PCからMachiKaniaにファイルを転送するための方法について
-
-　- shematic_ntsc.png
-　- shematic_xiao.png
-　　MachiKania type PU回路図
-
-　- wifi.txt
-　- wifi-e.txt
-　　Raspberry Pi Pico Wを使ってWiFi接続を行うときのリファレンスマニュアル
-
 [pico_ntsc]ディレクトリ
 　Raspberry Pi Pico を使う時の使うバイナリーを格納
 　-puerulus.uf2
@@ -171,6 +137,40 @@ MACHIKAP.INI
 [LIB]ディレクトリ
 　BASICプログラムから簡単に利用可能なクラスライブラリ
 　SDカードのルートにLIBディレクトリごとコピーして利用
+
+[docs]ディレクトリ
+　ドキュメント類を格納
+　- help.txt
+　- help-e.txt
+　　KM-BASICのリファレンスマニュアル
+
+　- class.txt
+　- class-e.txt
+　　KM-BASICでオブジェクト指向化プログラミングのリファレンスマニュアル
+
+　- cpuclock.txt
+　- cpuclock-e.txt
+　　CPUのクロック周波数を調整する方法について
+
+　- embed.txt
+　- embed-e.txt
+　　ファイル埋め込み実行ファイル作成方法について
+
+　- keyboard.txt
+　- keyboard-e.txt
+　　キーボードを接続して使用する方法について
+
+　- pcconnect.txt
+　- pcconnect-e.txt
+　　PCからMachiKaniaにファイルを転送するための方法について
+
+　- shematic_ntsc.png
+　- shematic_xiao.png
+　　MachiKania type PU回路図
+
+　- wifi.txt
+　- wifi-e.txt
+　　Raspberry Pi Pico Wを使ってWiFi接続を行うときのリファレンスマニュアル
 
 [samples]ディレクトリ
 　BASICサンプルプログラム。これらのファイルをSDカードのルートディレクトリにコピーする

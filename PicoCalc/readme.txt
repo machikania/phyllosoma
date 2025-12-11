@@ -104,32 +104,6 @@ BASICプログラムを実行途中で停止したい場合、Ctrl+Alt+Delキー
 
 ＜machikania-pc.zipファイルコンテンツ＞
 
-[docs]ディレクトリ
-　ドキュメント類を格納
-　- help.txt
-　- help-e.txt
-　　KM-BASICのリファレンスマニュアル
-
-　- class.txt
-　- class-e.txt
-　　KM-BASICでオブジェクト指向化プログラミングのリファレンスマニュアル
-
-　- cpuclock.txt
-　- cpuclock-e.txt
-　　CPUのクロック周波数を調整する方法について
-
-　- keyboard.txt
-　- keyboard-e.txt
-　　キーボードの使用方法について
-
-　- pcconnect.txt
-　- pcconnect-e.txt
-　　PCからMachiKaniaにファイルを転送するための方法について
-
-　- wifi.txt
-　- wifi-e.txt
-　　Raspberry Pi Pico Wを使ってWiFi接続を行うときのリファレンスマニュアル 
-
 [pico]ディレクトリ
 　Raspberry Pi Pico で使うバイナリーを格納
 　-phyllosoma_kb.uf2
@@ -174,6 +148,32 @@ MACHIKAP.INI
 [LIB]ディレクトリ
 　BASICプログラムから簡単に利用可能なクラスライブラリ
 　MMC/SDカードのルートにLIBディレクトリごとコピーして利用
+
+[docs]ディレクトリ
+　ドキュメント類を格納
+　- help.txt
+　- help-e.txt
+　　KM-BASICのリファレンスマニュアル
+
+　- class.txt
+　- class-e.txt
+　　KM-BASICでオブジェクト指向化プログラミングのリファレンスマニュアル
+
+　- cpuclock.txt
+　- cpuclock-e.txt
+　　CPUのクロック周波数を調整する方法について
+
+　- keyboard.txt
+　- keyboard-e.txt
+　　キーボードの使用方法について
+
+　- pcconnect.txt
+　- pcconnect-e.txt
+　　PCからMachiKaniaにファイルを転送するための方法について
+
+　- wifi.txt
+　- wifi-e.txt
+　　Raspberry Pi Pico Wを使ってWiFi接続を行うときのリファレンスマニュアル 
 
 [samples]ディレクトリ
 　BASICサンプルプログラム。これらのファイルをSDカードのルートディレクトリにコピーする
