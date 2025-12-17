@@ -167,10 +167,6 @@ MACHIKAP.INI
 　- keyboard-e.txt
 　　キーボードの使用方法について
 
-　- pcconnect.txt
-　- pcconnect-e.txt
-　　PCからMachiKaniaにファイルを転送するための方法について
-
 　- wifi.txt
 　- wifi-e.txt
 　　Raspberry Pi Pico Wを使ってWiFi接続を行うときのリファレンスマニュアル 

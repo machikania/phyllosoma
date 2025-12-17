@@ -180,6 +180,9 @@ through GP27 on the Raspberry Pi Pico, so please use this pin along with the GND
 　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
 　　WiFi connection is available.
 
+[pcconnect] directory
+　Contains tools for transferring files in a PC to MachiKania via USB cable
+
 readme-e.txt
 　This file
 

@@ -167,10 +167,6 @@ MACHIKAP.INI
 　- keyboard-e.txt
 　　How to use the keyboard
 
-　- pcconnect.txt
-　- pcconnect-e.txt
-　　How to transfer files from your PC to MachiKania
-
 　- shematic.png
 　　MachiKania type P schematic
 

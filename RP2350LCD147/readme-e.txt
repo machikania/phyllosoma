@@ -83,7 +83,7 @@ at the four corners.
 
 <machikania-rl.zip file contents>
 
-[pico2] directory
+[rp2350_lcd_1_47] directory
 　Stores binaries used with Raspberry Pi Pico 2
 　- phyllosoma.uf2
 　　MachiKania type P BASIC system (version supporting PC connect function)
@@ -94,6 +94,9 @@ at the four corners.
 　　MachiKania type P BASIC system main unit (USB keyboard connection version)
 　　Connects a PC and RP2350-LCD-1.47 via USB cable and transfer the uf2 file
 　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
+
+[pcconnect] directory
+　Contains tools for transferring files in a PC to MachiKania via USB cable
 
 readme-e.txt
 　This file
