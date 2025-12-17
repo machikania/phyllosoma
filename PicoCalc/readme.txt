@@ -258,7 +258,7 @@ Pyllosoma 1.61/KM-1511 (2025.12.27)
 　・RND#()関数を追加
 　・ネット接続におけるTLSハンドシェイクを改善。16 Kbを超えるファイルをhttpsプロトコルで取得可能に
 　・PWM4～PWM9の使用をサポートし、使用ポートをINIファイルで指定できるようにした
-　・PicoCalc、ResTouch、type PU miniで、OUT8L、OUT8H、OUT16ステートメントの挙動を修正
+　・PicoCalc、ResTouch、type PU miniで、OUT8L/IN8L、OUT8H/IN8H、OUT16/IN16ステートメントの挙動を修正
 　・クラスファイル中で別のクラスを使っている際、特定の環境でコンパイルできなくなる不具合を修正
 　・クラスライブラリーに高速フーリエ変換および逆変換を行うためのクラス、FFTLIBを追加
 　・クラスライブラリーのWGETを更新。301 Movedなどに対応

@@ -307,7 +307,7 @@ Pyllosoma 1.61/KM-1511 (2025.12.27)
 　Added the RND#() function
 　Improved TLS handshake for network connections; files larger than 16 Kb can now be retrieved via HTTPS
 　Supported use of PWM4–PWM9, with ports configurable via the INI file
-　Fixed behavior of OUT8L, OUT8H, and OUT16 statements in PicoCalc, ResTouch, and type PU mini
+　Fixed behavior of OUT8L/IN8L, OUT8H/IN8H, and OUT16/IN16 statements in PicoCalc, ResTouch, and type PU mini
 　Fixed a bug where compilation failed in certain environments when one class used another within class files
 　Added FFTLIB class to the class library for performing fast Fourier transform and inverse transform
 　Updated WGET in the class library to handle 301 Moved responses
