@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.8.17
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.12.27
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type P
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -104,31 +104,6 @@ loops (such as those without any PRINT commands) the program may not stop as exp
 
 <machikania-pc.zip file contents>
 
-[documents] directory
-　Stores documents
-　- help.txt
-　- help-e.txt
-　　Reference manual for KM-BASIC
-
-　- class.txt
-　- class-e.txt
-　　Reference Manual for Object-Oriented Programming in KM-BASIC
-
-　- embed.txt
-　- embed-e.txt
-　　How to Create File Embedded Executables
-
-　- pcconnect.txt
-　- pcconnect-e.txt
-　　How to transfer files from your PC to MachiKania
-
-　- shematic.png
-　　MachiKania type P schematic
-
-　- wifi.txt
-　- wifi-e.txt
-　　Reference manual to use WiFi connection with Raspberry Pi Pico W
-
 [pico] directory
 　Stores binaries used with Raspberry Pi Pico
 　- phyllosoma_kb.uf2
@@ -173,6 +148,31 @@ MACHIKAP.INI
 [LIB] directory
 　Class library that can be easily used from BASIC programs 
 　Copy the entire LIB directory to the root of the MMC/SD card and use it
+
+[docs] directory
+　Stores documents
+　- help.txt
+　- help-e.txt
+　　Reference manual for KM-BASIC
+
+　- class.txt
+　- class-e.txt
+　　Reference Manual for Object-Oriented Programming in KM-BASIC
+
+　- cpuclock.txt
+　- cpuclock-e.txt
+　　How to adjust the CPU clock frequency
+
+　- keyboard.txt
+　- keyboard-e.txt
+　　How to use the keyboard
+
+　- shematic.png
+　　MachiKania type P schematic
+
+　- wifi.txt
+　- wifi-e.txt
+　　Reference manual to use WiFi connection with Raspberry Pi Pico W
 
 [samples] directory
 　BASIC sample programs. Copy these files to the root directory of the SD card 
@@ -249,121 +249,17 @@ MACHIKAP.INI
 ------------------------------------------------------------------------
 MachiKania type P BASIC System Revision History
 
-Phyllosoma 1.00/KM-1500 (2022.8.27)
-　First public version
-
-Phyllosoma 1.10/KM-1501 (2022.10.1)
-　Added PC connect function
-　Added NOT#() function
-　Fixed a bug that prevented compiling when another class is used in a class.
-　Fixed a bug in static function call of a class.
-　Allowed assignment of strings and arrays to object fields.
-　Fixed a bug that WAVE files stop playing after a certain period of time.
-　Allowed WAIT, DELAYMS, and DELAYUS statements to be used during interruptions
-　Fixed a bug that MUSIC statement stopped with an error in some environments.
-　Improved the display of the file selection screen.
-　Four classes, WS2812B, STRDIM, STRD2, and MA, have been added to the library.
-
-Phyllosoma 1.20/KM-1502 (2023.1.28)
-　USB keyboard and editor support
-　Added INKEY(), READKEY(), and INPUT$() functions and INKEY interrupt function.
-　Fixed a bug that occurred in some environments when compiling class files.
-　Added ALIGN4 statement, DATAADDRESS() function, and FUNCADDRESS() function.
-　Fixed a slight timing discrepancy in timer interrupt.
-　Added memory allocation related functions to SYSTEM().
-　Added a function related to memory allocation to SYSTEM().
-　Supported OPTION CLASSCODE.
-　Card can be inserted and removed during BASIC program execution.
-　HEX files created in C language can be loaded on the file selection screen.
-　Four classes, CRDINI, CLDHEX, REGEXP, and STRING, are added to the library.
-
-Phyllosoma 1.30/KM-1503 (2023.9.30)
-　Raspberry Pi Pico W is supported.
-　WEATHER.BAS (get weather forecast from web), HDEAMON.BAS (construct web server) were added as a sample program.
-　Added HTTPD (construct HTTP deamon), IR_RX (IR receiver), IR_TX (IR transmitter), JSON (analyze JSON string) and WGET (web browsing) to the class library.
-　Added support for WiFi connection using Raspberry Pi Pico W. Following statements/functions are added: DNS$(), IFCONFIG$(), NTP, TCPACCEPT(), TCPCLIENT, TCPCLOSE, TCPRECEIVE, TCPSEND, TCPSERVER, TCPSTATUS, TLSCLIENT, WIFIERR(), WIFIERR$()
-　Fixed a bug in GCOLOR() function.
-　Fixed a key input bug with some USB keyboards.
-　FGETC() function returns -1 when EOF.
-　Supported XIAO RP2040, RP2040-Zero, and Tiny-2040 for embedding.
-　SPI ports can now be specified in the INI file.
-　Fixed a bug when the third argument of SERIAL statement is omitted.
-　Exceptions are now trapped and displayed on the screen.
-　Fixed a bug that CORETIMER starts to fail about 2000 seconds after power-on.
-　Support ILI9488.
-　Support RTC(Real Time Clock). Follosing statement/functions are added: GETTIME$(), SETTIME. STRFTIME$()
-　Supports date/time setting when saving files.
-　Supports RTC setting by NTP server.
-　Supports turning on/off the LEDs attached to the board by calling SYSTEM 201.
-　Fixed a memory allocation bug.
-　Fixed a garbage collection bug when using file-related commands such as FREMOVE/SETDIR.
-　Improved stability of the WAVE player.
-　Fixed a static method call bug in a class.
-　Three functions, FFINGD$(), FINFO(), and FINFO$(), are added. Enabled to create file list.
-　Fixed a compile-time bug when the REM statement contains double quotation.
-
-Phyllosoma 1.31/KM-1504 (2023.10.28)
-　The BASIC program for embed now supports file reading.
-　The number of files that can be embedded for embedding has been increased to 16.
-　Fixed a bug that caused wrong values when displaying floating points and handling strings.
-
-Phyllosoma 1.40/KM-1505 (2024.2.17)
-　FILEMAN.BAS (file manager) was added as a sample program.
-　Added BUTTON (button operation), GEN3O (Genkaku Gothic display), QRCODE (QRCODE display), 
-and TSC2046 (touch panel operation) to the class library.
-　Enabled to use spi1 with SPI instruction when LCD is not used.
-　Fixed a bug in PUTBMP instruction when displaying a long width image.
-　The file modification date and time can be displayed in the file list view.
-　The display order of file names and modified dates in the file list display is now supported.
-　Fixed a display bug on ILI9488 LCD when it is displayed in portrait mode.
-　The FRENAME and MKDIR instructions and the FRENAME() and MKDIR() functions have been added.
-　Auxiliary code (auxcode) can be added.
-
-Phyllosoma 1.41/KM-1506 (2024.10.06)
-　Support Raspberry Pi Pico 2.
-　Update WEATHER.BAS sample program.
-
-Phyllosoma 1.50/KM-1507 (2024.12.28)
-　Update BLOCK.BAS and PHOTO.BAS sample programs.
-　Update WS2812B and QRCODE in class library to support using for Pico 2.
-　Fixed a bug in the file selection function of the text editor.
-　Changed so that separate class files can be handled for Pico/Pico2 or Type P/PU.
-　Fix SYSTEM(4) to return correct CPU execution speed.
-　Added SYSTEM(6) to obtain the size of BASIC's object RAM area.
-　When using the ILI9488 LCD, the width that could not be specified before can now be specified with the WIDTH statement.
-　When a WAIT statement is being executed, execution can be stopped by pressing the PAUSE/BREAK key on the keyboard.
-
-Phyllosoma 1.51/KM-1508 (2025.2.22)
-　Changed pin assignments for SPI, I2C, and UART to be freely configurable in MACHIKAP.INI.
-　Distribution of XIAO embed version was terminated due to the availability of MACHIKAP.INI to configure pin assignments.
-　Fixed a problem with REGEXP in the class library that caused a memory error when used continuously.
-
-Phyllosoma 1.52/KM-1509 (2025.4.12)
-　Enabled stopping program execution not only with the "Break" key but also with the "Ctrl + Alt + Del" key.
-　Made it possible to retrieve the keyboard state using SYSTEM(40), SYSTEM(41), SYSTEM(42), and SYSTEM(43).
-　Added functionality to modify the CPU's clock speed and voltage using SYSTEM 50 and SYSTEM 51.
-　By holding the STAR button during startup, it's now possible to skip the automatic execution of MACHIKAP.BAS upon boot.
-　Added CPUCLOCK to the class library, making it possible to check available CPU clock frequencies.
-　Raspberry Pi Pico 2 W is supported.
-　Improved LCD transfer speed when using Raspberry Pi Pico 2.
-　Update MAZE3D.BAS and STARTREK.BAS sample programs.
-　Added POLYGON.BAS sample program.
-
 Phyllosoma 1.60/KM-1510 (2025.8.17)
-　Added support for Waveshare ResTouch LCD 3.5
 　Added support for ClockworkPi PicoCalc
-　Code editor for LCD now highlights reserved words, strings, and comments
-　Button operations can now be emulated via keyboard input
-　Added support for IPS-type LCDs
-　Update the LCD's file selection interface and editor to allow a single screen rotation
-　HEX files can now be executed directly from the editor
-　Improved ILI9488 SPI transfer speed
-　Sample program MANDELBR.BAS changed from text-based to graphical version
-　Added sample program MOZART.BAS
-　Modified sample program FILEMAN.BAS to accept lowercase y/n for confirmation prompts
-　Updated the WS2812B.BAS class library to improve operation on the Pico 2
-　Updated TSC2046 class to work with ResTouch
-　Enabled the ability to retrieve and modify SPI communication speed for LCD and MMC via the SYSTEM function/statement
-　Fixed a bug where executing the OUT statement caused brief, unexpected output fluctuations
-　Extended support for WAVE files in the PLAYWAVE statement to include sampling frequencies between 15700–16000 Hz
-　Resolved an issue in SPI MISO where the specified port could not be used
+
+Pyllosoma 1.61/KM-1511 (2025.12.27)
+　Enabled display of statement or function help when using the editor
+　Added the RND#() function
+　Improved TLS handshake for network connections; files larger than 16 Kb can now be retrieved via HTTPS
+　Supported use of PWM4–PWM9, with ports configurable via the INI file
+　Fixed behavior of OUT8L/IN8L, OUT8H/IN8H, and OUT16/IN16 statements in PicoCalc, ResTouch, and type PU mini
+　Fixed a bug where compilation failed in certain environments when one class used another within class files
+　Added FFTLIB class to the class library for performing fast Fourier transform and inverse transform
+　Updated WGET in the class library to handle 301 Moved responses
+　Corrected class.txt
+　Added help-k.txt

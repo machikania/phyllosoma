@@ -15,9 +15,10 @@
 #include "hardware/uart.h"
 #include "hardware/irq.h"
 #include "hardware/spi.h"
-#include "./io.h"
+// Do not change the order of inclusion below
 #include "./compiler.h"
 #include "./api.h"
+#include "./io.h"
 
 unsigned char g_io_spi_rx=IO_SPI_RX;
 unsigned char g_io_spi_tx=IO_SPI_TX;
@@ -34,6 +35,9 @@ void* g_io_i2c_ch=IO_I2C_CH;
 unsigned char g_io_i2c_sda=IO_I2C_SDA;
 unsigned char g_io_i2c_scl=IO_I2C_SCL;
 
+// PMW4-PMW9 port settings
+unsigned char g_pwm_aux[6]={255,255,255,255,255,255};
+
 int ini_file_io(char* line){
 	int i;
 	if (!strncmp(line,"SPIMISO=",8)) {
@@ -46,7 +50,11 @@ int ini_file_io(char* line){
 		if (11==i || 15==i || 27==i) g_io_spi_tx=i;
 	} else if (!strncmp(line,"SPICLK=",7)) {
 		i=atoi(line+7);
-		if (2==i || 6==i || 18==i || 22==i) g_io_spi_sck=i;
+		if (2==i || 6==i || 18==i || 22==i) {
+			g_io_spi_sck=i;
+			g_io_spi_ch=spi0;
+			g_io_spi_sspcr=((volatile unsigned int*)(SPI0_BASE + SPI_SSPCR0_OFFSET));
+		}
 		if (10==i || 14==i || 26==i) {
 			g_io_spi_sck=i;
 			g_io_spi_ch=spi1;
@@ -90,6 +98,10 @@ int ini_file_io(char* line){
 			g_io_i2c_scl=i;
 			g_io_i2c_ch=i2c1;
 		}
+	} else if ('4'<=line[3] && line[3]<='9' && '='==line[4] &!strncmp(line,"PWM",3)) {
+		// PMW4-PMW9 port settings
+		i=atoi(line+5);
+		if (0<=i && i<=29) g_pwm_aux[line[3]-'4']=i;
 	} else return 0;
 	return 1;
 }
@@ -164,6 +176,9 @@ void io_init(void){
 	pwm_set_enabled(IO_PWM1_SLICE, false);
 	pwm_set_enabled(IO_PWM2_SLICE, false);
 	pwm_set_enabled(IO_PWM3_SLICE, false);
+	for(i=0;i<6;i++) {
+		if (g_pwm_aux[i]<=29) pwm_set_enabled(pwm_gpio_to_slice_num(g_pwm_aux[i]), false);
+	}
 	// Disable I2C and UART
 	i2c_deinit(g_io_i2c_ch);
 	uart_deinit(g_io_uart_ch);
@@ -245,6 +260,10 @@ int lib_keys(int r0, int r1, int r2){
 	if (g_emulate_buttons) {
 		for(k=0;k<6;k++){
 			if (g_emulate_button_array[k]) res|=lib_inkey(g_emulate_button_array[k],0,0) ? (1<<k):0;
+			// Gamepad specific recognitions follow
+			if (USB_PERIPHERAL_GAMEPAD!=g_usb_peripheral) continue;
+			if (4==k && g_emulate_button_array[k]) res|=lib_inkey(0x73,0,0) ? (1<<k):0; // F4 key
+			if (5==k && g_emulate_button_array[k]) res|=lib_inkey(0x70,0,0) ? (1<<k):0; // F1 key
 		}
 	}
 	return res&r0;
@@ -284,6 +303,12 @@ int lib_pwm(int r0, int r1, int r2){
 			port=IO_PWM3;
 			slice=IO_PWM3_SLICE;
 			channel=IO_PWM3_CHANNEL;
+			break;
+		case 4: case 5: case 6: case 7: case 8: case 9:
+			port=g_pwm_aux[r0-4];
+			if (29<port) return r0;
+			slice=pwm_gpio_to_slice_num(port);
+			channel=pwm_gpio_to_channel(port);
 			break;
 		default:
 			// Invalid

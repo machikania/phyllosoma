@@ -20,18 +20,26 @@ extern volatile unsigned int* g_io_spi_sspcr;
 		(1<<IO_GPIO12) | (1<<IO_GPIO13) | (1<<IO_GPIO14) | (1<<IO_GPIO15) \
 	)
 #define IO_GPIO_16_MASK (IO_GPIO_8L_MASK | IO_GPIO_8H_MASK)
+#ifndef io_gpio_outl_conversion
 #define io_gpio_outl_conversion(a) (a)
+#endif
+#ifndef io_gpio_inl_conversion
 #define io_gpio_inl_conversion(a) (a)
+#endif
+#ifndef io_gpio_outh_conversion
 #define io_gpio_outh_conversion(a) (\
 		(((a)&0x03)<<8) |\
 		(((a)&0x1c)<<18) |\
 		(((a)&0xe0)<<21) \
 	)
+#endif
+#ifndef io_gpio_inh_conversion
 #define io_gpio_inh_conversion(a) (\
 		(((a)>>8)&0x03) |\
 		(((a)>>18)&0x1c) |\
 		(((a)>>21)&0xe0) \
 	)
+#endif
 #define io_gpio_out16_conversion(a) (\
 		io_gpio_outh_conversion((a)>>8) |\
 		io_gpio_outl_conversion((a)&0xff) \

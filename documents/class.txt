@@ -117,8 +117,8 @@ CALL x
 
 記述例（123が表示される）:
 　USECLASS CLASS1
-　CLASS1::TEST6=123
-　PRINT CLASS1::TEST7()
+　CLASS1::TEST7=123
+　PRINT CLASS1::TEST8()
 
 ＜オブジェクトのフィールドに、文字列・配列を割り当てる場合＞
 

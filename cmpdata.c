@@ -243,9 +243,12 @@ void cmpdata_delete_invalid(void){
 /*
 	Hash used for faster string search
 */
-int cmpdata_nhash(unsigned char* str, int num){
+int cmpdata_nhash(const unsigned char* str, int num){
 	int i;
 	int hash=0;
+	if (0==num) {
+		for(num=0;str[num];num++);
+	}
 	for(i=0;i<num;i++){
 		hash=hash<<6 ^ hash>>26;
 		hash^=str[i];

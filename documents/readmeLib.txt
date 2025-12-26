@@ -58,6 +58,9 @@ IR_TX
 JSON
 	JSON文字列を解析するためのクラス。
 
+FFTLIB
+	高速フーリエ変換および逆変換を行うためのクラス
+
 MA
 	メモリーアロケーションの為のクラス。STRDIMで使用。
 
@@ -135,3 +138,7 @@ Phyllosoma/Puerulus 1.60/KM-1510 (2025.8.17)
 　・PLAYAVIクラスを追加（Type PUのみ）
 　・TSC2046 ver 0.2.1（Type Pのみ）
 　・WS2812B.BAS ver 1.2
+
+Phyllosoma/Puerulus 1.61/KM-1511 (2025.12.27)
+　・高速フーリエ変換および逆変換を行うためのクラス、FFTLIBを追加
+　・WGETを更新(ver 0.4)。301 Movedなどに対応

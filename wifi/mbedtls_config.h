@@ -69,3 +69,6 @@ void machikania_free(void *ptr);
 #define MBEDTLS_ECDSA_C
 #define MBEDTLS_ASN1_WRITE_C
 
+/* Added for pico-sdk ver 2.2.0 */
+#define MBEDTLS_PLATFORM_MS_TIME_ALT
+#define MBEDTLS_PLATFORM_TIME_ALT

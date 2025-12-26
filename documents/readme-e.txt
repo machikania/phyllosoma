@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.8.17
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.12.27
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type P
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -33,31 +33,6 @@ Please note that we are not responsible for any damage or loss caused by the
 use of the MachiKania series.
 
 <machikania-p.zip file contents>
-
-[documents] directory
-　Stores documents
-　- help.txt
-　- help-e.txt
-　　Reference manual for KM-BASIC
-
-　- class.txt
-　- class-e.txt
-　　Reference Manual for Object-Oriented Programming in KM-BASIC
-
-　- embed.txt
-　- embed-e.txt
-　　How to Create File Embedded Executables
-
-　- pcconnect.txt
-　- pcconnect-e.txt
-　　How to transfer files from your PC to MachiKania
-
-　- shematic.png
-　　MachiKania type P schematic
-
-　- wifi.txt
-　- wifi-e.txt
-　　Reference manual to use WiFi connection with Raspberry Pi Pico W
 
 [pico_ili9341] directory
 　Stores binaries used when combining Raspberry Pi Pico and ILI9341 LCD
@@ -140,6 +115,39 @@ MACHIKAP.INI
 [LIB] directory
 　Class library that can be easily used from BASIC programs 
 　Copy the entire LIB directory to the root of the MMC/SD card and use it
+
+[docs] directory
+　Stores documents
+　- help.txt
+　- help-e.txt
+　　Reference manual for KM-BASIC
+
+　- class.txt
+　- class-e.txt
+　　Reference Manual for Object-Oriented Programming in KM-BASIC
+
+　- cpuclock.txt
+　- cpuclock-e.txt
+　　How to adjust the CPU clock frequency
+
+　- embed.txt
+　- embed-e.txt
+　　How to Create File Embedded Executables
+
+　- keyboard.txt
+　- keyboard-e.txt
+　　How to connect and use a keyboard
+
+　- pcconnect.txt
+　- pcconnect-e.txt
+　　How to transfer files from your PC to MachiKania
+
+　- shematic.png
+　　MachiKania type P schematic
+
+　- wifi.txt
+　- wifi-e.txt
+　　Reference manual to use WiFi connection with Raspberry Pi Pico W
 
 [samples] directory
 　BASIC sample programs. Copy these files to the root directory of the SD card 
@@ -334,3 +342,17 @@ Phyllosoma 1.60/KM-1510 (2025.8.17)
 　Fixed a bug where executing the OUT statement caused brief, unexpected output fluctuations
 　Extended support for WAVE files in the PLAYWAVE statement to include sampling frequencies between 15700–16000 Hz
 　Resolved an issue in SPI MISO where the specified port could not be used
+
+Pyllosoma 1.61/KM-1511 (2025.12.27)
+　Added support for Waveshare RP2350-LCD-1.47
+　Added support for ST7789-based LCDs (no binary provided)
+　Enabled display of statement or function help when using the editor
+　Added the RND#() function
+　Improved TLS handshake for network connections; files larger than 16 Kb can now be retrieved via HTTPS
+　Supported use of PWM4–PWM9, with ports configurable via the INI file
+　Fixed behavior of OUT8L/IN8L, OUT8H/IN8H, and OUT16/IN16 statements in PicoCalc, ResTouch, and type PU mini
+　Fixed a bug where compilation failed in certain environments when one class used another within class files
+　Added FFTLIB class to the class library for performing fast Fourier transform and inverse transform
+　Updated WGET in the class library to handle 301 Moved responses
+　Corrected class.txt
+　Added help-k.txt

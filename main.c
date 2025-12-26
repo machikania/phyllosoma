@@ -10,7 +10,6 @@
 #include <stdlib.h>
 #include "pico/stdlib.h"
 #include "hardware/clocks.h"
-#include "./io.h"
 #include "./compiler.h"
 #include "./api.h"
 #include "./debug.h"
@@ -34,6 +33,8 @@ void read_ini(void){
 		} else if (ini_file_exception(str)) {
 			continue;
 		} else if (ini_file_io(str)) {
+			continue;
+		} else if (ini_file_help(str)) {
 			continue;
 		} else if (!strncmp(str,"AUTOEXEC=",9)) {
 			// Get file name

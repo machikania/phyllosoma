@@ -159,7 +159,8 @@ void dispfiles(int n){
 	if(show_timestamp) mx=1; else mx=WIDTH_X/13;
 	my=WIDTH_Y-1;
 	setcursor(0, 0, 4);
-	printstr("[FIRE]:Exec [START]:View");
+	if(WIDTH_X>=24) printstr("[FIRE]:Exec [START]:View");
+	else printstr("FIRE/START");
 	if(WIDTH_X>=40) printstr(" (LongPush)");
 	setcursor(WIDTH_X-5,0,5);
 	switch (filesortby)
@@ -289,6 +290,7 @@ unsigned char *fileselect(void){
 		keycheck();
 		if(!keystatus) break;
 	}
+	if(WIDTH_X<30) show_timestamp=0;
 	if(show_timestamp) mx=1; else mx=WIDTH_X/13;
 	my=WIDTH_Y-1;
 	cls();

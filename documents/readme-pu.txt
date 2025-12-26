@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.8.17
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.12.27
 　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
 　　　　　　　　「MachiKania type PU」
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -33,32 +33,6 @@ MachiKaniaシリーズを利用していることについてもWebサイトや
 
 
 ＜machikania-pu.zipファイルコンテンツ＞
-
-[documents]ディレクトリ
-　ドキュメント類を格納
-　- help.txt
-　- help-e.txt
-　　KM-BASICのリファレンスマニュアル
-
-　- class.txt
-　- class-e.txt
-　　KM-BASICでオブジェクト指向化プログラミングのリファレンスマニュアル
-
-　- embed.txt
-　- embed-e.txt
-　　ファイル埋め込み実行ファイル作成方法について
-
-　- pcconnect.txt
-　- pcconnect-e.txt
-　　PCからMachiKaniaにファイルを転送するための方法について
-
-　- shematic_ntsc.png
-　- shematic_xiao.png
-　　MachiKania type PU回路図
-
-　- wifi.txt
-　- wifi-e.txt
-　　Raspberry Pi Pico Wを使ってWiFi接続を行うときのリファレンスマニュアル
 
 [pico_ntsc]ディレクトリ
 　Raspberry Pi Pico を使う時の使うバイナリーを格納
@@ -164,6 +138,40 @@ MACHIKAP.INI
 　BASICプログラムから簡単に利用可能なクラスライブラリ
 　SDカードのルートにLIBディレクトリごとコピーして利用
 
+[docs]ディレクトリ
+　ドキュメント類を格納
+　- help.txt
+　- help-e.txt
+　　KM-BASICのリファレンスマニュアル
+
+　- class.txt
+　- class-e.txt
+　　KM-BASICでオブジェクト指向化プログラミングのリファレンスマニュアル
+
+　- cpuclock.txt
+　- cpuclock-e.txt
+　　CPUのクロック周波数を調整する方法について
+
+　- embed.txt
+　- embed-e.txt
+　　ファイル埋め込み実行ファイル作成方法について
+
+　- keyboard.txt
+　- keyboard-e.txt
+　　キーボードを接続して使用する方法について
+
+　- pcconnect.txt
+　- pcconnect-e.txt
+　　PCからMachiKaniaにファイルを転送するための方法について
+
+　- shematic_ntsc.png
+　- shematic_xiao.png
+　　MachiKania type PU回路図
+
+　- wifi.txt
+　- wifi-e.txt
+　　Raspberry Pi Pico Wを使ってWiFi接続を行うときのリファレンスマニュアル
+
 [samples]ディレクトリ
 　BASICサンプルプログラム。これらのファイルをSDカードのルートディレクトリにコピーする
 　（または任意のサブディレクトリを作成してコピー）
@@ -242,7 +250,6 @@ MachiKania type PU BASICシステム改版履歴
 Puerulus 1.50/KM-1507（2024.12.28）
 　・最初の公開バージョン
 
-
 Puerulus 1.51/KM-1508 (2025.2.22)
 　・エディター使用時に画面下部の行番号が誤表示される不具合を修正。
 　・SPI・I2C・UART用のピン配置を、MACHIKAP.INIで自由に設定できるように変更。
@@ -275,3 +282,15 @@ Puerulus 1.60/KM-1510 (2025.8.17)
 　・OUTステートメント実行時に、短時間予期しない出力変化が発生する不具合を解消
 　・PLAYWAVEステートメントで対応できるWAVEファイルのサンプリング周波数を、15700-16000 Hzの任意のものに対応
 　・SPI MISOで、指定したポートが使用できなかった不具合を解消
+
+Puerulus 1.61/KM-1511 (2025.12.27)
+　・エディター使用時に、ステートメントもしくは関数のヘルプを表示できるようにした
+　・RND#()関数を追加
+　・ネット接続におけるTLSハンドシェイクを改善。16 Kbを超えるファイルをhttpsプロトコルで取得可能に
+　・PWM4～PWM9の使用をサポートし、使用ポートをINIファイルで指定できるようにした
+　・PicoCalc、ResTouch、type PU miniで、OUT8L/IN8L、OUT8H/IN8H、OUT16/IN16ステートメントの挙動を修正
+　・クラスファイル中で別のクラスを使っている際、特定の環境でコンパイルできなくなる不具合を修正
+　・クラスライブラリーに高速フーリエ変換および逆変換を行うためのクラス、FFTLIBを追加
+　・クラスライブラリーのWGETを更新。301 Movedなどに対応
+　・class.txtを修正
+　・help-k.txtを追加

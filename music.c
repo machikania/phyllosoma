@@ -68,6 +68,20 @@ const static short g_keys[]={
 #define toneFlat(x) ((((unsigned long)(x))*69433)>>16)
 #define toneSharp(x) ((((unsigned long)(x))*1933)>>11)
 
+/*
+	Gamepad specific settings
+*/
+bool usb_set_report(void* report, uint16_t len);
+static void usb_gamepad(uint16_t val){
+	static uint16_t s_pwm_wrap;
+	if (USB_PERIPHERAL_GAMEPAD!=g_usb_peripheral) return;
+	if (val!=s_pwm_wrap) {
+		g_scratch_int[0]=val;
+		// If failed, don't update s_pwm_wrap
+		if (usb_set_report((void*)&g_scratch_int[0],2)) s_pwm_wrap=val;
+	}
+}
+
 /* local global vars */
 static const short* g_tones;
 static int g_qvalue;
@@ -131,6 +145,7 @@ void musicint(void){
 				} else {
 					pwm_set_enabled(AUDIO_SLICE, false);
 				}
+				usb_gamepad(i);
 				if ((--g_soundwait)<=0) {
 					g_soundstart++;
 					if (g_soundstart==g_soundend || 31<g_soundstart) {
@@ -167,6 +182,7 @@ void musicint(void){
 				} else {
 					pwm_set_enabled(AUDIO_SLICE, false);
 				}
+				usb_gamepad(i);
 				if ((--g_musicwait)<=0) {
 					g_musicstart++;
 					g_musicstart&=31;
@@ -178,6 +194,7 @@ void musicint(void){
 				}
 			} else {
 				pwm_set_enabled(AUDIO_SLICE, false);
+				usb_gamepad(0xffff);
 			}
 			break;
 		case SOUND_MODE_WAVE:

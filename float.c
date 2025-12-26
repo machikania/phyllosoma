@@ -63,6 +63,7 @@ int float_functions(void){
 	if (instruction_is("MODF#(")) return float_arg1_function(MATH_MODF);
 	if (instruction_is("NOT#(")) return not_sharp_function();
 	if (instruction_is("POW#(")) return float_arg2_function(MATH_POW);
+	if (instruction_is("RND#(")) return argn_function(LIB_RND,RANDOM_FLOAT<<LIBOPTION);
 	if (instruction_is("SIN#(")) return float_arg1_function(MATH_SIN);
 	if (instruction_is("SINH#(")) return float_arg1_function(MATH_SINH);
 	if (instruction_is("SQRT#(")) return float_arg1_function(MATH_SQRT);

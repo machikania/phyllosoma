@@ -32,6 +32,7 @@ uint16_t vkey;
 uint8_t lockkey=0;
 uint8_t keytype=0;
 bool usbkb_mounted(void){ return false; } 
+bool usb_set_report(void* report, uint16_t len){ return false; }
 
 void post_inifile(void){
 	// Connect to PC

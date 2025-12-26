@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.8.17
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.12.27
 　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
 　　　　　　　　「MachiKania type P」
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -84,7 +84,7 @@ MachiKaniaは、上下左右とFire/Startの、６つのボタンを使って操
 
 ＜BASICプログラムの途中停止＞
 
-BASICプログラムを実行途中で停止したい場合、Ctrl+Alt+Delキーを同時
+BASICプログラムを実行途中で停止したい場合、PauseキーまたはCtrl+Alt+Delキーを同時
 に押してください。プログラムが途中停止します。ただし、PRINT命令な
 どを一切使わないループの中などでは、停止しない場合もあります。
 
@@ -127,31 +127,6 @@ Raspberry Pi PicoのGP27に出力されるので、この端子とGND端子を�
 
 
 ＜machikania-rt.zipファイルコンテンツ＞
-
-[documents]ディレクトリ
-　ドキュメント類を格納
-　- help.txt
-　- help-e.txt
-　　KM-BASICのリファレンスマニュアル
-
-　- class.txt
-　- class-e.txt
-　　KM-BASICでオブジェクト指向化プログラミングのリファレンスマニュアル
-
-　- embed.txt
-　- embed-e.txt
-　　ファイル埋め込み実行ファイル作成方法について
-
-　- pcconnect.txt
-　- pcconnect-e.txt
-　　PCからMachiKaniaにファイルを転送するための方法について
-
-　- shematic.png
-　　MachiKania type P回路図
-
-　- wifi.txt
-　- wifi-e.txt
-　　Raspberry Pi Pico Wを使ってWiFi接続を行うときのリファレンスマニュアル 
 
 [pico]ディレクトリ
 　Raspberry Pi Pico で使うバイナリーを格納
@@ -205,6 +180,10 @@ Raspberry Pi PicoのGP27に出力されるので、この端子とGND端子を�
 　　内蔵エディタとUSBキーボードでBASICプログラムを直接編集、実行可能
 　　WiFi接続が可能
 
+[pcconnect]ディレクトリ
+　USBケーブルを介してPC内のファイルをMachiKaniaに転送するためのツール類
+　を格納
+
 readme.txt
 　このファイル
 
@@ -219,6 +198,32 @@ MACHIKAP.INI
 [LIB]ディレクトリ
 　BASICプログラムから簡単に利用可能なクラスライブラリ
 　MMC/SDカードのルートにLIBディレクトリごとコピーして利用
+
+[docs]ディレクトリ
+　ドキュメント類を格納
+　- help.txt
+　- help-e.txt
+　　KM-BASICのリファレンスマニュアル
+
+　- class.txt
+　- class-e.txt
+　　KM-BASICでオブジェクト指向化プログラミングのリファレンスマニュアル
+
+　- cpuclock.txt
+　- cpuclock-e.txt
+　　CPUのクロック周波数を調整する方法について
+
+　- keyboard.txt
+　- keyboard-e.txt
+　　キーボードを接続して使用する方法について
+
+　- pcconnect.txt
+　- pcconnect-e.txt
+　　PCからMachiKaniaにファイルを転送するための方法について
+
+　- wifi.txt
+　- wifi-e.txt
+　　Raspberry Pi Pico Wを使ってWiFi接続を行うときのリファレンスマニュアル 
 
 [samples]ディレクトリ
 　BASICサンプルプログラム。これらのファイルをSDカードのルートディレクトリにコピーする
@@ -295,127 +300,17 @@ MACHIKAP.INI
 ------------------------------------------------------------------------
 MachiKania type P BASICシステム改版履歴
 
-Phyllosoma 1.00/KM-1500（2022.8.27）
-　・最初の公開バージョン
-
-Phyllosoma 1.10/KM-1501（2022.10.1）
-　・PC connect機能を追加
-　・NOT#()関数を追加
-　・クラス中で別のクラスを使うとコンパイルできない不具合を修正
-　・クラスのスタティック関数呼び出しの不具合を修正
-　・オブジェクトのフィールドに、文字列・配列を割り当てることを許可
-　・一定時間後にWAVEファイルの再生が止まる不具合を修正
-　・割り込み中でのWAIT・DELAYMS・DELAYUSステートメントの使用を許可
-　・MUSICステートメントが一部の環境でエラーで停止する不具合を修正
-　・ファイル選択画面の表示改善
-　・WS2812B・STRDIM・STRD2・MAの４つのクラスを、ライブラリーに追加
-
-Phyllosoma 1.20/KM-1502（2023.1.28）
-　・USBキーボード及びエディターをサポート
-　・INKEY()・READKEY()・INPUT$()の3つの関数と、INKEY割り込み機能を整備
-　・クラスファイルコンパイル時に一部の環境で生じる不具合を修正
-　・ALIGN4ステートメント・DATAADDRESS()関数・FUNCADDRESS()関数を追加
-　・タイマー割り込みのタイミングが少しずれていたのを修正
-　・SYSTEM()に、メモリーアロケーション関連の機能を追加
-　・文字列で「\r」「\t」のエスケープシークエンスが使用可能に
-　・OPTION CLASSCODEに対応
-　・BASICプログラム実行中でのカードの抜き差しが可能に
-　・ファイル選択画面でC言語で作成したHEXファイルのロードが可能に
-　・CRDINI・CLDHEX・REGEXP・STRINGの４つのクラスを、ライブラリーに追加
-
-Phyllosoma 1.30/KM-1503 (2023.9.30)
-　・Raspberry Pi Pico Wに対応。
-　・サンプルプログラムに、WEATHER.BAS(webページから天気予報を得る)と
-　HDEAMON.BAS(web サーバー構築を構築)を追加。
-　・クラスライブラリーに、HTTPD(HTTPサーバーを構築)、IR_RX(赤外線リモコン
-　受信モジュールを使用)、IR_TX(赤外線LEDでリモコン信号を送信)、JSON(JSON文字列
-　を解析)、WGET(指定のURLから情報を取得)を追加。
-　・Raspberry Pi Pico W を用いた WiFi 接続に対応。次の命令・関数を追加： 
-　　DNS$(), IFCONFIG$(), NTP, TCPACCEPT(), TCPCLIENT, TCPCLOSE, TCPRECEIVE, 
-　　TCPSEND, TCPSERVER, TCPSTATUS, TLSCLIENT, WIFIERR(), WIFIERR$()
-　・GCOLOR()関数の不具合を修正
-　・一部USBキーボードでのキー入力不具合に対応
-　・EOFの時、FGETC()関数が-1を返すようにした
-　・embed用にXIAO RP2040, RP2040-Zero, and Tiny-2040に対応
-　・SPIの対応ポートをINIファイルで指定出来るようにした
-　・SERIALステートメントの第3引数を省略した時の不具合を修正
-　・例外をトラップして画面表示するようにした
-　・CORETIMERが電源投入後およそ2000秒後から不具合を起こす事を修正
-　・ILI9488に対応
-　・RTC(Real Time Clock)をサポート。次の命令・関数を追加： 
-　　GETTIME$(), SETTIME. STRFTIME$()
-　・ファイル保存時の日時設定をサポート
-　・NTPサーバーによるRTCのセットをサポート
-　・SYSTEM 201 呼び出しにより、ボード付属のLEDのオン・オフを出来るようにした
-　・メモリーアロケーションの不具合を修正
-　・FREMOVE/SETDIR等のファイル関連命令を使用時の、ガベージコレクション不具合を修正
-　・WAVEプレーヤーの安定性を改善
-　・クラスのスタティックメソッド呼び出し不具合を修正
-　・FFINGD$(), FINFO(), FINFO$()の3つの関数を追加。ファイル一覧の作成が可能に
-　・REM 文に「"」を含む際のコンパイル時の不具合を修正
-
-Phyllosoma 1.31/KM-1504 (2023.10.28)
-　・embed用のBASICプログラムで、ファイルの読み取りに対応。
-　・embed用に組み込むことができるファイル数が、合計16個に増加。
-　・浮動小数点の表示や文字列の扱いの際、間違った値になる不具合を修正。
-
-Phyllosoma 1.40/KM-1505 (2024.2.17)
-　・サンプルプログラムに、FILEMAN.BAS(ファイルマネージャー)を追加。
-　・クラスライブラリーに、BUTTON(ボタン操作), GEN3O(源ノ角ゴシック表示), 
-　　QRCODE(QRCODE表示), TSC2046(タッチパネル操作)を追加。
-　・液晶を使わない場合に、SPI命令でspi1を使う事を可能にした。
-　・PUTBMP命令で、横幅が長い画像を表示する際の不具合を修正。
-　・ファイル一覧表示の際、ファイル更新日時の表示を可能にした。
-　・ファイル一覧表示の際の、ファイル名・ファイル更新日時による表示順に対応。
-　・ILI9488液晶で縦置の際の表示不具合を修正。
-　・FRENAME, MKDIR命令及びFRENAME(), MKDIR()関数の追加。
-　・補助コード(auxcode)を追加できる機能を実装。
-
-Phyllosoma 1.41/KM-1506 (2024.10.06)
-　・Raspberry Pi Pico 2に対応。
-　・WEATHER.BASサンプルプログラムを更新
-
-Phyllosoma 1.50/KM-1507 (2024.12.28)
-　・サンプルプログラム(BLOCK.BAS, PHOTO.BAS)を修正。
-　・クラスライブラリーのWS2812BとQRCODEを、Pico 2に対応するよう修正。
-　・テキストエディターのファイル選択機能のバグ修正。
-　・Pico/Pico2もしくは、Type P/PUごとに、別々のクラスファイルを扱えるように変更。
-　・SYSTEM(4)が正しいCPUの実行速度を返すように修正。
-　・SYSTEM(6)を追加し、BASICのオブジェクトRAM領域のサイズを得られるようにした。
-　・ILI9488を使っている時、今まで指定できなかった幅をWIDTHステートメントで指定できるようにした。
-　・WAITステートメントを実行している時に、キーボードのPAUSE/BREAKキーを押すことで実行停止できるようにした。
-
-Phyllosoma 1.51/KM-1508 (2025.2.22)
-　・SPI・I2C・UART用のピン配置を、MACHIKAP.INIで自由に設定できるように変更。
-　・ピン配置をMACHIKAP.INIで設定できる事に伴い、XIAO embed版の配布を終了。
-　・クラスライブラリーのREGEXPで、連続使用時にメモリーエラーが出る不具合を修正。
-
-Phyllosoma 1.52/KM-1509 (2025.4.12)
-　・「Break」キーだけでなく、「Ctrl + Alt + Del」キーでプログラムの実行を停止できるようにした。
-　・SYSTEM(40), SYSTEM(41), SYSTEM(42), SYSTEM(43)により、キーボードの状態を取得できるようにした。
-　・SYSTEM 50, SYSTEM 51により、CPUのクロック速度と電圧を変更できるようにした。
-　・STARTボタンを押しながら起動することにより、起動時のMACHIKAP.BAS自動実行をスキップすることが可能に。
-　・クラスライブラリーにCPUCLOCKを追加。使用可能なCPUクロック周波数を調べることが可能に。
-　・Raspberry Pi Pico 2 Wに対応。
-　・Raspberry Pi Pico 2 使用時のLCD液晶転送速度を改善。
-　・サンプルプログラム(MAZE3D.BAS, STARTREK.BAS)を修正。
-　・サンプルプログラム(POLYGON.BAS)を追加。
-
 Phyllosoma 1.60/KM-1510 (2025.8.17)
 　・Waveshare ResTouch LCD 3.5に対応
-　・ClockworkPi PicoCalcに対応
-　・LCD用のコードエディターで、予約語・文字列・コメントの色付けに対応
-　・ボタン操作を、キーボードでもエミュレートできるようにした
-　・IPSタイプのLCDに対応
-　・LCD用のファイル選択画面およびエディタで画面の向きを1回転できるように変更
-　・エディターからのHEXファイル実行に対応
-　・ILI9488液晶使用時の転送速度を改善
-　・サンプルプログラム、MANDELBR.BASを、テキストベースの物からグラフィックに変更
-　・サンプルプログラム、MOZART.BASを追加
-　・サンプルプログラム、FILEMAN.BASを修正。Y/Nの確認に小文字のy/nも受け付けるようにした
-　・クラスライブラリーのWS2812B.BASを更新。Pico 2での動作を改善
-　・TSC2046クラスをResTouchで使用できるように修正
-　・SYSTEM関数/ステートメントで、LCD及びMMC用のSPI通信速度を、取得したり変更したりできるようにした
-　・OUTステートメント実行時に、短時間予期しない出力変化が発生する不具合を解消
-　・PLAYWAVEステートメントで対応できるWAVEファイルのサンプリング周波数を、15700-16000 Hzの任意のものに対応
-　・SPI MISOで、指定したポートが使用できなかった不具合を解消
+
+Pyllosoma 1.61/KM-1511 (2025.12.27)
+　・エディター使用時に、ステートメントもしくは関数のヘルプを表示できるようにした
+　・RND#()関数を追加
+　・ネット接続におけるTLSハンドシェイクを改善。16 Kbを超えるファイルをhttpsプロトコルで取得可能に
+　・PWM4～PWM9の使用をサポートし、使用ポートをINIファイルで指定できるようにした
+　・PicoCalc、ResTouch、type PU miniで、OUT8L/IN8L、OUT8H/IN8H、OUT16/IN16ステートメントの挙動を修正
+　・クラスファイル中で別のクラスを使っている際、特定の環境でコンパイルできなくなる不具合を修正
+　・クラスライブラリーに高速フーリエ変換および逆変換を行うためのクラス、FFTLIBを追加
+　・クラスライブラリーのWGETを更新。301 Movedなどに対応
+　・class.txtを修正
+　・help-k.txtを追加

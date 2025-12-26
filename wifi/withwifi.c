@@ -22,6 +22,14 @@
 #include "../api.h"
 #include "./wifi.h"
 
+#include <mbedtls/platform.h>
+
+#if defined(mbedtls_ms_time_t)
+mbedtls_ms_time_t mbedtls_ms_time(void) {
+    return (mbedtls_ms_time_t)(time_us_64() / 1000);
+}
+#endif
+
 static char g_wifi_id[128]=MACHIKANIA_DEFAULT_WIFI_SSID128;
 static char g_wifi_passwd[128]=MACHIKANIA_DEFAULT_WIFI_PASSWD128;
 static char g_wifi_hostname[64]="PicoW";
@@ -142,6 +150,7 @@ int connect_wifi(char show_progress){
 	if (!g_usewifi) {
 		// First time calling this function. This must be done in main().
 		// Second time calling this function must be from BASIC code.
+		cyw43_arch_init();
 		g_usewifi=1;
 		return 0;
 	}

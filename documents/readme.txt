@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.8.17
+　　　　　　　　　　　　　　　　　　　　　　　　　　2025.12.27
 　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
 　　　　　　　　「MachiKania type P」
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -33,31 +33,6 @@ MachiKaniaシリーズを利用していることについてもWebサイトや
 
 
 ＜machikania-p.zipファイルコンテンツ＞
-
-[documents]ディレクトリ
-　ドキュメント類を格納
-　- help.txt
-　- help-e.txt
-　　KM-BASICのリファレンスマニュアル
-
-　- class.txt
-　- class-e.txt
-　　KM-BASICでオブジェクト指向化プログラミングのリファレンスマニュアル
-
-　- embed.txt
-　- embed-e.txt
-　　ファイル埋め込み実行ファイル作成方法について
-
-　- pcconnect.txt
-　- pcconnect-e.txt
-　　PCからMachiKaniaにファイルを転送するための方法について
-
-　- shematic.png
-　　MachiKania type P回路図
-
-　- wifi.txt
-　- wifi-e.txt
-　　Raspberry Pi Pico Wを使ってWiFi接続を行うときのリファレンスマニュアル 
 
 [pico_ili9341]ディレクトリ
 　Raspberry Pi Pico と ILI9341 液晶の組み合わせのときに使うバイナリー
@@ -140,6 +115,39 @@ MACHIKAP.INI
 [LIB]ディレクトリ
 　BASICプログラムから簡単に利用可能なクラスライブラリ
 　MMC/SDカードのルートにLIBディレクトリごとコピーして利用
+
+[docs]ディレクトリ
+　ドキュメント類を格納
+　- help.txt
+　- help-e.txt
+　　KM-BASICのリファレンスマニュアル
+
+　- class.txt
+　- class-e.txt
+　　KM-BASICでオブジェクト指向化プログラミングのリファレンスマニュアル
+
+　- cpuclock.txt
+　- cpuclock-e.txt
+　　CPUのクロック周波数を調整する方法について
+
+　- embed.txt
+　- embed-e.txt
+　　ファイル埋め込み実行ファイル作成方法について
+
+　- keyboard.txt
+　- keyboard-e.txt
+　　キーボードを接続して使用する方法について
+
+　- pcconnect.txt
+　- pcconnect-e.txt
+　　PCからMachiKaniaにファイルを転送するための方法について
+
+　- shematic.png
+　　MachiKania type P回路図
+
+　- wifi.txt
+　- wifi-e.txt
+　　Raspberry Pi Pico Wを使ってWiFi接続を行うときのリファレンスマニュアル 
 
 [samples]ディレクトリ
 　BASICサンプルプログラム。これらのファイルをSDカードのルートディレクトリにコピーする
@@ -340,3 +348,17 @@ Phyllosoma 1.60/KM-1510 (2025.8.17)
 　・OUTステートメント実行時に、短時間予期しない出力変化が発生する不具合を解消
 　・PLAYWAVEステートメントで対応できるWAVEファイルのサンプリング周波数を、15700-16000 Hzの任意のものに対応
 　・SPI MISOで、指定したポートが使用できなかった不具合を解消
+
+Pyllosoma 1.61/KM-1511 (2025.12.27)
+　・Waveshare RP2350-LCD-1.47に対応
+　・ST7789搭載液晶に対応（バイナリ提供なし）
+　・エディター使用時に、ステートメントもしくは関数のヘルプを表示できるようにした
+　・RND#()関数を追加
+　・ネット接続におけるTLSハンドシェイクを改善。16 Kbを超えるファイルをhttpsプロトコルで取得可能に
+　・PWM4～PWM9の使用をサポートし、使用ポートをINIファイルで指定できるようにした
+　・PicoCalc、ResTouch、type PU miniで、OUT8L/IN8L、OUT8H/IN8H、OUT16/IN16ステートメントの挙動を修正
+　・クラスファイル中で別のクラスを使っている際、特定の環境でコンパイルできなくなる不具合を修正
+　・クラスライブラリーに高速フーリエ変換および逆変換を行うためのクラス、FFTLIBを追加
+　・クラスライブラリーのWGETを更新。301 Movedなどに対応
+　・class.txtを修正
+　・help-k.txtを追加

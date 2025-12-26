@@ -4,6 +4,8 @@ When the program is started with a USB keyboard connected, the editor screen sta
 
 The below table shows the special keys that can be used in the editor, as well as the ability to select a range and copy/paste using Shift + arrow keys. Note that copying is limited to the area that fits on one screen.
 
+Press the F3 key to display help for the statement or function at the cursor position. The contents of the file specified by "HELPFILE=" in MACHIKAP.INI will be shown (default: "/docs/help-e.txt"). Place a text file with the specified file name in the designated directory on the MMC/SD card. Use "help-e.txt" for English, or "help-k.txt" for Katakana Japanese.
+
 Execution of a running BASIC program is terminated by reaching the END instruction or the last line of the program, and can be forced termination by pressing the “Pause” key during program execution. Note, however, that this may not work depending on the contents of the program being executed.
 
 When the USB keyboard connection version is started without a keyboard connected, the file selection screen with buttons is started. In addition, depending on the type of keyboard, the USB keyboard may not be recognized at power-on or reset, and in this case, the file selection screen with buttons will also be launched. Some types of keyboards, however, may not be recognized at all, so please prepare a different keyboard in this case. 
@@ -19,6 +21,8 @@ F1(CTRL+O)
 	Loads an existing file. If there is a file before saving, there is confirmation of saving.
 F2
 	Saves the file by specifying a file name
+F3 (CTRL+H)
+	Show help for the statement or function
 F4
 	Execute BASIC program (RUN)
 Shift+F1(CTRL+N)

@@ -44,6 +44,7 @@ if (TARGET tinyusb_device)
 		debug.c	
 		exception.c
 		rtc.c
+		help.c
 		interface/ff.c
 		interface/pico-sdmm.c
 		interface/fileselect.c

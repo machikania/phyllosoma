@@ -345,6 +345,9 @@
 #define INTERRUPT_WAVE      5
 #define INTERRUPT_CORETIMER 6
 
+#define RANDOM_INT 0
+#define RANDOM_FLOAT 1
+
 #define VALIDCLOCK4NTSC (g_clock_hz==157500000 || g_clock_hz==315000000)
 
 /*
@@ -428,6 +431,12 @@ extern char g_cpu_voltage_default;
 
 extern char g_emulate_buttons;
 extern unsigned char g_emulate_button_array[6];
+
+// USB peripheral derection
+extern unsigned char g_usb_peripheral;
+#define USB_PERIPHERAL_NONE     0
+#define USB_PERIPHERAL_KEYBOARD 1
+#define USB_PERIPHERAL_GAMEPAD  2
 
 /*
 	Prototypes
@@ -545,7 +554,7 @@ int* cmpdata_nsearch_string(unsigned int type,unsigned char* str,int num);
 int* cmpdata_search_string(unsigned int type,unsigned char* str);
 int* cmpdata_nsearch_string_first(unsigned int type,unsigned char* str,int num);
 int* cmpdata_search_string_first(unsigned int type,unsigned char* str);
-int cmpdata_nhash(unsigned char* str, int num);
+int cmpdata_nhash(const unsigned char* str, int num);
 int cmpdata_hash(unsigned char* str);
 unsigned char* cmpdata_insert_string_stack(int num);
 void cmpdata_delete_string_stack(unsigned char* str);
@@ -700,6 +709,10 @@ int aux_int_functions(void);
 int aux_str_functions(void);
 int aux_float_functions(void);
 int lib_aux(int r0, int r1, int r2);
+
+// help.c
+char* get_help(const char* word);
+int ini_file_help(char* line);
 
 // For debugging
 void dump_cmpdata(void);

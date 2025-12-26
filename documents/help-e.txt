@@ -151,7 +151,7 @@ FUNCADDRESS(xxx)
 GOSUB(xxx [, yyy [, zzz [, ... ]]])
 	Same as the GOSUB instruction, but with a return value (see RETURN). xxx is a label or line number. yyy, zzz, etc. are arguments that are passed on to the subroutine (see ARGS() function).
 INKEY([x])
-	If x is not specified, returns the ASCII value of the currently pressed key. If x is specified with an ASCII value, returns whether the key is pressed or not.
+	If x is not specified, returns the key code of the currently pressed key. If x is specified with a key code, returns whether the key is pressed or not.
 INT(x#)
 	Converts the real value x# to an integer and returns it.
 KEYS([x])
@@ -236,6 +236,8 @@ PI#
 	Returns 3.141593.
 POW#(x#,y#)
 	Returns the y# power of x# as a real number.
+RND#()
+	Returns a random number greater than or equal to 0 and less than 1.
 SIN#(x#)
 	Returns the sine of x# as a real number.
 SINH#(x#)
@@ -756,22 +758,25 @@ STRFTIME$(x$[,y$]])
 Since MachiKania ver 1.2, the RETURN statement can be used in the middle of the FOR-NEXT loop, WHILE-WEND loop, and DO-LOOP loop. However, jumping outside the loop with the GOTO statement will cause unexpected results (e.g., equipment reset). It is also possible to use the GOSUB statement to call a subroutine or nest another loop.
 
 ON GOTO statement and ON GOSUB statement are not supported. However, it is possible to cause similar behavior by writing, for example, the following
- GOSUB 10000+A
- ....
- 10000 PRINT "A=0" : RETURN
- 10001 PRINT "A=1" : RETURN
- 10002 PRINT "A=2" : RETURN
+	GOSUB 10000+A
+	....
+	10000 PRINT "A=0" : RETURN
+	10001 PRINT "A=1" : RETURN
+	10002 PRINT "A=2" : RETURN
 
 If strings are handled consecutively in a line, an error message "String too complexed" may appear and the program may stop. In this case, try using a separate line for each string instruction, or try dividing the string-related operations into several steps, one line for each.
 
 Be careful when accessing global variables in interrupt functions. If a variable of the same name is specified as a VAR in one of the subroutines and is also used as a local variable, depending on when the interrupt is triggered, the value of the variable may or may not belong to the global or local variable. Therefore, if you want to handle a global variable in an interrupt function, do not specify a variable of the same name as a VAR.
 
 <Version history>
+KM-1511 Released in December 2025.
+　Added the RND#() function
+　Fixed a bug where compilation failed in certain environments when one class used another within class files
 KM-1510 Released in August 2025.
-	Enabled the ability to retrieve and modify SPI communication speed for LCD and MMC via the SYSTEM function/statement
-	Fixed a bug where executing the OUT statement caused brief, unexpected output fluctuations
-	Extended support for WAVE files in the PLAYWAVE statement to include sampling frequencies between 15700–16000 Hz
-	Resolved an issue in SPI MISO where the specified port could not be used
+　Enabled the ability to retrieve and modify SPI communication speed for LCD and MMC via the SYSTEM function/statement
+　Fixed a bug where executing the OUT statement caused brief, unexpected output fluctuations
+　Extended support for WAVE files in the PLAYWAVE statement to include sampling frequencies between 15700–16000 Hz
+　Resolved an issue in SPI MISO where the specified port could not be used
 KM-1509 Released in April 2025.
 　Enabled stopping program execution not only with the "Break" key but also with the "Ctrl + Alt + Del" key.
 　Made it possible to retrieve the keyboard state using SYSTEM(40), SYSTEM(41), SYSTEM(42), and SYSTEM(43).

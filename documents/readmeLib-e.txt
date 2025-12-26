@@ -52,6 +52,9 @@ IR_TX
 JSON
 	Class to analyze JSON string
 
+FFTLIB
+	Class for Fast Fourier Transform and inverse FFT operations
+
 MA
 	Class for memory allocation, used in STRDIM.
 
@@ -129,3 +132,7 @@ Phyllosoma/Puerulus 1.60/KM-1510 (2025.8.17)
 　PLAYAVI added (Type PU only)
 　TSC2046 ver 0.2.1 (Type P only)
 　WS2812B.BAS ver 1.2
+
+Phyllosoma/Puerulus 1.61/KM-1511 (2025.12.27)
+　Addition of FFTLIB class for Fast Fourier Transform and inverse FFT operations
+　Updated WGET (ver 0.4) to handle cases such as "301 Moved"

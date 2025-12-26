@@ -6,7 +6,7 @@ MachiKania type P (aka MachiKania Phyllosoma) for ClockworkPi PicoCalc (hereafte
 MachiKania Phyllosoma is a BASIC compiler for ARMv6-M, especially for Raspberry Pi Pico.
 
 ## how to compile for Raspberry Pi Pico
-cmake and make. The pico-sdk (ver 2.1.1 is confirmed for building) with all submodules (execute "Submodule Update" for git clone) is required. In config.cmake, select configuration option to build by enabling "set()" command. Currently, there is following option:  
+cmake and make. The pico-sdk (ver 2.2.0 is confirmed for building) with all submodules (execute "Submodule Update" for git clone) is required. In config.cmake, select configuration option to build by enabling "set()" command. Currently, there is following option:  
   
 1. set(MACHIKANIA_BUILD pico_picocalc) : for PicoCalc  
 
