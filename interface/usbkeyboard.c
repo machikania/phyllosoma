@@ -49,6 +49,12 @@ static uint8_t USBKB_dev_addr=0xFF;
 static uint8_t USBKB_instance;
 static hid_keyboard_report_t usbkb_report;
 
+uint32_t getVidPid(void){
+	uint16_t vid, pid;
+	tuh_vid_pid_get(USBKB_dev_addr, &vid, &pid);
+	return (vid<<16) | pid;
+}
+
 void lockkeycheck(uint8_t const vk){
 	switch (vk)
 	{

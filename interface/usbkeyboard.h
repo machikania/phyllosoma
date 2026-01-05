@@ -206,5 +206,8 @@ unsigned char shiftkeys(void); // SHIFT関連キーの押下状態を返す
 // 英数・記号文字の場合、戻り値としてASCIIコード（それ以外は0を返す）
 unsigned char usbkb_readkey(void);
 
+// Detect Vendor and Product IDs of USB keyboard 
+uint32_t getVidPid(void);
+
 // Macro(s) follows(s)
 #define keycodeExists() (keycodebufp1!=keycodebufp2)
