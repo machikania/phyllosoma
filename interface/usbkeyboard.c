@@ -331,10 +331,19 @@ void tuh_hid_mount_cb(uint8_t dev_addr, uint8_t instance, uint8_t const* desc_re
 {
 	// Interface protocol (hid_interface_protocol_enum_t)
 	uint8_t const itf_protocol = tuh_hid_interface_protocol(dev_addr, instance);
-
-	hid_info[instance].report_count = tuh_hid_parse_report_descriptor(hid_info[instance].report_info, MAX_REPORT, desc_report, desc_len);
-
-	if(itf_protocol==1){ //HIDキーボードの場合
+	bool usbkbfound=false;
+	if(itf_protocol == HID_ITF_PROTOCOL_KEYBOARD) {
+		usbkbfound=true;
+	}
+	else if (itf_protocol == HID_ITF_PROTOCOL_NONE) {
+		tuh_hid_report_info_t* rpt_info;
+		hid_info[instance].report_count = tuh_hid_parse_report_descriptor(hid_info[instance].report_info, MAX_REPORT, desc_report, desc_len);
+		rpt_info = hid_info[instance].report_info;
+		if (rpt_info->usage_page == HID_USAGE_PAGE_DESKTOP && rpt_info->usage == HID_USAGE_DESKTOP_KEYBOARD){
+			usbkbfound=true;
+		}
+	}
+	if(usbkbfound){
 		USBKB_dev_addr=dev_addr;
 		USBKB_instance=instance;
 		usbkb_shiftkey_a=(uint16_t)lockkey<<8; //Lock関連キーを変数lockkeyで初期化
