@@ -766,6 +766,12 @@ ON GOTO statement and ON GOSUB statement are not supported. However, it is possi
 
 If strings are handled consecutively in a line, an error message "String too complexed" may appear and the program may stop. In this case, try using a separate line for each string instruction, or try dividing the string-related operations into several steps, one line for each.
 
+When a local variable is declared with VAR, it can be used locally as an integer, floating‑point value, string, or array. The contents of these variables are discarded when the RETURN statement is executed. However, you cannot return the contents of a string variable as the return value of a RETURN statement, because the variable’s contents are destroyed at the time the RETURN statement is executed. For such cases, write your code as shown in the following example.
+	LABEL TEST
+	VAR A
+	(... a code using A$ ...)
+	RETURN A$+""
+
 Be careful when accessing global variables in interrupt functions. If a variable of the same name is specified as a VAR in one of the subroutines and is also used as a local variable, depending on when the interrupt is triggered, the value of the variable may or may not belong to the global or local variable. Therefore, if you want to handle a global variable in an interrupt function, do not specify a variable of the same name as a VAR.
 
 <Version history>
