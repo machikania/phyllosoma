@@ -279,6 +279,13 @@ int lib_strncmp(int r0, int r1, int r2){
 	return r0;
 }
 
+int lib_strcmp(int r0, int r1, int r2){
+	r0=strcmp((char*)r1,(char*)r0);
+	garbage_collection((char*)r0);
+	garbage_collection((char*)r1);
+	return r0;
+}
+
 int lib_float(int r0, int r1, int r2){
 	g_scratch_float[0]=(float)r0;
 	return g_scratch_int[0];
@@ -830,6 +837,7 @@ static const void* lib_list1[]={
 	lib_pre_method,             // #define LIB_PRE_METHOD 30
 	lib_post_method,            // #define LIB_POST_METHOD 31
 	lib_readkey,                // #define LIB_READKEY 32
+	lib_strcmp,                 // #define LIB_STRCMP 33
 };
 
 static const void* lib_list2[]={

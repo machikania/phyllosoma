@@ -188,6 +188,8 @@ RND()
 	Return a pseudo-random number from 0 to 32767.
 SGN(x)
 	Returns the sign (-1, 0, or 1) of x.
+STRCMP(x$,y$)
+	Compares two strings and returns the result. 0 if they are the same string.
 STRNCMP(x$,y$,z)
 	Compares z characters in two strings and returns the result. 0 if they are the same string.
 TVRAM([x])

@@ -15,6 +15,12 @@ int strncmp_function(void){
 		ARG_INTEGER<<ARG3 );
 }
 
+int strcmp_function(void){
+	return argn_function(LIB_STRCMP,
+		ARG_STRING<<ARG1 |
+		ARG_STRING<<ARG2 );
+}
+
 int val_function(void){
 	return argn_function(LIB_VAL,ARG_STRING<<ARG1);
 }
@@ -198,6 +204,7 @@ int integer_functions(void){
 	if (instruction_is("READKEY(")) return readkey_function();
 	if (instruction_is("RND(")) return rnd_function();
 	if (instruction_is("SGN(")) return sgn_function();
+	if (instruction_is("STRCMP(")) return strcmp_function();
 	if (instruction_is("STRNCMP(")) return strncmp_function();
 	if (instruction_is("SYSTEM(")) return system_function();
 	if (instruction_is("VAL(")) return val_function();
