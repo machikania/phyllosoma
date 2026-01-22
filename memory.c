@@ -260,6 +260,7 @@ int move_from_temp(int vn, int pdata){
 
 void garbage_collection(void* data){
 	int i;
+	if (data<(void*)HEAP_BEGIN || (void*)HEAP_END<data) return;
 	for(i=0;i<TEMPVAR_NUMBER;i++) {
 		if (0==kmbasic_var_size[ALLOC_TEMP_BLOCK+i]) continue;
 		if ((int)data!=kmbasic_variables[ALLOC_TEMP_BLOCK+i]) continue;
