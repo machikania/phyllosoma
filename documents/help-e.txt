@@ -70,16 +70,16 @@ GOSUB xxx [, yyy [, zzz [, ... ]]]
 	Memorize the current execution position and move to line xxx (or label). yyy, zzz, etc. are arguments that are passed on to the subroutine (see the ARGS() function).
 GOTO xxx
 	Go to line xxx (or label).
-IF x|x# THEN yyy [ ELSE zzz ].
-	If x is non-zero, execute yyy; if x is zero, execute zzz. yyy and zzz can be written with multiple statements separated by ":".
-IF x|x# THEN
+IF x|x#|x$ THEN yyy [ ELSE zzz ].
+	If x, x#, or x$ is non-zero, execute yyy; if x, x#, or x$ is zero, execute zzz. yyy and zzz can be written with multiple statements separated by ":".
+IF x|x#|x$ THEN
 xxx
-[ELSEIF y|y# THEN
+[ELSEIF y|y#|y$ THEN
 yyy]
 [ELSE
 zzz]
 ENDIF
-	Execute xxx when x or x# is non-zero, yyy otherwise and y or y# is non-zero (if described), zzz otherwise. ELSEIF statements can be multiple. Note that on each line, do not put anything after the THEN statement.
+	Execute xxx when x, x#, or x$ is non-zero, yyy otherwise and y, y# or y$ is non-zero (if described), zzz otherwise. ELSEIF statements can be multiple. Note that on each line, do not put anything after the THEN statement.
 LABEL xxx
 	Register a jump destination for GOTO/GOSUB. xxx is a string of alphanumeric characters.
 [LET] x=yyy
@@ -330,7 +330,31 @@ OR
 
 <String operators>
 x$ + y$
-	String concatenation
+	Concatenation of strings
+x$ = y$
+	Returns the string "1" if the two strings are identical; otherwise returns "0"
+x$ != y$
+	Returns the string "0" if the two strings are identical; otherwise returns "1"
+x$ < y$
+	Compares x$ and y$ as strings; returns the string "1" if x$ is smaller than y$, otherwise returns "0"
+x$ <= y$
+	Compares x$ and y$ as strings; returns the string "1" if x$ is smaller than or equal to y$, otherwise returns "0"
+x$ > y$
+	Compares x$ and y$ as strings; returns the string "1" if x$ is larger than y$, otherwise returns "0"
+x$ >= y$
+	Compares x$ and y$ as strings; returns the string "1" if x$ is larger than or equal to y$, otherwise returns "0"
+x$ AND y$
+	Returns the string "0" if either x$ or y$ begins with "0"; otherwise returns "1"
+x$ OR y$
+	Returns the string "0" only if both x$ and y$ begin with "0"; otherwise returns "1"
+
+The precedence of string operators, from highest to lowest, is as follows:
+
++
+< <= > >=
+= !=
+AND
+OR
 
 <Floating point operators>
 -x#

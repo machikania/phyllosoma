@@ -181,6 +181,63 @@ int lib_calc_float(int r0, int r1, int r2){
 	return g_scratch_int[2];
 }
 
+int lib_calc_string(int r0, int r1, int r2){
+	char* str1=(char*)r1;
+	char* str2=(char*)r0;
+	switch(r2){
+		case OP_EQ:
+			r0= 0==strcmp(str1,str2) ? 1:0;
+			break;
+		case OP_NEQ:
+			r0= 0!=strcmp(str1,str2) ? 1:0;
+			break;
+		case OP_LT:
+			r0= strcmp(str1,str2)<0 ? 1:0;
+			break;
+		case OP_LTE:
+			r0= strcmp(str1,str2)<=0 ? 1:0;
+			break;
+		case OP_MT:
+			r0= strcmp(str1,str2)>0 ? 1:0;
+			break;
+		case OP_MTE:
+			r0= strcmp(str1,str2)>=0 ? 1:0;
+			break;
+		case OP_ADD:
+			return lib_add_string(r0,r1,r2);
+		case OP_OR:
+			r0=1;
+			if ('0'!=str1[0]) break;
+			if ('0'!=str2[0]) break;
+			r0=0;
+			break;
+		case OP_AND:
+			r0=0;
+			if ('0'==str1[0]) break;
+			if ('0'==str2[0]) break;
+			r0=1;
+			break;
+		default: // error
+			return r0;
+	}
+	// Garbage collection
+	garbage_collection(str1);
+	garbage_collection(str2);
+	// Return string
+	return r0 ? (int)"1":(int)"0";
+}
+
+int lib_if_string(int r0, int r1, int r2){
+	char* str=(char*)r0;
+	// If the first character in string is '0' then return 0.
+	// Otherwise, return 1.
+	r0= '0'==str[0] ? 0:1;
+	// Garbage collection
+	garbage_collection(str);
+	// Return result
+	return r0;
+}
+
 int lib_line_num(int r0, int r1, int r2){
 	int* data=cmpdata_findfirst_with_id(CMPDATA_LINENUM,r0);
 	if (data) return data[1];// Found
@@ -641,7 +698,8 @@ int lib_debug(int r0, int r1, int r2){
 	//lib_wait(60,0,0);
 	return r0;
 #else
-	return get_number_of_remaining_blocks();
+	return ((char*)r0)[0]=='0' ?0:1;
+//	return get_number_of_remaining_blocks();
 #endif
 }
 
@@ -838,6 +896,8 @@ static const void* lib_list1[]={
 	lib_post_method,            // #define LIB_POST_METHOD 31
 	lib_readkey,                // #define LIB_READKEY 32
 	lib_strcmp,                 // #define LIB_STRCMP 33
+	lib_calc_string,            // #define LIB_CALC_STRING 34
+	lib_if_string,              // #define LIB_IF_STRING 35
 };
 
 static const void* lib_list2[]={

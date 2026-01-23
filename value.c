@@ -153,6 +153,8 @@ int get_simple_value(int vmode){
 			return get_simple_integer();
 		case VAR_MODE_FLOAT:
 			return get_simple_float();
+		case VAR_MODE_STRING:
+			return get_simple_string();
 		default:
 			return ERROR_UNKNOWN;
 	}

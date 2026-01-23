@@ -101,6 +101,8 @@
 #define LIB_POST_METHOD 31
 #define LIB_READKEY 32
 #define LIB_STRCMP 33
+#define LIB_CALC_STRING 34
+#define LIB_IF_STRING 35
 
 #define LIB_DEBUG 128
 #define LIB_PRINT 129
@@ -505,6 +507,7 @@ void texteditor(void);
 
 // string.c
 int string_char(void);
+int get_simple_string(void);
 int get_string(void);
 
 // integer.c

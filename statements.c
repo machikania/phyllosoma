@@ -1017,14 +1017,22 @@ int if_statement(void){
 	unsigned short* obefore=object;
 	// Increment the depth first
 	g_ifdepth++;
-	// Get int or float
+	// Get int, float, or string
 	e=get_integer();
 	if (0!=e || (!instruction_is("THEN"))) {
 		source=sbefore;
 		rewind_object(obefore);
 		e=get_float();
-		if (e) return e;
-		if (!instruction_is("THEN")) return ERROR_SYNTAX;
+		if (0!=e || (!instruction_is("THEN"))) {
+			source=sbefore;
+			rewind_object(obefore);
+			e=get_string();
+			if (e) return e;
+			if (!instruction_is("THEN")) return ERROR_SYNTAX;
+			// String "0"/"1" to integer 0/1 conversion, and garbage collection
+			e=call_lib_code(LIB_IF_STRING);
+			if (e) return e;
+		}
 	}
 	// r0 is set. Let's branch here
 	check_object(2);
