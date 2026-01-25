@@ -45,18 +45,18 @@ DELAYUS x
 	x マイクロ秒の時間、実行を停止する。
 DIM xxx [, yyy [, zzz [, ... ]]]
 	整数型もしくは浮動小数点型の配列を割り当てる。xxx,yyy,zzzは、例えば「A(10)」のように記述する。この場合、A(0)からA(10)までの１１個の整数型変数が確保される。浮動小数点型配列の場合は、「A#(10)」の様に記述する。多次元配列も、宣言することが出来る。
-DO WHILE x|x#
+DO WHILE x|x#|x$
 LOOP
-	xまたはx# が0以外の場合、DO文からLOOP文までのステートメントを繰り返し実行する。
-DO UNTIL x|x#
+	xまたはx#またはx$ が0以外の場合、DO文からLOOP文までのステートメントを繰り返し実行する。
+DO UNTIL x|x#|x$
 LOOP
-	xまたはx# が0の場合、DO文からLOOP文までのステートメントを繰り返し実行する。
+	xまたはx#またはx$ が0の場合、DO文からLOOP文までのステートメントを繰り返し実行する。
 DO
-LOOP WHILE x|x#
-	DO文からLOOP文までのステートメントを実行し、xまたはx# が0以外の場合、繰り返す。
+LOOP WHILE x|x#|x$
+	DO文からLOOP文までのステートメントを実行し、xまたはx#またはx$ が0以外の場合、繰り返す。
 DO
-LOOP UNTIL x|x#
-	DO文からLOOP文までのステートメントを実行し、xまたはx# が0の場合、繰り返す。
+LOOP UNTIL x|x#|x$
+	DO文からLOOP文までのステートメントを実行し、xまたはx#またはx$ が0の場合、繰り返す。
 DRAWCOUNT x
 	DRAWCOUNT値を指定する。DRAWCOUNT値に付いては、DRAWCOUNT()関数を参照。
 END

@@ -76,6 +76,25 @@ int get_int_or_float(void){
 	return 0;
 }
 
+int get_int_float_or_string_condition(void){
+	char* sbefore=source;
+	unsigned short* obefore=object;
+	int e;
+	// Get int or float, first
+	e=get_int_or_float();
+	if (0!=e || !end_of_value()) {
+		source=sbefore;
+		rewind_object(obefore);
+		e=get_string();
+		if (e) return e;
+		if (!end_of_value()) return ERROR_SYNTAX;
+		// String "0"/"1" to integer 0/1 conversion, and garbage collection
+		e=call_lib_code(LIB_IF_STRING);
+		if (e) return e;
+	}
+	return 0;
+}
+
 int get_string_int_or_float(void){
 	char* sbefore=source;
 	unsigned short* obefore=object;

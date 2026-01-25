@@ -526,6 +526,7 @@ int cread_function(void);
 int get_dim_pointer(void);
 int get_dim_value(void);
 int get_int_or_float(void);
+int get_int_float_or_string_condition(void);
 int get_string_int_or_float(void);
 int get_value(int vmode);
 int get_simple_value(int vmode);

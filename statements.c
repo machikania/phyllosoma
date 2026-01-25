@@ -693,7 +693,7 @@ int do_statement(void){
 	g_fordepth++;
 	unsigned short* obefore=object;
 	if (instruction_is("WHILE")) {
-		e=get_int_or_float();
+		e=get_int_float_or_string_condition();
 		if (e) return e;
 		check_object(2);
 		(object++)[0]=0x2800;// cmp	r0, #0
@@ -702,7 +702,7 @@ int do_statement(void){
 		                     // skip:
 		if (e) return e;
 	} else if (instruction_is("UNTIL")) {
-		e=get_int_or_float();
+		e=get_int_float_or_string_condition();
 		if (e) return e;
 		check_object(2);
 		(object++)[0]=0x2800;// cmp	r0, #0
@@ -747,13 +747,13 @@ int contine_end_loop(void){
 int loop_statement(void){
 	int e;
 	if (instruction_is("WHILE")) {
-		e=get_int_or_float();
+		e=get_int_float_or_string_condition();
 		if (e) return e;
 		check_object(2);
 		(object++)[0]=0x2800;// cmp	r0, #0
 		(object++)[0]=0xd001;// beq.n	skip
 	} else if (instruction_is("UNTIL")) {
-		e=get_int_or_float();
+		e=get_int_float_or_string_condition();
 		if (e) return e;
 		check_object(2);
 		(object++)[0]=0x2800;// cmp	r0, #0
@@ -768,7 +768,7 @@ int while_statement(void){
 	int e;
 	g_fordepth++;
 	unsigned short* obefore=object;
-	e=get_int_or_float();
+	e=get_int_float_or_string_condition();
 	if (e) return e;
 	check_object(2);
 	(object++)[0]=0x2800;// cmp	r0, #0

@@ -45,18 +45,18 @@ DELAYUS x
 	Stop execution for x microseconds.
 DIM xxx [, yyy [, zzz [, ... ]]]
 	Assigns an array of integer or floating-point type. xxx,yyy,zzz should be written, for example, "A(10)". In this case, 11 integer type variables from A(0) to A(10) are allocated. In the case of a floating-point array, it should be written as "A#(10)". Multi-dimensional arrays can also be declared.
-DO WHILE x|x#
+DO WHILE x|x#|x$
 LOOP
-	If x or x# is non-zero, the statements from DO to LOOP are executed repeatedly.
-DO UNTIL x|x#
+	If x, x#, or x$ is non-zero, the statements from DO to LOOP are executed repeatedly.
+DO UNTIL x|x#|x$
 LOOP
-	If x or x# is 0, repeats the statements from the DO statement to the LOOP statement.
+	If x, x#, or x$ is 0, repeats the statements from the DO statement to the LOOP statement.
 DO
-LOOP WHILE x|x#
-	Executes the statements from the DO statement through the LOOP statement and repeats if x or x# is non-zero.
+LOOP WHILE x|x#|x$
+	Executes the statements from the DO statement through the LOOP statement and repeats if x, x#, or x$ is non-zero.
 DO
-LOOP UNTIL x|x#
-	Executes statements from the DO statement through the LOOP statement and repeats if x or x# is 0.
+LOOP UNTIL x|x#|x$
+	Executes statements from the DO statement through the LOOP statement and repeats if x, x#, or x$ is 0.
 DRAWCOUNT x
 	Specifies the DRAWCOUNT value, see DRAWCOUNT() function for DRAWCOUNT value.
 END
