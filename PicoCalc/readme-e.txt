@@ -167,7 +167,7 @@ MACHIKAP.INI
 　- keyboard-e.txt
 　　How to use the keyboard
 
-　- shematic.png
+　- schematic.png
 　　MachiKania type P schematic
 
 　- wifi.txt

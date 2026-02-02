@@ -164,8 +164,8 @@ MACHIKAP.INI
 　- pcconnect-e.txt
 　　How to transfer files from your PC to MachiKania
 
-　- shematic_ntsc.png
-　- shematic_xiao.png
+　- schematic_ntsc.png
+　- schematic_xiao.png
 　　MachiKania type PU schematics
 
 　- wifi.txt

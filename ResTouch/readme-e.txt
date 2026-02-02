@@ -220,7 +220,7 @@ MACHIKAP.INI
 　- pcconnect-e.txt
 　　How to transfer files from your PC to MachiKania
 
-　- shematic.png
+　- schematic.png
 　　MachiKania type P schematic
 
 　- wifi.txt

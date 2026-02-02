@@ -30,7 +30,7 @@ Most of codes (written in C) are provided with LGPL 2.1 license, but some codes 
 
 ## Connection
 Connect a Raspberry Pi Pico to an ILI9341/ILI9488-based LCD (SPI connection) and an MultiMediaCard (SPI connection) as follows.
-![schematic.png](documents/shematic.png)
+![schematic.png](documents/schematic.png)
 Note that USB keyboard is connected to micro-USB B port of Raspberry Pi Pico (or Pico W) board when required.
 
 ```console
@@ -103,7 +103,7 @@ Most of codes (written in C) are provided with LGPL 2.1 license, but some codes 
 ## Connection
 ### Case 1. MachiKania type P with Video adapter instead of an LCD
 Connect a Raspberry Pi Pico to a TV (NTSC Video) and an MultiMediaCard (SPI connection) as follows.
-![schematic.png](documents/shematic_ntsc.png)  
+![schematic.png](documents/schematic_ntsc.png)  
 Note that USB keyboard is connected to micro-USB B port of Raspberry Pi Pico (or Pico W) board when required.
 
 ```console

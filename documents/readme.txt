@@ -142,7 +142,7 @@ MACHIKAP.INI
 　- pcconnect-e.txt
 　　PCからMachiKaniaにファイルを転送するための方法について
 
-　- shematic.png
+　- schematic.png
 　　MachiKania type P回路図
 
 　- wifi.txt
