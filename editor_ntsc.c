@@ -2225,7 +2225,7 @@ void run(int test){
 	init_palette();	//カラーパレット初期化
 	//画面モードを戻す
 	set_videomode(widthmode,0);
-	
+	clearscreen();
 	while(1){
 		//カレントディレクトリをルートに変更
 		if(f_chdir((char *)ROOTDIR)){
