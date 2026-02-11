@@ -37,6 +37,7 @@ caused by using this program.
 #define CHK_NUMLK_A 0x100
 #define CHK_CAPSLK_A 0x200
 #define CHK_SCRLK_A 0x400
+#define CHK_BYTEMODE 0x8000
 
 #define VK_LBUTTON 0x01
 #define VK_RBUTTON 0x02

@@ -2818,7 +2818,7 @@ void texteditor(void){
 		resetcursorchar(); //カーソルを元の文字表示に戻す
 		k2=(unsigned char)vkey; //k2:仮想キーコード
 		sh=vkey>>8;             //sh:シフト関連キー状態
-		if(k2==VK_RETURN || k2==VK_SEPARATOR) k1='\n'; //Enter押下は単純に改行文字を入力とする
+		if(!(vkey & CHK_BYTEMODE) && (k2==VK_RETURN || k2==VK_SEPARATOR)) k1='\n'; //Enter押下は単純に改行文字を入力とする
 		if(k1) normal_code_process(k1); //通常文字が入力された場合
 		else control_code_process(k2,sh); //制御文字が入力された場合
 		if(cursorbp1!=NULL && cx==cx1 && cy==cy1) cursorbp1=NULL;//選択範囲の開始と終了が重なったら範囲選択モード解除

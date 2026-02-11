@@ -127,8 +127,39 @@ void usbkb_task(void){
 	static uint32_t keyrepeattime=0;
 	uint16_t vk2;
 	hid_keyboard_report_t *p_usbkb_report=&usbkb_report;
+	static uint8_t bytemode=0;
 
 	if(!usbkb_mounted()) return;
+	if(bytemode){
+		vk2=p_usbkb_report->keycode[0];
+		if(bytemode==1){
+			if(vk2>=3){
+				sem_acquire_blocking(&keycodebuf_sem); //セマフォ許可要求
+				pushkeycodebuf((vk2+0x20)|CHK_BYTEMODE);
+				sem_release(&keycodebuf_sem); //セマフォ許可解除
+				bytemode=2;
+				oldvkey=vk2;
+			}
+			return;
+		}
+		if(vk2==oldvkey) return;
+		//バイト入力モード終了
+		bytemode=0;
+		oldvkey=0;
+	}
+	if(p_usbkb_report->keycode[0]==2){
+		// バイト入力モード開始（次の入力1回はバイト入力）
+		bytemode=1;
+		oldvkey=0;
+		// 前回押されていたキーステータスをクリア
+		for (uint8_t i = 0; i < 6; i++) {
+			uint8_t vk;
+			if(keytype==1) vk=hidkey2virtualkey_en[prev_report.keycode[i]];
+			else vk=hidkey2virtualkey_jp[prev_report.keycode[i]];
+			if(vk) usbkb_keystatus[vk]=0;
+		}
+		return;
+	}
 	vk2=0;
 	shiftkeycheck(p_usbkb_report->modifier);
 	sem_acquire_blocking(&keycodebuf_sem); //セマフォ許可要求
@@ -416,6 +447,7 @@ uint8_t usbkb_readkey(void){
 	vkey=popkeycodebuf();
 	sem_release(&keycodebuf_sem); //セマフォ許可解除
 	if(vkey==0) return 0;
+	if(vkey & CHK_BYTEMODE) return vkey & 0xff; //バイト入力モード
 	sh=vkey>>8;
 	if(sh & (CHK_CTRL | CHK_ALT | CHK_WIN)) return 0;
 	k=vkey & 0xff;
