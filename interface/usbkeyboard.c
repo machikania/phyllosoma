@@ -229,7 +229,13 @@ void usbkbled_task(void){
 	if (board_millis() < usbkbled_timer) return;
 	if(lockkeychanged){
 		// Set Lock keys LED
-		tuh_hid_set_report(USBKB_dev_addr,USBKB_instance,0,HID_REPORT_TYPE_OUTPUT,&lockkey,sizeof(lockkey));
+		uint8_t const itf_protocol = tuh_hid_interface_protocol(USBKB_dev_addr,USBKB_instance);
+		if(itf_protocol == HID_ITF_PROTOCOL_KEYBOARD) {
+			tuh_hid_set_report(USBKB_dev_addr,USBKB_instance,0,HID_REPORT_TYPE_OUTPUT,&lockkey,sizeof(lockkey));
+		}
+		else{
+			tuh_hid_set_report(USBKB_dev_addr,USBKB_instance,1,HID_REPORT_TYPE_OUTPUT,&lockkey,sizeof(lockkey));
+		}
 		lockkeychanged=false;
 		usbkbled_timer=board_millis()+USBKBLED_TIMER_INTERVAL;
 	}
