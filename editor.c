@@ -2803,7 +2803,7 @@ void texteditor(void){
 	EDITWIDTHY=WIDTH_Y-1;
 
 	while(1){
-		redraw();//画面再描画
+		if(!keycodeExists()) redraw();//画面再描画
 		setcursor(cx,cy,COLOR_NORMALTEXT);
 		getcursorchar(); //カーソル位置の文字を退避（カーソル点滅用）
 		blinkcursorchar(); //カーソル点滅させる
