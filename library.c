@@ -733,6 +733,9 @@ int lib_system(int r0, int r1, int r2){
 		case 6:
 		//	KM-BASICの実行用に割り当てられたRAM領域のキロバイト数、176, 192, 448などを返す。
 			return KMBASIC_OBJECT_KBYTES;
+		case 7:
+		// ユーザーの年齢情報を返す（デフォルトは12）
+			return g_user_age;
 		case 20:
 		//	キャラクターディスプレイ横幅を返す。
 			return WIDTH_X;

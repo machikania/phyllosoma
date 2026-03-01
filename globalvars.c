@@ -130,6 +130,9 @@ unsigned char g_emulate_button_array[6];
 // USB peripheral detection
 unsigned char g_usb_peripheral=0;
 
+// User age setting
+unsigned char g_user_age=12;
+
 // Reserved words
 
 const char* const g_reserved_words[192]={
