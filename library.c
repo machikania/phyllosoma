@@ -766,6 +766,19 @@ int lib_system(int r0, int r1, int r2){
 		case 29:
 		//	グラフィックディスプレイの、現在のY位置を返す。
 			return lib_display(4,0,0);
+		case 30:
+		//	LCDの向き情報、0, 90, 180, もしくは 270 を返す。
+		//	LCDdriver.hとMACHIKAP.INIで、LCD0TURN の向きが異なることに注意。
+			switch(LCD_ALIGNMENT & 3){
+				case LCD0TURN:   // 0
+					return 270;
+				case HORIZONTAL: // 1
+					return 0;
+				case LCD180TURN: // 2
+					return 90;
+				default:         // 3
+					return 180;
+			}
 		case 40:
 		//	キーボードを使用中かどうかを返す。
 			return usbkb_mounted();
