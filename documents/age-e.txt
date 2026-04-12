@@ -1,0 +1,12 @@
+Starting from MachiKania type P/PU version 1.7, you can configure the user's age in MACHIKAP.INI. This change is in response to the “California AB 1043” regulation that will take effect in 2027.
+
+In MACHIKAP.INI, set the user age as shown in the following example (for a 12‑year‑old user):
+
+	AGE=12
+
+On the BASIC program side, you can obtain the user’s age by reading SYSTEM(7). When creating and distributing applications with age restrictions such as "13 and older", "16 and older", or "18 and older", make sure to read SYSTEM(7) and enforce the restriction as shown below:
+
+	IF SYSTEM(7)<18 THEN
+	  PRINT "You must be at least 18 years old to run this software."
+	  END
+	ENDIF
