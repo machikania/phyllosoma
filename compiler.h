@@ -134,6 +134,7 @@
 #define LIB_RTC 155
 #define LIB_WIFI 156
 #define LIB_AUXCODE 157
+#define LIB_CLEAR 158
 
 /*
 	Gereral option used for intializing static variables

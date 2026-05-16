@@ -673,6 +673,12 @@ int lib_delayms(int r0, int r1, int r2){
 	return r0;
 }
 
+int lib_clear(int r0, int r1, int r2){
+	post_run();
+	pre_run();
+	return r0;
+}
+
 int lib_str2obj(int r0, int r1, int r2){
 	int i,j;
 	char* str2;
@@ -947,6 +953,7 @@ static const void* lib_list2[]={
 	lib_rtc,        // #define LIB_RTC 155
 	lib_wifi,       // #define LIB_WIFI 156
 	lib_aux,        // #define LIB_AUXCODE 157
+	lib_clear,      // #define LIB_CLEAR 158
 };
 
 int statement_library(int r0, int r1, int r2, int r3){

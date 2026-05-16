@@ -1478,6 +1478,10 @@ int option_statement(void){
 	return 0;
 }
 
+int clear_statement(void){
+	return call_lib_code(LIB_CLEAR);
+}
+
 int end_of_statement(void){
 	skip_blank();
 	if (0x00==source[0]) return 1;
@@ -1508,6 +1512,7 @@ int compile_statement(void){
 	if (instruction_is("ALIGN4")) return align4_statement();
 	if (instruction_is("BREAK")) return break_statement();
 	if (instruction_is("CALL")) return call_statement();
+	if (instruction_is("CLEAR")) return clear_statement();
 	if (instruction_is("CDATA")) return cdata_statement();
 	if (instruction_is("CONTINUE")) return continue_statement();
 	if (instruction_is("DATA")) return data_statement();
