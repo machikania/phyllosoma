@@ -499,6 +499,7 @@ int restore_statement(void);
 // withkeyboard.c
 void post_inifile(void);
 void pre_fileselect(void);
+int gamepad_buttons(void);
 int lib_inkey(int r0, int r1, int r2);
 int lib_input(int r0, int r1, int r2);
 int lib_readkey(int r0, int r1, int r2);

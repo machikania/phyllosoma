@@ -43,6 +43,11 @@ void pre_fileselect(void){
 	// Do nothing
 }
 
+int gamepad_buttons(void){
+	// Game pad not used by the mode without keyboard
+	return 0;
+}
+
 int lib_readkey(int r0, int r1, int r2){
 	int i=getchar_timeout_us(0);
 	if (i<0 || 255<i) return 0;
