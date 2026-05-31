@@ -80,6 +80,9 @@ $uf2s[]=array('pico'=>'pico2','debug'=>1,'build'=>'xiao_ntsc','uf2'=>'machikania
 // rp2350_lcd_1_47
 $uf2s[]=array('pico'=>'pico2','debug'=>0,'build'=>'rp2350_lcd_1_47','uf2'=>'machikania-rl/rp2350_lcd_1_47/phyllosoma.uf2');
 $uf2s[]=array('pico'=>'pico2','debug'=>0,'build'=>'rp2350_lcd_1_47','uf2'=>'machikania-rl/rp2350_lcd_1_47/phyllosoma_kb.uf2');
+// rp2350_lcd_2
+$uf2s[]=array('pico'=>'pico2','debug'=>0,'build'=>'rp2350_lcd_2','uf2'=>'machikania-rl2/rp2350_lcd_2/phyllosoma.uf2');
+$uf2s[]=array('pico'=>'pico2','debug'=>0,'build'=>'rp2350_lcd_2','uf2'=>'machikania-rl2/rp2350_lcd_2/phyllosoma_kb.uf2');
 // pico_restouch
 $uf2s[]=array('pico'=>'pico1','debug'=>0,'build'=>'pico_restouch','uf2'=>'machikania-rt/pico_restouch/phyllosoma.uf2');
 $uf2s[]=array('pico'=>'pico1','debug'=>0,'build'=>'pico_restouch','uf2'=>'machikania-rt/pico_restouch/phyllosoma_kb.uf2');

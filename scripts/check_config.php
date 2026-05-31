@@ -2,8 +2,8 @@
 
 $version_p=array(
 	"Phyllosoma",
-	"1.6.1.0",
-	"KM-1511",
+	"1.7.0.0",
+	"KM-1512",
 );
 $version_pu=$version_p;
 $version_pu[0]="Puerulus";
