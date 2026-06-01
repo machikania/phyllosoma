@@ -28,14 +28,19 @@ $configs=array(
 	'./config/pico_restouch.h',
 	'./config/pico_w_restouch.h',
 	'./config/rp2350_lcd_1_47.h',
+	'./config/rp2350_lcd_2.h',
 );
 
+$num_checked=0;
 check_dir('machikania-p','machikania-p');
 check_dir('machikania-p2','machikania-p2');
 check_dir('machikania-pu','machikania-pu');
 check_dir('machikania-pc','machikania-pc');
 check_dir('machikania-rt','machikania-rt');
 check_dir('machikania-rl','machikania-rl');
+check_dir('machikania-rl2','machikania-rl2');
+
+echo "Total $num_checked uf2 files were checked!\n";
 
 function check_dir($dir,$fullpath){
 	global $version_p, $version_pu;
@@ -54,7 +59,7 @@ function check_dir($dir,$fullpath){
 }
 
 function check_uf2($filename,$fullpath,$version){
-	global $configs;
+	global $configs, $num_checked;
 	$uf2file=file_get_contents($filename);
 	// Check version
 	for($i=0;$i<count($version);$i++){
@@ -84,6 +89,7 @@ function check_uf2($filename,$fullpath,$version){
 		elseif (preg_match('/(pico2_|rp2350)/',$config_file)==0 && substr($uf2file,0x1c,1)=='V') echo "  pico1/pico2 state: OK";
 		else echo "  pico1/pico2 state: NG";
 		echo "\n\n";
+		$num_checked++;
 		return;
 	}
 	echo "***** Config header not found! *****\n\n";
