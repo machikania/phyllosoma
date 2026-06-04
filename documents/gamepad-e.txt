@@ -1,0 +1,7 @@
+Starting from MachiKania type P/PU version 1.7, the MachiKania USB Gamepad—connected via a USB interface—can now be used with boards that have no buttons or no speaker. This mainly applies to the Pico-ResTouch-LCD-3.5, RP2350-Touch-LCD-2, and RP2350-LCD-1.47, but it also works with other MachiKania type P/PU boards.
+
+When this gamepad is connected, directional input (up, down, left, right), FIRE/START button operations, and sound playback through the speaker can all be handled on the gamepad side. For the MachiKania binary, please use phyllosoma_kb.uf2 or puerulus_kb.uf2.
+
+The schematic, binaries, and source code for the MachiKania USB Gamepad are available at the URL below. It can be built using a Raspberry Pi Pico, RP2040-Zero, or any other board equipped with an RP2040.
+
+https://github.com/kmorimatsu/machikania_gamepad

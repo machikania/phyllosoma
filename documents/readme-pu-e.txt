@@ -294,3 +294,13 @@ Puerulus 1.61/KM-1511 (2025.12.27)
 　Updated WGET in the class library to handle 301 Moved responses
 　Corrected class.txt
 　Added help-k.txt
+
+Puerulus 1.70/KM-1512 (2026.6.xx)
+　Added support for the MachiKania USB gamepad
+　Added additional supported USB keyboard protocol types
+　Added a feature to the USB keyboard driver that allows entering character codes directly from a PC terminal
+　Added the STRCMP() function
+　Added string operators (=, !=, <, <=, >, >=, AND, OR)
+　Enabled the use of strings as conditional expressions in IF and similar statements
+　Added support for developing applications with age restrictions
+　Added the CLEAR statement

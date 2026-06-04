@@ -343,7 +343,7 @@ Phyllosoma 1.60/KM-1510 (2025.8.17)
 　Extended support for WAVE files in the PLAYWAVE statement to include sampling frequencies between 15700–16000 Hz
 　Resolved an issue in SPI MISO where the specified port could not be used
 
-Pyllosoma 1.61/KM-1511 (2025.12.27)
+Phyllosoma 1.61/KM-1511 (2025.12.27)
 　Added support for Waveshare RP2350-LCD-1.47
 　Added support for ST7789-based LCDs (no binary provided)
 　Enabled display of statement or function help when using the editor
@@ -356,3 +356,16 @@ Pyllosoma 1.61/KM-1511 (2025.12.27)
 　Updated WGET in the class library to handle 301 Moved responses
 　Corrected class.txt
 　Added help-k.txt
+
+Pyllosoma 1.70/KM-1512 (2026.6.xx)
+　Added support for the Waveshare RP2350-Touch-LCD-2
+　Added support for the MachiKania USB gamepad
+　Added additional supported USB keyboard protocol types
+　Added a feature to the USB keyboard driver that allows entering character codes directly from a PC terminal
+　Added the STRCMP() function
+　Added string operators (=, !=, <, <=, >, >=, AND, OR)
+　Enabled the use of strings as conditional expressions in IF and similar statements
+　Added support for developing applications with age restrictions
+　Made the LCD orientation obtainable via SYSTEM(30)
+　Added the CLEAR statement
+　Added three new classes: CST816D, TBUTTON, and QMI8658

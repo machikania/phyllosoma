@@ -40,6 +40,9 @@ CPUCLOCK
 CRDINI
 	MachiKania INIファイル（MACHIKAP.INI、MACHIKAM.INI等）を調査するためのクラス。
 
+CSD816D
+	LCDタッチパネル(CSD816D)からの情報を取得するためのクラス。
+
 CSWTIF
 	TIFF画像表示クラス。
 
@@ -67,6 +70,9 @@ MA
 PLAYAVI
 	AVIファイル再生用のクラス(Type PU用)
 
+QMI8658
+	加速度センサー、QMI8658を使用するためのクラス。
+
 QRCODE
 	画面にQRCODEを表示するためのクラス。
 
@@ -81,6 +87,9 @@ STRDIM
 
 STRING
 	JavaのStringクラス様の、文字列オブジェクトを扱うクラス。
+
+TBUTTON
+	タッチパネル付きの液晶で、画面上に表示されるボタン機能を使用するためのクラス。
 
 TSC2046
 	LCDタッチパネル(TSC2046)からの情報を取得するためのクラス。
@@ -142,3 +151,6 @@ Phyllosoma/Puerulus 1.60/KM-1510 (2025.8.17)
 Phyllosoma/Puerulus 1.61/KM-1511 (2025.12.27)
 　・高速フーリエ変換および逆変換を行うためのクラス、FFTLIBを追加
 　・WGETを更新(ver 0.4)。301 Movedなどに対応
+
+Phyllosoma/Puerulus 1.70/KM-1512 (20256.6.xx)
+　・CST816D, TBUTTON, QMI8658の３つのクラスを追加
