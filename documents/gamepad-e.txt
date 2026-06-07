@@ -3,5 +3,7 @@ Starting from MachiKania type P/PU version 1.7, the MachiKania USB Gamepad—con
 When this gamepad is connected, directional input (up, down, left, right), FIRE/START button operations, and sound playback through the speaker can all be handled on the gamepad side. For the MachiKania binary, please use phyllosoma_kb.uf2 or puerulus_kb.uf2.
 
 The schematic, binaries, and source code for the MachiKania USB Gamepad are available at the URL below. It can be built using a Raspberry Pi Pico, RP2040-Zero, or any other board equipped with an RP2040.
+	https://github.com/kmorimatsu/machikania_gamepad
 
-https://github.com/kmorimatsu/machikania_gamepad
+If you want a USB keyboard created with other firmware to be recognized as a MachiKania USB gamepad, set the Vendor ID to 0x1209 and the Product ID to 0xF800. Doing so will cause MachiKania to start in File Selection Mode instead of Editor Mode.
+	https://pid.codes/1209/F800/

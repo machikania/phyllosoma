@@ -146,5 +146,6 @@ Phyllosoma/Puerulus 1.61/KM-1511 (2025.12.27)
 　Addition of FFTLIB class for Fast Fourier Transform and inverse FFT operations
 　Updated WGET (ver 0.4) to handle cases such as "301 Moved"
 
-Phyllosoma/Puerulus 1.70/KM-1512 (2026.6.xx)
-　Added three new classes: CST816D, TBUTTON, and QMI8658
+Phyllosoma/Puerulus 1.70/KM-1512 (2026.6.20)
+　Added three new classes: CST816D, TBUTTON, and QMI8658 (Type P only)
+　TSC2046 ver 0.3 (Type P only)

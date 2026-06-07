@@ -129,7 +129,12 @@ MACHIKAP.INI
 　ドキュメント類を格納
 　- help.txt
 　- help-e.txt
+　- help-k.txt
 　　KM-BASICのリファレンスマニュアル
+
+　- age.txt
+　- age-e.txt
+　　MachiKaniaで年齢制限のあるソフトウェアーを取り扱うための説明書
 
 　- class.txt
 　- class-e.txt
@@ -138,6 +143,10 @@ MACHIKAP.INI
 　- cpuclock.txt
 　- cpuclock-e.txt
 　　CPUのクロック周波数を調整する方法について
+
+　- gamepad.txt
+　- gamepad-e.txt
+　　USBゲームパッドの作成方法と使い方について
 
 　- keyboard.txt
 　- keyboard-e.txt
@@ -214,5 +223,5 @@ MACHIKAP.INI
 ------------------------------------------------------------------------
 MachiKania type P BASICシステム改版履歴
 
-Pyllosoma 1.7/KM-1512 (2026.6.xx)
+Pyllosoma 1.7/KM-1512 (2026.6.20)
 　・Waveshare RP2350-Touch-LCD-2に対応

@@ -120,7 +120,12 @@ MACHIKAP.INI
 　Stores documents
 　- help.txt
 　- help-e.txt
+　- help-k.txt
 　　Reference manual for KM-BASIC
+
+　- age.txt
+　- age-e.txt
+　　Guide to Handling Age-Restricted Software on MachiKania
 
 　- class.txt
 　- class-e.txt
@@ -133,6 +138,10 @@ MACHIKAP.INI
 　- embed.txt
 　- embed-e.txt
 　　How to Create File Embedded Executables
+
+　- gamepad.txt
+　- gamepad-e.txt
+　　Guide to Building and Using a USB Gamepad
 
 　- keyboard.txt
 　- keyboard-e.txt
@@ -357,7 +366,7 @@ Phyllosoma 1.61/KM-1511 (2025.12.27)
 　Corrected class.txt
 　Added help-k.txt
 
-Pyllosoma 1.70/KM-1512 (2026.6.xx)
+Phyllosoma 1.70/KM-1512 (2026.6.20)
 　Added support for the Waveshare RP2350-Touch-LCD-2
 　Added support for the MachiKania USB gamepad
 　Added additional supported USB keyboard protocol types
@@ -368,4 +377,4 @@ Pyllosoma 1.70/KM-1512 (2026.6.xx)
 　Added support for developing applications with age restrictions
 　Made the LCD orientation obtainable via SYSTEM(30)
 　Added the CLEAR statement
-　Added three new classes: CST816D, TBUTTON, and QMI8658
+　Added two new classes: TBUTTON, and QMI8658

@@ -142,7 +142,12 @@ MACHIKAP.INI
 　ドキュメント類を格納
 　- help.txt
 　- help-e.txt
+　- help-k.txt
 　　KM-BASICのリファレンスマニュアル
+
+　- age.txt
+　- age-e.txt
+　　MachiKaniaで年齢制限のあるソフトウェアーを取り扱うための説明書
 
 　- class.txt
 　- class-e.txt
@@ -155,6 +160,10 @@ MACHIKAP.INI
 　- embed.txt
 　- embed-e.txt
 　　ファイル埋め込み実行ファイル作成方法について
+
+　- gamepad.txt
+　- gamepad-e.txt
+　　USBゲームパッドの作成方法と使い方について
 
 　- keyboard.txt
 　- keyboard-e.txt
@@ -295,7 +304,7 @@ Puerulus 1.61/KM-1511 (2025.12.27)
 　・class.txtを修正
 　・help-k.txtを追加
 
-Puerulus 1.70/KM-1512 (2026.6.xx)
+Puerulus 1.70/KM-1512 (2026.6.20)
 　・MachiKania USB ゲームパッドに対応
 　・対応するUSBキーボードプロトコルの種類を追加
 　・USBキーボードドライバにPCのターミナルソフトから直接文字コードで入力する機能を追加
@@ -304,3 +313,4 @@ Puerulus 1.70/KM-1512 (2026.6.xx)
 　・IFなどで文字列を条件式に取ることができるようにした
 　・年齢制限のあるアプリケーションの開発に対応
 　・CLEARステートメントを追加
+　・クラスQMI8658を追加

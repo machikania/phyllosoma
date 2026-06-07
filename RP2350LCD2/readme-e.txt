@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2026.6.xx
+　　　　　　　　　　　　　　　　　　　　　　　　　　2026.6.20
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type P
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -129,7 +129,12 @@ MACHIKAP.INI
 　Stores documents
 　- help.txt
 　- help-e.txt
+　- help-k.txt
 　　Reference manual for KM-BASIC
+
+　- age.txt
+　- age-e.txt
+　　Guide to Handling Age-Restricted Software on MachiKania
 
 　- class.txt
 　- class-e.txt
@@ -138,6 +143,10 @@ MACHIKAP.INI
 　- cpuclock.txt
 　- cpuclock-e.txt
 　　How to adjust the CPU clock frequency
+
+　- gamepad.txt
+　- gamepad-e.txt
+　　Guide to Building and Using a USB Gamepad
 
 　- keyboard.txt
 　- keyboard-e.txt
@@ -214,5 +223,5 @@ MACHIKAP.INI
 ------------------------------------------------------------------------
 MachiKania type P BASIC System Revision History
 
-Pyllosoma 1.7/KM-1512 (2026.6.xx)
+Pyllosoma 1.7/KM-1512 (2026.6.20)
 　Added support for Waveshare RP2350-LCD-2

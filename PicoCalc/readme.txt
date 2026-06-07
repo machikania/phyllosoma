@@ -153,7 +153,12 @@ MACHIKAP.INI
 　ドキュメント類を格納
 　- help.txt
 　- help-e.txt
+　- help-k.txt
 　　KM-BASICのリファレンスマニュアル
+
+　- age.txt
+　- age-e.txt
+　　MachiKaniaで年齢制限のあるソフトウェアーを取り扱うための説明書
 
 　- class.txt
 　- class-e.txt
@@ -260,3 +265,11 @@ Pyllosoma 1.61/KM-1511 (2025.12.27)
 　・クラスライブラリーのWGETを更新。301 Movedなどに対応
 　・class.txtを修正
 　・help-k.txtを追加
+
+Phyllosoma 1.70/KM-1512 (2026.6.20)
+　・STRCMP()関数を追加
+　・文字列演算子(=, !=, <, <=, >, >=, AND, OR)を追加
+　・IFなどで文字列を条件式に取ることができるようにした
+　・年齢制限のあるアプリケーションの開発に対応
+　・液晶の向きをSYSTEM(30)で得られるようにした
+　・CLEARステートメントを追加

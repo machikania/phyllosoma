@@ -152,5 +152,6 @@ Phyllosoma/Puerulus 1.61/KM-1511 (2025.12.27)
 　・高速フーリエ変換および逆変換を行うためのクラス、FFTLIBを追加
 　・WGETを更新(ver 0.4)。301 Movedなどに対応
 
-Phyllosoma/Puerulus 1.70/KM-1512 (20256.6.xx)
-　・CST816D, TBUTTON, QMI8658の３つのクラスを追加
+Phyllosoma/Puerulus 1.70/KM-1512 (2026.6.20)
+　・CST816D, TBUTTON, QMI8658の３つのクラスを追加（Type Pのみ）
+　・TSC2046 ver 0.3（Type Pのみ）
