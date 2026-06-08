@@ -336,4 +336,4 @@ Phyllosoma 1.70/KM-1512 (2026.6.20)
 　Added support for developing applications with age restrictions
 　Made the LCD orientation obtainable via SYSTEM(30)
 　Added the CLEAR statement
-　Added two new classes: TBUTTON, and QMI8658
+　Add the TBUTTON class. Update the TSC2046 class.

@@ -313,4 +313,3 @@ Puerulus 1.70/KM-1512 (2026.6.20)
 　Enabled the use of strings as conditional expressions in IF and similar statements
 　Added support for developing applications with age restrictions
 　Added the CLEAR statement
-　Added a classes: QMI8658
