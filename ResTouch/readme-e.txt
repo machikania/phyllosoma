@@ -246,6 +246,10 @@ MACHIKAP.INI
 　BLOCK.BAS
 　　Block breaking game created for the first MachiKania
 
+　BTNTEST.BAS
+　　Sample program for using the touch button function on a touchscreen LCD.
+　　To run it, the CST816D class and the GEN3O class are required.
+
 　COSMOS.BMP (used in PHOTO.BAS)
 
 　FILEMAN.BAS

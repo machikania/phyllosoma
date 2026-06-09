@@ -166,6 +166,10 @@ MACHIKAP.INI
 　BLOCK.BAS
 　　初代MachiKania向けに作成したブロック崩しゲーム
 
+　BTNTEST.BAS
+　　タッチパネル液晶でタッチボタン機能を使うサンプルプログラム
+　　実行には、CST816DクラスとGEN3Oクラスが必要
+
 　COSMOS.BMP（PHOTO.BASで使用）
 
 　FILEMAN.BAS
