@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.12.27
+　　　　　　　　　　　　　　　　　　　　　　　　　　2026.6.20
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type PU
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi

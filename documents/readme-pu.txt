@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.12.27
+　　　　　　　　　　　　　　　　　　　　　　　　　　2026.6.20
 　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
 　　　　　　　　「MachiKania type PU」
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
