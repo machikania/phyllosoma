@@ -58,6 +58,7 @@ void keycheck(void){
 	oldkey = keystatus;
 	keystatus = ~gpio_get_all() & KEYSMASK;
 	keystatus=rotate_buttons_data(keystatus);
+	keystatus|=gamepad_buttons();     //ゲームパッド対応
 	keystatus2 = keystatus & ~oldkey; //前回ボタンを離していたかチェック
 	keystatus3 = ~keystatus & oldkey; //前回ボタンを押していたかチェック
 	if (keystatus & KEYUP) keycountUP++;

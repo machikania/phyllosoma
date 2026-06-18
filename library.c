@@ -181,6 +181,63 @@ int lib_calc_float(int r0, int r1, int r2){
 	return g_scratch_int[2];
 }
 
+int lib_calc_string(int r0, int r1, int r2){
+	char* str1=(char*)r1;
+	char* str2=(char*)r0;
+	switch(r2){
+		case OP_EQ:
+			r0= 0==strcmp(str1,str2) ? 1:0;
+			break;
+		case OP_NEQ:
+			r0= 0!=strcmp(str1,str2) ? 1:0;
+			break;
+		case OP_LT:
+			r0= strcmp(str1,str2)<0 ? 1:0;
+			break;
+		case OP_LTE:
+			r0= strcmp(str1,str2)<=0 ? 1:0;
+			break;
+		case OP_MT:
+			r0= strcmp(str1,str2)>0 ? 1:0;
+			break;
+		case OP_MTE:
+			r0= strcmp(str1,str2)>=0 ? 1:0;
+			break;
+		case OP_ADD:
+			return lib_add_string(r0,r1,r2);
+		case OP_OR:
+			r0=1;
+			if ('0'!=str1[0]) break;
+			if ('0'!=str2[0]) break;
+			r0=0;
+			break;
+		case OP_AND:
+			r0=0;
+			if ('0'==str1[0]) break;
+			if ('0'==str2[0]) break;
+			r0=1;
+			break;
+		default: // error
+			return r0;
+	}
+	// Garbage collection
+	garbage_collection(str1);
+	garbage_collection(str2);
+	// Return string
+	return r0 ? (int)"1":(int)"0";
+}
+
+int lib_if_string(int r0, int r1, int r2){
+	char* str=(char*)r0;
+	// If the first character in string is '0' then return 0.
+	// Otherwise, return 1.
+	r0= '0'==str[0] ? 0:1;
+	// Garbage collection
+	garbage_collection(str);
+	// Return result
+	return r0;
+}
+
 int lib_line_num(int r0, int r1, int r2){
 	int* data=cmpdata_findfirst_with_id(CMPDATA_LINENUM,r0);
 	if (data) return data[1];// Found
@@ -276,6 +333,13 @@ int lib_strncmp(int r0, int r1, int r2){
 	r0=strncmp((char*)r2,(char*)r1,r0);
 	garbage_collection((char*)r1);
 	garbage_collection((char*)r2);
+	return r0;
+}
+
+int lib_strcmp(int r0, int r1, int r2){
+	r0=strcmp((char*)r1,(char*)r0);
+	garbage_collection((char*)r0);
+	garbage_collection((char*)r1);
 	return r0;
 }
 
@@ -609,6 +673,12 @@ int lib_delayms(int r0, int r1, int r2){
 	return r0;
 }
 
+int lib_clear(int r0, int r1, int r2){
+	post_run();
+	pre_run();
+	return r0;
+}
+
 int lib_str2obj(int r0, int r1, int r2){
 	int i,j;
 	char* str2;
@@ -634,7 +704,8 @@ int lib_debug(int r0, int r1, int r2){
 	//lib_wait(60,0,0);
 	return r0;
 #else
-	return get_number_of_remaining_blocks();
+	return ((char*)r0)[0]=='0' ?0:1;
+//	return get_number_of_remaining_blocks();
 #endif
 }
 
@@ -668,6 +739,9 @@ int lib_system(int r0, int r1, int r2){
 		case 6:
 		//	KM-BASICの実行用に割り当てられたRAM領域のキロバイト数、176, 192, 448などを返す。
 			return KMBASIC_OBJECT_KBYTES;
+		case 7:
+		// ユーザーの年齢情報を返す（デフォルトは12）
+			return g_user_age;
 		case 20:
 		//	キャラクターディスプレイ横幅を返す。
 			return WIDTH_X;
@@ -698,6 +772,19 @@ int lib_system(int r0, int r1, int r2){
 		case 29:
 		//	グラフィックディスプレイの、現在のY位置を返す。
 			return lib_display(4,0,0);
+		case 30:
+		//	LCDの向き情報、0, 90, 180, もしくは 270 を返す。
+		//	LCDdriver.hとMACHIKAP.INIで、LCD0TURN の向きが異なることに注意。
+			switch(LCD_ALIGNMENT & 3){
+				case LCD0TURN:   // 0
+					return 270;
+				case HORIZONTAL: // 1
+					return 0;
+				case LCD180TURN: // 2
+					return 90;
+				default:         // 3
+					return 180;
+			}
 		case 40:
 		//	キーボードを使用中かどうかを返す。
 			return usbkb_mounted();
@@ -830,6 +917,9 @@ static const void* lib_list1[]={
 	lib_pre_method,             // #define LIB_PRE_METHOD 30
 	lib_post_method,            // #define LIB_POST_METHOD 31
 	lib_readkey,                // #define LIB_READKEY 32
+	lib_strcmp,                 // #define LIB_STRCMP 33
+	lib_calc_string,            // #define LIB_CALC_STRING 34
+	lib_if_string,              // #define LIB_IF_STRING 35
 };
 
 static const void* lib_list2[]={
@@ -863,6 +953,7 @@ static const void* lib_list2[]={
 	lib_rtc,        // #define LIB_RTC 155
 	lib_wifi,       // #define LIB_WIFI 156
 	lib_aux,        // #define LIB_AUXCODE 157
+	lib_clear,      // #define LIB_CLEAR 158
 };
 
 int statement_library(int r0, int r1, int r2, int r3){

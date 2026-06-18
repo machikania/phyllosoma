@@ -11,8 +11,8 @@ External devices such as general-purpose I/O, SPI, and I2C can be easily
 controlled from BASIC.
 
 
-This document describes MachiKania for the Waveshare RP2350-LCD-1.47 (hereafter
- referred to as RP2350-LCD-1.47).
+This document describes MachiKania for the Waveshare RP2350-Touch-LCD-2 (hereafter
+ referred to as RP2350-LCD-2).
 
 The on-board BASIC compiler is KM-BASIC, which is a 32-bit integer BASIC.
 It also supports single-precision floating-point arithmetic.
@@ -31,13 +31,13 @@ instructions, or in any other place.
 Please note that we are not responsible for any damage or loss caused by the 
 use of the MachiKania series.
 
-When using the RP2350-LCD-1.47-compatible version of MachiKania, please note the 
+When using the RP2350-LCD-2-compatible version of MachiKania, please note the 
 following points.
 
 
 <MACHIKAP.INI>
 
-To ensure that MachiKania works properly on RP2350-LCD-1.47, make sure to place the 
+To ensure that MachiKania works properly on RP2350-LCD-2, make sure to place the 
 included MACHIKAP.INI file in the root directory of the MMC/SD card.
 
 
@@ -46,7 +46,7 @@ included MACHIKAP.INI file in the root directory of the MMC/SD card.
 For programs that do not use the gpio input(s), the keyboard is the only input 
 device. Please connect a USB keyboard using a USB-OTG cable. Be sure to use 
 a Type-C USB-OTG cable with power input. Additionally, power can also be supplied 
-from the 5V pin and GND pin (pins 10 and 11) of the RP2350-LCD-1.47.
+from the 5V pin and GND pin (pins 15 and 16) of the RP2350-LCD-2.
 
 For general use, please install phyllosoma_kb.uf2, which supports USB keyboards. 
 The phyllosoma.uf2 file is intended for special use cases such as operating 
@@ -57,7 +57,7 @@ without using a USB keyboard.
 <Button switches>
 
 MachiKania is operated using six buttons: Up, Down, Left, Right, Fire, and 
-Start. Since RP2350-LCD-1.47 does not have these physical buttons, they are emulated 
+Start. Since RP2350-LCD-2 does not have these physical buttons, they are emulated 
 via the keyboard. By default, the arrow keys correspond to directional controls, 
 the "F" key to Fire, and the "S" key to Start. If you wish to change these 
 key mappings, please edit the MACHIKAP.INI file. Settings like "EMULATEBUTTONUP=" 
@@ -75,24 +75,36 @@ simultaneously. This will interrupt the program. However, please note that in ce
 loops (such as those without any PRINT commands) the program may not stop as expected.
 
 
-<LCD>
+<Touch Panel and Accelerometer>
 
-Please note that the RP2350-LCD-1.47's LCD has rounded corners, so the display is missing
-at the four corners.
+The RP2350-LCD-2 is equipped with a touch panel and an accelerometer, 
+controlled by the CST816D and QMI8658 chips respectively. MachiKania 
+provides classes named CST816D and QMI8658 for using these devices, 
+making them easy to work with.
 
 
-<machikania-rl.zip file contents>
+<LCD Backlight Control>
 
-[rp2350_lcd_1_47] directory
+The brightness of the LCD backlight is controlled via GPIO15. To control it in MachiKania, 
+assign a PWM channel to this port. For example, adding the following line to MACHIKAP.INI:
+
+  PWM4=15
+
+allows you to control the backlight using PWM4.
+
+
+<machikania-rl2.zip file contents>
+
+[rp2350_lcd_2] directory
 　Stores binaries used with Raspberry Pi Pico 2
 　- phyllosoma.uf2
 　　MachiKania type P BASIC system (version supporting PC connect function)
-　　Connects the PC and RP2350-LCD-1.47 via USB and transfer the uf2 file
+　　Connects the PC and RP2350-LCD-2 via USB and transfer the uf2 file
 　　PC connect function allows BASIC programs to be transferred from a PC connected via USB cable.
 
 　- phyllosoma_kb.uf2
 　　MachiKania type P BASIC system main unit (USB keyboard connection version)
-　　Connects a PC and RP2350-LCD-1.47 via USB cable and transfer the uf2 file
+　　Connects a PC and RP2350-LCD-2 via USB cable and transfer the uf2 file
 　　Directly edit and execute BASIC programs with the built-in editor and USB keyboard
 
 [pcconnect] directory
@@ -154,6 +166,10 @@ MACHIKAP.INI
 　BLOCK.BAS
 　　Block breaking game created for the first MachiKania
 
+　BTNTEST.BAS
+　　Sample program for using the touch button function on a touchscreen LCD.
+　　To run it, the CST816D class and the GEN3O class are required.
+
 　COSMOS.BMP (used in PHOTO.BAS)
 
 　FILEMAN.BAS
@@ -211,16 +227,5 @@ MACHIKAP.INI
 ------------------------------------------------------------------------
 MachiKania type P BASIC System Revision History
 
-Pyllosoma 1.61/KM-1511 (2025.12.27)
-　Added support for Waveshare RP2350-LCD-1.47
-
-Phyllosoma 1.70/KM-1512 (2026.6.20)
-　Added support for the MachiKania USB gamepad
-　Added additional supported USB keyboard protocol types
-　Added a feature to the USB keyboard driver that allows entering character codes directly from a PC terminal
-　Added the STRCMP() function
-　Added string operators (=, !=, <, <=, >, >=, AND, OR)
-　Enabled the use of strings as conditional expressions in IF and similar statements
-　Added support for developing applications with age restrictions
-　Made the LCD orientation obtainable via SYSTEM(30)
-　Added the CLEAR statement
+Pyllosoma 1.7/KM-1512 (2026.6.20)
+　Added support for Waveshare RP2350-LCD-2

@@ -1,0 +1,9 @@
+MachiKania type P/PU ver 1.7 以降、ボタンが無い基板・スピーカーが無い基板で、USB インターフェースで接続する MachiKania USB ゲームパッドが使えるようになりました。主に、Pico-ResTouch-LCD-3.5, RP2350-Touch-LCD-2, RP2350-LCD-1.47 が対象ですが、その他の MachiKania type P/PU 基板でも使えます。
+
+このゲームパッドを接続すると、上下左右およびFIRE/STARTボタンの操作とスピーカーによるサウンドの再生を、ゲームパッドの側で行う事ができるようになります。MachiKania のバイナリーは、phyllosoma_kb.uf2 もしくは puerulus_kb.uf2 を用いてください。
+
+MachiKania USB ゲームパッドの回路図、バイナリー、ソースコードは、下のURLにあります。Raspberry Pi Pico もしくは、RP2040-Zero などの、RP2040を搭載した基板を用いて作成することができます。
+	https://github.com/kmorimatsu/machikania_gamepad
+
+他のファームウェアーで作成した USB キーボードを MachiKania USB ゲームパッドとして認識させたい場合は、ベンダー ID に 0x1209 を、プロダクト ID に 0xF800 を指定してください。そうする事で、MachiKania がエディターモードではなくファイル選択モードで起動するようになります。
+	https://pid.codes/1209/F800/

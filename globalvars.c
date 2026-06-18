@@ -130,9 +130,12 @@ unsigned char g_emulate_button_array[6];
 // USB peripheral detection
 unsigned char g_usb_peripheral=0;
 
+// User age setting
+unsigned char g_user_age=12;
+
 // Reserved words
 
-const char* const g_reserved_words[189]={
+const char* const g_reserved_words[192]={
 	"ABS",
 	"ACOS",
 	"ALIGN4",
@@ -198,6 +201,7 @@ const char* const g_reserved_words[189]={
 	"FPUT",
 	"FPUTC",
 	"FREMOVE",
+	"FRENAME",
 	"FSEEK",
 	"FUNCADDRESS",
 	"GCLS",
@@ -235,6 +239,7 @@ const char* const g_reserved_words[189]={
 	"LOG10",
 	"LOOP",
 	"METHOD",
+	"MKDIR",
 	"MODF",
 	"MUSIC",
 	"NEW",
@@ -291,6 +296,7 @@ const char* const g_reserved_words[189]={
 	"STATIC",
 	"STEP",
 	"STOP",
+	"STRCMP",
 	"STRFTIME",
 	"STRNCMP",
 	"SYSTEM",
@@ -323,7 +329,7 @@ const char* const g_reserved_words[189]={
 	"WIDTH",
 	"WIFIERR",
 };
-const int const g_hash_resereved_words[189]={
+const int const g_hash_resereved_words[192]={
 	0x000400d3, //ABS
 	0x01002393, //ACOS
 	0x0d2063a4, //ALIGN4
@@ -389,6 +395,7 @@ const int const g_hash_resereved_words[189]={
 	0x011d1514, //FPUT
 	0x47454543, //FPUTC
 	0x3bcf1e71, //FREMOVE
+	0x3bc3f8b1, //FRENAME
 	0x4748410b, //FSEEK
 	0x0fbcbca9, //FUNCADDRESS
 	0x01182353, //GCLS
@@ -426,6 +433,7 @@ const int const g_hash_resereved_words[189]={
 	0x4d387c70, //LOG10
 	0x0134e390, //LOOP
 	0x04549397, //METHOD
+	0x4c285212, //MKDIR
 	0x0130e146, //MODF
 	0x4c512203, //MUSIC
 	0x0004f117, //NEW
@@ -482,6 +490,7 @@ const int const g_hash_resereved_words[189]={
 	0x95015217, //STATIC
 	0x01495110, //STEP
 	0x01495390, //STOP
+	0x954c2304, //STRCMP
 	0xc755c5ae, //STRFTIME
 	0xacc3d9f5, //STRNCMP
 	0x98495119, //SYSTEM

@@ -49,6 +49,12 @@ static uint8_t USBKB_dev_addr=0xFF;
 static uint8_t USBKB_instance;
 static hid_keyboard_report_t usbkb_report;
 
+uint32_t getVidPid(void){
+	uint16_t vid, pid;
+	tuh_vid_pid_get(USBKB_dev_addr, &vid, &pid);
+	return (vid<<16) | pid;
+}
+
 void lockkeycheck(uint8_t const vk){
 	switch (vk)
 	{
@@ -121,8 +127,39 @@ void usbkb_task(void){
 	static uint32_t keyrepeattime=0;
 	uint16_t vk2;
 	hid_keyboard_report_t *p_usbkb_report=&usbkb_report;
+	static uint8_t bytemode=0;
 
 	if(!usbkb_mounted()) return;
+	if(bytemode){
+		vk2=p_usbkb_report->keycode[0];
+		if(bytemode==1){
+			if(vk2>=3){
+				sem_acquire_blocking(&keycodebuf_sem); //セマフォ許可要求
+				pushkeycodebuf((vk2+0x20)|CHK_BYTEMODE);
+				sem_release(&keycodebuf_sem); //セマフォ許可解除
+				bytemode=2;
+				oldvkey=vk2;
+			}
+			return;
+		}
+		if(vk2==oldvkey) return;
+		//バイト入力モード終了
+		bytemode=0;
+		oldvkey=0;
+	}
+	if(p_usbkb_report->keycode[0]==2){
+		// バイト入力モード開始（次の入力1回はバイト入力）
+		bytemode=1;
+		oldvkey=0;
+		// 前回押されていたキーステータスをクリア
+		for (uint8_t i = 0; i < 6; i++) {
+			uint8_t vk;
+			if(keytype==1) vk=hidkey2virtualkey_en[prev_report.keycode[i]];
+			else vk=hidkey2virtualkey_jp[prev_report.keycode[i]];
+			if(vk) usbkb_keystatus[vk]=0;
+		}
+		return;
+	}
 	vk2=0;
 	shiftkeycheck(p_usbkb_report->modifier);
 	sem_acquire_blocking(&keycodebuf_sem); //セマフォ許可要求
@@ -192,7 +229,13 @@ void usbkbled_task(void){
 	if (board_millis() < usbkbled_timer) return;
 	if(lockkeychanged){
 		// Set Lock keys LED
-		tuh_hid_set_report(USBKB_dev_addr,USBKB_instance,0,HID_REPORT_TYPE_OUTPUT,&lockkey,sizeof(lockkey));
+		uint8_t const itf_protocol = tuh_hid_interface_protocol(USBKB_dev_addr,USBKB_instance);
+		if(itf_protocol == HID_ITF_PROTOCOL_KEYBOARD) {
+			tuh_hid_set_report(USBKB_dev_addr,USBKB_instance,0,HID_REPORT_TYPE_OUTPUT,&lockkey,sizeof(lockkey));
+		}
+		else{
+			tuh_hid_set_report(USBKB_dev_addr,USBKB_instance,1,HID_REPORT_TYPE_OUTPUT,&lockkey,sizeof(lockkey));
+		}
 		lockkeychanged=false;
 		usbkbled_timer=board_millis()+USBKBLED_TIMER_INTERVAL;
 	}
@@ -325,10 +368,19 @@ void tuh_hid_mount_cb(uint8_t dev_addr, uint8_t instance, uint8_t const* desc_re
 {
 	// Interface protocol (hid_interface_protocol_enum_t)
 	uint8_t const itf_protocol = tuh_hid_interface_protocol(dev_addr, instance);
-
-	hid_info[instance].report_count = tuh_hid_parse_report_descriptor(hid_info[instance].report_info, MAX_REPORT, desc_report, desc_len);
-
-	if(itf_protocol==1){ //HIDキーボードの場合
+	bool usbkbfound=false;
+	if(itf_protocol == HID_ITF_PROTOCOL_KEYBOARD) {
+		usbkbfound=true;
+	}
+	else if (itf_protocol == HID_ITF_PROTOCOL_NONE) {
+		tuh_hid_report_info_t* rpt_info;
+		hid_info[instance].report_count = tuh_hid_parse_report_descriptor(hid_info[instance].report_info, MAX_REPORT, desc_report, desc_len);
+		rpt_info = hid_info[instance].report_info;
+		if (rpt_info->usage_page == HID_USAGE_PAGE_DESKTOP && rpt_info->usage == HID_USAGE_DESKTOP_KEYBOARD){
+			usbkbfound=true;
+		}
+	}
+	if(usbkbfound){
 		USBKB_dev_addr=dev_addr;
 		USBKB_instance=instance;
 		usbkb_shiftkey_a=(uint16_t)lockkey<<8; //Lock関連キーを変数lockkeyで初期化
@@ -401,6 +453,7 @@ uint8_t usbkb_readkey(void){
 	vkey=popkeycodebuf();
 	sem_release(&keycodebuf_sem); //セマフォ許可解除
 	if(vkey==0) return 0;
+	if(vkey & CHK_BYTEMODE) return vkey & 0xff; //バイト入力モード
 	sh=vkey>>8;
 	if(sh & (CHK_CTRL | CHK_ALT | CHK_WIN)) return 0;
 	k=vkey & 0xff;

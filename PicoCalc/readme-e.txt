@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.12.27
+　　　　　　　　　　　　　　　　　　　　　　　　　　2026.6.20
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type P
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -153,7 +153,12 @@ MACHIKAP.INI
 　Stores documents
 　- help.txt
 　- help-e.txt
+　- help-k.txt
 　　Reference manual for KM-BASIC
+
+　- age.txt
+　- age-e.txt
+　　Guide to Handling Age-Restricted Software on MachiKania
 
 　- class.txt
 　- class-e.txt
@@ -167,7 +172,7 @@ MACHIKAP.INI
 　- keyboard-e.txt
 　　How to use the keyboard
 
-　- shematic.png
+　- schematic.png
 　　MachiKania type P schematic
 
 　- wifi.txt
@@ -263,3 +268,11 @@ Pyllosoma 1.61/KM-1511 (2025.12.27)
 　Updated WGET in the class library to handle 301 Moved responses
 　Corrected class.txt
 　Added help-k.txt
+
+Phyllosoma 1.70/KM-1512 (2026.6.20)
+　Added the STRCMP() function
+　Added string operators (=, !=, <, <=, >, >=, AND, OR)
+　Enabled the use of strings as conditional expressions in IF and similar statements
+　Added support for developing applications with age restrictions
+　Made the LCD orientation obtainable via SYSTEM(30)
+　Added the CLEAR statement

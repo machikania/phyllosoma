@@ -110,6 +110,30 @@ int get_float_operator(void){
 	}
 }
 
+int get_string_operator(void){
+	int e;
+	e=get_integer_operator();
+	if (e<0) return e;
+	switch(e){
+		// Following operators cannot be used for string values.
+		case OP_XOR:
+			source-=3;
+			return ERROR_SYNTAX;
+		case OP_REM:
+		case OP_DIV:
+		case OP_MUL:
+		case OP_SUB:
+			source--;
+			return ERROR_SYNTAX;
+		case OP_SHR:
+		case OP_SHL:
+			source-=2;
+			return ERROR_SYNTAX;
+		default:
+			return e;
+	}
+}
+
 int integer_calculation(int op){
 	switch(op){
 		case OP_OR:
@@ -230,12 +254,40 @@ int float_calculation(int op){
 	}
 }
 
+int string_calculation(int op){
+	switch(op){
+		case OP_EQ:
+		case OP_NEQ:
+		case OP_LT:
+		case OP_LTE:
+		case OP_MT:
+		case OP_MTE:
+		case OP_ADD:
+		case OP_OR:
+		case OP_AND:
+			set_value_in_register(2,op);
+			return call_lib_code(LIB_CALC_STRING);
+		case OP_SUB:
+		case OP_MUL:
+		case OP_DIV:
+		case OP_XOR:
+		case OP_REM:
+		case OP_SHR:
+		case OP_SHL:
+		case OP_VOID:
+		default:
+			return ERROR_UNKNOWN;
+	}
+}
+
 int get_operator(int vmode){
 	switch(vmode){
 		case VAR_MODE_INTEGER:
 			return get_integer_operator();
 		case VAR_MODE_FLOAT:
 			return get_float_operator();
+		case VAR_MODE_STRING:
+			return get_string_operator();
 		default:
 			return ERROR_UNKNOWN;
 	}
@@ -247,6 +299,8 @@ int calculation(int op, int vmode){
 			return integer_calculation(op);
 		case VAR_MODE_FLOAT:
 			return float_calculation(op);
+		case VAR_MODE_STRING:
+			return string_calculation(op);
 		default:
 			return ERROR_UNKNOWN;
 	}

@@ -56,28 +56,38 @@ void post_inifile(void){
 			return;
 		}
 	}
-    printstr("USB keyboard found\n");
-    g_usb_peripheral=USB_PERIPHERAL_KEYBOARD;
-	sleep_ms(500);
-	
-	// Detect Gamepad
-	while (usbkb_keystatus['M']) {
-		sleep_ms(1);
-		if (!usbkb_keystatus['A']) continue;
-		if (!usbkb_keystatus['C']) continue;
-		if (!usbkb_keystatus['G']) continue;
-		if (!usbkb_keystatus['P']) continue;
-		// MachiKania Gamepad found
-		g_usb_peripheral=USB_PERIPHERAL_GAMEPAD;
+
+	switch(getVidPid()){
+		case 0x1209f800:
+			// MachiKania game-pad is connected
+			printstr("MachiKania game-pad found\n");
+			g_usb_peripheral=USB_PERIPHERAL_GAMEPAD;
+			g_emulate_buttons=1;
+			g_fileselect_no_keyboard=1;
+			break;
+		default:		
+			printstr("USB keyboard found\n");
+			g_usb_peripheral=USB_PERIPHERAL_KEYBOARD;
+			break;
 	}
-	// Clear key buffer
-	do usbkb_readkey();
-	while(vkey!=0);
+	sleep_ms(500);
 }
 
 void pre_fileselect(void){
 	if (g_fileselect_no_keyboard) return; // File select (no keyboard found)
 	texteditor(); // Start editor, never come back
+}
+
+int gamepad_buttons(void){
+	int i=0;
+	if (USB_PERIPHERAL_GAMEPAD!=g_usb_peripheral || !g_emulate_buttons) return 0;
+	if (usbkb_keystatus[g_emulate_button_array[0]]) i|=KEYUP;
+	if (usbkb_keystatus[g_emulate_button_array[1]]) i|=KEYDOWN;
+	if (usbkb_keystatus[g_emulate_button_array[2]]) i|=KEYLEFT;
+	if (usbkb_keystatus[g_emulate_button_array[3]]) i|=KEYRIGHT;
+	if (usbkb_keystatus[g_emulate_button_array[4]]) i|=KEYSTART;
+	if (usbkb_keystatus[g_emulate_button_array[5]]) i|=KEYFIRE;
+	return i;
 }
 
 int lib_readkey(int r0, int r1, int r2){

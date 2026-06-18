@@ -48,7 +48,9 @@ uint16_t keycodebuf[KEYCODEBUFSIZE]; //キーコードバッファ
 uint16_t * volatile keycodebufp1; //キーコード書き込み先頭ポインタ
 uint16_t * volatile keycodebufp2; //キーコード読み出し先頭ポインタ
 
-bool usb_set_report(void* report, uint16_t len){ return false; } // Dummy function required
+// Dummy functions required
+bool usb_set_report(void* report, uint16_t len){ return false; }
+uint32_t getVidPid(void){ return 0;}
 
 /*
 	Static global variables follow

@@ -45,18 +45,18 @@ DELAYUS x
 	Stop execution for x microseconds.
 DIM xxx [, yyy [, zzz [, ... ]]]
 	Assigns an array of integer or floating-point type. xxx,yyy,zzz should be written, for example, "A(10)". In this case, 11 integer type variables from A(0) to A(10) are allocated. In the case of a floating-point array, it should be written as "A#(10)". Multi-dimensional arrays can also be declared.
-DO WHILE x|x#
+DO WHILE x|x#|x$
 LOOP
-	If x or x# is non-zero, the statements from DO to LOOP are executed repeatedly.
-DO UNTIL x|x#
+	If x, x#, or x$ is non-zero, the statements from DO to LOOP are executed repeatedly.
+DO UNTIL x|x#|x$
 LOOP
-	If x or x# is 0, repeats the statements from the DO statement to the LOOP statement.
+	If x, x#, or x$ is 0, repeats the statements from the DO statement to the LOOP statement.
 DO
-LOOP WHILE x|x#
-	Executes the statements from the DO statement through the LOOP statement and repeats if x or x# is non-zero.
+LOOP WHILE x|x#|x$
+	Executes the statements from the DO statement through the LOOP statement and repeats if x, x#, or x$ is non-zero.
 DO
-LOOP UNTIL x|x#
-	Executes statements from the DO statement through the LOOP statement and repeats if x or x# is 0.
+LOOP UNTIL x|x#|x$
+	Executes statements from the DO statement through the LOOP statement and repeats if x, x#, or x$ is 0.
 DRAWCOUNT x
 	Specifies the DRAWCOUNT value, see DRAWCOUNT() function for DRAWCOUNT value.
 END
@@ -70,16 +70,16 @@ GOSUB xxx [, yyy [, zzz [, ... ]]]
 	Memorize the current execution position and move to line xxx (or label). yyy, zzz, etc. are arguments that are passed on to the subroutine (see the ARGS() function).
 GOTO xxx
 	Go to line xxx (or label).
-IF x|x# THEN yyy [ ELSE zzz ].
-	If x is non-zero, execute yyy; if x is zero, execute zzz. yyy and zzz can be written with multiple statements separated by ":".
-IF x|x# THEN
+IF x|x#|x$ THEN yyy [ ELSE zzz ].
+	If x, x#, or x$ is non-zero, execute yyy; if x, x#, or x$ is zero, execute zzz. yyy and zzz can be written with multiple statements separated by ":".
+IF x|x#|x$ THEN
 xxx
-[ELSEIF y|y# THEN
+[ELSEIF y|y#|y$ THEN
 yyy]
 [ELSE
 zzz]
 ENDIF
-	Execute xxx when x or x# is non-zero, yyy otherwise and y or y# is non-zero (if described), zzz otherwise. ELSEIF statements can be multiple. Note that on each line, do not put anything after the THEN statement.
+	Execute xxx when x, x#, or x$ is non-zero, yyy otherwise and y, y# or y$ is non-zero (if described), zzz otherwise. ELSEIF statements can be multiple. Note that on each line, do not put anything after the THEN statement.
 LABEL xxx
 	Register a jump destination for GOTO/GOSUB. xxx is a string of alphanumeric characters.
 [LET] x=yyy
@@ -188,6 +188,8 @@ RND()
 	Return a pseudo-random number from 0 to 32767.
 SGN(x)
 	Returns the sign (-1, 0, or 1) of x.
+STRCMP(x$,y$)
+	Compares two strings and returns the result. 0 if they are the same string.
 STRNCMP(x$,y$,z)
 	Compares z characters in two strings and returns the result. 0 if they are the same string.
 TVRAM([x])
@@ -328,7 +330,31 @@ OR
 
 <String operators>
 x$ + y$
-	String concatenation
+	Concatenation of strings
+x$ = y$
+	Returns the string "1" if the two strings are identical; otherwise returns "0"
+x$ != y$
+	Returns the string "0" if the two strings are identical; otherwise returns "1"
+x$ < y$
+	Compares x$ and y$ as strings; returns the string "1" if x$ is smaller than y$, otherwise returns "0"
+x$ <= y$
+	Compares x$ and y$ as strings; returns the string "1" if x$ is smaller than or equal to y$, otherwise returns "0"
+x$ > y$
+	Compares x$ and y$ as strings; returns the string "1" if x$ is larger than y$, otherwise returns "0"
+x$ >= y$
+	Compares x$ and y$ as strings; returns the string "1" if x$ is larger than or equal to y$, otherwise returns "0"
+x$ AND y$
+	Returns the string "0" if either x$ or y$ begins with "0"; otherwise returns "1"
+x$ OR y$
+	Returns the string "0" only if both x$ and y$ begin with "0"; otherwise returns "1"
+
+The precedence of string operators, from highest to lowest, is as follows:
+
++
+< <= > >=
+= !=
+AND
+OR
 
 <Floating point operators>
 -x#
@@ -588,6 +614,12 @@ SYSTEM$(3)
 	Returns the name of the currently executing HEX file, e.g., "ZOEA.HEX" (in the case of Type P/PU, returns zero length string).
 SYSTEM(4)
 	Returns the clock frequency of the CPU currently running.
+SYSTEM(5)
+	Returns compile time configuration settings such as "pico_ili9341.h" or "pico_ili9341.h (embed)".
+SYSTEM(6)
+	Returns the amount of RAM (in kilobytes) allocated for running KM‑BASIC, such as 176, 192, or 448.
+SYSTEM(7)
+	Returns the user's age information.
 SYSTEM(20)
 	Returns character display width.
 SYSTEM(21)
@@ -608,6 +640,8 @@ SYSTEM(28)
 	Returns the current X position of the graphic display.
 SYSTEM(29)
 	Returns the current Y position of the graphic display.
+SYSTEM(30)
+	Returns the LCD orientation as an angle (0, 90, 180, or 270).
 SYSTEM(40)
 	Returns whether the PS/2 keyboard is in use.
 SYSTEM(41)
@@ -766,9 +800,22 @@ ON GOTO statement and ON GOSUB statement are not supported. However, it is possi
 
 If strings are handled consecutively in a line, an error message "String too complexed" may appear and the program may stop. In this case, try using a separate line for each string instruction, or try dividing the string-related operations into several steps, one line for each.
 
+When a local variable is declared with VAR, it can be used locally as an integer, floating‑point value, string, or array. The contents of these variables are discarded when the RETURN statement is executed. However, you cannot return the contents of a string variable as the return value of a RETURN statement, because the variable’s contents are destroyed at the time the RETURN statement is executed. For such cases, write your code as shown in the following example.
+	LABEL TEST
+	VAR A
+	(... a code using A$ ...)
+	RETURN A$+""
+
 Be careful when accessing global variables in interrupt functions. If a variable of the same name is specified as a VAR in one of the subroutines and is also used as a local variable, depending on when the interrupt is triggered, the value of the variable may or may not belong to the global or local variable. Therefore, if you want to handle a global variable in an interrupt function, do not specify a variable of the same name as a VAR.
 
 <Version history>
+KM-1512 Released in June 2026.
+　Added the STRCMP() function
+　Added string operators (=, !=, <, <=, >, >=, AND, OR)
+　Enabled the use of strings as conditional expressions in IF and similar statements
+　Made the LCD orientation obtainable via SYSTEM(30)
+　Added the CLEAR statement
+　Made it possible to obtain the user's age with SYSTEM(7)
 KM-1511 Released in December 2025.
 　Added the RND#() function
 　Fixed a bug where compilation failed in certain environments when one class used another within class files

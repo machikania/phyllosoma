@@ -123,6 +123,9 @@ void read_ini(void){
 			sscanf(str+18,"%d",&i);
 			g_emulate_button_array[5]=i;
 			g_emulate_buttons=1;
+		} else if (!strncmp(str,"AGE=",4)) {
+			sscanf(str+4,"%d",&i);
+			g_user_age=i;
 		}
 	}
 	// Close file

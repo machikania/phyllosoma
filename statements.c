@@ -693,7 +693,7 @@ int do_statement(void){
 	g_fordepth++;
 	unsigned short* obefore=object;
 	if (instruction_is("WHILE")) {
-		e=get_int_or_float();
+		e=get_int_float_or_string_condition();
 		if (e) return e;
 		check_object(2);
 		(object++)[0]=0x2800;// cmp	r0, #0
@@ -702,7 +702,7 @@ int do_statement(void){
 		                     // skip:
 		if (e) return e;
 	} else if (instruction_is("UNTIL")) {
-		e=get_int_or_float();
+		e=get_int_float_or_string_condition();
 		if (e) return e;
 		check_object(2);
 		(object++)[0]=0x2800;// cmp	r0, #0
@@ -747,13 +747,13 @@ int contine_end_loop(void){
 int loop_statement(void){
 	int e;
 	if (instruction_is("WHILE")) {
-		e=get_int_or_float();
+		e=get_int_float_or_string_condition();
 		if (e) return e;
 		check_object(2);
 		(object++)[0]=0x2800;// cmp	r0, #0
 		(object++)[0]=0xd001;// beq.n	skip
 	} else if (instruction_is("UNTIL")) {
-		e=get_int_or_float();
+		e=get_int_float_or_string_condition();
 		if (e) return e;
 		check_object(2);
 		(object++)[0]=0x2800;// cmp	r0, #0
@@ -768,7 +768,7 @@ int while_statement(void){
 	int e;
 	g_fordepth++;
 	unsigned short* obefore=object;
-	e=get_int_or_float();
+	e=get_int_float_or_string_condition();
 	if (e) return e;
 	check_object(2);
 	(object++)[0]=0x2800;// cmp	r0, #0
@@ -1017,14 +1017,22 @@ int if_statement(void){
 	unsigned short* obefore=object;
 	// Increment the depth first
 	g_ifdepth++;
-	// Get int or float
+	// Get int, float, or string
 	e=get_integer();
 	if (0!=e || (!instruction_is("THEN"))) {
 		source=sbefore;
 		rewind_object(obefore);
 		e=get_float();
-		if (e) return e;
-		if (!instruction_is("THEN")) return ERROR_SYNTAX;
+		if (0!=e || (!instruction_is("THEN"))) {
+			source=sbefore;
+			rewind_object(obefore);
+			e=get_string();
+			if (e) return e;
+			if (!instruction_is("THEN")) return ERROR_SYNTAX;
+			// String "0"/"1" to integer 0/1 conversion, and garbage collection
+			e=call_lib_code(LIB_IF_STRING);
+			if (e) return e;
+		}
 	}
 	// r0 is set. Let's branch here
 	check_object(2);
@@ -1470,6 +1478,10 @@ int option_statement(void){
 	return 0;
 }
 
+int clear_statement(void){
+	return call_lib_code(LIB_CLEAR);
+}
+
 int end_of_statement(void){
 	skip_blank();
 	if (0x00==source[0]) return 1;
@@ -1500,6 +1512,7 @@ int compile_statement(void){
 	if (instruction_is("ALIGN4")) return align4_statement();
 	if (instruction_is("BREAK")) return break_statement();
 	if (instruction_is("CALL")) return call_statement();
+	if (instruction_is("CLEAR")) return clear_statement();
 	if (instruction_is("CDATA")) return cdata_statement();
 	if (instruction_is("CONTINUE")) return continue_statement();
 	if (instruction_is("DATA")) return data_statement();

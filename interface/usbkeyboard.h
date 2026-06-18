@@ -37,6 +37,7 @@ caused by using this program.
 #define CHK_NUMLK_A 0x100
 #define CHK_CAPSLK_A 0x200
 #define CHK_SCRLK_A 0x400
+#define CHK_BYTEMODE 0x8000
 
 #define VK_LBUTTON 0x01
 #define VK_RBUTTON 0x02
@@ -205,6 +206,9 @@ unsigned char shiftkeys(void); // SHIFT関連キーの押下状態を返す
 // 上位8ビット：シフト状態（押下：1）、上位から<0><CAPSLK><NUMLK><SCRLK><Win><ALT><CTRL><SHIFT>
 // 英数・記号文字の場合、戻り値としてASCIIコード（それ以外は0を返す）
 unsigned char usbkb_readkey(void);
+
+// Detect Vendor and Product IDs of USB keyboard 
+uint32_t getVidPid(void);
 
 // Macro(s) follows(s)
 #define keycodeExists() (keycodebufp1!=keycodebufp2)

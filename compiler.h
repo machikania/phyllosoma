@@ -100,6 +100,9 @@
 #define LIB_PRE_METHOD 30
 #define LIB_POST_METHOD 31
 #define LIB_READKEY 32
+#define LIB_STRCMP 33
+#define LIB_CALC_STRING 34
+#define LIB_IF_STRING 35
 
 #define LIB_DEBUG 128
 #define LIB_PRINT 129
@@ -131,6 +134,7 @@
 #define LIB_RTC 155
 #define LIB_WIFI 156
 #define LIB_AUXCODE 157
+#define LIB_CLEAR 158
 
 /*
 	Gereral option used for intializing static variables
@@ -385,8 +389,8 @@ extern volatile short* g_scratch_short;
 extern volatile float* g_scratch_float;
 extern volatile char* g_scratch_char;
 
-extern const char* const g_reserved_words[189];
-extern const int const g_hash_resereved_words[189];
+extern const char* const g_reserved_words[192];
+extern const int const g_hash_resereved_words[192];
 
 extern char g_constant_value_flag;
 extern int g_constant_int;
@@ -431,6 +435,8 @@ extern char g_cpu_voltage_default;
 
 extern char g_emulate_buttons;
 extern unsigned char g_emulate_button_array[6];
+
+extern unsigned char g_user_age;
 
 // USB peripheral derection
 extern unsigned char g_usb_peripheral;
@@ -493,6 +499,7 @@ int restore_statement(void);
 // withkeyboard.c
 void post_inifile(void);
 void pre_fileselect(void);
+int gamepad_buttons(void);
 int lib_inkey(int r0, int r1, int r2);
 int lib_input(int r0, int r1, int r2);
 int lib_readkey(int r0, int r1, int r2);
@@ -504,6 +511,7 @@ void texteditor(void);
 
 // string.c
 int string_char(void);
+int get_simple_string(void);
 int get_string(void);
 
 // integer.c
@@ -522,6 +530,7 @@ int cread_function(void);
 int get_dim_pointer(void);
 int get_dim_value(void);
 int get_int_or_float(void);
+int get_int_float_or_string_condition(void);
 int get_string_int_or_float(void);
 int get_value(int vmode);
 int get_simple_value(int vmode);

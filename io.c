@@ -260,10 +260,6 @@ int lib_keys(int r0, int r1, int r2){
 	if (g_emulate_buttons) {
 		for(k=0;k<6;k++){
 			if (g_emulate_button_array[k]) res|=lib_inkey(g_emulate_button_array[k],0,0) ? (1<<k):0;
-			// Gamepad specific recognitions follow
-			if (USB_PERIPHERAL_GAMEPAD!=g_usb_peripheral) continue;
-			if (4==k && g_emulate_button_array[k]) res|=lib_inkey(0x73,0,0) ? (1<<k):0; // F4 key
-			if (5==k && g_emulate_button_array[k]) res|=lib_inkey(0x70,0,0) ? (1<<k):0; // F1 key
 		}
 	}
 	return res&r0;

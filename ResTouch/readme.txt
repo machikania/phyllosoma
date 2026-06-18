@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.12.27
+　　　　　　　　　　　　　　　　　　　　　　　　　　2026.6.20
 　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
 　　　　　　　　「MachiKania type P」
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -203,7 +203,12 @@ MACHIKAP.INI
 　ドキュメント類を格納
 　- help.txt
 　- help-e.txt
+　- help-k.txt
 　　KM-BASICのリファレンスマニュアル
+
+　- age.txt
+　- age-e.txt
+　　MachiKaniaで年齢制限のあるソフトウェアーを取り扱うための説明書
 
 　- class.txt
 　- class-e.txt
@@ -212,6 +217,10 @@ MACHIKAP.INI
 　- cpuclock.txt
 　- cpuclock-e.txt
 　　CPUのクロック周波数を調整する方法について
+
+　- gamepad.txt
+　- gamepad-e.txt
+　　USBゲームパッドの作成方法と使い方について
 
 　- keyboard.txt
 　- keyboard-e.txt
@@ -234,6 +243,10 @@ MACHIKAP.INI
 
 　BLOCK.BAS
 　　初代MachiKania向けに作成したブロック崩しゲーム
+
+　BTNTEST.BAS
+　　タッチパネル液晶でタッチボタン機能を使うサンプルプログラム
+　　実行には、TSC2046クラスとGEN3Oクラスが必要
 
 　COSMOS.BMP（PHOTO.BASで使用）
 
@@ -314,3 +327,15 @@ Pyllosoma 1.61/KM-1511 (2025.12.27)
 　・クラスライブラリーのWGETを更新。301 Movedなどに対応
 　・class.txtを修正
 　・help-k.txtを追加
+
+Phyllosoma 1.70/KM-1512 (2026.6.20)
+　・MachiKania USB ゲームパッドに対応
+　・対応するUSBキーボードプロトコルの種類を追加
+　・USBキーボードドライバにPCのターミナルソフトから直接文字コードで入力する機能を追加
+　・STRCMP()関数を追加
+　・文字列演算子(=, !=, <, <=, >, >=, AND, OR)を追加
+　・IFなどで文字列を条件式に取ることができるようにした
+　・年齢制限のあるアプリケーションの開発に対応
+　・液晶の向きをSYSTEM(30)で得られるようにした
+　・CLEARステートメントを追加
+　・TBUTTONクラスを追加。TSC2046クラスを更新

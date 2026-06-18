@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2025.12.27
+　　　　　　　　　　　　　　　　　　　　　　　　　　2026.6.20
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type PU
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -142,7 +142,12 @@ MACHIKAP.INI
 　Stores documents
 　- help.txt
 　- help-e.txt
+　- help-k.txt
 　　Reference manual for KM-BASIC
+
+　- age.txt
+　- age-e.txt
+　　Guide to Handling Age-Restricted Software on MachiKania
 
 　- class.txt
 　- class-e.txt
@@ -156,6 +161,10 @@ MACHIKAP.INI
 　- embed-e.txt
 　　How to Create File Embedded Executables
 
+　- gamepad.txt
+　- gamepad-e.txt
+　　Guide to Building and Using a USB Gamepad
+
 　- keyboard.txt
 　- keyboard-e.txt
 　　How to connect and use a keyboard
@@ -164,8 +173,8 @@ MACHIKAP.INI
 　- pcconnect-e.txt
 　　How to transfer files from your PC to MachiKania
 
-　- shematic_ntsc.png
-　- shematic_xiao.png
+　- schematic_ntsc.png
+　- schematic_xiao.png
 　　MachiKania type PU schematics
 
 　- wifi.txt
@@ -294,3 +303,13 @@ Puerulus 1.61/KM-1511 (2025.12.27)
 　Updated WGET in the class library to handle 301 Moved responses
 　Corrected class.txt
 　Added help-k.txt
+
+Puerulus 1.70/KM-1512 (2026.6.20)
+　Added support for the MachiKania USB gamepad
+　Added additional supported USB keyboard protocol types
+　Added a feature to the USB keyboard driver that allows entering character codes directly from a PC terminal
+　Added the STRCMP() function
+　Added string operators (=, !=, <, <=, >, >=, AND, OR)
+　Enabled the use of strings as conditional expressions in IF and similar statements
+　Added support for developing applications with age restrictions
+　Added the CLEAR statement

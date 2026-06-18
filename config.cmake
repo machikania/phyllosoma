@@ -25,6 +25,9 @@ set(MACHIKANIA_BUILD pico_ili9341)
 # RP2350-LCD-1.47
 #set(MACHIKANIA_BUILD rp2350_lcd_1_47)
 
+# RP2350-LCD-2
+#set(MACHIKANIA_BUILD rp2350_lcd_2)
+
 # Raspberry Pi Pico + NTSC Video out for Puerulus
 # YD-RP2040 + NTSC Video
 #set(MACHIKANIA_BUILD pico_ntsc)
@@ -47,6 +50,8 @@ elseif (MACHIKANIA_BUILD STREQUAL "pico_restouch")
 	set(MACHIKANIA_GRAPH_LIB ws_pico_restouch)
 elseif (MACHIKANIA_BUILD STREQUAL "rp2350_lcd_1_47")
 	set(MACHIKANIA_GRAPH_LIB rp2350_lcd_1_47)
+elseif (MACHIKANIA_BUILD STREQUAL "rp2350_lcd_2")
+	set(MACHIKANIA_GRAPH_LIB rp2350_lcd_2)
 elseif (MACHIKANIA_BUILD STREQUAL "pico_ntsc")
 	set(MACHIKANIA_GRAPH_LIB rp2040_pwm_ntsc_textgraph)
 elseif (MACHIKANIA_BUILD STREQUAL "xiao_ntsc")

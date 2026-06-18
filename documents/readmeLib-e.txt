@@ -34,6 +34,9 @@ CPUCLOCK
 CRDINI
 	Class for examining MachiKania INI files (MACHIKAP.INI, MACHIKAM.INI, etc.).
 
+CSD816D
+	A class for obtaining information from the LCD touch panel (CST816D).
+
 CSWTIF
 	Class for displaying TIFF images.
 
@@ -61,6 +64,9 @@ MA
 PLAYAVI
 	Class for playing AVI file in Type PU
 
+QMI8658
+	A class for using the QMI8658 accelerometer sensor.
+
 QRCODE
 	Class for displaying QRCODE on the screen.
 
@@ -75,6 +81,9 @@ STRDIM
 
 STRING
 	Class for handling string objects, similar to Java's String class.
+
+TBUTTON
+	A class for using on‑screen button functionality on LCDs equipped with a touch panel.
 
 TSC2046
 	Class for retrieving information from LCD touch panel (TSC2046).
@@ -136,3 +145,7 @@ Phyllosoma/Puerulus 1.60/KM-1510 (2025.8.17)
 Phyllosoma/Puerulus 1.61/KM-1511 (2025.12.27)
 　Addition of FFTLIB class for Fast Fourier Transform and inverse FFT operations
 　Updated WGET (ver 0.4) to handle cases such as "301 Moved"
+
+Phyllosoma/Puerulus 1.70/KM-1512 (2026.6.20)
+　Added three new classes: CST816D, TBUTTON, and QMI8658 (Type P only)
+　TSC2046 ver 0.3 (Type P only)
