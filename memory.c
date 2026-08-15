@@ -83,10 +83,13 @@ void* calloc_memory(int size, int var_num){
 	// Allocate memory. ret always receives value
 	ret=alloc_memory(size,var_num);
 	// Fill zero in allocated memory
-	for(i=0;i<size;i++){
-		((int*)ret)[i]=0;
+	if (ret) {
+		for(i=0;i<size;i++){
+			((int*)ret)[i]=0;
+		}
 	}
 	// return pointer to allocated memory
+	//printf("calloc_memory: %X (%d words)\n",ret, size);
 	return ret;
 }
 
@@ -212,6 +215,7 @@ void delete_memory(void* data){
 	int size;
 	int* var;
 	if (!data) return;
+	//printf("delete_memory: %X\n",data);
 	// Delete the corresponding area (multiple variables may exist)
 	size=0;
 	for(i=0;i<ALLOC_BLOCK_NUM;i++){

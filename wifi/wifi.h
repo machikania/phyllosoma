@@ -1,7 +1,20 @@
+// Set debug logging for mbedtls here if required
+// The debug level is between 0 and 4
+//#define MACHIKANIA_MBEDTLS_DEBUG_LOGGING 0
+//#define MACHIKANIA_MBEDTLS_DEBUG_LOGGING 1
+//#define MACHIKANIA_MBEDTLS_DEBUG_LOGGING 2
+//#define MACHIKANIA_MBEDTLS_DEBUG_LOGGING 3
+//#define MACHIKANIA_MBEDTLS_DEBUG_LOGGING 4
+
 #define WIFI_BUFF_SIZE 2048
 
+#ifdef MACHIKANIA_MBEDTLS_DEBUG_LOGGING
+#define DEBUG_printf printf
+#else
 #define printf wifi_set_error(__LINE__); wifi_set_error_str
 #define DEBUG_printf wifi_set_error(__LINE__); wifi_set_error_str
+#define MACHIKANIA_MBEDTLS_DEBUG_LOGGING 0
+#endif
 
 // wifierror.c
 void wifi_set_error_str(char* err_str,...);
@@ -40,8 +53,9 @@ void start_tcp_client(const char* ipaddr, int tcp_port);
 void start_tcp_server(int tcp_port, int tcp_accept_mode);
 err_t tcp_server_client_close(void* arg);
 
-// picow_tls_server.c
-void start_tls_client(const char* servername, int tcp_port);
+// picow_tls_client.c
+void start_tls_client(const char* servername, int tcp_port, int verify_ca, const char* ca_cert_pem_specified);
+void init_machikania_tls_calloc(void);
 
 // See lwip/err.h for error values, like ERR_OK=0, ERR_INPROGRESS=-5, etc
 
