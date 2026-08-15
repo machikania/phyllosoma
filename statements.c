@@ -97,7 +97,6 @@ int var_statement(void){
 	object++; // sub	sp, #xx
 	i=0;
 	do {
-		skip_blank();
 		vn=get_var_number();
 		if (vn<0) return vn;
 		if ('#'==source[0] || '$'==source[0]) source++;
@@ -1433,7 +1432,6 @@ int dim_statement(void){
 	unsigned short* obefore;
 	int i,e,vn;
 	do {
-		skip_blank();
 		vn=get_var_number();
 		if (vn<0) return vn;
 		if ('#'==source[0]) source++;
