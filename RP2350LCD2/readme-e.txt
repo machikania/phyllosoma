@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2026.6.20
+　　　　　　　　　　　　　　　　　　　　　　　　　　2026.9.19
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type P
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -229,3 +229,10 @@ MachiKania type P BASIC System Revision History
 
 Pyllosoma 1.7/KM-1512 (2026.6.20)
 　Added support for Waveshare RP2350-LCD-2
+
+Phyllosoma 1.71/KM-1513 (2026.9.19)
+　Added a confirmation prompt when creating a new program in the editor.
+　Fixed a compilation error that occurred when a space was inserted after a comma (",") in DIM and VAR statements.
+　Fixed a compilation error that occurred when a space was inserted between the "&" operator and a variable name.
+　Added HUB75LIB to the class library for controlling HUB75-connected LED displays.
+　Migrated the build SDK to pico-SDK version 2.3.0.

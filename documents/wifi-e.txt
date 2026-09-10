@@ -9,6 +9,8 @@ If your router has the ability to automatically assign IP addresses via DHCP (wh
 
 Both client and server applications can be built using MachiKania. The HTTP protocol (denoted as http, https, web, www, html, etc.) is widely used on the Internet. With MachiKania, http/https client applications and http server applications can be easily built using the WGET and HTTPD classes.
 
+When obtaining information from an https server using the WGET class, please use the Raspberry Pi Pico 2 W. Following the revision of the https server operation guidelines on June 15, 2026, most https servers now require stricter connection procedures. As a result, the Raspberry Pi Pico W is no longer capable of meeting these requirements and can no longer establish connections reliably.
+
 
 <Another way to specify SSID and password for Wi-Fi>
 
@@ -118,7 +120,7 @@ If you build a server with MachiKania, please use it only within your local envi
 
 Accessing https sites with MachiKania has a lower level of security than accessing https sites with a regular browser. Even if the connection is to an https site, the same problems can occur as with a connection to an http site. For example, personal information to be transmitted (e.g., passwords) can be compromised, or phishing can occur if the connection destination is different from the one specified. This is due to the fact that it is difficult to check the CA certificate and keep the AES cipher as strong as the specification when using TLS connections with small programs, not only MachiKaniania. MachiKania does not check CA certificates, and the difficulty of analogizing the AES encryption key is not high. Therefore, please consider that connecting to https sites can be problematic, although not as problematic as connecting to http sites. Gathering information from a site is not a problem, but if you secure a connection by submitting personal information such as IDs and passwords, you should exercise caution and do so at your own risk.
 
-Starting with MachiKania version 1.7.5, RP2350 (Raspberry Pi Pico 2 W) supports connections to HTTPS sites using a relatively secure method. If you want to establish a secure connection when using the WGET class, first enable CA certificate verification by calling the WGET::VERIFYCA() method, and then, if necessary, specify the required CA certificate by calling the WGET::SETCACERT() method. However, since comprehensive security auditing of the entire MachiKania system has not been performed, you should use these features at your own risk.
+Starting with MachiKania version 1.7.1, RP2350 (Raspberry Pi Pico 2 W) supports connections to HTTPS sites using a relatively secure method. If you want to establish a secure connection when using the WGET class, first enable CA certificate verification by calling the WGET::VERIFYCA() method, and then, if necessary, specify the required CA certificate by calling the WGET::SETCACERT() method. However, since comprehensive security auditing of the entire MachiKania system has not been performed, you should use these features at your own risk.
 
 Also, if you have written your Wi-Fi SSID and password in MACHIKAP.INI, please make sure that your MMC/SD card is not lost or stolen. If you have embedded the SSID and password in the Raspberry Pi Pico W as described in "Another way to specify the SSID and password for Wi-Fi", please make sure that the Raspberry Pi Pico W is not lost or stolen. If it is lost or stolen, we recommend that you change the password.
 
@@ -162,5 +164,6 @@ do
 loop
 
 <Version history>
+KM-1513 Released in September 2026.
 KM-1507 Released in December 2024.
 KM-1503 Released in September 2023.
