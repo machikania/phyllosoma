@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2026.6.20
+　　　　　　　　　　　　　　　　　　　　　　　　　　2026.9.19
 　Raspberry Pi Pico用BASIC実行環境オープンプラットフォーム
 　　　　　　　　「MachiKania type P」
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -229,3 +229,10 @@ MachiKania type P BASICシステム改版履歴
 
 Pyllosoma 1.7/KM-1512 (2026.6.20)
 　・Waveshare RP2350-Touch-LCD-2に対応
+
+Phyllosoma 1.71/KM-1513 (2026.9.19)
+　・エディターで新規プログラムを作成する際の確認を追加。
+　・DIMステートメント、VARステートメントで「,」の後に空白を入れた時のコンパイルエラーを修正。
+　・「&」演算子と変数名の間に空白を入れた時のコンパイルエラーを修正。
+　・クラスライブラリーにHUB75接続のLEDディスプレイを制御するHUB75LIBを追加。
+　・ビルド用のSDKを、pico-SDK ver 2.3.0に移行。 

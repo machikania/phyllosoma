@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2026.6.20
+　　　　　　　　　　　　　　　　　　　　　　　　　　2026.9.19
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type P
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -341,3 +341,12 @@ Phyllosoma 1.70/KM-1512 (2026.6.20)
 　Made the LCD orientation obtainable via SYSTEM(30)
 　Added the CLEAR statement
 　Add the TBUTTON class. Update the TSC2046 class.
+
+Phyllosoma 1.71/KM-1513 (2026.9.19)
+　Added a confirmation prompt when creating a new program in the editor.
+　Fixed a compilation error that occurred when a space was inserted after a comma (",") in DIM and VAR statements.
+　Fixed a compilation error that occurred when a space was inserted between the "&" operator and a variable name.
+　Improved the TLS handshake process for Internet connections, resolving an issue that prevented connections to many https websites.
+　Updated the WGET class library, enabling the selection of more secure connection methods than before.
+　Added HUB75LIB to the class library for controlling HUB75-connected LED displays.
+　Migrated the build SDK to pico-SDK version 2.3.0.

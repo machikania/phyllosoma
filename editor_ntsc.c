@@ -1998,6 +1998,14 @@ void newtext(void){
 		//最終保存後に編集済みの場合、保存の確認
 		cls();
 		setcursorcolor(COLOR_NORMALTEXT);
+		printstr("New Program, OK?\n");
+		printstr("Yes:[Enter] / No:[ESC]\n\n");
+		while(1){
+			inputchar(); //1文字キー入力待ち
+			vk=vkey & 0xff;
+			if(vk==VK_ESCAPE) return;
+			if(vk==VK_RETURN || vk==VK_SEPARATOR) break;
+		}
 		printstr("Save Editing File?\n");
 		printstr("Save:[Enter] / Not Save:[ESC]\n");
 		while(1){

@@ -66,6 +66,7 @@ int get_var_number(void){
 	int num;
 	int* data;
 	// Only support A-Z now
+	skip_blank();
 	if (source[0]<'A' || 'Z'<source[0]) return ERROR_SYNTAX;
 	if ('A'<=source[1] && source[1]<='Z' || '_'==source[1] || '0'<=source[1] && source[1]<='9') {
 		// Long name

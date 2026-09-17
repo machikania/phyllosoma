@@ -52,6 +52,9 @@ GEN3O
 HTTPD
 	Wifi接続時に、HTTPサーバーを構築するためのクラス。
 
+HUB75LIB
+　HUB75接続のLEDディスプレイを制御するためのクラス。
+
 IR_RX
 	赤外線リモコン受信モジュールを使用するためのクラス。
 
@@ -155,3 +158,7 @@ Phyllosoma/Puerulus 1.61/KM-1511 (2025.12.27)
 Phyllosoma/Puerulus 1.70/KM-1512 (2026.6.20)
 　・CST816D, TBUTTON, QMI8658の３つのクラスを追加（Type Pのみ）
 　・TSC2046 ver 0.3（Type Pのみ）
+
+Phyllosoma 1.71/KM-1513 (2026.9.19)
+　・WGETを更新 (ver 0.5)。以前よりセキュアーな接続方法を選択できるようになった。
+　・HUB75接続のLEDディスプレイを制御するHUB75LIBを追加。

@@ -1,4 +1,4 @@
-　　　　　　　　　　　　　　　　　　　　　　　　　　2026.6.20
+　　　　　　　　　　　　　　　　　　　　　　　　　　2026.9.19
 　BASIC Execution Environment Open Platform for Raspberry Pi Pico
 　　　　　　　　MachiKania type PU
 　　　　　　　　　　　　　　　　　　　　　by KenKen & Katsumi
@@ -313,3 +313,12 @@ Puerulus 1.70/KM-1512 (2026.6.20)
 　Enabled the use of strings as conditional expressions in IF and similar statements
 　Added support for developing applications with age restrictions
 　Added the CLEAR statement
+
+Phyllosoma 1.71/KM-1513 (2026.9.19)
+　Added a confirmation prompt when creating a new program in the editor.
+　Fixed a compilation error that occurred when a space was inserted after a comma (",") in DIM and VAR statements.
+　Fixed a compilation error that occurred when a space was inserted between the "&" operator and a variable name.
+　Improved the TLS handshake process for Internet connections, resolving an issue that prevented connections to many https websites.
+　Updated the WGET class library, enabling the selection of more secure connection methods than before.
+　Added HUB75LIB to the class library for controlling HUB75-connected LED displays.
+　Migrated the build SDK to pico-SDK version 2.3.0.

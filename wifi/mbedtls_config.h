@@ -4,10 +4,10 @@
 // Use machikania_calloc and machikania_free for mbedtls
 #define MBEDTLS_PLATFORM_C
 #define MBEDTLS_PLATFORM_MEMORY
-#define MBEDTLS_PLATFORM_CALLOC_MACRO machikania_calloc
-#define MBEDTLS_PLATFORM_FREE_MACRO machikania_free
-void* machikania_calloc(int nmemb, int size);
-void machikania_free(void *ptr);
+#define MBEDTLS_PLATFORM_CALLOC_MACRO machikania_tls_calloc
+#define MBEDTLS_PLATFORM_FREE_MACRO machikania_tls_free
+void* machikania_tls_calloc(int nmemb, int size);
+void machikania_tls_free(void *ptr);
 
 #define MBEDTLS_NO_PLATFORM_ENTROPY
 #define MBEDTLS_ENTROPY_HARDWARE_ALT
@@ -72,3 +72,14 @@ void machikania_free(void *ptr);
 /* Added for pico-sdk ver 2.2.0 */
 #define MBEDTLS_PLATFORM_MS_TIME_ALT
 #define MBEDTLS_PLATFORM_TIME_ALT
+
+/* TLS 1.2 CA certificate-checking */
+#define MBEDTLS_PEM_PARSE_C
+#define MBEDTLS_BASE64_C
+#define MBEDTLS_SHA384_C
+#define MBEDTLS_KEY_EXCHANGE_ECDHE_RSA_ENABLED
+
+// TLS debug-logging
+// Enable following line when logging is required
+// Also enable two lines for this purpose in picow_tls_client.c
+#define MBEDTLS_DEBUG_C

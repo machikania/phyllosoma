@@ -32,8 +32,8 @@
 #define RP2350 0
 #endif
 
-#define SYSVER2 "1.7.0.0"
-#define BASVER "KM-1512"
+#define SYSVER2 "1.7.1.0"
+#define BASVER "KM-1513"
 
 #define INTRODUCE_MACHIKANIA \
 	"MachiKania BASIC System\n"\

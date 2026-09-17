@@ -46,6 +46,9 @@ GEN3O
 HTTPD
 	Class to construct http server
 
+HUB75LIB
+	Class for controlling HUB75-connected LED displays.
+
 IR_RX
 	Class to use IR receiver
 
@@ -149,3 +152,7 @@ Phyllosoma/Puerulus 1.61/KM-1511 (2025.12.27)
 Phyllosoma/Puerulus 1.70/KM-1512 (2026.6.20)
 　Added three new classes: CST816D, TBUTTON, and QMI8658 (Type P only)
 　TSC2046 ver 0.3 (Type P only)
+
+Phyllosoma 1.71/KM-1513 (2026.9.19)
+　Updated the WGET (ver 0.5), enabling the selection of more secure connection methods than before.
+　Added HUB75LIB for controlling HUB75-connected LED displays.
