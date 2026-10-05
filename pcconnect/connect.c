@@ -1,3 +1,8 @@
+/*
+   This program is provided under the LGPL license ver 2.1
+   https://github.com/kmorimatsu
+*/
+
 #include <stdio.h>
 #include <dirent.h>
 #include <string.h>

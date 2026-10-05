@@ -21,6 +21,8 @@
 
 	ALLOC_BLOCK_NUM
 		# of blocks that is used for memory allocation. Now, it is 256.
+		The class routines restrict this number (it should be <=256).
+		To increase this number, the class routines must be largely revised.
 
 	ALLOC_TEMP_BLOCK
 		Start # of temporary blocks.

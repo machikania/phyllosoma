@@ -10,6 +10,8 @@
 */
 
 //#define MACHIKANIA_DEBUG_MODE
+
+// See comments in memory.c for these numbers:
 #define TEMPVAR_NUMBER 10
 #define ALLOC_BLOCK_NUM 256
 
