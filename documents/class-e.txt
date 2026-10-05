@@ -15,9 +15,9 @@ By writing a class as a separate file and specifying this file as a class, it is
 To create a class, prepare a text file with the name "classname.BAS". The class name must be between 2 and 8 alphanumeric characters long. In the class file, the FIELD, STATIC, and/or METHOD instruction(s) is/are required.
 
 FIELD [PUBLIC] x[,y[,z[, ... ]]]
-	Declares a public field in the class file. PUBLIC" can be omitted. x, y, z, etc. are field names of alphanumeric characters. If the field is used as a string type, "$" must be added after the field name.
+	Declares a public field in the class file. PUBLIC" can be omitted. x, y, z, etc. are field names of alphanumeric characters.
 FIELD PRIVATE x[,y[,z[, ... ]]]
-	Declares a private field in the class file. x, y, z, etc. are field names of alphanumeric characters. If the field is used as a string type, "$" should be added after the field name, and "()" should be added when the field is used as an array.
+	Declares a private field in the class file. x, y, z, etc. are field names of alphanumeric characters.
 STATIC [PUBLIC] x[,y[,z[, ... ]]]
 	Declares a public static variable in the class file." PUBLIC" may be omitted.
 STATIC PRIVATE x[,y[,z[, ... ]]]
@@ -27,7 +27,7 @@ METHOD x
 
 To access field values (both public and private) in a class file, access (read and write) directly to the variable with the long name specified FIELD. Notations such as "THIS" are not required.
 
-Object fields can be assigned not only integer values and real numbers, but also strings and arrays. When strings, arrays, etc. are assigned, memory area is allocated separately from the object itself. Therefore, when rewriting these fields, use the DELETE statement to destroy the memory area of the field before rewriting.
+Object fields can be assigned not only integer values and real numbers, but also strings and arrays. When strings, arrays, etc. are assigned, memory area is allocated separately from the object itself. Therefore, when rewriting these fields, use the DELETE statement to destroy the memory area of the field before rewriting. When allocating an array, you may use a DIM statement in the INIT method described below.
 
 If you want to access a static variable that is not a field of an object, use the STATIC or USEVAR instruction. A variable with a long name used here does not affect the value of a variable with the same name in other files. However, reading or changing variables A-Z will affect the values used in other files.
 
