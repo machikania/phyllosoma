@@ -678,6 +678,8 @@ SYSTEM 200,x
 	In the case of Type PU, stops (when x is 0) or starts (when x is non-zero) the display.
 SYSTEM 201,x
 	Turns the LEDs on the board ON/OFF. x= non-zero is ON, 0 is OFF.
+SYSTEM(202)
+	Reboot the system.
 SYSTEM(250,x)
 	Allocates memory in an x-byte area initialized with zeros and returns an address (equivalent to calloc).
 SYSTEM(251,x)

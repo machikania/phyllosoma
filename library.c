@@ -859,6 +859,10 @@ int lib_system(int r0, int r1, int r2){
 		// ボード上のLEDをON/OFFする(type Pのみ)。
 			board_led(r1);
 			break;
+		case 202:
+		// リブートする
+			watchdog_reboot(0, 0, 0);
+			break;
 		case 250:
 		// void* calloc (int bytes);
 			return (int)calloc_memory((r1+3)/4,get_permanent_block_number());		
