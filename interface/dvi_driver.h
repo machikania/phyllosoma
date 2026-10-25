@@ -1,0 +1,73 @@
+#include "pico/stdlib.h"
+
+#define X_RES	320 // Graphic横方向解像度
+#define Y_RES	240 // Graphic縦方向解像度
+#define WIDTH_XCL 40 // 横方向文字数（カラー時）
+#define WIDTH_Y 30 // 縦方向文字数
+#define ATTROFFSET (WIDTH_XCL*WIDTH_Y) // TVRAM上のカラーパレット格納位置
+#define WIDTH_XBW	80 // 横方向文字数（モノクロ時）
+#define ATTROFFSETBW	(WIDTH_XBW*WIDTH_Y) // TVRAM上のカラーパレット格納位置（モノクロ時）
+#define WIDTH_XMAX WIDTH_XBW // 横方向最大文字数
+extern int WIDTH_X; // 横方向文字数
+
+// videomode値
+//#define VMODE_T30 0 // 標準テキスト30文字互換モード
+#define VMODE_STDTEXT 1 // 標準テキスト40文字モード
+//#define VMODE_T40 2 // 標準テキスト40文字互換モード（6ドットフォント）
+#define VMODE_WIDETEXT 3 // ワイドテキスト42文字モード
+//#define VMODE_WIDETEXT6dot 4 // ワイドテキスト64文字モード（6ドットフォント）
+#define VMODE_MONOTEXT 5 // モノクロテキスト80文字モード
+//#define VMODE_ZOEAGRPH 16 // type Z互換グラフィックモード
+#define VMODE_STDGRPH 17 // 標準グラフィック＋テキスト40文字モード
+#define VMODE_WIDEGRPH 18 // ワイドグラフィック＋テキスト42文字モード
+
+// textomode値
+//#define TMODE_T30 0 // 標準テキスト30文字互換モード
+#define TMODE_STDTEXT 1 // 標準テキスト40文字モード
+#define TMODE_T40 2 // 標準テキスト40文字互換モード（6ドットフォント）
+#define TMODE_WIDETEXT 3 // ワイドテキスト42文字モード
+//#define TMODE_WIDETEXT6dot 4 // ワイドテキスト64文字モード（6ドットフォント）
+#define TMODE_MONOTEXT 5 // モノクロテキスト80文字モード
+
+// graphmode値
+#define GMODE_NOGRPH 0 // グラフィック不使用
+//#define GMODE_ZOEAGRPH 1 // type Z互換グラフィックモード
+#define GMODE_STDGRPH 2 // 標準グラフィック＋テキスト40文字モード
+#define GMODE_WIDEGRPH 3 // ワイドグラフィック＋テキスト42文字モード
+
+// DVI display initialization macro
+#define display_init() init_dvi_driver()
+
+#define VERTICAL 0
+#define HORIZONTAL 1
+#define LCD0TURN 0
+#define LCD180TURN 2
+#define LCDINVERT 64
+
+void g_clearscreen(void);
+void clearscreen(void);
+void start_composite(void);
+void stop_composite(void);
+void init_dvi_driver(void);
+void init_palette(void);
+void set_videomode(unsigned char m, unsigned char *gvram); //ビデオモードの切り替え
+void set_lcdalign(unsigned char align); // Dummy
+void ntsc_changeclock(int s);
+void set_gvram(uint8_t *gvram_draw,uint8_t *gvram_disp);
+
+extern volatile uint16_t drawcount;
+extern uint8_t TVRAM[]; // Textビデオメモリ
+extern uint8_t* GVRAM; // Graphicビデオメモリ
+extern uint8_t videomode,textmode,graphmode; //画面モード
+extern int attroffset; // TVRAMのカラー情報エリア位置
+extern const uint8_t FontData[];
+extern uint8_t* fontp; //現在のフォン;トパターンの先頭アドレス
+extern uint8_t *cursor;
+extern uint8_t cursorcolor;
+extern uint8_t bgcolor;
+
+extern int LCD_ALIGNMENT; // Dummy
+
+// Intterupt for DRAWCOUNT
+void trigger_drawcount_callback_once(void);
+#define drawcount_interrupt() trigger_drawcount_callback_once()
