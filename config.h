@@ -24,6 +24,10 @@
 #define MONITOR_TYPE "LCD"
 #endif
 
+#ifndef PICODVI
+#define PICODVI 0
+#endif
+
 #ifdef PICO_PLATFORM_RP2350
 #define RP2040 0
 #define RP2350 1

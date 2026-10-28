@@ -640,7 +640,7 @@ int lib_var_pop(int r0, int r1, int r2){
 int lib_wait(int r0, int r1, int r2){
 	unsigned short n;
 	uint64_t t;
-	if (PUERULUS && VALIDCLOCK4NTSC) {
+	if (PUERULUS && VALIDCLOCK4NTSC || PICODVI) {
 		n=drawcount;
 		while(0<r0){
 			if (check_break() && !g_interrupt_code) return lib_end(0,0,0);

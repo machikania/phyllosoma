@@ -161,7 +161,7 @@ bool repeating_drawcount_callback(struct repeating_timer *t) {
 
 void trigger_drawcount_callback_once(void) {
 	// This function is called by NTSC video routine
-	if (VALIDCLOCK4NTSC) {
+	if (VALIDCLOCK4NTSC || PICODVI) {
 		cancel_repeating_timer(&g_drawcount_timer);
 		add_repeating_timer_us(1, repeating_drawcount_callback, NULL, &g_drawcount_timer);
 	} else if (0<g_drawcount_timer.delay_us) {

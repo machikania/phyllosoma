@@ -53,6 +53,7 @@
 	GP46 DVI-CEC / (ADC6)
 	GP47 (PSRAM-CS) / (ADC7)
 */
+#define PICODVI 1
 
 //                     31     24      16       8       0
 //                      |      |       |       |       |
