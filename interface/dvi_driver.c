@@ -17,12 +17,6 @@
 #include "dvi_driver.h"
 #include "graphlib_dvi.h"
 
-// DVDD 1.2V (1.1V seems ok too)
-#define PALETTE_SIZE 256
-#define PALETTE_BITS 8
-#define VREG_VSEL VREG_VOLTAGE_1_20
-#define DVI_TIMING dvi_timing_640x480p_60hz
-
 uint8_t TVRAM[WIDTH_XCL*WIDTH_Y*2+1] __attribute__ ((aligned (4)));
 uint8_t *GVRAM=0; //グラフィックVRAM（描画用）開始位置のポインタ
 static uint8_t *GVRAM_DISP; //グラフィックVRAM（表示用）開始位置のポインタ
@@ -34,7 +28,7 @@ volatile uint8_t drawing; //　映像区間処理中は-1、その他は0
 uint8_t videostop; // 1～3：ビデオ出力停止、0：ビデオ出力中
 
 unsigned char videomode=0xff,textmode=0xff,graphmode=0xff; //画面モード
-int WIDTH_X = 40; // 横方向文字数
+int WIDTH_X = WIDTH_XCL; // 横方向文字数
 int attroffset; // TVRAMのカラー情報エリア位置
 uint8_t* fontp; //現在のフォントパターンの先頭アドレス
 
@@ -51,7 +45,7 @@ static void __not_in_flash_func(dvi_scanbuf_palette)() {
 	uint32_t *p=scanline_buf;
 	uint8_t *tvp=TVRAM+scanline/8*WIDTH_X;
 	uint8_t tline=scanline & 7;
-	if(videomode==VMODE_STDTEXT){
+	if(videomode==VMODE_WIDETEXT){
 		for(int i=0;i<WIDTH_X;i++){
 			uint8_t d=fontp[*tvp *8 +tline];
 			uint8_t cl=*(tvp+ATTROFFSET);
@@ -75,7 +69,7 @@ static void __not_in_flash_func(dvi_scanbuf_palette)() {
 			tvp++;
 		}
 	}
-	if(videomode==VMODE_STDGRPH){
+	if(videomode==VMODE_WIDEGRPH){
 	    uint8_t *gvp=GVRAM+scanline*X_RES;
 		for(int i=0;i<WIDTH_X;i++){
 			uint8_t d=fontp[*tvp *8 +tline];
@@ -184,7 +178,7 @@ void init_palette(void){
 // グラフィック画面クリア
 void g_clearscreen(void)
 {
-	// グラフィックメモリが確保されていない場合メッセージを表示して停止
+	// グラフィックメモリが確保されていない場合メッセージを表示
 	if(GVRAM==0){
 		uint8_t message[]="Not allocated graphic memory";
 		uint8_t *p=TVRAM, *s=message;
@@ -192,7 +186,7 @@ void g_clearscreen(void)
 			*(p+attroffset)=7;
 			*p++=*s++;
 		}
-		while(true) asm("wfi");
+		return;
 	}
 	unsigned int *vp=(unsigned int *)GVRAM;
 	for(int i=0;i<X_RES*Y_RES/4;i++) *vp++=0;
@@ -225,7 +219,7 @@ void stop_composite(void)
 //ビデオ出力システムを初期化し開始する
 void init_dvi_driver(void){
 	//ビデオモード初期化
-	set_videomode(VMODE_STDTEXT,0);
+	set_videomode(VMODE_WIDETEXT,0);
 	init_palette();
 	fontp=(uint8_t*)FontData; //標準フォントに設定
 
@@ -254,37 +248,32 @@ void init_dvi_driver(void){
 // m:ビデオモード
 // gvram:グラフィック用メモリ先頭アドレス
 void set_videomode(unsigned char m, unsigned char *gvram){
-
-	unsigned int *fontROMp,*fontRAMp;
-	unsigned int i;
-
 	if(videomode==m) return;
 //	stop_composite();
 	switch(m){
-		case VMODE_STDTEXT: // 標準テキスト40文字モード
-		case VMODE_WIDETEXT: // ワイドテキストモード（ダミー）
-			if(textmode!=TMODE_STDTEXT){
-				textmode=TMODE_STDTEXT;
+		case VMODE_STDTEXT: // 標準テキスト40文字モード（未実装）
+		case VMODE_WIDETEXT: // ワイドテキストモード
+			if(textmode!=TMODE_WIDETEXT){
+				textmode=TMODE_WIDETEXT;
 				graphmode=0;
 				WIDTH_X=WIDTH_XCL;
 				attroffset=ATTROFFSET;
 				clearscreen();
 			}
-			videomode=VMODE_STDTEXT;
+			videomode=VMODE_WIDETEXT;
 			break;
-		case VMODE_STDGRPH: // 標準グラフィック＋テキスト40文字モード
-		case VMODE_WIDEGRPH: // ワイドグラフィック＋テキストモード（ダミー）
+		case VMODE_STDGRPH: // 標準グラフィック＋テキスト40文字モード（未実装）
+		case VMODE_WIDEGRPH: // ワイドグラフィック＋テキストモード
 			GVRAM=gvram;
 			GVRAM_DISP=gvram;
-//			g_clearscreen();
-			graphmode=GMODE_STDGRPH;
-			if(textmode!=TMODE_STDTEXT){
-				textmode=TMODE_STDTEXT;
+			graphmode=GMODE_WIDEGRPH;
+			if(textmode!=TMODE_WIDETEXT){
+				textmode=TMODE_WIDETEXT;
 				WIDTH_X=WIDTH_XCL;
 				attroffset=ATTROFFSET;
 				clearscreen();
 			}
-			videomode=VMODE_STDGRPH;
+			videomode=VMODE_WIDEGRPH;
 			break;
 	}
 //	start_composite();

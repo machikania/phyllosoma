@@ -1,8 +1,14 @@
 #include "pico/stdlib.h"
 
-#define X_RES	320 // Graphic横方向解像度
+// DVDD 1.2V (1.1V seems ok too)
+#define PALETTE_SIZE 256
+#define PALETTE_BITS 8
+#define VREG_VSEL VREG_VOLTAGE_1_30
+#define DVI_TIMING dvi_timing_800x480p_60hz
+
+#define X_RES	400 // Graphic横方向解像度
 #define Y_RES	240 // Graphic縦方向解像度
-#define WIDTH_XCL 40 // 横方向文字数（カラー時）
+#define WIDTH_XCL 50 // 横方向文字数（カラー時）
 #define WIDTH_Y 30 // 縦方向文字数
 #define ATTROFFSET (WIDTH_XCL*WIDTH_Y) // TVRAM上のカラーパレット格納位置
 #define WIDTH_XBW	80 // 横方向文字数（モノクロ時）
@@ -14,18 +20,18 @@ extern int WIDTH_X; // 横方向文字数
 //#define VMODE_T30 0 // 標準テキスト30文字互換モード
 #define VMODE_STDTEXT 1 // 標準テキスト40文字モード
 //#define VMODE_T40 2 // 標準テキスト40文字互換モード（6ドットフォント）
-#define VMODE_WIDETEXT 3 // ワイドテキスト42文字モード
+#define VMODE_WIDETEXT 3 // ワイドテキスト50文字モード
 //#define VMODE_WIDETEXT6dot 4 // ワイドテキスト64文字モード（6ドットフォント）
 #define VMODE_MONOTEXT 5 // モノクロテキスト80文字モード
 //#define VMODE_ZOEAGRPH 16 // type Z互換グラフィックモード
 #define VMODE_STDGRPH 17 // 標準グラフィック＋テキスト40文字モード
-#define VMODE_WIDEGRPH 18 // ワイドグラフィック＋テキスト42文字モード
+#define VMODE_WIDEGRPH 18 // ワイドグラフィック＋テキスト50文字モード
 
 // textomode値
 //#define TMODE_T30 0 // 標準テキスト30文字互換モード
 #define TMODE_STDTEXT 1 // 標準テキスト40文字モード
 #define TMODE_T40 2 // 標準テキスト40文字互換モード（6ドットフォント）
-#define TMODE_WIDETEXT 3 // ワイドテキスト42文字モード
+#define TMODE_WIDETEXT 3 // ワイドテキスト50文字モード
 //#define TMODE_WIDETEXT6dot 4 // ワイドテキスト64文字モード（6ドットフォント）
 #define TMODE_MONOTEXT 5 // モノクロテキスト80文字モード
 
@@ -33,7 +39,7 @@ extern int WIDTH_X; // 横方向文字数
 #define GMODE_NOGRPH 0 // グラフィック不使用
 //#define GMODE_ZOEAGRPH 1 // type Z互換グラフィックモード
 #define GMODE_STDGRPH 2 // 標準グラフィック＋テキスト40文字モード
-#define GMODE_WIDEGRPH 3 // ワイドグラフィック＋テキスト42文字モード
+#define GMODE_WIDEGRPH 3 // ワイドグラフィック＋テキスト50文字モード
 
 // DVI display initialization macro
 #define display_init() init_dvi_driver()
