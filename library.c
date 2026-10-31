@@ -18,6 +18,7 @@
 #include "hardware/clocks.h"
 #include "hardware/vreg.h"
 #include "hardware/spi.h"
+#include "hardware/watchdog.h"
 
 /*
 	Local macros
