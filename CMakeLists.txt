@@ -60,12 +60,6 @@ if (TARGET tinyusb_device)
 		pico_aon_timer
 	)
 	
-	if (MACHIKANIA_GRAPH_LIB STREQUAL "dvi_driver")
-		add_subdirectory(libdvi)
-		add_compile_definitions(PICO_PIO_USE_GPIO_BASE=1)
-		add_compile_definitions(DVI_DEFAULT_SERIAL_CONFIG=waveshare_rp2350_pizero)
-	endif()
-
 	# Create video library
 	add_library(video_files
 		interface/${MACHIKANIA_GRAPH_LIB}.c
@@ -78,8 +72,13 @@ if (TARGET tinyusb_device)
 		hardware_spi
 		hardware_dma	
 		hardware_clocks
-		libdvi
 	)
+	if (MACHIKANIA_GRAPH_LIB STREQUAL "dvi_driver")
+		add_compile_definitions(PICO_PIO_USE_GPIO_BASE=1)
+		add_compile_definitions(DVI_DEFAULT_SERIAL_CONFIG=waveshare_rp2350_pizero)
+		add_subdirectory(libdvi)
+		target_link_libraries(video_files libdvi)
+	endif()
 	
 	# Create wifi library
 	if (MACHIKANIA_WIFI STREQUAL "withwifi")
