@@ -41,7 +41,6 @@ static uint32_t scanline_buf[X_RES*2/4] __attribute__((aligned(4)));
 static void __not_in_flash_func(dvi_scanbuf_palette)() {
 	static uint scanline = 0;
 	uint32_t *tmdsbuf;
-	queue_remove_blocking_u32(&dvi0.q_tmds_free, &tmdsbuf);
 	uint32_t *p=scanline_buf;
 	uint8_t *tvp=TVRAM+scanline/8*WIDTH_X;
 	uint8_t tline=scanline & 7;
@@ -49,19 +48,20 @@ static void __not_in_flash_func(dvi_scanbuf_palette)() {
 		for(int i=0;i<WIDTH_X;i++){
 			uint8_t d=fontp[*tvp *8 +tline];
 			uint8_t cl=*(tvp+ATTROFFSET);
+			cl+=cl<<8;
 			uint32_t c;
-			for(int j=0;j<8;j+=2){
+			for(int j=0;j<4;j++){
 				if(d&0x80){
-					c=cl+(cl<<8);
+					c=cl;
 				}
 				else{
 					c=bgcolor+(bgcolor<<8);
 				}
 				if(d&0x40){
-					c=c+(cl<<16)+(cl<<24);
+					c+=cl<<16;
 				}
 				else{
-					c=c+(bgcolor<<16)+(bgcolor<<24);
+					c+=(bgcolor<<16)+(bgcolor<<24);
 				}
 				d<<=2;
 				*p++=c;
@@ -69,29 +69,30 @@ static void __not_in_flash_func(dvi_scanbuf_palette)() {
 			tvp++;
 		}
 	}
-	if(videomode==VMODE_WIDEGRPH){
-	    uint8_t *gvp=GVRAM+scanline*X_RES;
+	else if(videomode==VMODE_WIDEGRPH){
+	    uint16_t *gvp=(uint16_t*)(GVRAM_DISP+scanline*X_RES);
 		for(int i=0;i<WIDTH_X;i++){
 			uint8_t d=fontp[*tvp *8 +tline];
 			uint8_t cl=*(tvp+ATTROFFSET);
+			cl+=cl<<8;
 			uint32_t c;
-			for(int j=0;j<8;j+=2){
-				uint16_t g=*(uint16_t *)gvp;
+			for(int j=0;j<4;j++){
+				uint16_t g=*gvp;
 				if(d&0x80){
-					c=cl+(cl<<8);
+					c=cl;
 				}
 				else{
 					c=(uint8_t)g+((uint8_t)g<<8);
 				}
 				if(d&0x40){
-					c=c+(cl<<16)+(cl<<24);
+					c+=cl<<16;
 				}
 				else{
-					c=c+((g>>8)<<16)+((g>>8)<<24);
+					c+=((g>>8)<<16)+((g>>8)<<24);
 				}
 				d<<=2;
 				*p++=c;
-				gvp+=2;
+				gvp++;
 			}
 			tvp++;
 		}
@@ -103,9 +104,10 @@ static void __not_in_flash_func(dvi_scanbuf_palette)() {
 		// Trigger drawcount interrupt every 1/60 second
 		drawcount_interrupt();
 	}
+	queue_remove_blocking_u32(&dvi0.q_tmds_free, &tmdsbuf);
 	tmds_encode_palette_data(scanline_buf, tmds_palette, tmdsbuf, X_RES*2, PALETTE_BITS);
 	queue_add_blocking_u32(&dvi0.q_tmds_valid, &tmdsbuf);
-	request_core1_callback_at(dvi_scanbuf_palette,time_us_32()+1+((scanline&3)==0));
+	request_core1_callback_at(dvi_scanbuf_palette,time_us_32()+2);
 }
 
 static const int8_t imbalance_lookup[16] = { -4, -2, -2, 0, -2, 0, 0, 2, -2, 0, 0, 2, 0, 2, 2, 4 };
@@ -237,6 +239,12 @@ void init_dvi_driver(void){
 
     clearscreen();
     init_palette();
+
+	//DMA割り込み優先度をタイマー割り込みより高くする
+	irq_set_priority(DMA_IRQ_0, 0x40);
+	//irq_set_priority(TIMER_ALARM_IRQ_NUM(alarm_pool_get_default_timer(),
+	//	PICO_TIME_DEFAULT_ALARM_POOL_HARDWARE_ALARM_NUM),0xC0);
+
 	dvi_register_irqs_this_core(&dvi0, DMA_IRQ_0);
 	dvi_start(&dvi0);
 	start_core1();
