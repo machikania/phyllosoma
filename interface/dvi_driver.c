@@ -47,7 +47,7 @@ static void __not_in_flash_func(dvi_scanbuf_palette)() {
 	if(videomode==VMODE_WIDETEXT){
 		for(int i=0;i<WIDTH_X;i++){
 			uint8_t d=fontp[*tvp *8 +tline];
-			uint8_t cl=*(tvp+ATTROFFSET);
+			uint32_t cl=*(tvp+ATTROFFSET);
 			cl+=cl<<8;
 			uint32_t c;
 			for(int j=0;j<4;j++){
@@ -73,7 +73,7 @@ static void __not_in_flash_func(dvi_scanbuf_palette)() {
 	    uint16_t *gvp=(uint16_t*)(GVRAM_DISP+scanline*X_RES);
 		for(int i=0;i<WIDTH_X;i++){
 			uint8_t d=fontp[*tvp *8 +tline];
-			uint8_t cl=*(tvp+ATTROFFSET);
+			uint32_t cl=*(tvp+ATTROFFSET);
 			cl+=cl<<8;
 			uint32_t c;
 			for(int j=0;j<4;j++){
