@@ -107,7 +107,7 @@ static void __not_in_flash_func(dvi_scanbuf_palette)() {
 	queue_remove_blocking_u32(&dvi0.q_tmds_free, &tmdsbuf);
 	tmds_encode_palette_data(scanline_buf, tmds_palette, tmdsbuf, X_RES*2, PALETTE_BITS);
 	queue_add_blocking_u32(&dvi0.q_tmds_valid, &tmdsbuf);
-	request_core1_callback_at(dvi_scanbuf_palette,time_us_32()+2);
+	request_core1_callback_at(dvi_scanbuf_palette,time_us_32()+1+((scanline&3)==0));
 }
 
 static const int8_t imbalance_lookup[16] = { -4, -2, -2, 0, -2, 0, 0, 2, -2, 0, 0, 2, 0, 2, 2, 4 };
