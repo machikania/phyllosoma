@@ -43,10 +43,10 @@ void post_inifile(void){
 	}
     printstr("Init USB OK\n");
 	start_core1();
-	request_core1_callback(usbk_polling_handler);
 	// Waiting for USB keyboard connected
 	t=time_us_32();
 	while(!usbkb_mounted()) {
+		usbkb_polling();
 		sleep_ms(16);
 		if (!g_wait_for_keyboard) continue;
 		if (g_wait_for_keyboard*1000<time_us_32()-t) {
@@ -56,6 +56,7 @@ void post_inifile(void){
 			return;
 		}
 	}
+	request_core1_callback(usbk_polling_handler);
 
 	switch(getVidPid()){
 		case 0x1209f800:
