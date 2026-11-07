@@ -467,7 +467,7 @@ void stopPCG(void){
 // General function for video
 
 void video_init(void){
-	set_videomode(VMODE_STDTEXT,0);
+	set_videomode(VMODE_WIDETEXT,0);
 	init_palette();
 }
 

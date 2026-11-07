@@ -17,7 +17,7 @@
 #include "dvi_driver.h"
 #include "graphlib_dvi.h"
 
-uint8_t TVRAM[WIDTH_XCL*WIDTH_Y*2+1] __attribute__ ((aligned (4)));
+uint8_t TVRAM[WIDTH_XMAX*WIDTH_Y*2+1] __attribute__ ((aligned (4)));
 uint8_t *GVRAM=0; //グラフィックVRAM（描画用）開始位置のポインタ
 static uint8_t *GVRAM_DISP; //グラフィックVRAM（表示用）開始位置のポインタ
 uint8_t *cursor=TVRAM;
@@ -66,6 +66,25 @@ static void __not_in_flash_func(dvi_scanbuf_palette)() {
 				d<<=2;
 				*p++=c;
 			}
+			tvp++;
+		}
+	}
+	else if(videomode==VMODE_MONOTEXT){
+		for(int i=0;i<WIDTH_X;i++){
+			uint8_t d=fontp[*tvp *8 +tline];
+			uint8_t cl=*(tvp+ATTROFFSETBW);
+			uint32_t c=0;
+			if(d&0x80) c=cl;
+			if(d&0x40) c+=cl<<8;
+			if(d&0x20) c+=cl<<16;
+			if(d&0x10) c+=cl<<24;
+			*p++=c;
+			c=0;
+			if(d&0x08) c=cl;
+			if(d&0x04) c+=cl<<8;
+			if(d&0x02) c+=cl<<16;
+			if(d&0x01) c+=cl<<24;
+			*p++=c;
 			tvp++;
 		}
 	}
@@ -200,7 +219,7 @@ void clearscreen(void)
 	unsigned int *vp;
 	int i;
 	vp=(unsigned int *)TVRAM;
-	for(i=0;i<WIDTH_XCL*WIDTH_Y*2/4;i++) *vp++=0;
+	for(i=0;i<WIDTH_XMAX*WIDTH_Y*2/4;i++) *vp++=0;
 	cursor=TVRAM;
 }
 
@@ -257,10 +276,8 @@ void init_dvi_driver(void){
 // gvram:グラフィック用メモリ先頭アドレス
 void set_videomode(unsigned char m, unsigned char *gvram){
 	if(videomode==m) return;
-//	stop_composite();
 	switch(m){
-		case VMODE_STDTEXT: // 標準テキスト40文字モード（未実装）
-		case VMODE_WIDETEXT: // ワイドテキストモード
+		case VMODE_WIDETEXT: // ワイドテキスト50文字モード
 			if(textmode!=TMODE_WIDETEXT){
 				textmode=TMODE_WIDETEXT;
 				graphmode=0;
@@ -268,10 +285,16 @@ void set_videomode(unsigned char m, unsigned char *gvram){
 				attroffset=ATTROFFSET;
 				clearscreen();
 			}
-			videomode=VMODE_WIDETEXT;
 			break;
-		case VMODE_STDGRPH: // 標準グラフィック＋テキスト40文字モード（未実装）
-		case VMODE_WIDEGRPH: // ワイドグラフィック＋テキストモード
+		case VMODE_MONOTEXT: // モノクロテキスト100文字モード
+			if(textmode!=TMODE_MONOTEXT){
+				textmode=TMODE_MONOTEXT;
+				WIDTH_X=WIDTH_XBW;
+				attroffset=ATTROFFSETBW;
+				clearscreen();
+			}
+			break;
+		case VMODE_WIDEGRPH: // ワイドグラフィック＋テキスト50文字モード
 			GVRAM=gvram;
 			GVRAM_DISP=gvram;
 			graphmode=GMODE_WIDEGRPH;
@@ -281,10 +304,9 @@ void set_videomode(unsigned char m, unsigned char *gvram){
 				attroffset=ATTROFFSET;
 				clearscreen();
 			}
-			videomode=VMODE_WIDEGRPH;
 			break;
 	}
-//	start_composite();
+	videomode=m;
 }
 
 //描画用ビデオメモリと表示用メモリの設定

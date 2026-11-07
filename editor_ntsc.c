@@ -2315,7 +2315,7 @@ void displaybottomline(void){
 	p=cursor; //カーソル位置の退避
 	c=cursorcolor;
 	if(shiftkeys() & CHK_SHIFT){
-		if(videomode!=VMODE_MONOTEXT){
+		if(videomode!=VMODE_MONOTEXT || PICODVI){
 			setcursor(0,WIDTH_Y-1,COLOR_BOTTOMLINE);
 			printstr("| NEW |     |WIDTH|TEST |");
 		}
@@ -2334,7 +2334,7 @@ void displaybottomline(void){
 		printnum(TBUFMAXSIZE-num);
 	}
 	else{
-		if(videomode!=VMODE_MONOTEXT){
+		if(videomode!=VMODE_MONOTEXT || PICODVI){
 			setcursor(0,WIDTH_Y-1,COLOR_BOTTOMLINE);
 			printstr("|LOAD |SAVE |HELP | RUN |");
 		}

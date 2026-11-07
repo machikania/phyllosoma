@@ -3,7 +3,7 @@
 // DVDD 1.2V (1.1V seems ok too)
 #define PALETTE_SIZE 256
 #define PALETTE_BITS 8
-#define VREG_VSEL VREG_VOLTAGE_1_30
+#define VREG_VSEL VREG_VOLTAGE_1_20
 #define DVI_TIMING dvi_timing_800x480p_60hz
 
 #define X_RES	400 // Graphic横方向解像度
@@ -11,7 +11,7 @@
 #define WIDTH_XCL 50 // 横方向文字数（カラー時）
 #define WIDTH_Y 30 // 縦方向文字数
 #define ATTROFFSET (WIDTH_XCL*WIDTH_Y) // TVRAM上のカラーパレット格納位置
-#define WIDTH_XBW	80 // 横方向文字数（モノクロ時）
+#define WIDTH_XBW	100 // 横方向文字数（モノクロ時）
 #define ATTROFFSETBW	(WIDTH_XBW*WIDTH_Y) // TVRAM上のカラーパレット格納位置（モノクロ時）
 #define WIDTH_XMAX WIDTH_XBW // 横方向最大文字数
 extern int WIDTH_X; // 横方向文字数
