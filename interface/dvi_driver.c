@@ -42,10 +42,10 @@ static void __not_in_flash_func(dvi_scanbuf_palette)() {
 	static uint scanline = 0;
 	uint32_t *tmdsbuf;
 	uint32_t *p=scanline_buf;
-	uint8_t *tvp=TVRAM+scanline/8*WIDTH_X;
 	uint8_t tline=scanline & 7;
 	if(videomode==VMODE_WIDETEXT){
-		for(int i=0;i<WIDTH_X;i++){
+		uint8_t *tvp=TVRAM+scanline/8*WIDTH_XCL;
+		for(int i=0;i<WIDTH_XCL;i++){
 			uint8_t d=fontp[*tvp *8 +tline];
 			uint32_t cl=*(tvp+ATTROFFSET);
 			cl+=cl<<8;
@@ -70,7 +70,8 @@ static void __not_in_flash_func(dvi_scanbuf_palette)() {
 		}
 	}
 	else if(videomode==VMODE_MONOTEXT){
-		for(int i=0;i<WIDTH_X;i++){
+		uint8_t *tvp=TVRAM+scanline/8*WIDTH_XBW;
+		for(int i=0;i<WIDTH_XBW;i++){
 			uint8_t d=fontp[*tvp *8 +tline];
 			uint8_t cl=*(tvp+ATTROFFSETBW);
 			uint32_t c=0;
@@ -89,8 +90,9 @@ static void __not_in_flash_func(dvi_scanbuf_palette)() {
 		}
 	}
 	else if(videomode==VMODE_WIDEGRPH){
+		uint8_t *tvp=TVRAM+scanline/8*WIDTH_XCL;
 	    uint16_t *gvp=(uint16_t*)(GVRAM_DISP+scanline*X_RES);
-		for(int i=0;i<WIDTH_X;i++){
+		for(int i=0;i<WIDTH_XCL;i++){
 			uint8_t d=fontp[*tvp *8 +tline];
 			uint32_t cl=*(tvp+ATTROFFSET);
 			cl+=cl<<8;
@@ -194,6 +196,7 @@ void init_palette(void){
 	for(i=16;i<256;i++){
 		set_palette(i,255,255,255);
 	}
+	bgcolor=0;
 }
 
 // グラフィック画面クリア
@@ -255,9 +258,6 @@ void init_dvi_driver(void){
 	dvi0.timing = &DVI_TIMING;
 	dvi0.ser_cfg = DVI_DEFAULT_SERIAL_CONFIG;
 	dvi_init(&dvi0, next_striped_spin_lock_num(), next_striped_spin_lock_num());
-
-    clearscreen();
-    init_palette();
 
 	//DMA割り込み優先度をタイマー割り込みより高くする
 	irq_set_priority(DMA_IRQ_0, 0x40);
