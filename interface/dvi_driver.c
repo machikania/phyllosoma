@@ -251,7 +251,7 @@ void init_dvi_driver(void){
 	sleep_ms(10);
 	set_sys_clock_khz(DVI_TIMING.bit_clk_khz, true);
 
-	setup_default_uart();
+//	setup_default_uart();
 
 	pio_set_gpio_base(DVI_DEFAULT_SERIAL_CONFIG.pio,16);
 
