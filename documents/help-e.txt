@@ -775,7 +775,7 @@ CALL x
 	Calls the method of the object specified by x. "CALL" can be omitted.
 
 <Real-time clock>
-The real-time clock can be used with Type P and Type PU. When using it with Type P/Type PU that supports WiFi, set MACHIKAP.INI to connect to an NTP server at startup, or use the NTP command to connect to an NTP server to set the current time. If you are using Type P/Type PU that does not support WiFi, use the SETTIME command to set the current time. The ISO-8601 string used in the sequence of instructions and functions is formatted as shown in the following example (with a "T" between the date and time).
+The real-time clock can be used with Type P and Type PU. When using it with Type P/Type PU that supports WiFi, set MACHIKAP.INI to connect to an NTP server at startup, or use the NTP command to connect to an NTP server to set the current time. If you are using Type P/Type PU that does not support WiFi, use the SETTIME command to set the current time. To enable file timestamps for files saved by file-related commands, enable "RTCFILE" in MACHIKAP.INI. The ISO-8601 string used in the sequence of instructions and functions is formatted as shown in the following example (with a "T" between the date and time).
 
 	2023-09-01T13:00:00 (for September 1, 2023, 1:00:00 PM)
 
