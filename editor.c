@@ -98,7 +98,6 @@ static const unsigned char ROOTDIR[]="/";
 
 static unsigned char searchtext[SEARCHTEXTMAX]; //文字列検索用バッファ
 // 区切り文字チェック、区切り文字以外はTrueを返す
-#define delimitercheck(x) (x>='@' && x<='Z' || x>='a' && x<='z' || x=='_' || x>='0' && x<='9')
 
 //配列EDITORRAM[]内にサイズsizeの領域を確保し、先頭アドレスを返す
 //確保できない場合は、エラー表示し動作停止

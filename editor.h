@@ -53,3 +53,4 @@ caused by using this program.
 #define UNDO_CONTDEL 6
 
 #define EDITORRAMSIZE (50*1024)
+#define delimitercheck(x) (x>='@' && x<='Z' || x>='a' && x<='z' || x=='_' || x>='0' && x<='9')
