@@ -2687,9 +2687,15 @@ void texteditor(void){
 		setcursor(cx,cy,COLOR_NORMALTEXT);
 		getcursorchar(); //カーソル位置の文字を退避（カーソル点滅用）
 		blinkcursorchar(); //カーソル点滅させる
+		uint8_t oldshiftkey=0xff,newshiftkey;
 		while(1){
 			k1=usbkb_readkey(); //キーバッファから読み込み、k1:通常文字入力の場合ASCIIコード
-			displaybottomline(); //画面最下行にファンクションキー機能表示
+			newshiftkey=shiftkeys();
+			if(newshiftkey!=oldshiftkey){
+				//チラつき防止のため変化のあった時のみ表示更新する
+				displaybottomline(); //画面最下行にファンクションキー機能表示
+				oldshiftkey=newshiftkey;
+			}
 			if(vkey) break;  //キーが押された場合ループから抜ける
 			if(cursorbp1==NULL) gabagecollect1(); //1バイトガベージコレクション（範囲選択時はしない）
 			blinkcursorchar(); //カーソル点滅させる

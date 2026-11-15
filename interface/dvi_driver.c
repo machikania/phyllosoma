@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include "pico/stdlib.h"
 #include "pico/multicore.h"
 #include "hardware/clocks.h"
@@ -15,7 +14,6 @@
 #include "../libdvi/tmds_encode.h"
 #include "../libdvi/common_dvi_pin_configs.h"
 #include "dvi_driver.h"
-#include "graphlib_dvi.h"
 
 uint8_t TVRAM[WIDTH_XMAX*WIDTH_Y*2+1] __attribute__ ((aligned (4)));
 uint8_t *GVRAM=0; //グラフィックVRAM（描画用）開始位置のポインタ
@@ -32,11 +30,11 @@ int WIDTH_X = WIDTH_XCL; // 横方向文字数
 int attroffset; // TVRAMのカラー情報エリア位置
 uint8_t* fontp; //現在のフォントパターンの先頭アドレス
 
-uint8_t bgcolor=0;
+uint16_t bgcolor;
 
 struct dvi_inst dvi0;
-static uint32_t tmds_palette[6 * PALETTE_SIZE] __attribute__((aligned(4)));
-static uint32_t scanline_buf[X_RES*2/4] __attribute__((aligned(4)));
+static uint16_t rgb565_palette[PALETTE_SIZE] __attribute__((aligned(4)));
+static uint32_t scanline_buf[X_RES] __attribute__((aligned(4)));
 
 static void __not_in_flash_func(dvi_scanbuf_palette)() {
 	static uint scanline = 0;
@@ -47,22 +45,13 @@ static void __not_in_flash_func(dvi_scanbuf_palette)() {
 		uint8_t *tvp=TVRAM+scanline/8*WIDTH_XCL;
 		for(int i=0;i<WIDTH_XCL;i++){
 			uint8_t d=fontp[*tvp *8 +tline];
-			uint32_t cl=*(tvp+ATTROFFSET);
-			cl+=cl<<8;
-			uint32_t c;
-			for(int j=0;j<4;j++){
-				if(d&0x80){
-					c=cl;
-				}
-				else{
-					c=bgcolor+(bgcolor<<8);
-				}
-				if(d&0x40){
-					c+=cl<<16;
-				}
-				else{
-					c+=(bgcolor<<16)+(bgcolor<<24);
-				}
+			uint32_t cl=rgb565_palette[*(tvp+ATTROFFSET)];
+			for(int i=0;i<4;i++){
+				uint32_t c;
+				if(d&0x80) c=cl;
+				else c=bgcolor;
+				if(d&0x40) c+=cl<<16;
+				else c+=bgcolor<<16;
 				d<<=2;
 				*p++=c;
 			}
@@ -73,47 +62,35 @@ static void __not_in_flash_func(dvi_scanbuf_palette)() {
 		uint8_t *tvp=TVRAM+scanline/8*WIDTH_XBW;
 		for(int i=0;i<WIDTH_XBW;i++){
 			uint8_t d=fontp[*tvp *8 +tline];
-			uint8_t cl=*(tvp+ATTROFFSETBW);
-			uint32_t c=0;
-			if(d&0x80) c=cl;
-			if(d&0x40) c+=cl<<8;
-			if(d&0x20) c+=cl<<16;
-			if(d&0x10) c+=cl<<24;
-			*p++=c;
-			c=0;
-			if(d&0x08) c=cl;
-			if(d&0x04) c+=cl<<8;
-			if(d&0x02) c+=cl<<16;
-			if(d&0x01) c+=cl<<24;
-			*p++=c;
+			uint32_t cl=rgb565_palette[*(tvp+ATTROFFSETBW)];
+			for(int i=0;i<4;i++){
+				uint32_t c;
+				if(d&0x80) c=cl;
+				else c=bgcolor;
+				if(d&0x40) c+=cl<<16;
+				else c+=bgcolor<<16;
+				d<<=2;
+				*p++=c;
+			}
 			tvp++;
 		}
 	}
 	else if(videomode==VMODE_WIDEGRPH){
 		uint8_t *tvp=TVRAM+scanline/8*WIDTH_XCL;
-	    uint16_t *gvp=(uint16_t*)(GVRAM_DISP+scanline*X_RES);
+	    uint8_t *gvp=GVRAM_DISP+scanline*X_RES;
 		for(int i=0;i<WIDTH_XCL;i++){
 			uint8_t d=fontp[*tvp *8 +tline];
-			uint32_t cl=*(tvp+ATTROFFSET);
-			cl+=cl<<8;
-			uint32_t c;
+			uint32_t cl=rgb565_palette[*(tvp+ATTROFFSET)];
 			for(int j=0;j<4;j++){
-				uint16_t g=*gvp;
-				if(d&0x80){
-					c=cl;
-				}
-				else{
-					c=(uint8_t)g+((uint8_t)g<<8);
-				}
-				if(d&0x40){
-					c+=cl<<16;
-				}
-				else{
-					c+=((g>>8)<<16)+((g>>8)<<24);
-				}
+				uint32_t c;
+				if(d&0x80) c=cl;
+				else c=rgb565_palette[*gvp];
+				gvp++;
+				if(d&0x40) c+=cl<<16;
+				else c+=rgb565_palette[*gvp]<<16;
+				gvp++;
 				d<<=2;
 				*p++=c;
-				gvp++;
 			}
 			tvp++;
 		}
@@ -126,62 +103,27 @@ static void __not_in_flash_func(dvi_scanbuf_palette)() {
 		drawcount_interrupt();
 	}
 	queue_remove_blocking_u32(&dvi0.q_tmds_free, &tmdsbuf);
-	tmds_encode_palette_data(scanline_buf, tmds_palette, tmdsbuf, X_RES*2, PALETTE_BITS);
+	if(videomode==VMODE_MONOTEXT){
+		tmds_encode_data_channel_fullres_16bpp(scanline_buf, tmdsbuf + 0 * X_RES, X_RES*2, DVI_16BPP_BLUE_MSB,  DVI_16BPP_BLUE_LSB );
+		tmds_encode_data_channel_fullres_16bpp(scanline_buf, tmdsbuf + 1 * X_RES, X_RES*2, DVI_16BPP_GREEN_MSB, DVI_16BPP_GREEN_LSB);
+		tmds_encode_data_channel_fullres_16bpp(scanline_buf, tmdsbuf + 2 * X_RES, X_RES*2, DVI_16BPP_RED_MSB,   DVI_16BPP_RED_LSB  );
+	}
+	else{
+		tmds_encode_data_channel_16bpp(scanline_buf, tmdsbuf + 0 * X_RES, X_RES, DVI_16BPP_BLUE_MSB,  DVI_16BPP_BLUE_LSB );
+		tmds_encode_data_channel_16bpp(scanline_buf, tmdsbuf + 1 * X_RES, X_RES, DVI_16BPP_GREEN_MSB, DVI_16BPP_GREEN_LSB);
+		tmds_encode_data_channel_16bpp(scanline_buf, tmdsbuf + 2 * X_RES, X_RES, DVI_16BPP_RED_MSB,   DVI_16BPP_RED_LSB  );
+	}
 	queue_add_blocking_u32(&dvi0.q_tmds_valid, &tmdsbuf);
 	request_core1_callback_at(dvi_scanbuf_palette,time_us_32()+1+((scanline&3)==0));
 }
 
-static const int8_t imbalance_lookup[16] = { -4, -2, -2, 0, -2, 0, 0, 2, -2, 0, 0, 2, 0, 2, 2, 4 };
-
-static inline int byte_imbalance(uint32_t x) {
-	return imbalance_lookup[x >> 4] + imbalance_lookup[x & 0xF];
-}
-
-static void tmds_encode_symbols(uint8_t pixel, uint32_t* negative_balance_sym, uint32_t* positive_balance_sym) {
-	int pixel_imbalance = byte_imbalance(pixel);
-	uint32_t sym = pixel & 1;
-	if (pixel_imbalance > 0 || (pixel_imbalance == 0 && sym == 0)) {
-		for (int i = 0; i < 7; ++i) {
-			sym |= (~((sym >> i) ^ (pixel >> (i + 1))) & 1) << (i + 1);
-		}
-	}
-	else {
-		for (int i = 0; i < 7; ++i) {
-			sym |= ( ((sym >> i) ^ (pixel >> (i + 1))) & 1) << (i + 1);
-		}
-		sym |= 0x100;
-	}
-
-	int imbalance = byte_imbalance(sym & 0xFF);
-	if (imbalance == 0) {
-		if ((sym & 0x100) == 0) sym ^= 0x2ff;
-		*positive_balance_sym = sym;
-		*negative_balance_sym = sym;
-		return;
-	}
-	else if (imbalance > 0) {
-		*negative_balance_sym = (sym ^ 0x2ff) | (((-imbalance + imbalance_lookup[2 ^ (sym >> 8)] + 2) & 0x3F) << 26);
-		*positive_balance_sym = sym | ((imbalance + imbalance_lookup[sym >> 8] + 2) << 26);
-	}
-	else {
-		*negative_balance_sym = sym | (((imbalance + imbalance_lookup[sym >> 8] + 2) & 0x3F) << 26);
-		*positive_balance_sym = (sym ^ 0x2ff) | ((-imbalance + imbalance_lookup[2 ^ (sym >> 8)] + 2) << 26);
-	}
-}
-
 void set_palette(unsigned char c,unsigned char b,unsigned char r,unsigned char g){
-	uint32_t* tmds_palette_blue = tmds_palette;
-	uint32_t* tmds_palette_green = tmds_palette + 2 * PALETTE_SIZE;
-	uint32_t* tmds_palette_red = tmds_palette + 4 * PALETTE_SIZE;
-	tmds_encode_symbols(b, &tmds_palette_blue[c], &tmds_palette_blue[c + PALETTE_SIZE]);
-	tmds_encode_symbols(g, &tmds_palette_green[c], &tmds_palette_green[c + PALETTE_SIZE]);
-	tmds_encode_symbols(r, &tmds_palette_red[c], &tmds_palette_red[c + PALETTE_SIZE]);
+	rgb565_palette[c]=((r>>3)<<11) | ((g>>2)<<5) | (b>>3);
 }
 
-//バックグランドカラー設定（仮実装）Provisional implementation
+//バックグランドカラー設定
 void set_bgcolor(unsigned char b,unsigned char r,unsigned char g){
-	bgcolor=255;
-	set_palette(255,b,r,g);
+	bgcolor=((r>>3)<<11) | ((g>>2)<<5) | (b>>3);
 }
 
 void init_palette(void){
