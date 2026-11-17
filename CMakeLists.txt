@@ -171,6 +171,7 @@ if (TARGET tinyusb_device)
 	
 	# set compile definitions
 	add_compile_definitions(PICO_CLOCK_ADJUST_PERI_CLOCK_WITH_SYS_CLOCK=1)
+	add_compile_definitions(MACHIKANIA_BUILD="${MACHIKANIA_BUILD}.")
 	add_compile_definitions(MACHIKANIA_CONFIG="./config/${MACHIKANIA_BUILD}.h")
 	if (MACHIKANIA_DEBUG_MODE)
 		add_compile_definitions(MACHIKANIA_DEBUG_MODE)

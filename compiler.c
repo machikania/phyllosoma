@@ -340,3 +340,11 @@ int filename_strcmpi(const char *string1, const char *string2){
 	lcstr2[i]=0;
 	return strcmp(lcstr1,lcstr2);
 }
+
+int machikania_build_is_not(const char* build){
+	return strcmp(build,MACHIKANIA_BUILD);
+}
+
+int machikania_build_is(const char* build){
+	return machikania_build_is_not(build) ? 0:1;
+}

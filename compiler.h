@@ -473,6 +473,8 @@ int set_value_in_register(unsigned char r,int val);
 int compile_line(unsigned char* code);
 int instruction_is(unsigned char* instruction);
 int filename_strcmpi(const char *string1, const char *string2);
+int machikania_build_is_not(const char* build);
+int machikania_build_is(const char* build);
 
 // run.c
 void pre_run(void);

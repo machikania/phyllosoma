@@ -162,8 +162,8 @@ void post_run(void){
 	stop_music();
 	// Stop PCG
 	stopPCG();
-	// Stop core1 when not using USB keyboard
-	if (!g_active_usb_keyboard) stop_core1();
+	// Stop core1 when not using HDMI and USB keyboard 
+	if (machikania_build_is_not("rp2350_pizero") && !g_active_usb_keyboard) stop_core1();
 	// Lower interrupt flag and cancel all interrupts
 	g_interrupt_code=0;
 	cancel_all_interrupts();
