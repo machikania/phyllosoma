@@ -35,6 +35,7 @@ uint16_t bgcolor;
 struct dvi_inst dvi0;
 static uint16_t rgb565_palette[PALETTE_SIZE] __attribute__((aligned(4)));
 static uint32_t scanline_buf[X_RES] __attribute__((aligned(4)));
+static uint32_t tmdsbuf[NUM_TMDSBUF][3 * X_RES*2 / DVI_SYMBOLS_PER_WORD];
 
 static void __not_in_flash_func(dvi_scanbuf_palette)() {
 	static uint scanline = 0;
@@ -200,6 +201,10 @@ void init_dvi_driver(void){
 	dvi0.timing = &DVI_TIMING;
 	dvi0.ser_cfg = DVI_DEFAULT_SERIAL_CONFIG;
 	dvi_init(&dvi0, next_striped_spin_lock_num(), next_striped_spin_lock_num());
+	for(int i=0;i<NUM_TMDSBUF;i++){
+		void *p=&tmdsbuf[i][0];
+		queue_add_blocking_u32(&dvi0.q_tmds_free, &p);
+	}
 
 	//DMA割り込み優先度をタイマー割り込みより高くする
 	irq_set_priority(DMA_IRQ_0, 0x40);

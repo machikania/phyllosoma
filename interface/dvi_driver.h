@@ -4,6 +4,7 @@
 #define PALETTE_BITS 8
 #define VREG_VSEL VREG_VOLTAGE_1_20
 #define DVI_TIMING dvi_timing_640x480p_60hz
+#define NUM_TMDSBUF 3
 
 #define X_RES	320 // Graphic横方向解像度
 #define Y_RES	240 // Graphic縦方向解像度

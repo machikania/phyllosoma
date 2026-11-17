@@ -222,7 +222,8 @@ const uint32_t __dvi_const(dvi_ctrl_syms)[4] = {
 static uint32_t __dvi_const(empty_scanline_tmds)[3] = {
 	0x7fd00u, // 0x00, 0x00
 	0x7fd00u, // 0x00, 0x00
-	0xbfa01u  // 0xfc, 0xfc
+	0x7fd00u  // 0x00, 0x00
+//	0xbfa01u  // 0xfc, 0xfc
 };
 #else
 static uint32_t __attribute__((aligned(8))) __dvi_const(empty_scanline_tmds)[6] = {
