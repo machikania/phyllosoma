@@ -41,8 +41,8 @@ void run_code(void){
 	asm("mov r0,sp");
 	asm("str r0,[r7,#0]");
 	// Reserve 1016 bytes stack area for some library functions (fprint etc)
-	asm("sub sp,#508");
-	asm("sub sp,#508");
+//	asm("sub sp,#508");
+//	asm("sub sp,#508");
 	// Store return address and call kmbasic_object
 	asm("ldr r1,=kmbasic_object+1");
 	asm("mov r0,pc");
@@ -196,11 +196,11 @@ void post_run(void){
 	When using lib stack, the interrupt is disabled because of the stricted length of stack area.
 */
 
-int machikania_snprintf_main(char *buffer, size_t n, const char *format_string, float float_value) {
+int machikania_snprintf/*_main*/(char *buffer, int n, const char *format_string, float float_value) {
 	return snprintf(buffer,n,format_string,float_value);
 }
 
-int machikania_snprintf(char *buffer, int n, const char *format_string, float float_value) {
+/*int machikania_snprintf(char *buffer, int n, const char *format_string, float float_value) {
 	asm("push {r6,r7,lr}");
 	asm("mov r6,sp");
 	asm("ldr r7,=kmbasic_data");
@@ -211,4 +211,4 @@ int machikania_snprintf(char *buffer, int n, const char *format_string, float fl
 	asm("mov sp,r6");
 	asm("cpsie i");
 	asm("pop {r6,r7,pc}");
-}
+}//*/
