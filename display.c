@@ -219,6 +219,7 @@ int lib_display(int r0, int r1, int r2){
 				cls();
 			}
 			switch(r1){
+				case 40:
 				case 42:
 					set_videomode(VMODE_WIDETEXT,0);
 					break;

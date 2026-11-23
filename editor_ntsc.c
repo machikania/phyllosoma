@@ -554,7 +554,7 @@ void redraw(){
 			//文字がある位置までサーチ
 			while(ix>=bp->n){
 				if(bp==bp1 && ix==ix1){
-					if(textmode!=TMODE_MONOTEXT){
+					if(textmode!=TMODE_MONOTEXT || PICODVI){
 						cl=COLOR_AREASELECTTEXT;
 					}
 					else{
@@ -568,7 +568,7 @@ void redraw(){
 			}
 			if(bp==NULL) break; //バッファ最終
 			if(bp==bp1 && ix==ix1){
-				if(textmode!=TMODE_MONOTEXT){
+				if(textmode!=TMODE_MONOTEXT || PICODVI){
 					cl=COLOR_AREASELECTTEXT;
 				}
 				else{
