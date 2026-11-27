@@ -126,6 +126,9 @@ void read_ini(void){
 		} else if (!strncmp(str,"AGE=",4)) {
 			sscanf(str+4,"%d",&i);
 			g_user_age=i;
+		} else if (!strncmp(str,"CORE0WAVE",9)) {
+			g_use_core0_for_playwave=1;
+			// Note that "CORE1WAVE" is ignored
 		}
 	}
 	// Close file

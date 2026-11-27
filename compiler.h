@@ -440,6 +440,8 @@ extern unsigned char g_emulate_button_array[6];
 
 extern unsigned char g_user_age;
 
+extern char g_use_core0_for_playwave;
+
 // USB peripheral derection
 extern unsigned char g_usb_peripheral;
 #define USB_PERIPHERAL_NONE     0

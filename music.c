@@ -114,6 +114,7 @@ static int g_pcm_counter;
 static char g_wave_enable;
 
 static struct repeating_timer g_wave_timer;
+static struct repeating_timer g_wave_file_timer;
 
 #define WAVE_BUFFER_SIZE 1024
 
@@ -571,7 +572,7 @@ int waveRemaining(int mode){
 	}
 }
 
-void wave_core1_readfile(void){
+bool wave_core1_readfile(void){
 	int i;
 	i=g_wave_writepos-g_wave_readpos;
 	if (i<0) i+=WAVE_BUFFER_SIZE;
@@ -579,11 +580,11 @@ void wave_core1_readfile(void){
 		// Force stop
 		if (g_fhandle) f_close(g_fhandle);
 		g_fhandle=0;
-		return;
+		return false;
 	}
 	if (0==i || 0==g_fhandle) {
 		// All done
-		return;
+		return false;
 	} else if (i<WAVE_BUFFER_SIZE/2) {
 		// Load from file
 		f_read(g_fhandle,(void*)&g_wavtable[g_wave_writepos],WAVE_BUFFER_SIZE/2,&i);
@@ -594,11 +595,16 @@ void wave_core1_readfile(void){
 			// End of file
 			f_close(g_fhandle);
 			g_fhandle=0;
-			return;
+			return false;
 		}
 	}
 	// Check at ~100 Hz
-	request_core1_callback_at(wave_core1_readfile,time_us_32()+10000);
+	if (g_use_core0_for_playwave) {
+		return true;
+	} else {
+		request_core1_callback_at(wave_core1_readfile,time_us_32()+10000);
+		return true;
+	}
 }
 
 bool repeating_wave_callback(struct repeating_timer *t) {
@@ -686,8 +692,13 @@ void set_wave(char* filename, int start){
 
 	// Start core1 and request callback
 	g_wave_enable=1;
-	start_core1();
-	request_core1_callback(wave_core1_readfile);
+	if (g_use_core0_for_playwave) {
+		add_repeating_timer_ms(-10, (repeating_timer_callback_t) wave_core1_readfile, NULL, &g_wave_file_timer);
+	} else {
+		start_core1();
+		request_core1_callback(wave_core1_readfile);
+	}
+
 	// Fire PCM interrupt
 	add_repeating_timer_us(-63, repeating_wave_callback, NULL, &g_wave_timer);
 }

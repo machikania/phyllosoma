@@ -133,6 +133,9 @@ unsigned char g_usb_peripheral=0;
 // User age setting
 unsigned char g_user_age=12;
 
+// Use core0 for PLAYWAVE or not
+char g_use_core0_for_playwave=0;
+
 // Reserved words
 
 const char* const g_reserved_words[192]={
